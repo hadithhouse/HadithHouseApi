@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Word by Word Syntax and Morphology{% endblock %}
+
+{% block header_scripts %}
+{% endblock %}
+
+{% block content %}
+  <div ng-app="HomePageModule">
+    <div ng-controller="HomePageCtrl">
+      <p>Welcome to Hadith House website.</p>
+
+      <p>
+        HadithHouse is a project containing collections of Islamic Hadiths with
+        an interactive GUI which allows users to search the collection,
+        find the sources of hadiths and their authenticity, etc.
+        The project is still in its early development stages. You can follow its progress on
+        <a href="https://github.com/rafidka/hadithhouse">GitHub.</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/javascript" src="{% static 'js/homepage.js' %}">
+  </script>
+{% endblock %}
