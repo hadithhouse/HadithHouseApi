@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from HadithHouseWebsite.database_settings import get_db_settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -56,18 +58,8 @@ WSGI_APPLICATION = 'HadithHouseWebsite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'HadithHouseDev',
-        # TODO: Set user, password, and host.
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '3306',
-    }
-}
+# This
+DATABASES = get_db_settings()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

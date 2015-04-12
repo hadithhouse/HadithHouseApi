@@ -1,3 +1,10 @@
+# Database settings file which contains credentials, which shouldn't be uploaded
+# to git.
+HadithHouseWebsite/HadithHouseWebsite/database_settings.py
+
+# PyCharm files
 .idea
+
+# Python cache files.
 __pycache__
 *.pyc
