@@ -21,18 +21,3 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-(function() {
-  'use strict';
-
-  var HomePageModule = angular.module('HomePageModule', []);
-
-  HomePageModule.controller('HomePageCtrl', ['$scope',
-    function($scope) {
-      $scope.message = 'Hello World';
-
-      $scope.showMessage = function() {
-        alert($scope.message);
-      };
-    }]);
-}());

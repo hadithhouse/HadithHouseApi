@@ -1,3 +1,20 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.template import RequestContext, loader
+from hadiths.models import Person
 
-# Create your views here.
+
+def index(request):
+  template = loader.get_template('hadiths/index.html')
+  context = RequestContext(request, {
+    'persons': Person.objects.all()
+  })
+  return HttpResponse(template.render(context))
+
+
+def persons(request):
+  template = loader.get_template('hadiths/persons.html')
+  context = RequestContext(request, {
+    'persons': Person.objects.all()
+  })
+  return HttpResponse(template.render(context))
+

@@ -1,14 +1,14 @@
-{% extends "base.html" %}
+{% extends "hadiths/base.html" %}
 {% load static %}
 
-{% block title %}Word by Word Syntax and Morphology{% endblock %}
+{% block title %}Hadith House{% endblock %}
 
 {% block header_scripts %}
 {% endblock %}
 
 {% block content %}
-  <div ng-app="HomePageModule">
-    <div ng-controller="HomePageCtrl">
+  <div ng-app="IndexPageModule">
+    <div ng-controller="IndexPageCtrl">
       <p>Welcome to Hadith House website.</p>
 
       <p>
@@ -23,6 +23,6 @@
 {% endblock %}
 
 {% block footer_scripts %}
-  <script type="text/javascript" src="{% static 'js/homepage.js' %}">
+  <script type="text/javascript" src="{% static 'hadiths/js/indexpage.js' %}">
   </script>
 {% endblock %}

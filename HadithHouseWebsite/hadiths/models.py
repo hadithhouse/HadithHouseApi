@@ -16,6 +16,9 @@ class Person(models.Model):
   added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
 
+  def __unicode__(self):
+    return self.name
+
 
 class HadithTag(models.Model):
   """A model describing a tag for hadiths."""
