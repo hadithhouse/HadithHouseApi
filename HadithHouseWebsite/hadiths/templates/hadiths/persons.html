@@ -9,7 +9,9 @@
 {% block content %}
 
   {% for person in persons %}
-    <a>{{ person.name }}</a>
+    <div>
+    <a>{{ person.full_name }}</a>
+    </div>
   {% endfor %}
 
 {% endblock %}
