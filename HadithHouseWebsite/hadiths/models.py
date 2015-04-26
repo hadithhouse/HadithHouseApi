@@ -20,7 +20,7 @@ class Person(models.Model):
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
 
   def __unicode__(self):
-    return self.name
+    return self.full_name
 
 
 class HadithTag(models.Model):
@@ -37,3 +37,14 @@ class Hadith(models.Model):
   tags = models.ManyToManyField(HadithTag)
   added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+
+
+class Chain(models.Model):
+  hadith = models.ForeignKey(Hadith)
+
+
+class ChainLink(models.Model):
+  chain = models.ForeignKey(Chain)
+  person = models.ForeignKey(Person)
+  order = models.SmallIntegerField(null=False, blank=False)
+

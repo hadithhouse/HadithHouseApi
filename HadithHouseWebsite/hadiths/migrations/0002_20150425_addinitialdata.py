@@ -34,10 +34,10 @@ def add_persons_of_first_hadith(apps, schema_editor):
   the project."""
   Person = apps.get_model('hadiths', 'Person')
   db_alias = schema_editor.connection.alias
-  Person.objects.using(db_alias).get_or_create(full_name=u"عبد الله بن أبي يعفور العبدي")
-  Person.objects.using(db_alias).get_or_create(full_name=u"ابان بن عثمان الأحمر البجلي")
-  Person.objects.using(db_alias).get_or_create(full_name=u"احمد بن محمد بن عمرو بن ابي نصر البزنطي")
-  Person.objects.using(db_alias).get_or_create(full_name=u"احمد بن عيسى")
+  Person.objects.using(db_alias).get_or_create(full_name=u"عبد الله بن أبي يعفور العبدي", ref='alabdi')
+  Person.objects.using(db_alias).get_or_create(full_name=u"ابان بن عثمان الأحمر البجلي", ref='albajli')
+  Person.objects.using(db_alias).get_or_create(full_name=u"احمد بن محمد بن عمرو بن ابي نصر البزنطي", ref='albazanti')
+  Person.objects.using(db_alias).get_or_create(full_name=u"احمد بن عيسى", ref='bin_isa')
 
 
 class Migration(migrations.Migration):
