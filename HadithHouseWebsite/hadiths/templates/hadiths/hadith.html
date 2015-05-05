@@ -1,0 +1,33 @@
+{% extends "hadiths/base.html" %}
+{% load static %}
+
+{% block title %}Hadith House - Hadith{% endblock %}
+
+{% block header_scripts %}
+{% endblock %}
+
+{% block content %}
+
+  <div>
+    {{ hadith.text }}
+  </div>
+
+  {% for chain in chains %}
+
+    <div>
+      {% for link in chain.links %}
+        <div>
+        {{ link.person_name }}
+        </div>
+      {% endfor %}
+    </div>
+
+  {% endfor %}
+
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/javascript" src="{% static 'hadiths/js/hadithpage.js' %}">
+  </script>
+{% endblock %}
+
