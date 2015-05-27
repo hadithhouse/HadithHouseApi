@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <!-- TODO: Is it OK to keep Google Site verification meta-data? -->
@@ -17,9 +17,37 @@
   {% block header_scripts %}
   {% endblock %}
 </head>
-<body dir="rtl">
-{% block content %}
-{% endblock %}
+<body>
+<div class="pagediv">
+  <table class="pagelayouttable">
+    <tr>
+      <td style="width: 300px;">
+        <img style="border-left: 1px solid black;" src="{% static 'hadiths/img/hadith.png' %}" />
+      </td>
+      <td>
+        <img style="border-left: 1px solid black;" src="{% static 'hadiths/img/title.png' %}" />
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: lightgray;">
+        <table class="menu">
+          <tr><td><div ng-href="">أحاديث</div></td></tr>
+          <tr><td><div ng-href="">أشخاص</div></td></tr>
+        </table>
+      </td>
+      <td style="width: 100%; min-height: 800px">
+        <div style="margin: 0px auto;">
+          {% block title %}
+          {% endblock %}
+        </div>
+        <div style="margin: 0px auto;">
+          {% block content %}
+          {% endblock %}
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
 {% block footer_scripts %}
 {% endblock %}
 </body>

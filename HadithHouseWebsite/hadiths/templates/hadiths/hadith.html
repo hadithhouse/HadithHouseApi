@@ -1,17 +1,17 @@
 {% extends "hadiths/base.html" %}
 {% load static %}
 
-{% block title %}Hadith House - Hadith{% endblock %}
-
 {% block header_scripts %}
 {% endblock %}
 
 {% block content %}
 
-  <div>
+  <h2>متن الحديث</h2>
+  <p>
     {{ hadith.text }}
-  </div>
+  </p>
 
+  <h2>سلاسل الحديث</h2>
   {% for chain in chains %}
 
     <div>
