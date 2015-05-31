@@ -29,6 +29,9 @@ class HadithTag(models.Model):
   added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
 
+  def __unicode__(self):
+    return self.name
+
 
 class Hadith(models.Model):
   """A model describing a hadith."""
@@ -37,6 +40,9 @@ class Hadith(models.Model):
   tags = models.ManyToManyField(HadithTag)
   added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+
+  def __unicode__(self):
+    return self.text[:100] + '...' if len(self.text) > 100 else self.text
 
 
 class Chain(models.Model):

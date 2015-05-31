@@ -8,10 +8,10 @@ def add_prophet_muhammad_pbuh(apps, schema_editor):
   db_alias = schema_editor.connection.alias
   Person.objects.using(db_alias).get_or_create(
     title=u'Prophet',
-    display_name=u'Prophet Muhammad (pbuh)',
-    full_name=u'Muḥammad ibn ʿAbd Allāh ibn ʿAbd al-Muṭṭalib ibn Hāshim',
+    display_name=u'النبي محمد (ص)',
+    full_name=u'محمد بن عبد الله بن عبد المطلب بن هاشم',
     ref=u'prophet_muhammad',
-    brief_desc=u'The prophet of Islamic religion, peace be upon him and his household.',
+    brief_desc=u'نبي الإسلام، عليه وعلى آله الصلاة والسلام',
     birth_year=570,
     death_year=632)
 
@@ -21,10 +21,10 @@ def add_imam_sadiq(apps, schema_editor):
   db_alias = schema_editor.connection.alias
   Person.objects.using(db_alias).get_or_create(
     title=u'Imam',
-    display_name=u'Imam al-Sadiq (pbuh)',
-    full_name=u"Ja'far ibn Muḥammad al-Ṣādiq",
+    display_name=u'الإمام الصادق (عليه السلام)',
+    full_name=u"جعفر بن محمد الصادق",
     ref=u'imam_alsadiq',
-    brief_desc=u'The sixth Shia Imam.',
+    brief_desc=u'إمام من أئمة المسلمين وسادس أئمة الشيعة الاثنى عشرية',
     birth_year=570,
     death_year=632)
 
