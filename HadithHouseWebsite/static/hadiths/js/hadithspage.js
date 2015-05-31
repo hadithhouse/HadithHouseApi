@@ -22,59 +22,12 @@
  * THE SOFTWARE.
  */
 
-@import url(http://fonts.googleapis.com/earlyaccess/droidarabickufi.css);
+(function() {
+  'use strict';
 
-body
-{
-  font-family: 'Droid Arabic Kufi', sans-serif;
-}
+  var HadithPageModule = angular.module('HadithPageModule', []);
 
-table.pagelayouttable
-{
-  padding: 0px;
-  border-spacing: 0px;
-  width: 100%;
-}
-
-table.pagelayouttable td
-{
-
-  vertical-align: top;
-}
-
-table.menu
-{
-  padding: 0px;
-  border-spacing: 0px;
-  margin: 0;
-  width: 100%;
-}
-
-table.menu tr
-{
-  padding: 0;
-  margin: 0;
-}
-
-table.menu td
-{
-  margin: 4px;
-  padding: 4px;
-  border-bottom: 1px solid black;
-  background-color: lightgray;
-}
-
-table.menu div
-{
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.pagediv
-{
-  width: 1000px;
-  margin: 0 auto;
-}
-
-
+  HadithPageModule.controller('HadithPageCtrl', ['$scope',
+    function($scope) {
+    }]);
+}());
