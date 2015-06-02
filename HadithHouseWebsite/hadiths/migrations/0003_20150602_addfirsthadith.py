@@ -54,8 +54,7 @@ def add_first_hadith(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0002_20150425_addinitialdata'),
-    ('hadiths', '0003_chain_chainlink'),
+    ('hadiths', '0002_20150602_addinitialdata')
   ]
 
   operations = [

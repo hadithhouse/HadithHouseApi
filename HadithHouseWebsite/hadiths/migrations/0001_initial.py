@@ -11,6 +11,26 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Chain',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ChainLink',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.SmallIntegerField()),
+                ('chain', models.ForeignKey(to='hadiths.Chain')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Hadith',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -25,8 +45,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='HadithTag',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=32)),
+                ('name', models.CharField(max_length=32, serialize=False, primary_key=True)),
                 ('added_on', models.DateTimeField(auto_now_add=True)),
                 ('updated_on', models.DateTimeField(auto_now=True, auto_now_add=True)),
             ],
@@ -66,6 +85,18 @@ class Migration(migrations.Migration):
             model_name='hadith',
             name='tags',
             field=models.ManyToManyField(to='hadiths.HadithTag'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='chainlink',
+            name='person',
+            field=models.ForeignKey(to='hadiths.Person'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='chain',
+            name='hadith',
+            field=models.ForeignKey(to='hadiths.Hadith'),
             preserve_default=True,
         ),
     ]
