@@ -2,8 +2,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.hadithhouse.HomeActivity">
-  <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+  <item android:id="@+id/settingsItem"
+        android:title="@string/settingsItem"
         android:orderInCategory="100"
+        app:showAsAction="never"/>
+      <item
+        android:id="@+id/logoutItem"
+        android:orderInCategory="100"
+        android:title="@string/logoutItem"
         app:showAsAction="never"/>
 </menu>

@@ -49,6 +49,9 @@ public class FacebookProxy {
    */
   public boolean isValidToken() {
     try {
+      if (this.token == null) {
+        return false;
+      }
       getUserInfo();
       return true;
     } catch (InvalidTokenException ex) {

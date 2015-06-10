@@ -5,27 +5,48 @@ import android.os.AsyncTask;
 import com.facebook.AccessToken;
 
 public class FacebookProxyTask {
+  AccessToken token;
+  Action action;
+  Callback callback;
+
+  /**
+   * Creates a proxy that will asynchronously execute the given action.
+   * @param action The action to be executed.
+   */
+  public FacebookProxyTask(Action action) {
+    this(action, null);
+  }
+
+  /**
+   * Creates a proxy that will asynchronously execute the given action. In
+   * addition to the action, this constructor accepts a callback to be
+   * called when the action returns successfully with some result.
+   * @param action The action to be executed.
+   * @param callback The callback to call when the result
+   */
+  public FacebookProxyTask(Action action, Callback callback) {
+    this.token = AccessToken.getCurrentAccessToken();
+    this.action = action;
+    if (this.action == null) {
+      throw new NullPointerException("The argument 'action' shouldn't be null.");
+    }
+    this.callback = callback;
+  }
+
+  /**
+   * Execute the asynchronous task.
+   */
+  public void execute() {
+    TheTask t = new TheTask();
+    t.execute(this.token);
+  }
+
   public interface Action {
     Object doAction(FacebookProxy proxy);
   }
 
   public interface Callback {
     void onSuccess(Object result);
-  }
-
-  AccessToken token;
-  Action action;
-  Callback callback;
-
-  public FacebookProxyTask(AccessToken token, Action action, Callback callback) {
-    this.token = token;
-    this.action = action;
-    this.callback = callback;
-  }
-
-  public void execute() {
-    TheTask t = new TheTask();
-    t.execute(this.token);
   }
 
   private class TheTask extends AsyncTask<AccessToken, Void, Object> {
@@ -42,7 +63,7 @@ public class FacebookProxyTask {
       }
       AccessToken token = params[0];
       FacebookProxy proxy = new FacebookProxy(token);
-      return FacebookProxyTask.this.action.doAction(proxy);
+      return action.doAction(proxy);
     }
 
     @Override
@@ -52,7 +73,9 @@ public class FacebookProxyTask {
 
     @Override
     protected void onPostExecute(Object result) {
-      FacebookProxyTask.this.callback.onSuccess(result);
+      if (callback != null) {
+        callback.onSuccess(result);
+      }
     }
   }
 }
