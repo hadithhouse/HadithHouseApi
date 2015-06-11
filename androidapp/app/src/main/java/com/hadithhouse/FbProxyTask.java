@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.facebook.AccessToken;
 
-public class FacebookProxyTask {
+public class FbProxyTask {
   AccessToken token;
   Action action;
   Callback callback;
@@ -13,7 +13,7 @@ public class FacebookProxyTask {
    * Creates a proxy that will asynchronously execute the given action.
    * @param action The action to be executed.
    */
-  public FacebookProxyTask(Action action) {
+  public FbProxyTask(Action action) {
     this(action, null);
   }
 
@@ -24,7 +24,7 @@ public class FacebookProxyTask {
    * @param action The action to be executed.
    * @param callback The callback to call when the result
    */
-  public FacebookProxyTask(Action action, Callback callback) {
+  public FbProxyTask(Action action, Callback callback) {
     this.token = AccessToken.getCurrentAccessToken();
     this.action = action;
     if (this.action == null) {
@@ -42,7 +42,7 @@ public class FacebookProxyTask {
   }
 
   public interface Action {
-    Object doAction(FacebookProxy proxy);
+    Object doAction(FbProxy proxy);
   }
 
   public interface Callback {
@@ -62,7 +62,7 @@ public class FacebookProxyTask {
         return null;
       }
       AccessToken token = params[0];
-      FacebookProxy proxy = new FacebookProxy(token);
+      FbProxy proxy = new FbProxy(token);
       return action.doAction(proxy);
     }
 

@@ -18,14 +18,14 @@ import java.io.IOException;
  * Notice that the communication is done synchronously, so it cannot be used
  * in the UI thread.
  */
-public class FacebookProxy {
+public class FbProxy {
   private AccessToken token;
 
   AccessToken getToken() {
     return token;
   }
 
-  public FacebookProxy(AccessToken token) {
+  public FbProxy(AccessToken token) {
     this.token = token;
   }
 

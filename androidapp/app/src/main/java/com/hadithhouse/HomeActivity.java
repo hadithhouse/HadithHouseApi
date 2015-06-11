@@ -32,9 +32,9 @@ public class HomeActivity extends ActionBarActivity {
     registerFbCallbackManager();
 
     // Make a request to check whether the token is valid or not.
-    new FacebookProxyTask(new FacebookProxyTask.Action() {
+    new FbProxyTask(new FbProxyTask.Action() {
       @Override
-      public Object doAction(FacebookProxy proxy) {
+      public Object doAction(FbProxy proxy) {
         if (!proxy.isValidToken()) {
           // User is not logged in, so we should the login fragment.
           Log.i("Facebook Login", "User IS NOT logged in; showing the login fragment.");

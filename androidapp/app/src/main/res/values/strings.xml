@@ -4,7 +4,13 @@
   <string name="facebook_app_id">836259389789641</string>
   <string name="title_activity_counting">CountingActivity</string>
 
-  <!-- Menu Items -->
+  <!-- Menu items -->
   <string name="settingsItem">Settings</string>
   <string name="logoutItem">Logout</string>
+
+  <!-- Home activity navigator items -->
+  <string-array name="navItems">
+    <item>Hadiths</item>
+    <item>Tags</item>
+  </string-array>
 </resources>
