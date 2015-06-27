@@ -29,43 +29,59 @@ def get_current_user(query_params):
 def get_auth_error_response():
   return HttpResponse("Couldn't authenticate user or user doesn't have permission for this action.", status=401)
 
-
-class FBAuthListCreateAPIView(generics.ListCreateAPIView):
-  def get(self, request, *args, **kwargs):
+def requires_read_perm(func):
+  """
+  When this decorator is applied to a function, it adds the necessary code
+  to ensure the user is logged in and has read permission.
+  :param func: The input function
+  :return: The decorated function
+  """
+  def wrapper(self, request, *args, **kwargs):
     user = get_current_user(request.query_params)
     if user is None or not user['has_read_perm']:
       return get_auth_error_response()
-    return super(FBAuthListCreateAPIView, self).get(self, request, *args, **kwargs)
+    return func(self, request, *args, **kwargs)
+  return wrapper
 
-  def post(self, request, *args, **kwargs):
+def requires_write_perm(func):
+  """
+  When this decorator is applied to a function, it adds the necessary code
+  to ensure the user is logged in and has write permission.
+  :param func: The input function
+  :return: The decorated function
+  """
+  def wrapper(self, request, *args, **kwargs):
     user = get_current_user(request.query_params)
     if user is None or not user['has_write_perm']:
       return get_auth_error_response()
+    return func(self, request, *args, **kwargs)
+  return wrapper
+
+
+class FBAuthListCreateAPIView(generics.ListCreateAPIView):
+  @requires_read_perm
+  def get(self, request, *args, **kwargs):
+    return super(FBAuthListCreateAPIView, self).get(self, request, *args, **kwargs)
+
+  @requires_write_perm
+  def post(self, request, *args, **kwargs):
     return super(FBAuthListCreateAPIView, self).post(self, request, *args, **kwargs)
 
 
 class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+  @requires_read_perm
   def get(self, request, *args, **kwargs):
-    user = get_current_user(request.query_params)
-    if user is None or not user['has_read_perm']:
-      return get_auth_error_response()
     return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(self, request, *args, **kwargs)
 
+  @requires_write_perm
   def put(self, request, *args, **kwargs):
-    user = get_current_user(request.query_params)
-    if user is None or not user['has_write_perm']:
-      return get_auth_error_response()
     return super(FBAuthRetrieveUpdateDestroyAPIView, self).put(self, request, *args, **kwargs)
 
+  @requires_write_perm
   def patch(self, request, *args, **kwargs):
-    user = get_current_user(request.query_params)
-    if user is None or not user['has_write_perm']:
-      return get_auth_error_response()
     return super(FBAuthRetrieveUpdateDestroyAPIView, self).patch(self, request, *args, **kwargs)
 
+  @requires_write_perm
   def delete(self, request, *args, **kwargs):
-    user = get_current_user(request.query_params)
-    if user is None or not user['has_delete_perm']:
-      return get_auth_error_response()
     return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(self, request, *args, **kwargs)
 
