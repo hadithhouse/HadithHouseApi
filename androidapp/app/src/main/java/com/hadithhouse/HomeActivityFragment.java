@@ -2,6 +2,8 @@ package com.hadithhouse;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -49,7 +50,7 @@ public class HomeActivityFragment extends Fragment {
 
     // Creates the adapter and add the navigator items.
     ArrayAdapter<String> adap = new ArrayAdapter<>(v.getContext(),
-        R.layout.fragment_home_activity_navitem);
+        R.layout.adapter_item);
     final String[] navItems = getResources().getStringArray(R.array.navItems);
     for (String item : navItems) {
       adap.add(item);
@@ -81,13 +82,14 @@ public class HomeActivityFragment extends Fragment {
    * @param item The position of the item which was clicked.
    */
   private void onNavItemClicked(NavItem item) {
+    final Context context = getView().getContext();
     switch (item) {
       case Hadiths:
         Toast.makeText(getView().getContext(), "Hadiths was clicked", Toast.LENGTH_LONG).show();
         break;
 
       case Tags:
-        Toast.makeText(getView().getContext(), "Tags was clicked", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(getActivity(), TagsActivity.class));
         break;
     }
   }

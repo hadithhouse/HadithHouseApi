@@ -1,8 +1,11 @@
 <resources>
   <string name="app_name">Hadith House</string>
-  <string name="hello_world">Hello world!</string>
   <string name="facebook_app_id">836259389789641</string>
   <string name="title_activity_counting">CountingActivity</string>
+
+  <!-- HadithHouse Server URLs -->
+  <string name="server_url_local">http://192.168.1.6/apis/</string>
+  <string name="server_url_dev">http://www.hadithhouse.net/apis/</string>
 
   <!-- Menu items -->
   <string name="settingsItem">Settings</string>
@@ -13,4 +16,8 @@
     <item>Hadiths</item>
     <item>Tags</item>
   </string-array>
+  <string name="title_activity_tags">TagsActivity</string>
+
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
 </resources>
