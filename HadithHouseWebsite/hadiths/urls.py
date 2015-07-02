@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^apis/persons/$', apiviews.PersonSetView.as_view()),
     url(r'^apis/persons/(?P<pk>[0-9]+)$', apiviews.PersonView.as_view()),
     url(r'^apis/hadithtags/$', apiviews.HadithTagSetView.as_view()),
-    url(r'^apis/hadithtags/(?P<pk>[0-9]+)$', apiviews.HadithTagView.as_view()),
+    url(r'^apis/hadithtags/(?P<pk>\w+)$', apiviews.HadithTagView.as_view()),
     url(r'^apis/hadiths/$', apiviews.HadithSetView.as_view()),
     url(r'^apis/hadiths/(?P<pk>[0-9]+)$', apiviews.HadithView.as_view())
 )
