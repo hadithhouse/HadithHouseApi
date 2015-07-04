@@ -23,7 +23,7 @@ def get_current_user(query_params):
           'gender': ret['gender'],
           'verified': ret['verified'],
           'has_read_perm': True,
-          'has_write_perm': False,
+          'has_write_perm': True,
           'has_delete_perm': False}
 
 def get_auth_error_response():
