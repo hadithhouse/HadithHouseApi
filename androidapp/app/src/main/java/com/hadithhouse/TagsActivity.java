@@ -1,27 +1,29 @@
 package com.hadithhouse;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.hadithhouse.ApiClient;
-import com.hadithhouse.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.hadithhouse.api.ApiClient;
+import com.hadithhouse.api.HadithTag;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class TagsActivity extends ActionBarActivity {
+  ApiClient apiClient = ApiClient.Factory.create();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +34,20 @@ public class TagsActivity extends ActionBarActivity {
   }
 
   private void loadTags() {
-    new ApiClient(this).getArray("hadithtags", new ApiClient.ArrayCallback() {
+    apiClient.getHadithTags(new Callback<List<HadithTag>>() {
       @Override
-      public void onSuccess(JSONArray result) {
+      public void success(List<HadithTag> hadithTags, Response response) {
         ArrayList<String> tags = new ArrayList<>();
-        for (int i = 0; i < result.length(); i++) {
-          try {
-            JSONObject obj = result.getJSONObject(i);
-            tags.add(obj.getString("name"));
-          } catch (JSONException e) {
-            e.printStackTrace();
-          }
+        for (HadithTag tag : hadithTags) {
+          tags.add(tag.name);
         }
-
         setTags(tags);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(TagsActivity.this,
+            "Couldn't load tags! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
       }
     });
   }
@@ -54,7 +56,7 @@ public class TagsActivity extends ActionBarActivity {
     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.adapter_item);
     adapter.addAll(tags);
 
-    ListView tagsListView = (ListView)findViewById(R.id.tagsListView);
+    ListView tagsListView = (ListView) findViewById(R.id.tagsListView);
     tagsListView.setAdapter(adapter);
     registerForContextMenu(tagsListView);
   }
@@ -66,13 +68,12 @@ public class TagsActivity extends ActionBarActivity {
     return true;
   }
 
-
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
     if (v.getId() == R.id.tagsListView) {
-      AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-      ListView tagsListView = (ListView)v;
-      String tag = (String)tagsListView.getAdapter().getItem(info.position);
+      AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+      ListView tagsListView = (ListView) v;
+      String tag = (String) tagsListView.getAdapter().getItem(info.position);
       menu.setHeaderTitle(tag);
       menu.add("Delete");
     }
