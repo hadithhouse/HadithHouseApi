@@ -9,7 +9,18 @@
     android:layout_height="wrap_content"
     android:id="@+id/tagsListView"
     android:layout_alignParentEnd="true"
-    android:layout_alignParentBottom="true"
     android:layout_alignParentTop="true"
-    android:layout_alignParentStart="true"/>
+    android:layout_alignParentStart="true"
+    android:layout_above="@+id/addTagButton"/>
+
+  <ImageButton
+    android:id="@+id/addTagButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+
+    android:contentDescription="Add a new tag"
+    android:src="@android:drawable/ic_input_add" />
 </RelativeLayout>

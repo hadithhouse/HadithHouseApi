@@ -6,4 +6,8 @@ public class HadithTag {
   public String name;
   public Date addedOn;
   public Date updatedOn;
+
+  @Override public String toString() {
+    return name;
+  }
 }

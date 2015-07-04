@@ -11,9 +11,17 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.Path;
 
 public interface ApiClient {
+  @DELETE("/hadithtags/{name}")
+  void deleteHadithTag(@Path("name") String name);
+
+  @DELETE("/hadithtags/{name}")
+  void deleteHadithTag(@Path("name") String name, Callback<Void> callback);
+
   /**
    * Retrieves the list of hadith tags from the server.
    *

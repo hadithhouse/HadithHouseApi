@@ -24,12 +24,14 @@ import retrofit.client.Response;
 
 public class TagsActivity extends ActionBarActivity {
   ApiClient apiClient = ApiClient.Factory.create();
+  ListView tagsListView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_tags);
 
+    tagsListView = (ListView) findViewById(R.id.tagsListView);
     loadTags();
   }
 
@@ -37,11 +39,7 @@ public class TagsActivity extends ActionBarActivity {
     apiClient.getHadithTags(new Callback<List<HadithTag>>() {
       @Override
       public void success(List<HadithTag> hadithTags, Response response) {
-        ArrayList<String> tags = new ArrayList<>();
-        for (HadithTag tag : hadithTags) {
-          tags.add(tag.name);
-        }
-        setTags(tags);
+        setTags(hadithTags);
       }
 
       @Override
@@ -52,11 +50,10 @@ public class TagsActivity extends ActionBarActivity {
     });
   }
 
-  private void setTags(ArrayList<String> tags) {
-    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.adapter_item);
+  private void setTags(List<HadithTag> tags) {
+    HadithTagsAdapter adapter = new HadithTagsAdapter(this);
     adapter.addAll(tags);
 
-    ListView tagsListView = (ListView) findViewById(R.id.tagsListView);
     tagsListView.setAdapter(adapter);
     registerForContextMenu(tagsListView);
   }
@@ -71,17 +68,38 @@ public class TagsActivity extends ActionBarActivity {
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
     if (v.getId() == R.id.tagsListView) {
-      AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-      ListView tagsListView = (ListView) v;
-      String tag = (String) tagsListView.getAdapter().getItem(info.position);
+      AdapterView.AdapterContextMenuInfo mi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+      String tag = (String) tagsListView.getAdapter().getItem(mi.position);
       menu.setHeaderTitle(tag);
-      menu.add("Delete");
+      // TODO: Add constants for the group and item IDs.
+      menu.add(0, 0, Menu.NONE, "Delete");
     }
   }
 
   @Override
   public boolean onContextItemSelected(MenuItem item) {
+    // TODO: Add constants for the group and item IDs.
+    if (item.getGroupId() == 0 && item.getItemId() == 0) {
+      onDeleteTag(item);
+    }
     return false;
+  }
+
+  private void onDeleteTag(MenuItem item) {
+    AdapterView.AdapterContextMenuInfo mi = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+    final HadithTag tag = (HadithTag) tagsListView.getAdapter().getItem(mi.position);
+    apiClient.deleteHadithTag(tag.name, new Callback<Void>() {
+      @Override
+      public void success(Void aVoid, Response response) {
+        HadithTagsAdapter adapter = (HadithTagsAdapter)tagsListView.getAdapter();
+        adapter.remove(tag);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(TagsActivity.this, "Couldn't delete tag.", Toast.LENGTH_LONG).show();
+      }
+    });
   }
 
   @Override
