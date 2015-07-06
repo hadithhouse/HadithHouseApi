@@ -68,7 +68,8 @@ public class HomeActivityFragment extends Fragment {
 
   private enum NavItem {
     Hadiths(0),
-    Tags(1);
+    Tags(1),
+    Persons(2);
 
     private final int value;
 
@@ -90,6 +91,10 @@ public class HomeActivityFragment extends Fragment {
 
       case Tags:
         startActivity(new Intent(getActivity(), TagsActivity.class));
+        break;
+
+      case Persons:
+        startActivity(new Intent(getActivity(), PersonsActivity.class));
         break;
     }
   }

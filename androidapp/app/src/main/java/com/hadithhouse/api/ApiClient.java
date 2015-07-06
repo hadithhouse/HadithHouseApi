@@ -4,9 +4,7 @@ import com.facebook.AccessToken;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.internal.bind.DateTypeAdapter;
 
-import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
@@ -20,14 +18,79 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 
 public interface ApiClient {
+  /**
+   * Posts a new person.
+   *
+   * @param person The person object to be posted.
+   * @return The posted person object retrieved from the server.
+   */
+  @POST("/persons/")
+  Person postPerson(@Body Person person);
+
+  /**
+   * Posts a new person.
+   *
+   * @param person The person object to be posted.
+   * @return The posted person object retrieved from the server.
+   */
+  @POST("/persons/")
+  void postPerson(@Body Person person, Callback<Person> callback);
+
+  /**
+   * Deletes the person with the given ID.
+   *
+   * @param id The ID of the person to delete.
+   */
+  @DELETE("/persons/{id}")
+  void deleteHadithTag(@Path("id") int id);
+
+  /**
+   * Asynchronously deletes the person with the given ID.
+   *
+   * @param id       The ID of the person to delete.
+   * @param callback The callback to execute when the call finishes.
+   */
+  @DELETE("/persons/{id}")
+  void deletePerson(@Path("id") int id, Callback<Void> callback);
+
+  /**
+   * Retrieves the list of persons from the server.
+   *
+   * @return
+   */
+  @GET("/persons")
+  List<Person> getPersons();
+
+  /**
+   * Asynchronously retrieves the list of persons from the server.
+   *
+   * @param callback The callback to execute when the call finishes.
+   */
+  @GET("/persons")
+  void getPersons(Callback<List<Person>> callback);
+
+
+  /**
+   * Posts a new hadith tag.
+   *
+   * @param tag The tag object to be posted.
+   * @return The posted tag object retrieved from the server.
+   */
   @POST("/hadithtags/")
   HadithTag postHadithTag(@Body HadithTag tag);
 
+  /**
+   * Posts a new hadith tag.
+   *
+   * @param tag      The tag object to be posted.
+   * @param callback A callback to be executed when the call finishes.
+   */
   @POST("/hadithtags/")
   void postHadithTag(@Body HadithTag tag, Callback<HadithTag> callback);
 
   /**
    * Deletes the given tag.
+   *
    * @param name The tag to delete.
    */
   @DELETE("/hadithtags/{name}")
@@ -35,7 +98,8 @@ public interface ApiClient {
 
   /**
    * Asynchronously deletes the given tag.
-   * @param name The tag to delete.
+   *
+   * @param name     The tag to delete.
    * @param callback The callback to execute when the call finishes.
    */
   @DELETE("/hadithtags/{name}")
@@ -56,6 +120,7 @@ public interface ApiClient {
    */
   @GET("/hadithtags")
   void getHadithTags(Callback<List<HadithTag>> callback);
+
 
   public static class Factory {
     private final static String getServerUrl() {

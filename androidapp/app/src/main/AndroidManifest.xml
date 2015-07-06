@@ -45,6 +45,10 @@
             android:name=".TagsActivity"
             android:label="@string/title_activity_tags" >
         </activity>
+        <activity
+            android:name=".PersonsActivity"
+            android:label="@string/title_activity_persons" >
+        </activity>
     </application>
 
 </manifest>

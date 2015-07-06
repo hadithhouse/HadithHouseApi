@@ -15,9 +15,11 @@
   <string-array name="navItems">
     <item>Hadiths</item>
     <item>Tags</item>
+    <item>Persons</item>
   </string-array>
   <string name="title_activity_tags">TagsActivity</string>
 
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
+  <string name="title_activity_persons">PersonsActivity</string>
 </resources>
