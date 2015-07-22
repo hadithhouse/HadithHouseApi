@@ -1,10 +1,8 @@
 package com.hadithhouse;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -53,7 +50,7 @@ public class TagsActivity extends ActionBarActivity {
   private void showAddTagDialog() {
     LayoutInflater inflater = getLayoutInflater();
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    final View dlgView = inflater.inflate(R.layout.dialog_add_tag, null);
+    final View dlgView = inflater.inflate(R.layout.dialog_tag, null);
     builder.setTitle("Add Tag");
     builder.setView(dlgView);
     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

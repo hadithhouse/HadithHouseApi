@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+  <EditText
+    android:id="@+id/titleEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:hint="Title"
+    android:inputType="textAutoComplete"/>
+
+  <EditText
+    android:id="@+id/displayNameEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_below="@+id/titleEditText"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:hint="Display Name"
+    android:inputType="textAutoComplete"/>
+
+  <EditText
+    android:id="@+id/fullNameEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_below="@+id/displayNameEditText"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:hint="Full Name"
+    android:inputType="textAutoComplete"/>
+
+  <EditText
+    android:id="@+id/briefDescEditText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_below="@+id/fullNameEditText"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:hint="Brief Description"
+    android:inputType="textAutoComplete"/>
+
+  <!-- Birth Date Fields -->
+  <TextView
+    android:id="@+id/birthDateTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@+id/birthYearEditText"
+    android:layout_alignStart="@+id/briefDescEditText"
+    android:text="Birth Date"
+    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+  <EditText
+    android:id="@+id/birthYearEditText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/briefDescEditText"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_toEndOf="@+id/birthDateTextView"
+    android:hint="YYYY"
+    android:inputType="number"/>
+
+  <EditText
+    android:id="@+id/birthMonthEditText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/briefDescEditText"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_toEndOf="@+id/birthYearEditText"
+    android:hint="MM"
+    android:inputType="number"/>
+
+  <EditText
+    android:id="@+id/birthDayEditText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/briefDescEditText"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_toEndOf="@+id/birthMonthEditText"
+    android:hint="DD"
+    android:inputType="number"/>
+
+  <!-- Death Date Fields -->
+  <TextView
+    android:id="@+id/deathDateTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@+id/deathYearEditText"
+    android:layout_alignStart="@+id/birthDateTextView"
+    android:text="Death Date"
+    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+  <EditText
+    android:id="@+id/deathYearEditText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/birthDateTextView"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_toEndOf="@+id/deathDateTextView"
+    android:hint="YYYY"
+    android:inputType="number"/>
+
+  <EditText
+    android:id="@+id/deathMonthEditText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/birthDateTextView"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_toEndOf="@+id/deathYearEditText"
+    android:hint="MM"
+    android:inputType="number"/>
+
+  <EditText
+    android:id="@+id/deathDayEditText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/birthDateTextView"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_toEndOf="@+id/deathMonthEditText"
+    android:hint="DD"
+    android:inputType="number"/>
+
+  <Button
+    android:id="@+id/saveTagButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/deathDateTextView"
+    android:text="Save"/>
+
+  <Button
+    android:id="@+id/cancelTagButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/deathDateTextView"
+    android:layout_toEndOf="@+id/saveTagButton"
+    android:text="Cancel"/>
+
+  <Button
+    android:id="@+id/deleteTagButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/deathDateTextView"
+    android:layout_toEndOf="@+id/cancelTagButton"
+    android:text="Delete"/>
+
+</RelativeLayout>

@@ -15,6 +15,7 @@ import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 
 public interface ApiClient {
@@ -35,6 +36,15 @@ public interface ApiClient {
    */
   @POST("/persons/")
   void postPerson(@Body Person person, Callback<Person> callback);
+
+  /**
+   * Posts a new person.
+   *
+   * @param person The person object to be posted.
+   * @return The posted person object retrieved from the server.
+   */
+  @PUT("/persons/{id}")
+  void putPerson(@Path("id") int id, @Body Person person, Callback<Person> callback);
 
   /**
    * Deletes the person with the given ID.
@@ -122,7 +132,7 @@ public interface ApiClient {
   void getHadithTags(Callback<List<HadithTag>> callback);
 
 
-  public static class Factory {
+  class Factory {
     private final static String getServerUrl() {
       return "http://192.168.1.6/apis";
     }
