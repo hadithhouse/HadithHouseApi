@@ -32,6 +32,10 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
   protected abstract int getLayoutId();
   protected abstract int getListViewId();
   protected abstract int getMenuId();
+  protected abstract int getDialogId();
+  protected abstract int getSaveButtonId();
+  protected abstract int getCancelButtonId();
+  protected abstract int getDeleteButtonId();
   protected abstract T newObject();
 
 
@@ -59,7 +63,8 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       }
     });
 
-    objectDialog = new GenericHadithObjectDialog<T>(this, getBindingIndo()) {
+    objectDialog = new GenericHadithObjectDialog<T>(this, getBindingIndo(), getDialogId(),
+        getSaveButtonId(), getCancelButtonId(), getDeleteButtonId()) {
 
       @Override
       public void addObject(T object) {
@@ -90,8 +95,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       // TODO: Implement this.
       throw new UnsupportedOperationException();
     } else if (type == HadithTag.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.getHadithTags(new Callback<List<HadithTag>>() {
+        @Override
+        public void success(List<HadithTag> tags, Response response) {
+          setObjects((List<T>) tags);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this,
+              "Couldn't load tags! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == Person.class) {
       apiClient.getPersons(new Callback<List<Person>>() {
         @Override
@@ -114,8 +129,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       // TODO: Implement this.
       throw new UnsupportedOperationException();
     } else if (type == HadithTag.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.postHadithTag((HadithTag)object, new Callback<HadithTag>() {
+        @Override
+        public void success(HadithTag tag, Response response) {
+          onObjectAdded((T) tag);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't add tag. Error was: " + error.toString(),
+              Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == Person.class) {
       apiClient.postPerson((Person)object, new Callback<Person>() {
         @Override
@@ -138,8 +163,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       // TODO: Implement this.
       throw new UnsupportedOperationException();
     } else if (type == HadithTag.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.putHadithTag(((HadithTag)object).name, (HadithTag)object, new Callback<HadithTag>() {
+        @Override
+        public void success(HadithTag person, Response response) {
+          onObjectUpdated((T) person);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save person. Error was: " + error.toString(),
+              Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == Person.class) {
       apiClient.putPerson(((Person)object).id, (Person)object, new Callback<Person>() {
         @Override
@@ -162,8 +197,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       // TODO: Implement this.
       throw new UnsupportedOperationException();
     } else if (type == HadithTag.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.deleteHadithTag(((HadithTag)object).name, new Callback<Void>() {
+        @Override
+        public void success(Void aVoid, Response response) {
+          onObjectDeleted(object);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't delete tag. Error was: " + error.toString(),
+              Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == Person.class) {
       apiClient.deletePerson(((Person)object).id, new Callback<Void>() {
         @Override

@@ -135,26 +135,29 @@
     android:inputType="number"/>
 
   <Button
-    android:id="@+id/saveTagButton"
+    android:id="@+id/personDlgSaveButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@+id/deathDateTextView"
+    android:tag="SaveButton"
     android:text="Save"/>
 
   <Button
-    android:id="@+id/cancelTagButton"
+    android:id="@+id/personDlgCancelButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@+id/deathDateTextView"
-    android:layout_toEndOf="@+id/saveTagButton"
+    android:layout_toEndOf="@+id/personDlgSaveButton"
+    android:tag="CancelButton"
     android:text="Cancel"/>
 
   <Button
-    android:id="@+id/deleteTagButton"
+    android:id="@+id/personDlgDeleteButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@+id/deathDateTextView"
-    android:layout_toEndOf="@+id/cancelTagButton"
+    android:layout_toEndOf="@+id/personDlgCancelButton"
+    android:tag="DeleteButton"
     android:text="Delete"/>
 
 </RelativeLayout>

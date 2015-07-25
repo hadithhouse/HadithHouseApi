@@ -10,10 +10,21 @@ public abstract class GenericHadithObjectDialog<T> {
   ViewObjectBinder<T> binder;
   private Activity activity;
   private ViewObjectBinder.BindingInfo bindingInfo;
+  private int dialogId;
+  // TODO: Check if it is possible to retrieve views by name so that we don't have to pass those.
+  private int saveButtonId;
+  private int cancelButtonId;
+  private int deleteButtonId;
 
-  public GenericHadithObjectDialog(Activity activity, ViewObjectBinder.BindingInfo bindingInfo) {
+  public GenericHadithObjectDialog(Activity activity, ViewObjectBinder.BindingInfo bindingInfo,
+                                   int dialogId, int saveButtonId, int cancelButtonId,
+                                   int deleteButtonId) {
     this.activity = activity;
     this.bindingInfo = bindingInfo;
+    this.dialogId = dialogId;
+    this.saveButtonId = saveButtonId;
+    this.cancelButtonId = cancelButtonId;
+    this.deleteButtonId = deleteButtonId;
   }
 
   public abstract void addObject(T object);
@@ -24,7 +35,7 @@ public abstract class GenericHadithObjectDialog<T> {
 
   public void showAdd(final T object) {
     LayoutInflater inflater = activity.getLayoutInflater();
-    final View dlgView = inflater.inflate(R.layout.dialog_person, null);
+    final View dlgView = inflater.inflate(dialogId, null);
 
     final Dialog dlg = new Dialog(activity);
     dlg.setContentView(dlgView);
@@ -34,7 +45,7 @@ public abstract class GenericHadithObjectDialog<T> {
     binder = new ViewObjectBinder<T>(dlgView, object, bindingInfo);
     binder.objectToView();
 
-    Button saveButton = (Button) dlgView.findViewById(R.id.saveTagButton);
+    Button saveButton = (Button) dlgView.findViewById(saveButtonId);
     saveButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -44,7 +55,7 @@ public abstract class GenericHadithObjectDialog<T> {
       }
     });
 
-    Button cancelButton = (Button) dlgView.findViewById(R.id.cancelTagButton);
+    Button cancelButton = (Button) dlgView.findViewById(cancelButtonId);
     cancelButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -52,7 +63,7 @@ public abstract class GenericHadithObjectDialog<T> {
       }
     });
 
-    Button deleteButton = (Button) dlgView.findViewById(R.id.deleteTagButton);
+    Button deleteButton = (Button) dlgView.findViewById(deleteButtonId);
     deleteButton.setVisibility(View.INVISIBLE);
 
     dlg.show();
@@ -60,7 +71,7 @@ public abstract class GenericHadithObjectDialog<T> {
 
   public void showEdit(final T object) {
     LayoutInflater inflater = activity.getLayoutInflater();
-    final View dlgView = inflater.inflate(R.layout.dialog_person, null);
+    final View dlgView = inflater.inflate(dialogId, null);
 
     final Dialog dlg = new Dialog(activity);
     dlg.setContentView(dlgView);
@@ -71,7 +82,7 @@ public abstract class GenericHadithObjectDialog<T> {
     binder = new ViewObjectBinder<>(dlgView, object, bindingInfo);
     binder.objectToView();
 
-    Button saveButton = (Button) dlgView.findViewById(R.id.saveTagButton);
+    Button saveButton = (Button) dlgView.findViewById(saveButtonId);
     saveButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -81,7 +92,7 @@ public abstract class GenericHadithObjectDialog<T> {
       }
     });
 
-    Button cancelButton = (Button) dlgView.findViewById(R.id.cancelTagButton);
+    Button cancelButton = (Button) dlgView.findViewById(cancelButtonId);
     cancelButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -89,7 +100,7 @@ public abstract class GenericHadithObjectDialog<T> {
       }
     });
 
-    Button deleteButton = (Button) dlgView.findViewById(R.id.deleteTagButton);
+    Button deleteButton = (Button) dlgView.findViewById(deleteButtonId);
     deleteButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {

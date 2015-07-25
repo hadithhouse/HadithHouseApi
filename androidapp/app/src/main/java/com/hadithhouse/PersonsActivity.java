@@ -42,6 +42,26 @@ public class PersonsActivity extends GenericHadithObjectActivity<Person> {
   }
 
   @Override
+  protected int getDialogId() {
+    return R.layout.dialog_person;
+  }
+
+  @Override
+  protected int getSaveButtonId() {
+    return R.id.personDlgSaveButton;
+  }
+
+  @Override
+  protected int getCancelButtonId() {
+    return R.id.personDlgCancelButton;
+  }
+
+  @Override
+  protected int getDeleteButtonId() {
+    return R.id.personDlgDeleteButton;
+  }
+
+  @Override
   protected Person newObject() {
     return new Person();
   }
