@@ -6,15 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
-import com.hadithhouse.api.ApiClient;
-
-public abstract class ObjectDialog<T> {
-  ApiClient apiClient = ApiClient.Factory.create();
+public abstract class GenericHadithObjectDialog<T> {
   ViewObjectBinder<T> binder;
   private Activity activity;
   private ViewObjectBinder.BindingInfo bindingInfo;
 
-  public ObjectDialog(Activity activity, ViewObjectBinder.BindingInfo bindingInfo) {
+  public GenericHadithObjectDialog(Activity activity, ViewObjectBinder.BindingInfo bindingInfo) {
     this.activity = activity;
     this.bindingInfo = bindingInfo;
   }
@@ -103,6 +100,4 @@ public abstract class ObjectDialog<T> {
 
     dlg.show();
   }
-
-
 }

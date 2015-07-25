@@ -5,8 +5,8 @@ import android.widget.ArrayAdapter;
 
 import com.hadithhouse.api.Person;
 
-public class PersonsAdapter extends ArrayAdapter<Person> {
-  public PersonsAdapter(Context context) {
+public class GenericHadithObjectAdapter<T> extends ArrayAdapter<T> {
+  public GenericHadithObjectAdapter(Context context) {
     super(context, R.layout.adapter_item);
   }
 }
