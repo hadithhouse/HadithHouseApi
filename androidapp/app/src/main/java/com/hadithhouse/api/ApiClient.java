@@ -149,6 +149,7 @@ public interface ApiClient {
       // conventions this has to be converted to lowerCaseWithUnderscores. This Gson configuration
       // dictates that.
       Gson gson = new GsonBuilder()
+          .serializeNulls()
           .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
           .create();
       // RL and use the Gson object above.

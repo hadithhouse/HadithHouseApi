@@ -28,7 +28,20 @@ public class PersonsActivity extends ActionBarActivity {
   ApiClient apiClient = ApiClient.Factory.create();
   ListView personsListView;
   ImageButton addPersonButton;
-  PersonDialog personDialog;
+  ObjectDialog personDialog;
+  private ViewObjectBinder.BindingInfo bindingInfo = new ViewObjectBinder.BindingInfo(
+      new ViewObjectBinder.BindingPoint("title", R.id.titleEditText),
+      new ViewObjectBinder.BindingPoint("displayName", R.id.displayNameEditText),
+      new ViewObjectBinder.BindingPoint("fullName", R.id.fullNameEditText),
+      new ViewObjectBinder.BindingPoint("briefDesc", R.id.briefDescEditText),
+      new ViewObjectBinder.BindingPoint("birthYear", R.id.birthYearEditText),
+      new ViewObjectBinder.BindingPoint("birthMonth", R.id.birthMonthEditText),
+      new ViewObjectBinder.BindingPoint("birthDay", R.id.birthDayEditText),
+      new ViewObjectBinder.BindingPoint("deathYear", R.id.deathYearEditText),
+      new ViewObjectBinder.BindingPoint("deathMonth", R.id.deathMonthEditText),
+      new ViewObjectBinder.BindingPoint("deathDay", R.id.deathDayEditText)
+  );
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +63,28 @@ public class PersonsActivity extends ActionBarActivity {
     addPersonButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        personDialog.showAdd();
+        personDialog.showAdd(new Person());
       }
     });
 
-    personDialog = new PersonDialog(this);
+    //personDialog = new ObjectDialog<Person>(this, bindingInfo);
+    personDialog = new ObjectDialog<Person>(this, bindingInfo) {
+
+      @Override
+      public void addObject(Person object) {
+        addPerson(object);
+      }
+
+      @Override
+      public void saveObject(Person object) {
+        savePerson(object);
+      }
+
+      @Override
+      public void deleteObject(Person object) {
+        deletePerson(object);
+      }
+    };
   }
 
   private void loadPersons() {
@@ -68,6 +98,51 @@ public class PersonsActivity extends ActionBarActivity {
       public void failure(RetrofitError error) {
         Toast.makeText(PersonsActivity.this,
             "Couldn't load persons! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  private void addPerson(Person person) {
+    apiClient.postPerson(person, new Callback<Person>() {
+      @Override
+      public void success(Person person, Response response) {
+        onPersonAdded(person);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this, "Couldn't add person. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  private void savePerson(Person person) {
+    apiClient.putPerson(person.id, person, new Callback<Person>() {
+      @Override
+      public void success(Person person, Response response) {
+        onPersonUpdated(person);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this, "Couldn't save person. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  private void deletePerson(final Person person) {
+    apiClient.deletePerson(person.id, new Callback<Void>() {
+      @Override
+      public void success(Void aVoid, Response response) {
+        onPersonDeleted(person);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this, "Couldn't delete person. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
       }
     });
   }
