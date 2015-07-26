@@ -67,21 +67,21 @@ public interface ApiClient {
   /**
    * Updates an existing tag.
    *
-   * @param name The name of the tag to update.
+   * @param id The ID of the tag to update.
    * @param tag The updated tag object.
    * @return The updated tag object retrieved from the server.
    */
-  @PUT("/persons/{name}")
-  void putHadithTag(@Path("name") String name, @Body HadithTag tag, Callback<HadithTag> callback);
+  @PUT("/hadithtags/{id}")
+  void putHadithTag(@Path("id") int id, @Body HadithTag tag, Callback<HadithTag> callback);
 
   /**
    * Asynchronously deletes the given tag.
    *
-   * @param name     The tag to delete.
+   * @param id     The ID of the tag to delete.
    * @param callback The callback to execute when the call finishes.
    */
-  @DELETE("/hadithtags/{name}")
-  void deleteHadithTag(@Path("name") String name, Callback<Void> callback);
+  @DELETE("/hadithtags/{id}")
+  void deleteHadithTag(@Path("id") int id, Callback<Void> callback);
 
   /**
    * Asynchronously retrieves the list of hadith tags from the server.

@@ -163,7 +163,7 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       // TODO: Implement this.
       throw new UnsupportedOperationException();
     } else if (type == HadithTag.class) {
-      apiClient.putHadithTag(((HadithTag)object).name, (HadithTag)object, new Callback<HadithTag>() {
+      apiClient.putHadithTag(((HadithTag)object).id, (HadithTag)object, new Callback<HadithTag>() {
         @Override
         public void success(HadithTag person, Response response) {
           onObjectUpdated((T) person);
@@ -197,7 +197,7 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
       // TODO: Implement this.
       throw new UnsupportedOperationException();
     } else if (type == HadithTag.class) {
-      apiClient.deleteHadithTag(((HadithTag)object).name, new Callback<Void>() {
+      apiClient.deleteHadithTag(((HadithTag)object).id, new Callback<Void>() {
         @Override
         public void success(Void aVoid, Response response) {
           onObjectDeleted(object);
