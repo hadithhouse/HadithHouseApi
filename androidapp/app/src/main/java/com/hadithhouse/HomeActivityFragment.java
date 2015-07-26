@@ -86,7 +86,7 @@ public class HomeActivityFragment extends Fragment {
     final Context context = getView().getContext();
     switch (item) {
       case Hadiths:
-        Toast.makeText(getView().getContext(), "Hadiths was clicked", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(getActivity(), HadithsActivity.class));
         break;
 
       case Tags:

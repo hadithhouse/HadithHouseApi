@@ -46,8 +46,12 @@
             android:label="@string/title_activity_tags" >
         </activity>
         <activity
-            android:name=".PersonsActivity"
-            android:label="@string/title_activity_persons" >
+          android:name=".PersonsActivity"
+          android:label="@string/title_activity_persons" >
+        </activity>
+        <activity
+            android:name=".HadithsActivity"
+            android:label="@string/title_activity_hadiths" >
         </activity>
     </application>
 

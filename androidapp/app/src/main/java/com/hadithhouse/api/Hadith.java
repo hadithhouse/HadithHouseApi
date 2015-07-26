@@ -9,4 +9,12 @@ public class Hadith {
   public String[] tags;
   public Date addedOn;
   public Date updatedOn;
+
+  @Override public String toString() {
+    if (text.length() > 30) {
+      return text.substring(0, 30) + "...";
+    } else {
+      return text;
+    }
+  }
 }

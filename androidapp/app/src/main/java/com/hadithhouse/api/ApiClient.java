@@ -91,6 +91,42 @@ public interface ApiClient {
   @GET("/hadithtags")
   void getHadithTags(Callback<List<HadithTag>> callback);
 
+  /**
+   * Posts a new hadith.
+   *
+   * @param hadith The hadith object to be posted.
+   * @param callback A callback to be executed when the call finishes.
+   */
+  @POST("/hadiths/")
+  void postHadith(@Body Hadith hadith, Callback<Hadith> callback);
+
+  /**
+   * Updates an existing hadith.
+   *
+   * @param id The ID of the hadith to update.
+   * @param hadith The updated hadith object.
+   * @return The updated hadith object retrieved from the server.
+   */
+  @PUT("/hadiths/{id}")
+  void putHadith(@Path("id") int id, @Body Hadith hadith, Callback<Hadith> callback);
+
+  /**
+   * Asynchronously deletes the given hadith.
+   *
+   * @paraidme     The ID of the hadith to delete.
+   * @param callback The callback to execute when the call finishes.
+   */
+  @DELETE("/hadiths/{id}")
+  void deleteHadith(@Path("id") int id, Callback<Void> callback);
+
+  /**
+   * Asynchronously retrieves the list of hadiths from the server.
+   *
+   * @param callback The callback to execute when the call finishes.
+   */
+  @GET("/hadiths")
+  void getHadiths(Callback<List<Hadith>> callback);
+
 
   class Factory {
     private final static String getServerUrl() {

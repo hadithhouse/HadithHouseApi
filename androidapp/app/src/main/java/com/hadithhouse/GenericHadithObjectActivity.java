@@ -92,8 +92,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
   private void loadObjects() {
     Class<T> type = getGenericType();
     if (type == Hadith.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.getHadiths(new Callback<List<Hadith>>() {
+        @Override
+        public void success(List<Hadith> hadiths, Response response) {
+          setObjects((List<T>) hadiths);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this,
+              "Couldn't load hadiths! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == HadithTag.class) {
       apiClient.getHadithTags(new Callback<List<HadithTag>>() {
         @Override
@@ -126,8 +136,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
   private void addObject(T object) {
     Class<T> type = getGenericType();
     if (type == Hadith.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.postHadith((Hadith)object, new Callback<Hadith>() {
+        @Override
+        public void success(Hadith hadith, Response response) {
+          onObjectAdded((T) hadith);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't add hadith. Error was: " + error.toString(),
+              Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == HadithTag.class) {
       apiClient.postHadithTag((HadithTag)object, new Callback<HadithTag>() {
         @Override
@@ -160,18 +180,28 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
   private void saveObject(T object) {
     Class<T> type = getGenericType();
     if (type == Hadith.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
-    } else if (type == HadithTag.class) {
-      apiClient.putHadithTag(((HadithTag)object).id, (HadithTag)object, new Callback<HadithTag>() {
+      apiClient.putHadith(((Hadith)object).id, (Hadith)object, new Callback<Hadith>() {
         @Override
-        public void success(HadithTag person, Response response) {
+        public void success(Hadith person, Response response) {
           onObjectUpdated((T) person);
         }
 
         @Override
         public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save person. Error was: " + error.toString(),
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save hadith. Error was: " + error.toString(),
+              Toast.LENGTH_LONG).show();
+        }
+      });
+    } else if (type == HadithTag.class) {
+      apiClient.putHadithTag(((HadithTag)object).id, (HadithTag)object, new Callback<HadithTag>() {
+        @Override
+        public void success(HadithTag tag, Response response) {
+          onObjectUpdated((T) tag);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save tag. Error was: " + error.toString(),
               Toast.LENGTH_LONG).show();
         }
       });
@@ -194,8 +224,18 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
   private void deleteObject(final T object) {
     Class<T> type = getGenericType();
     if (type == Hadith.class) {
-      // TODO: Implement this.
-      throw new UnsupportedOperationException();
+      apiClient.deleteHadith(((Hadith)object).id, new Callback<Void>() {
+        @Override
+        public void success(Void aVoid, Response response) {
+          onObjectDeleted(object);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't delete hadith. Error was: " + error.toString(),
+              Toast.LENGTH_LONG).show();
+        }
+      });
     } else if (type == HadithTag.class) {
       apiClient.deleteHadithTag(((HadithTag)object).id, new Callback<Void>() {
         @Override
