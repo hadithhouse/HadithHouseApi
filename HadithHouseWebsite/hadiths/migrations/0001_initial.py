@@ -45,7 +45,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='HadithTag',
             fields=[
-                ('name', models.CharField(max_length=32, serialize=False, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=32)),
                 ('added_on', models.DateTimeField(auto_now_add=True)),
                 ('updated_on', models.DateTimeField(auto_now=True, auto_now_add=True)),
             ],

@@ -24,9 +24,7 @@ def add_imam_sadiq(apps, schema_editor):
     display_name=u'الإمام الصادق (عليه السلام)',
     full_name=u"جعفر بن محمد الصادق",
     ref=u'imam_alsadiq',
-    brief_desc=u'إمام من أئمة المسلمين وسادس أئمة الشيعة الاثنى عشرية',
-    birth_year=570,
-    death_year=632)
+    brief_desc=u'إمام من أئمة المسلمين وسادس أئمة الشيعة الاثنى عشرية')
 
 
 def add_persons_of_first_hadith(apps, schema_editor):

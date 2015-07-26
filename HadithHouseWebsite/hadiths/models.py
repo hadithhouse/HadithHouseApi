@@ -25,7 +25,7 @@ class Person(models.Model):
 
 class HadithTag(models.Model):
   """A model describing a tag for hadiths."""
-  name = models.CharField(max_length=32, primary_key=True)
+  name = models.CharField(max_length=32, unique=True)
   added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
 
