@@ -1,5 +1,6 @@
 package com.hadithhouse;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -83,6 +84,12 @@ public class ViewObjectBinder<T> {
         }
       } else if (fieldType == String.class) { // String
         return (String) field.get(object);
+      } else if (fieldType == String[].class) { // String
+        String[] elems = (String[])field.get(object);
+        if (elems == null) {
+          return "";
+        }
+        return TextUtils.join("-", elems);
       } else {
         throw new UnsupportedOperationException("Unsupported field type: " + fieldType.getName());
       }
@@ -114,6 +121,16 @@ public class ViewObjectBinder<T> {
         }
       } else if (fieldType == String.class) { // String
         field.set(object, value);
+      } else if (fieldType == String[].class) { // String[]
+        String[] elems = TextUtils.split(value, "-");
+        ArrayList<String> trimmedElems = new ArrayList<>();
+        for (int i = 0; i < elems.length; i++) {
+          String trimmed = elems[i].trim();
+          if (trimmed.isEmpty())
+            continue;
+          trimmedElems.add(trimmed);
+        }
+        field.set(object, trimmedElems.toArray(new String[0]));
       } else {
         throw new UnsupportedOperationException("Unsupported field type: " + fieldType.getName());
       }

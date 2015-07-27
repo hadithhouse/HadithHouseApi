@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -89,198 +90,27 @@ public abstract class GenericHadithObjectActivity<T> extends ActionBarActivity {
     return (Class<T>) parameterizedType.getActualTypeArguments()[0];
   }
 
-  private void loadObjects() {
-    Class<T> type = getGenericType();
-    if (type == Hadith.class) {
-      apiClient.getHadiths(new Callback<List<Hadith>>() {
-        @Override
-        public void success(List<Hadith> hadiths, Response response) {
-          setObjects((List<T>) hadiths);
-        }
+  protected abstract void loadObjects();
+  protected abstract void addObject(T object);
+  protected abstract void saveObject(T object);
+  protected abstract void deleteObject(final T object);
 
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this,
-              "Couldn't load hadiths! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == HadithTag.class) {
-      apiClient.getHadithTags(new Callback<List<HadithTag>>() {
-        @Override
-        public void success(List<HadithTag> tags, Response response) {
-          setObjects((List<T>) tags);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this,
-              "Couldn't load tags! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == Person.class) {
-      apiClient.getPersons(new Callback<List<Person>>() {
-        @Override
-        public void success(List<Person> persons, Response response) {
-          setObjects((List<T>) persons);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this,
-              "Couldn't load persons! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
-        }
-      });
-    }
-  }
-
-  private void addObject(T object) {
-    Class<T> type = getGenericType();
-    if (type == Hadith.class) {
-      apiClient.postHadith((Hadith)object, new Callback<Hadith>() {
-        @Override
-        public void success(Hadith hadith, Response response) {
-          onObjectAdded((T) hadith);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't add hadith. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == HadithTag.class) {
-      apiClient.postHadithTag((HadithTag)object, new Callback<HadithTag>() {
-        @Override
-        public void success(HadithTag tag, Response response) {
-          onObjectAdded((T) tag);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't add tag. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == Person.class) {
-      apiClient.postPerson((Person)object, new Callback<Person>() {
-        @Override
-        public void success(Person person, Response response) {
-          onObjectAdded((T) person);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't add person. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    }
-  }
-
-  private void saveObject(T object) {
-    Class<T> type = getGenericType();
-    if (type == Hadith.class) {
-      apiClient.putHadith(((Hadith)object).id, (Hadith)object, new Callback<Hadith>() {
-        @Override
-        public void success(Hadith person, Response response) {
-          onObjectUpdated((T) person);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save hadith. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == HadithTag.class) {
-      apiClient.putHadithTag(((HadithTag)object).id, (HadithTag)object, new Callback<HadithTag>() {
-        @Override
-        public void success(HadithTag tag, Response response) {
-          onObjectUpdated((T) tag);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save tag. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == Person.class) {
-      apiClient.putPerson(((Person)object).id, (Person)object, new Callback<Person>() {
-        @Override
-        public void success(Person person, Response response) {
-          onObjectUpdated((T) person);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't save person. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    }
-  }
-
-  private void deleteObject(final T object) {
-    Class<T> type = getGenericType();
-    if (type == Hadith.class) {
-      apiClient.deleteHadith(((Hadith)object).id, new Callback<Void>() {
-        @Override
-        public void success(Void aVoid, Response response) {
-          onObjectDeleted(object);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't delete hadith. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == HadithTag.class) {
-      apiClient.deleteHadithTag(((HadithTag)object).id, new Callback<Void>() {
-        @Override
-        public void success(Void aVoid, Response response) {
-          onObjectDeleted(object);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't delete tag. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    } else if (type == Person.class) {
-      apiClient.deletePerson(((Person)object).id, new Callback<Void>() {
-        @Override
-        public void success(Void aVoid, Response response) {
-          onObjectDeleted(object);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-          Toast.makeText(GenericHadithObjectActivity.this, "Couldn't delete person. Error was: " + error.toString(),
-              Toast.LENGTH_LONG).show();
-        }
-      });
-    }
-  }
-
-  public void onObjectAdded(T object) {
+  protected void onObjectAdded(T object) {
     GenericHadithObjectAdapter<T> adapter = (GenericHadithObjectAdapter<T>) objectsListView.getAdapter();
     adapter.add(object);
   }
 
-  public void onObjectUpdated(T object) {
+  protected void onObjectUpdated(T object) {
     GenericHadithObjectAdapter<T> adapter = (GenericHadithObjectAdapter<T>) objectsListView.getAdapter();
     adapter.notifyDataSetChanged();
   }
 
-  public void onObjectDeleted(T object) {
+  protected void onObjectDeleted(T object) {
     GenericHadithObjectAdapter<T> adapter = (GenericHadithObjectAdapter<T>) objectsListView.getAdapter();
     adapter.remove(object);
   }
 
-  private void setObjects(List<T> objects) {
+  protected void setObjects(List<T> objects) {
     GenericHadithObjectAdapter<T> adapter = new GenericHadithObjectAdapter<T>(this);
     adapter.addAll(objects);
 

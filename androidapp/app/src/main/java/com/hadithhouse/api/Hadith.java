@@ -5,7 +5,8 @@ import java.util.Date;
 public class Hadith {
   public int id;
   public String text;
-  public int personId;
+  // TODO: Try to rename this to personId. This would need changes on the server.
+  public int person;
   public String[] tags;
   public Date addedOn;
   public Date updatedOn;

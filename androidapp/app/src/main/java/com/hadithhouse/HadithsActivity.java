@@ -1,10 +1,19 @@
 package com.hadithhouse;
 
+import android.widget.Toast;
+
 import com.hadithhouse.api.Hadith;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class HadithsActivity extends GenericHadithObjectActivity<Hadith> {
   private ViewObjectBinder.BindingInfo bindingInfo = new ViewObjectBinder.BindingInfo(
-      new ViewObjectBinder.BindingPoint("text", R.id.hadithBodyEditText)
+      new ViewObjectBinder.BindingPoint("text", R.id.hadithBodyEditText),
+      new ViewObjectBinder.BindingPoint("tags", R.id.tagsTextView)
   );
 
   @Override
@@ -56,4 +65,69 @@ public class HadithsActivity extends GenericHadithObjectActivity<Hadith> {
   protected Hadith newObject() {
     return new Hadith();
   }
+
+  protected void loadObjects() {
+    apiClient.getHadiths(new Callback<List<Hadith>>() {
+      @Override
+      public void success(List<Hadith> hadiths, Response response) {
+        setObjects(hadiths);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(HadithsActivity.this,
+            "Couldn't load hadiths! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void addObject(Hadith object) {
+    // Hard coded to prophet Mohammed (pbuh) until we support choosing the person.
+    object.person = 1;
+    apiClient.postHadith(object, new Callback<Hadith>() {
+      @Override
+      public void success(Hadith hadith, Response response) {
+        onObjectAdded(hadith);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(HadithsActivity.this, "Couldn't add hadith. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void saveObject(Hadith object) {
+    // Hard coded to prophet Mohammed (pbuh) until we support choosing the person.
+    object.person = 1;
+    apiClient.putHadith(object.id, object, new Callback<Hadith>() {
+      @Override
+      public void success(Hadith person, Response response) {
+        onObjectUpdated(person);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(HadithsActivity.this, "Couldn't save hadith. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void deleteObject(final Hadith object) {
+    apiClient.deleteHadith(object.id, new Callback<Void>() {
+      @Override
+      public void success(Void aVoid, Response response) {
+        onObjectDeleted(object);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(HadithsActivity.this, "Couldn't delete hadith. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
 }

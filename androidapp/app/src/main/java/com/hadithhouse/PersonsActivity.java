@@ -1,6 +1,15 @@
 package com.hadithhouse;
 
+import android.widget.Toast;
+
+import com.hadithhouse.api.Hadith;
 import com.hadithhouse.api.Person;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class PersonsActivity extends GenericHadithObjectActivity<Person> {
   private ViewObjectBinder.BindingInfo bindingInfo = new ViewObjectBinder.BindingInfo(
@@ -64,5 +73,65 @@ public class PersonsActivity extends GenericHadithObjectActivity<Person> {
   @Override
   protected Person newObject() {
     return new Person();
+  }
+
+  protected void loadObjects() {
+    apiClient.getPersons(new Callback<List<Person>>() {
+      @Override
+      public void success(List<Person> persons, Response response) {
+        setObjects(persons);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this,
+            "Couldn't load persons! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void addObject(Person object) {
+    apiClient.postPerson(object, new Callback<Person>() {
+      @Override
+      public void success(Person person, Response response) {
+        onObjectAdded(person);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this, "Couldn't add person. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void saveObject(Person object) {
+    apiClient.putPerson(object.id, object, new Callback<Person>() {
+      @Override
+      public void success(Person person, Response response) {
+        onObjectUpdated(person);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this, "Couldn't save person. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void deleteObject(final Person object) {
+    apiClient.deletePerson(object.id, new Callback<Void>() {
+      @Override
+      public void success(Void aVoid, Response response) {
+        onObjectDeleted(object);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(PersonsActivity.this, "Couldn't delete person. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
   }
 }

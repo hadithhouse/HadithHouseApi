@@ -1,6 +1,14 @@
 package com.hadithhouse;
 
+import android.widget.Toast;
+
 import com.hadithhouse.api.HadithTag;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class TagsActivity extends GenericHadithObjectActivity<HadithTag> {
@@ -56,5 +64,65 @@ public class TagsActivity extends GenericHadithObjectActivity<HadithTag> {
   @Override
   protected HadithTag newObject() {
     return new HadithTag();
+  }
+
+  protected void loadObjects() {
+    apiClient.getHadithTags(new Callback<List<HadithTag>>() {
+      @Override
+      public void success(List<HadithTag> tags, Response response) {
+        setObjects(tags);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(TagsActivity.this,
+            "Couldn't load tags! Error is: " + error.toString(), Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void addObject(HadithTag object) {
+    apiClient.postHadithTag(object, new Callback<HadithTag>() {
+      @Override
+      public void success(HadithTag tag, Response response) {
+        onObjectAdded(tag);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(TagsActivity.this, "Couldn't add tag. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void saveObject(HadithTag object) {
+    apiClient.putHadithTag(object.id, object, new Callback<HadithTag>() {
+      @Override
+      public void success(HadithTag tag, Response response) {
+        onObjectUpdated(tag);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(TagsActivity.this, "Couldn't save tag. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  protected void deleteObject(final HadithTag object) {
+    apiClient.deleteHadithTag(object.id, new Callback<Void>() {
+      @Override
+      public void success(Void aVoid, Response response) {
+        onObjectDeleted(object);
+      }
+
+      @Override
+      public void failure(RetrofitError error) {
+        Toast.makeText(TagsActivity.this, "Couldn't delete tag. Error was: " + error.toString(),
+            Toast.LENGTH_LONG).show();
+      }
+    });
   }
 }
