@@ -61,27 +61,27 @@ def requires_write_perm(func):
 class FBAuthListCreateAPIView(generics.ListCreateAPIView):
   @requires_read_perm
   def get(self, request, *args, **kwargs):
-    return super(FBAuthListCreateAPIView, self).get(self, request, *args, **kwargs)
+    return super(FBAuthListCreateAPIView, self).get(request, *args, **kwargs)
 
   @requires_write_perm
   def post(self, request, *args, **kwargs):
-    return super(FBAuthListCreateAPIView, self).post(self, request, *args, **kwargs)
+    return super(FBAuthListCreateAPIView, self).post(request, *args, **kwargs)
 
 
 class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
   @requires_read_perm
   def get(self, request, *args, **kwargs):
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(self, request, *args, **kwargs)
+    return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(request, *args, **kwargs)
 
   @requires_write_perm
   def put(self, request, *args, **kwargs):
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).put(self, request, *args, **kwargs)
+    return super(FBAuthRetrieveUpdateDestroyAPIView, self).put(request, *args, **kwargs)
 
   @requires_write_perm
   def patch(self, request, *args, **kwargs):
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).patch(self, request, *args, **kwargs)
+    return super(FBAuthRetrieveUpdateDestroyAPIView, self).patch(request, *args, **kwargs)
 
   @requires_write_perm
   def delete(self, request, *args, **kwargs):
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(self, request, *args, **kwargs)
+    return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(request, *args, **kwargs)
 
