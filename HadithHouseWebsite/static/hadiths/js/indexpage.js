@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-(function() {
+/*
+(function () {
   'use strict';
 
   var IndexPageModule = angular.module('IndexPageModule', []);
 
   IndexPageModule.controller('HomePageCtrl', ['$scope',
-    function($scope) {
+    function ($scope) {
       $scope.message = 'Hello World';
 
-      $scope.showMessage = function() {
+      $scope.showMessage = function () {
         alert($scope.message);
       };
     }]);
-}());
+}());*/

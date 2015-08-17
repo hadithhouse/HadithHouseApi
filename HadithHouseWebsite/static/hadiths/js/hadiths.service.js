@@ -21,13 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/*
-(function() {
+
+(function () {
   'use strict';
 
-  var HadithPageModule = angular.module('HadithPageModule', []);
+  var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithPageModule.controller('HadithPageCtrl', ['$scope',
-    function($scope) {
-    }]);
-}());*/
+  HadithHouseApp.factory('HadithsService', function ($http, $q, $mdDialog) {
+    var getApiUrl = window['getApiUrl'];
+
+    function postHadith(hadith) {
+      $http.post(getApiUrl() + 'hadiths/', hadith).then(
+        function onSuccess() {
+      }, function onError() {
+      });
+    }
+
+    return {
+      postHadith: postHadith
+    };
+  });
+}());
+

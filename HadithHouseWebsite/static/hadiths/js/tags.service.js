@@ -21,13 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/*
-(function() {
+
+(function () {
   'use strict';
 
-  var HadithPageModule = angular.module('HadithPageModule', []);
+  var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithPageModule.controller('HadithPageCtrl', ['$scope',
-    function($scope) {
-    }]);
-}());*/
+  HadithHouseApp.factory('TagsService', function ($http, $q, $mdDialog) {
+    var getApiUrl = window['getApiUrl'];
+
+    var cachedTags = null;
+
+    function getTags() {
+      var deferred = $q.defer();
+
+      if (cachedTags != null) {
+        deferred.resolve(cachedTags);
+        return deferred.promise;
+      }
+
+      $http.get(getApiUrl() + 'hadithtags/').then(function onSuccess(response) {
+        cachedTags = response.data;
+        deferred.resolve(cachedTags);
+      }, function onError() {
+        deferred.reject();
+
+        $mdDialog.show(
+          $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .title("Error")
+            .content("Couldn't load tags! Please try again or refresh the page.")
+            .ariaLabel('Error')
+            .ok('OK')
+        );
+      });
+
+      return deferred.promise;
+    }
+
+    return {
+      getTags: getTags
+    };
+  });
+}());
