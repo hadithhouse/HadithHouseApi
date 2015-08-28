@@ -66,6 +66,9 @@
 
   <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
     <md-content flex id="content">
+      <div style="height: 10px;">
+        <md-progress-linear md-mode="indeterminate" ng-show="pendingRequests > 0"></md-progress-linear>
+      </div>
       <h2>{{ ctrl.selected.name }}</h2>
 
       <div ng-view></div>
