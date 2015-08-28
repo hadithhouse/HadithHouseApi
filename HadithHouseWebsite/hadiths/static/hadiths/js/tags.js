@@ -31,7 +31,7 @@
     var ctrl = this;
 
     ctrl.loadTags = function() {
-      TagsService.getTags(true /* refreshCache */).then(function onSuccess(tags) {
+      TagsService.getTags().then(function onSuccess(tags) {
         ctrl.tags = tags;
       }, function onError() {
         // TODO: Show an alert.

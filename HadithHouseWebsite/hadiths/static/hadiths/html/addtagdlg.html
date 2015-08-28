@@ -2,7 +2,7 @@
   <form>
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>Add New Tag</h2>
+        <h2>{{ ctrl.isSaveMode() ? 'Update Tag' : 'Add New Tag' }}</h2>
         <span flex></span>
         <!-- TODO: Download icons -->
         <md-button class="md-icon-button" ng-click="ctrl.cancel()">

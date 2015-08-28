@@ -32,6 +32,12 @@
 
     var cachedTags = null;
 
+    function reloadTags() {
+      // Remove cached tags and sends a request to load tags.
+      cachedTags = null;
+      return getTags();
+    }
+
     function getTags(refreshCache) {
       var deferred = $q.defer();
 
@@ -60,15 +66,40 @@
     }
 
     function postTag(tag) {
-      return $http.post(getApiUrl() + 'hadithtags/', tag);
+      var d = $http.post(getApiUrl() + 'hadithtags/', tag);
+      d.then(function onSuccess(result) {
+        var newTag = result.data;
+        cachedTags.push(result.data /* new tag */);
+      });
+      return d;
     }
 
     function putTag(tag) {
-      return $http.put(getApiUrl() + 'hadithtags/' + tag.id, tag);
+      var d = $http.put(getApiUrl() + 'hadithtags/' + tag.id, tag);
+      d.then(function onSuccess(result) {
+        var newTag = result.data;
+        for (var i = 0; i < cachedTags.length; i++) {
+          if (cachedTags[i].id === newTag.id) {
+            cachedTags[i] = newTag;
+            break;
+          }
+        }
+      });
+      return d;
     }
 
     function deleteTag(tagId) {
-      return $http.delete(getApiUrl() + 'hadithtags/' + tagId);
+      var d = $http.delete(getApiUrl() + 'hadithtags/' + tagId);
+      d.then(function onSuccess(result) {
+        var newTag = result.data;
+        for (var i = 0; i < cachedTags.length; i++) {
+          if (cachedTags[i].id === tagId) {
+            cachedTags.splice(i, 1);
+            break;
+          }
+        }
+      });
+      return d;
     }
 
     return {
