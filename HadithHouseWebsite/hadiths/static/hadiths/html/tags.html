@@ -1,13 +1,17 @@
-<section class="md-whiteframe-z1">
+<div class="md-whiteframe-z1">
 
-<md-list>
-  <md-list-item ng-repeat="tag in ctrl.tags">
-    <p> {{ tag.name }} </p>
-    <md-icon class="material-icons" ng-click="ctrl.deleteTag(tag)">delete</md-icon>
-  </md-list-item>
-</md-list>
+  <md-list>
+    <md-list-item ng-repeat="tag in ctrl.tags">
+      <div style="width: 100%;">
+        <md-icon class="material-icons" ng-click="ctrl.showEditTagDialog($event, tag)">edit</md-icon>
+        <md-icon class="material-icons" ng-click="ctrl.deleteTag($event, tag)">delete</md-icon>
+        {{ tag.name }}
+      </div>
+      <md-divider ng-if="!$last"></md-divider>
+    </md-list-item>
+  </md-list>
+</div>
 
 <md-button class="md-fab md-mini" ng-click="ctrl.showAddTagDialog($event)">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
-</section>

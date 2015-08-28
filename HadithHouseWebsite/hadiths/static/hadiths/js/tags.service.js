@@ -32,10 +32,10 @@
 
     var cachedTags = null;
 
-    function getTags() {
+    function getTags(refreshCache) {
       var deferred = $q.defer();
 
-      if (cachedTags != null) {
+      if (cachedTags != null && refreshCache !== true) {
         deferred.resolve(cachedTags);
         return deferred.promise;
       }
@@ -59,8 +59,23 @@
       return deferred.promise;
     }
 
+    function postTag(tag) {
+      return $http.post(getApiUrl() + 'hadithtags/', tag);
+    }
+
+    function putTag(tag) {
+      return $http.put(getApiUrl() + 'hadithtags/' + tag.id, tag);
+    }
+
+    function deleteTag(tagId) {
+      return $http.delete(getApiUrl() + 'hadithtags/' + tagId);
+    }
+
     return {
-      getTags: getTags
+      getTags: getTags,
+      postTag: postTag,
+      putTag: putTag,
+      deleteTag: deleteTag
     };
   });
 }());

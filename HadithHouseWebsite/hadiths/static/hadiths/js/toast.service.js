@@ -27,16 +27,30 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.factory('HadithsService', function ($http, $q, $mdDialog) {
-    var getApiUrl = window['getApiUrl'];
+  HadithHouseApp.factory('ToastService', function ($mdToast) {
+    var toastPosition = {
+      bottom: false,
+      top: true,
+      left: false,
+      right: true
+    };
 
-    function postHadith(hadith) {
-      return $http.post(getApiUrl() + 'hadiths/', hadith);
+    function getToastPosition() {
+      return Object.keys(toastPosition)
+        .filter(function (pos) {
+          return toastPosition[pos];
+        }).join(' ');
+    }
+
+    function show(message) {
+      $mdToast.show($mdToast.simple()
+        .content(message)
+        .position(getToastPosition())
+        .hideDelay(3000));
     }
 
     return {
-      postHadith: postHadith
+      show: show
     };
   });
 }());
-
