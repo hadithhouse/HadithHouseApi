@@ -32,6 +32,24 @@
 
     var cachedPersons = null;
 
+    /**
+     * Retrieves the person having the given ID.
+     * @param personId The ID of the person.
+     * @returns A promise resolving on success to the required person.
+     */
+    function getPerson(personId) {
+      var deferred = $q.defer();
+
+      $http.get(getApiUrl() + 'persons/' + personId).then(function onSuccess(response) {
+        var person = response.data;
+        deferred.resolve(person);
+      }, function onError(reason) {
+        deferred.reject(reason);
+      });
+
+      return deferred.promise;
+    }
+
     function getPersons() {
       var deferred = $q.defer();
 

@@ -28,13 +28,17 @@
   var HadithHouseApp = angular.module('HadithHouseApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
   HadithHouseApp.config(function ($httpProvider, $routeProvider, $mdThemingProvider) {
-    $mdThemingProvider.theme('default')
+    /*$mdThemingProvider.theme('default')
       .primaryPalette('brown')
-      .accentPalette('red');
+      .accentPalette('red');*/
 
     $routeProvider.when('/hadiths', {
       templateUrl: getHtmlBasePath() + 'hadiths.html',
       controller: 'HadithsCtrl',
+      controllerAs: 'ctrl',
+    }).when('/hadith/:hadithId', {
+      templateUrl: getHtmlBasePath() + 'hadith.html',
+      controller: 'HadithCtrl',
       controllerAs: 'ctrl',
     }).when('/tags', {
       templateUrl: getHtmlBasePath() + 'tags.html',

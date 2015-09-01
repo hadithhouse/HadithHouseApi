@@ -1,0 +1,55 @@
+<div ng-if="ctrl.error">
+  Couldn't load hadith
+</div>
+<div ng-if="!ctrl.error" layout="column" flex layout-fill class="md-whiteframe-z1">
+  <md-toolbar>
+    <h2 class="md-toolbar-tools">
+      <span>Hadith Text</span>
+    </h2>
+  </md-toolbar>
+  <md-content layout-padding style="padding: 10px;">
+    <p>
+      {{ ctrl.hadith.text }}
+    </p>
+  </md-content>
+
+  <md-toolbar>
+    <h2 class="md-toolbar-tools">
+      <span>Person</span>
+    </h2>
+  </md-toolbar>
+  <md-content layout-padding style="padding: 10px;">
+    <p>
+      {{ ctrl.hadith.person }}
+    </p>
+  </md-content>
+
+  <md-toolbar>
+    <h2 class="md-toolbar-tools">
+      <span>Tags</span>
+    </h2>
+  </md-toolbar>
+  <md-content layout-padding style="padding: 10px;">
+    <md-chips ng-model="ctrl.hadith.tags" readonly="true">
+      <md-chip-template>
+        <strong>{{$chip}}</strong>
+      </md-chip-template>
+    </md-chips>
+  </md-content>
+
+  <!-- <md-content>
+    <section>
+      <md-subheader class="md-primary">Hadith Text</md-subheader>
+      <md-content layout-padding>
+        {{ ctrl.hadith.text }}
+        </md-content>
+    </section>
+    <section>
+      <md-subheader class="md-primary">Person</md-subheader>
+        {{ ctrl.hadith.person }}
+    </section>
+    <section>
+      <md-subheader class="md-primary">Tags</md-subheader>
+    </section>
+  </md-content> -->
+</div>

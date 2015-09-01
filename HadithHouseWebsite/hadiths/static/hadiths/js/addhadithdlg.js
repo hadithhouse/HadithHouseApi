@@ -12,6 +12,23 @@
       tags: []
     };
 
+    ctrl.isSaveMode = function() {
+      return ctrl.locals && ctrl.locals.hadith;
+    };
+
+    if (ctrl.isSaveMode()) {
+      ctrl.newHadith.id = ctrl.locals.hadith.id;
+      ctrl.newHadith.text = ctrl.locals.hadith.text;
+      ctrl.newHadith.person = {
+        id: ctrl.locals.hadith.person
+      };
+      ctrl.newHadith.tags = ctrl.locals.hadith.tags.map(function(tagName) {
+        return {
+          name: tagName
+        };
+      });
+    }
+
     ctrl.selectedTag = null;
     ctrl.tagQuery = '';
 
@@ -20,6 +37,12 @@
     PersonsService.getPersons().then(function onSuccess(persons) {
       ctrl.personsLoaded = true;
       ctrl.persons = persons;
+    });
+
+    $scope.$watch(function() { return ctrl.personsLoaded; }, function() {
+      ctrl.newHadith.person = {
+        id: ctrl.locals.hadith.person
+      };
     });
 
     ctrl.findPersons = function (query) {
@@ -58,15 +81,28 @@
 
     ctrl.add = function () {
       var newHadith = {
+        id: ctrl.newHadith.id,
         text: ctrl.newHadith.text,
         tags: ctrl.newHadith.tags.map(function (tag) {
           return tag.name;
         }),
         person: ctrl.newHadith.person.id
       };
-      HadithsService.postHadith(newHadith);
-
-      $mdDialog.hide(newHadith);
+      if (ctrl.isSaveMode()) {
+        TagsService.putHadith(newHadith).then(function onSuccess() {
+          ToastService.show('Hadith saved');
+          $mdDialog.hide(newHadith);
+        }, function onError() {
+          ToastService.show("Couldn't save hadith! Please try again.");
+        });
+      } else {
+        HadithsService.postHadith(newHadith).then(function onSuccess() {
+          ToastService.show('Hadith added');
+          $mdDialog.hide(newHadith);
+        }, function onError() {
+          ToastService.show("Couldn't add hadith! Please try again.");
+        });
+      }
     };
   }
 

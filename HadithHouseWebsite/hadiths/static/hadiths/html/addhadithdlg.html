@@ -57,7 +57,7 @@
         Cancel
       </md-button>
       <md-button ng-click="ctrl.add()" style="margin-right:20px;">
-        Add
+        {{ ctrl.isSaveMode() ? 'Save' : 'Add' }}
       </md-button>
     </div>
   </form>

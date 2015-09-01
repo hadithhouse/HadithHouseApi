@@ -1,8 +1,18 @@
-<div>
-This is Hadiths page.
-</div>
+<div class="md-whiteframe-z1">
 
-{{ ctrl.message }}
+  <md-list>
+    <md-list-item ng-repeat="hadith in ctrl.hadiths">
+      <div style="width: 100%;">
+        <md-icon class="material-icons" ng-click="ctrl.showEditHadithDialog($event, hadith)">edit</md-icon>
+        <md-icon class="material-icons" ng-click="ctrl.deleteHadith($event, hadith)">delete</md-icon>
+        <a ng-href="#/hadith/{{ hadith.id }}">
+        {{ hadith.text | limitTo:50 }}
+        </a>
+      </div>
+      <md-divider ng-if="!$last"></md-divider>
+    </md-list-item>
+  </md-list>
+</div>
 
 <md-button class="md-fab md-mini" ng-click="ctrl.showAddHadithDialog($event)">
   <md-icon class="material-icons">add</md-icon>
