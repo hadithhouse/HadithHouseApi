@@ -1,0 +1,24 @@
+<span>
+  <md-chips ng-model="ctrl.persons" md-autocomplete-snap md-require-match>
+    <md-autocomplete
+        md-selected-item="ctrl.selectedPerson"
+        md-selected-item-change=""
+        md-search-text="ctrl.personQuery"
+        md-search-text-change=""
+        md-items="person in ctrl.findPersons(ctrl.personQuery)"
+        md-item-text="person.display_name"
+        placeholder="Search for a tag">
+      <md-item-template>
+      <span md-highlight-text="ctrl.personQuery">{{ person.display_name }}</span>
+      </md-item-template>
+      <md-not-found>
+        No matches found for "{{ ctrl.personQuery }}".
+      </md-not-found>
+    </md-autocomplete>
+    <md-chip-template>
+        <span>
+          <strong>{{$chip}}</strong>
+        </span>
+    </md-chip-template>
+  </md-chips>
+</span>
