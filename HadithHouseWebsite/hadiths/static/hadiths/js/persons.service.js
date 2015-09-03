@@ -31,6 +31,7 @@
     var getApiUrl = window['getApiUrl'];
 
     var cachedPersons = null;
+    var personsDict = null;
 
     /**
      * Retrieves the person having the given ID.
@@ -40,6 +41,11 @@
     function getPerson(personId) {
       var deferred = $q.defer();
 
+      if (personsDict[personId]) {
+        deferred.resolve(personsDict[personId]);
+        return deferred.promise;
+      }
+
       $http.get(getApiUrl() + 'persons/' + personId).then(function onSuccess(response) {
         var person = response.data;
         deferred.resolve(person);
@@ -48,6 +54,20 @@
       });
 
       return deferred.promise;
+    }
+
+    function getPersonSync(personId) {
+      if (!personsDict) {
+        throw "Persons are not loaded yet.";
+      }
+      return personsDict[personId] || null;
+    }
+
+    function createPersonsDict() {
+      personsDict = {};
+      _.each(cachedPersons, function(person) {
+        personsDict[person.Id] = personsDict;
+      });
     }
 
     function getPersons() {
@@ -60,9 +80,10 @@
 
       $http.get(getApiUrl() + 'persons/').then(function onSuccess(response) {
         cachedPersons = response.data;
+        createPersonsDict();
         deferred.resolve(cachedPersons);
-      }, function onError() {
-        deferred.reject();
+      }, function onError(reason) {
+        deferred.reject(reason);
 
         $mdDialog.show(
           $mdDialog.alert()
@@ -78,6 +99,8 @@
     }
 
     return {
+      getPerson: getPerson,
+      getPersonSync: getPersonSync,
       getPersons: getPersons
     };
   });
