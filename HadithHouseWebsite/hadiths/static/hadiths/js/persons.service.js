@@ -31,7 +31,8 @@
     var getApiUrl = window['getApiUrl'];
 
     var cachedPersons = null;
-    var personsDict = null;
+    var personsDict = {};
+    var personsDictCreated = false;
 
     /**
      * Retrieves the person having the given ID.
@@ -57,7 +58,7 @@
     }
 
     function getPersonSync(personId) {
-      if (!personsDict) {
+      if (!personsDictCreated) {
         throw "Persons are not loaded yet.";
       }
       return personsDict[personId] || null;
@@ -65,8 +66,9 @@
 
     function createPersonsDict() {
       personsDict = {};
+      personsDictCreated = true;
       _.each(cachedPersons, function(person) {
-        personsDict[person.Id] = personsDict;
+        personsDict[person.id] = person;
       });
     }
 

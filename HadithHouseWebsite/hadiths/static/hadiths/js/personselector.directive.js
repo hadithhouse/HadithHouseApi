@@ -34,29 +34,38 @@ function waitForPromises(promises, callback) {
   }
 
   HadithHouseApp.controller('PersonSelectorCtrl', function ($q, $scope, PersonsService) {
-    debugger;
     var ctrl = this;
 
     ctrl.availPersons = [];
     ctrl.availPersonsLoaded = false;
+
+    if (!ctrl.personId) {
+      ctrl.personId = null;
+    }
+
     PersonsService.getPersons().then(function onSuccess(persons) {
       ctrl.availPersonsLoaded = true;
       ctrl.availPersons = persons;
     });
 
-    ctrl.getSelectedPersons = function() {
-      return ctrl.selectedPersonIds.map(function(personId) {
-        PersonsService.getPersonSync(personId);
-      });
+    $scope.$watch(function() { return ctrl.personId; }, function() {
+      if (!ctrl.person || ctrl.person.id == ctrl.personId) {
+        PersonsService.getPerson(ctrl.personId).then(function(person) {
+          ctrl.person = person;
+        });
+      }
+    });
+    ctrl.onPersonChange = function() {
+      ctrl.personId = ctrl.person.id;
     };
 
-    ctrl.findPerson = function (query) {
+    ctrl.findPersons = function (query) {
       if (!ctrl.availPersonsLoaded) {
         return [];
       }
 
       return ctrl.availPersons.filter(function (person) {
-        return ctrl.persons.indexOf(person) == -1 && (
+        return /*ctrl.personId.indexOf(person.id) == -1 &&*/ (
           person.title.indexOf(query) > -1 ||
           person.display_name.indexOf(query) > -1 ||
           person.full_name.indexOf(query) > -1 ||
@@ -74,7 +83,8 @@ function waitForPromises(promises, callback) {
       controllerAs: 'ctrl',
       bindToController: true,
       scope: {
-        selectedPersonIds: '='
+        personId: '=',
+        readOnly: '='
       }
     };
 

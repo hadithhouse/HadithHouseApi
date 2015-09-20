@@ -24,6 +24,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-route.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-resource.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">
   <script
@@ -69,8 +70,6 @@
       <div style="height: 10px;">
         <md-progress-linear md-mode="indeterminate" ng-show="pendingRequests > 0"></md-progress-linear>
       </div>
-      <h2>{{ ctrl.selected.name }}</h2>
-
       <div ng-view></div>
     </md-content>
   </div>

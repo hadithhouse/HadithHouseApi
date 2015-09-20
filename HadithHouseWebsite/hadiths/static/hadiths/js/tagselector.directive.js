@@ -28,6 +28,10 @@
   HadithHouseApp.controller('TagSelectorCtrl', function ($scope, TagsService) {
     var ctrl = this;
 
+    if (!ctrl.tagNames) {
+      ctrl.tagNames = [];
+    }
+
     ctrl.availTagNames = [];
     ctrl.availTagsLoaded = false;
     TagsService.getTags().then(function onSuccess(tags) {
@@ -55,7 +59,8 @@
       controllerAs: 'ctrl',
       bindToController: true,
       scope: {
-        tagNames: '='
+        tagNames: '=',
+        readOnly: '='
       }
     };
 

@@ -42,6 +42,12 @@
         }).join(' ');
     }
 
+    // TODO: Add a method for displaying error toasts.
+
+    /**
+     * Shows a test with the given message.
+     * @param message The message to show.
+     */
     function show(message) {
       $mdToast.show($mdToast.simple()
         .content(message)

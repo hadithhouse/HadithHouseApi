@@ -3,7 +3,9 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  function AddHadithDialogCtrl($scope, $mdDialog, PersonsService, TagsService, HadithsService) {
+  // TODO: We shouldn't need this any more as we now have a special page for hadith details, so we should use that
+  // one and set the status of the hadith to being added, i.e. not yet added to the server.
+  function AddHadithDialogCtrl($scope, $mdDialog, PersonsService, TagsService, ToastService, HadithsService) {
     var ctrl = this;
 
     ctrl.newHadith = {
@@ -40,9 +42,11 @@
     });
 
     $scope.$watch(function() { return ctrl.personsLoaded; }, function() {
-      ctrl.newHadith.person = {
-        id: ctrl.locals.hadith.person
-      };
+      if (ctrl.isSaveMode()) {
+        ctrl.newHadith.person = {
+          id: ctrl.locals.hadith.person
+        };
+      }
     });
 
     ctrl.findPersons = function (query) {

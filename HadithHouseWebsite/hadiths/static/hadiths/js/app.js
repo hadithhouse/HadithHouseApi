@@ -25,7 +25,7 @@
 (function () {
   'use strict';
 
-  var HadithHouseApp = angular.module('HadithHouseApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
+  var HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute', 'ngMaterial', 'ngMdIcons']);
 
   HadithHouseApp.config(function ($httpProvider, $routeProvider, $mdThemingProvider) {
     /*$mdThemingProvider.theme('default')
