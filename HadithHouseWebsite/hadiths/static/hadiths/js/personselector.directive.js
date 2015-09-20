@@ -49,7 +49,7 @@ function waitForPromises(promises, callback) {
     });
 
     $scope.$watch(function() { return ctrl.personId; }, function() {
-      if (!ctrl.person || ctrl.person.id == ctrl.personId) {
+      if ((!ctrl.person || ctrl.person.id != ctrl.personId) && ctrl.personId !== null) {
         PersonsService.getPerson(ctrl.personId).then(function(person) {
           ctrl.person = person;
         });

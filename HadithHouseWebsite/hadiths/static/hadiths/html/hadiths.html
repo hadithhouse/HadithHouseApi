@@ -3,8 +3,7 @@
   <md-list>
     <md-list-item ng-repeat="hadith in ctrl.hadiths">
       <div style="width: 100%;">
-        <md-icon class="material-icons" ng-click="ctrl.showEditHadithDialog($event, hadith)">edit</md-icon>
-        <md-icon class="material-icons" ng-click="ctrl.deleteHadith($event, hadith)">delete</md-icon>
+        <md-icon class="material-icons" ng-click="ctrl.deleteHadith($event, hadith)">close</md-icon>
         <a ng-href="#/hadith/{{ hadith.id }}">
         {{ hadith.text | limitTo:50 }}
         </a>
@@ -14,7 +13,7 @@
   </md-list>
 </div>
 
-<md-button class="md-fab md-mini" ng-click="ctrl.showAddHadithDialog($event)">
+<md-button class="md-fab md-mini" ng-href="#/hadith/new">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 

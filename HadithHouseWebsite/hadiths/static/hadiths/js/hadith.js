@@ -4,16 +4,28 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('HadithCtrl',
-    function ($mdDialog, $routeParams, $resource, HadithsService, ToastService) {
+    function ($mdDialog, $location, $routeParams, $resource, HadithsService, ToastService) {
       var Hadith = $resource(getApiUrl() + 'hadiths/:hadithId');
 
       var ctrl = this;
 
       // Make a request to load the hadith.
       ctrl.hadithId = $routeParams.hadithId;
-      ctrl.hadith = Hadith.get({hadithId: ctrl.hadithId}, function() {
-        ctrl = ctrl;
-      });
+      if (ctrl.hadithId === 'new') {
+        ctrl.hadith = {
+          text: '',
+          person: 1,
+          tags: []
+        };
+        ctrl.addingNew = true;
+        ctrl.isEditing = true;
+      } else {
+        ctrl.hadith = Hadith.get({hadithId: ctrl.hadithId}, function () {
+          ctrl = ctrl;
+        });
+        ctrl.addingNew = false;
+        ctrl.isEditing = false;
+      }
 
       ctrl.error = false;
 
@@ -39,8 +51,6 @@
         ctrl.hadith.tags = oldHadith.tags.slice();
       }
 
-      ctrl.isEditing = false;
-
       /**
        * Called when the user clicks on the edit icon to start editing the hadith.
        */
@@ -49,10 +59,21 @@
         ctrl.isEditing = true;
       };
 
-      /**
-       * Called when the user clicks on the save icon to save the changes made.
-       */
-      ctrl.finishEditing = function() {
+      function addNewHadith() {
+        // Send the changes to the server.
+        HadithsService.postHadith(ctrl.hadith).then(function onSuccess(result) {
+          ctrl.hadith = result.data;
+          $location.path('hadith/' + ctrl.hadith.id);
+          // Successfully saved changes. Don't need to do anything.
+          ctrl.isEditing = false;
+          ctrl.addingNew = false;
+          ToastService.show("Hadith added.");
+        }, function onFail() {
+          ToastService.show("Failed to add hadith. Please try again.");
+        });
+      }
+
+      function saveCurrentHadith() {
         // Send the changes to the server.
         HadithsService.putHadith(ctrl.hadith).then(function onSuccess() {
           // Successfully saved changes. Don't need to do anything.
@@ -64,6 +85,17 @@
           restoreCopyOfHadith();
           ToastService.show("Failed to save hadith. Please try again.");
         });
+      }
+
+      /**
+       * Called when the user clicks on the save icon to save the changes made.
+       */
+      ctrl.finishEditing = function() {
+        if (ctrl.addingNew) {
+          addNewHadith();
+        } else {
+          saveCurrentHadith();
+        }
       };
 
       /**

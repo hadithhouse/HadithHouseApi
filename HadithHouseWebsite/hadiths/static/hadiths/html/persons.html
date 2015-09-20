@@ -5,7 +5,7 @@
       <div style="width: 100%;">
         <md-icon class="material-icons" ng-click="ctrl.deletePerson($event, person)">close</md-icon>
         <a ng-href="#/person/{{ person.id }}">
-        {{ person.display_name }}
+        {{ person.display_name || person.full_name }}
         </a>
       </div>
       <md-divider ng-if="!$last"></md-divider>
@@ -13,7 +13,7 @@
   </md-list>
 </div>
 
-<md-button class="md-fab md-mini" ng-click="ctrl.showAddPersonDialog($event)">
+<md-button class="md-fab md-mini" ng-href="#/person/new">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 

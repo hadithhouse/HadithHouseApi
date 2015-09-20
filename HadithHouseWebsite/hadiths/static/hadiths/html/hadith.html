@@ -5,39 +5,19 @@
   <h1>
     Hadith {{ ctrl.hadith.id }}
     <md-icon class="material-icons" ng-click="ctrl.startEditing()" ng-hide="ctrl.isEditing">edit</md-icon>
-    <md-icon class="material-icons" ng-click="ctrl.cancelEditing()" ng-hide="!ctrl.isEditing">cancel</md-icon>
+    <md-icon class="material-icons" ng-click="ctrl.cancelEditing()" ng-hide="!ctrl.isEditing || ctrl.addingNew">cancel
+    </md-icon>
     <md-icon class="material-icons" ng-click="ctrl.finishEditing()" ng-hide="!ctrl.isEditing">save</md-icon>
   </h1>
 
-  <md-toolbar>
-    <h2 class="md-toolbar-tools">
-      <span>Hadith Text</span>
-    </h2>
-  </md-toolbar>
-  <md-content layout-padding style="padding: 10px;">
-    <p ng-hide="ctrl.isEditing">
-      {{ ctrl.hadith.text }}
-    </p>
-    <md-input-container ng-hide="!ctrl.isEditing">
-      <input ng-model="ctrl.hadith.text"/>
-    </md-input-container>
-  </md-content>
+  <label>Text</label>
+  <md-input-container ng-disabled="!ctrl.isEditing">
+    <input ng-model="ctrl.hadith.text"/>
+  </md-input-container>
 
-  <md-toolbar>
-    <h2 class="md-toolbar-tools">
-      <span>Person</span>
-    </h2>
-  </md-toolbar>
-  <md-content layout-padding style="padding: 10px;">
-    <hh-person-selector person-id="ctrl.hadith.person" read-only="!ctrl.isEditing"></hh-person-selector>
-  </md-content>
+  <label>Person</label>
+  <hh-person-selector person-id="ctrl.hadith.person" read-only="!ctrl.isEditing"></hh-person-selector>
 
-  <md-toolbar>
-    <h2 class="md-toolbar-tools">
-      <span>Tags</span>
-    </h2>
-  </md-toolbar>
-  <md-content layout-padding style="padding: 10px;">
-    <hh-tag-selector tag-names="ctrl.hadith.tags" read-only="!ctrl.isEditing"></hh-tag-selector>
-  </md-content>
+  <label>Tags</label>
+  <hh-tag-selector tag-names="ctrl.hadith.tags" read-only="!ctrl.isEditing"></hh-tag-selector>
 </div>

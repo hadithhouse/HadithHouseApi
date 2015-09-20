@@ -1,26 +1,28 @@
 <span>
-  <md-chips ng-model="ctrl.tagNames" md-autocomplete-snap md-require-match>
-    <md-autocomplete
-        md-selected-item="ctrl.selectedTag"
-        md-selected-item-change=""
-        md-search-text="ctrl.tagQuery"
-        md-search-text-change=""
-        md-items="tagName in ctrl.findTagNames(ctrl.tagQuery)"
-        md-item-text="tagName"
-        ng-hide="ctrl.readOnly"
-        placeholder="Search for a tag">
-      <md-item-template>
-        <span md-highlight-text="ctrl.tagQuery">{{ tagName }}</span>
-      </md-item-template>
-      <md-not-found>
-        No matches found for "{{ ctrl.tagQuery }}".
-      </md-not-found>
-    </md-autocomplete>
-    <md-chip-template>
+    <md-chips ng-model="ctrl.tagNames" md-autocomplete-snap md-require-match>
+      <md-autocomplete
+          md-selected-item="ctrl.selectedTag"
+          md-selected-item-change=""
+          md-search-text="ctrl.tagQuery"
+          md-search-text-change=""
+          md-items="tagName in ctrl.findTagNames(ctrl.tagQuery)"
+          md-item-text="tagName"
+          ng-hide="ctrl.readOnly"
+          placeholder="Search for a tag">
+        <md-item-template>
+          <span md-highlight-text="ctrl.tagQuery">{{ tagName }}</span>
+        </md-item-template>
+        <md-not-found>
+          No matches found for "{{ ctrl.tagQuery }}".
+        </md-not-found>
+      </md-autocomplete>
+      <md-chip-template>
         <span>
           <strong>{{$chip}}</strong>
         </span>
-    </md-chip-template>
-    <md-icon md-chip-remove class="material-icons" ng-hide="ctrl.readOnly" style="vertical-align: middle; font-size: 14pt; font-weight: bold;">close</md-icon>
-  </md-chips>
+      </md-chip-template>
+      <md-icon md-chip-remove class="material-icons" ng-hide="ctrl.readOnly"
+               style="vertical-align: middle; font-size: 14pt; font-weight: bold;">close
+      </md-icon>
+    </md-chips>
 </span>
