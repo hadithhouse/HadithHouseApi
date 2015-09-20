@@ -93,7 +93,9 @@
       var d = $http.post(getApiUrl() + 'hadiths/', hadith);
       d.then(function onSuccess(result) {
         var newHadith = result.data;
-        cachedHadiths.push(newHadith);
+        if (cachedHadiths !== null) {
+          cachedHadiths.push(newHadith);
+        }
       });
       return d;
     }
@@ -102,10 +104,12 @@
       var d = $http.put(getApiUrl() + 'hadiths/' + hadith.id, hadith);
       d.then(function onSuccess(result) {
         var newHadith = result.data;
-        for (var i = 0; i < cachedHadiths.length; i++) {
-          if (cachedHadiths[i].id === newHadith.id) {
-            cachedHadiths[i] = newHadith;
-            break;
+        if (cachedHadiths !== null) {
+          for (var i = 0; i < cachedHadiths.length; i++) {
+            if (cachedHadiths[i].id === newHadith.id) {
+              cachedHadiths[i] = newHadith;
+              break;
+            }
           }
         }
       });
@@ -116,10 +120,12 @@
       var d = $http.delete(getApiUrl() + 'hadiths/' + hadithId);
       d.then(function onSuccess(result) {
         var newHadith = result.data;
-        for (var i = 0; i < cachedHadiths.length; i++) {
-          if (cachedHadiths[i].id === hadithId) {
-            cachedHadiths.splice(i, 1);
-            break;
+        if (cachedHadiths !== null) {
+          for (var i = 0; i < cachedHadiths.length; i++) {
+            if (cachedHadiths[i].id === hadithId) {
+              cachedHadiths.splice(i, 1);
+              break;
+            }
           }
         }
       });

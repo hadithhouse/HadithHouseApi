@@ -100,10 +100,55 @@
       return deferred.promise;
     }
 
+    function postPerson(person) {
+      var d = $http.post(getApiUrl() + 'persons/', person);
+      d.then(function onSuccess(result) {
+        var newPerson = result.data;
+        if (cachedPersons !== null) {
+          cachedPersons.push(newPerson);
+        }
+      });
+      return d;
+    }
+
+    function putPerson(person) {
+      var d = $http.put(getApiUrl() + 'persons/' + person.id, person);
+      d.then(function onSuccess(result) {
+        var newPerson = result.data;
+        if (cachedPersons !== null) {
+          for (var i = 0; i < cachedPersons.length; i++) {
+            if (cachedPersons[i].id === newPerson.id) {
+              cachedPersons[i] = newPerson;
+              break;
+            }
+          }
+        }
+      });
+      return d;
+    }
+
+    function deletePerson(personId) {
+      var d = $http.delete(getApiUrl() + 'persons/' + personId);
+      d.then(function onSuccess(result) {
+        var newPerson = result.data;
+        if (cachedPersons !== null) {
+          for (var i = 0; i < cachedPersons.length; i++) {
+            if (cachedPersons[i].id === personId) {
+              cachedPersons.splice(i, 1);
+              break;
+            }
+          }
+        }
+      });
+      return d;
+    }
     return {
       getPerson: getPerson,
       getPersonSync: getPersonSync,
-      getPersons: getPersons
+      getPersons: getPersons,
+      postPerson: postPerson,
+      putPerson: putPerson,
+      deletePerson: deletePerson
     };
   });
 }());

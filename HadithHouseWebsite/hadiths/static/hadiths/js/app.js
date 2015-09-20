@@ -29,8 +29,8 @@
 
   HadithHouseApp.config(function ($httpProvider, $routeProvider, $mdThemingProvider) {
     /*$mdThemingProvider.theme('default')
-      .primaryPalette('brown')
-      .accentPalette('red');*/
+     .primaryPalette('brown')
+     .accentPalette('red');*/
 
     $routeProvider.when('/hadiths', {
       templateUrl: getHtmlBasePath() + 'hadiths.html',
@@ -39,6 +39,14 @@
     }).when('/hadith/:hadithId', {
       templateUrl: getHtmlBasePath() + 'hadith.html',
       controller: 'HadithCtrl',
+      controllerAs: 'ctrl',
+    }).when('/persons', {
+      templateUrl: getHtmlBasePath() + 'persons.html',
+      controller: 'PersonsCtrl',
+      controllerAs: 'ctrl',
+    }).when('/person/:personId', {
+      templateUrl: getHtmlBasePath() + 'person.html',
+      controller: 'PersonCtrl',
       controllerAs: 'ctrl',
     }).when('/tags', {
       templateUrl: getHtmlBasePath() + 'tags.html',
