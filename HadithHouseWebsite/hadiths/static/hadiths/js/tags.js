@@ -41,8 +41,8 @@
 
     ctrl.deleteTag = function (event, tag) {
       var confirm = $mdDialog.confirm()
-        .title('Are you sure you want to delete this tag?')
-        .content('It will be removed from all hadiths having it.')
+        .title('Confirm')
+        .content('Are you sure you want to delete this tag? It will be removed from all hadiths having it.')
         .ok('Yes')
         .cancel('No')
         .targetEvent(event);
