@@ -28,6 +28,8 @@
   HadithHouseApp.controller('TagSelectorCtrl', function ($scope, TagsService) {
     var ctrl = this;
 
+    ctrl.singleSelect = false;
+
     if (!ctrl.tagNames) {
       ctrl.tagNames = [];
     }
@@ -37,6 +39,12 @@
     TagsService.getTags().then(function onSuccess(tags) {
       ctrl.availTagsLoaded = true;
       ctrl.availTagNames = tags.map(function(tag) { return tag.name; });
+    });
+
+    $scope.$watchCollection(function() { return ctrl.tagNames; }, function() {
+      if (ctrl.singleSelect === true && ctrl.tagNames && ctrl.tagNames.length > 1) {
+        ctrl.tagNames.splice(0, ctrl.tagNames.length - 1);
+      }
     });
 
     ctrl.findTagNames = function (query) {
@@ -60,7 +68,8 @@
       bindToController: true,
       scope: {
         tagNames: '=',
-        readOnly: '='
+        readOnly: '=',
+        singleSelect: '='
       }
     };
 

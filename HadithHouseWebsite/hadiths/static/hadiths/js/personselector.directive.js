@@ -39,8 +39,12 @@ function waitForPromises(promises, callback) {
     ctrl.availPersons = [];
     ctrl.availPersonsLoaded = false;
 
-    if (!ctrl.personId) {
-      ctrl.personId = null;
+    if (!ctrl.personsIds) {
+      ctrl.personsIds = [];
+    }
+
+    if (!ctrl.persons) {
+      ctrl.persons = [];
     }
 
     PersonsService.getPersons().then(function onSuccess(persons) {
@@ -48,16 +52,39 @@ function waitForPromises(promises, callback) {
       ctrl.availPersons = persons;
     });
 
-    $scope.$watch(function() { return ctrl.personId; }, function() {
-      if ((!ctrl.person || ctrl.person.id != ctrl.personId) && ctrl.personId !== null) {
-        PersonsService.getPerson(ctrl.personId).then(function(person) {
-          ctrl.person = person;
+    function onPersonsIdsChanged(newValue, oldValue) {
+      if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
+        return;
+      }
+      PersonsService.getPersons().then(function() {
+        ctrl.persons = ctrl.personsIds.map(function (id) {
+          return PersonsService.getPersonSync(id);
+        });
+      });
+    }
+
+    $scope.$watch(function() { return ctrl.personsIds; }, onPersonsIdsChanged);
+    $scope.$watchCollection(function() { return ctrl.personsIds; }, onPersonsIdsChanged);
+
+    function onPersonsChanged(newValue, oldValue) {
+      if (ctrl.persons) {
+        // If the control only allows single select, we remove every elements
+        // before the last.
+        if (ctrl.singleSelect === true && ctrl.persons.length > 1) {
+          ctrl.persons.splice(0, ctrl.persons.length - 1);
+        }
+        ctrl.personsIds = ctrl.persons.map(function(person) {
+          return person.id;
         });
       }
-    });
-    ctrl.onPersonChange = function() {
+    }
+
+    $scope.$watch(function() { return ctrl.persons; }, onPersonsChanged);
+    $scope.$watchCollection(function() { return ctrl.persons; }, onPersonsChanged);
+
+    /*ctrl.onPersonChange = function() {
       ctrl.personId = ctrl.person.id;
-    };
+    };*/
 
     ctrl.findPersons = function (query) {
       if (!ctrl.availPersonsLoaded) {
@@ -65,8 +92,7 @@ function waitForPromises(promises, callback) {
       }
 
       return ctrl.availPersons.filter(function (person) {
-        return /*ctrl.personId.indexOf(person.id) == -1 &&*/ (
-          person.title.indexOf(query) > -1 ||
+        return (person.title.indexOf(query) > -1 ||
           person.display_name.indexOf(query) > -1 ||
           person.full_name.indexOf(query) > -1 ||
           person.brief_desc.indexOf(query) > -1);
@@ -83,8 +109,9 @@ function waitForPromises(promises, callback) {
       controllerAs: 'ctrl',
       bindToController: true,
       scope: {
-        personId: '=',
-        readOnly: '='
+        personsIds: '=',
+        readOnly: '=',
+        singleSelect: '='
       }
     };
 
