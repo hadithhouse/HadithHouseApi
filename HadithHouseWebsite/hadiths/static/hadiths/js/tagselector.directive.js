@@ -25,10 +25,14 @@
 (function () {
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.controller('TagSelectorCtrl', function ($scope, TagsService) {
+  HadithHouseApp.controller('TagSelectorCtrl', function ($scope, $q, $mdDialog, TagsService, ToastService) {
     var ctrl = this;
 
     ctrl.singleSelect = false;
+
+    if (ctrl.requireMatch === undefined) {
+      ctrl.requireMatch = true;
+    }
 
     if (!ctrl.tagNames) {
       ctrl.tagNames = [];
@@ -36,16 +40,89 @@
 
     ctrl.availTagNames = [];
     ctrl.availTagsLoaded = false;
-    TagsService.getTags().then(function onSuccess(tags) {
-      ctrl.availTagsLoaded = true;
-      ctrl.availTagNames = tags.map(function(tag) { return tag.name; });
-    });
+
+    /**
+     * Used to load the available tags in the server for auto completion
+     * purposes.
+     */
+    function loadAvailTags() {
+      TagsService.getTags().then(function onSuccess(tags) {
+        ctrl.availTagsLoaded = true;
+        ctrl.availTagNames = tags.map(function (tag) {
+          return tag.name;
+        });
+      });
+    }
+
+    loadAvailTags();
+
+    /**
+     * Self explanatory. This is used when multi-select is not allowed, hence
+     * whenever the user makes a new selection, we should remove the previous
+     * selection.
+     */
+    function removeAllTagsButLast() {
+      ctrl.tagNames.splice(0, ctrl.tagNames.length - 1);
+    }
 
     $scope.$watchCollection(function() { return ctrl.tagNames; }, function() {
       if (ctrl.singleSelect === true && ctrl.tagNames && ctrl.tagNames.length > 1) {
-        ctrl.tagNames.splice(0, ctrl.tagNames.length - 1);
+        removeAllTagsButLast();
       }
     });
+
+    /**
+     * Called when the user is trying to use a tag that doesn't exist in the
+     * database and thus we should create it for him/her.
+     * @param tagName The name of the tag being used.
+     * @returns A promise object that is either resolved when the tag is added
+     * or rejected with an explanation if the tag couldn't be created or the
+     * operation was cancelled by the user; in the latter case, the reason is
+     * just null.
+     */
+    function onAddingNewTag(tagName) {
+      if (ctrl.availTagNames.indexOf(tagName) !== -1) {
+        return;
+      }
+      var confirm = $mdDialog.confirm()
+        .title("Tag doesn't exist")
+        .content("The tag '" + tagName + "' doesn't exist. Do you want to add it?")
+        .ok('Yes')
+        .cancel('No');
+      // TODO: Use this if possible: .targetEvent(event);
+
+      var deferred = $q.defer();
+      $mdDialog.show(confirm).then(function onConfirm() {
+        TagsService.postTag({name: tagName}).then(function onSuccess() {
+          // The tag was successfully added so we add to the list of available
+          // tags for auto completion.
+          ctrl.availTagNames.push(tagName);
+          deferred.resolve();
+        }, function onError() {
+          undoAddingTag(tagName);
+          deferred.reject("Couldn't create tag. Please try again.");
+        });
+      }, function onCancel() {
+        // User cancelled the operation.
+        undoAddingTag(tagName);
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function undoAddingTag(tagName) {
+      var i;
+      while ((i = ctrl.tagNames.indexOf(tagName)) !== -1) {
+        ctrl.tagNames.splice(i, 1);
+      }
+    }
+
+    ctrl.onAppend = function() {
+      if (ctrl.allowAddingTags) {
+        onAddingNewTag(ctrl.tagQuery);
+      }
+      return ctrl.tagQuery;
+    };
 
     ctrl.findTagNames = function (query) {
       if (!ctrl.availTagsLoaded) {
@@ -69,7 +146,8 @@
       scope: {
         tagNames: '=',
         readOnly: '=',
-        singleSelect: '='
+        singleSelect: '=',
+        allowAddingTags: '='
       }
     };
 

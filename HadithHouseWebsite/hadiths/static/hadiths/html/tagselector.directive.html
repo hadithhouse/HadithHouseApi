@@ -1,7 +1,8 @@
 <span>
   <md-chips ng-model="ctrl.tagNames" readonly="ctrl.readOnly"
             md-autocomplete-snap
-            md-require-match="true">
+            md-on-append="ctrl.onAppend()"
+            md-require-match="!ctrl.allowAddingTags">
     <md-autocomplete
         md-selected-item="ctrl.selectedTag"
         md-selected-item-change=""
@@ -9,6 +10,7 @@
         md-search-text-change=""
         md-items="tagName in ctrl.findTagNames(ctrl.tagQuery)"
         md-item-text="tagName"
+        md-no-cache="true"
         placeholder="Search for a tag">
       <md-item-template>
         <span md-highlight-text="ctrl.tagQuery">{{ tagName }}</span>
