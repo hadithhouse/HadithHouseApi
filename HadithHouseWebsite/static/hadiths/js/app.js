@@ -25,32 +25,66 @@
 (function () {
   'use strict';
 
-  var HadithHouseApp = angular.module('HadithHouseApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
+  var HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute', 'ngMaterial', 'ngMdIcons']);
 
-  HadithHouseApp.config(function ($routeProvider, $mdThemingProvider/*, $mdIconProvider*/) {
-    /*$mdIconProvider
-     .defaultIconSet("/static/hadiths/svg/avatars.svg", 128)
-     .icon("menu", "/static/hadiths/svg/menu.svg", 24)
-     .icon("share", "/static/hadiths/svg/share.svg", 24)
-     .icon("google_plus", "/static/hadiths/svg/google_plus.svg", 512)
-     .icon("hangouts", "/static/hadiths/svg/hangouts.svg", 512)
-     .icon("twitter", "/static/hadiths/svg/twitter.svg", 512)
-     .icon("phone", "/static/hadiths/svg/phone.svg", 512);*/
-
-    $mdThemingProvider.theme('default')
-      .primaryPalette('brown')
-      .accentPalette('red');
+  HadithHouseApp.config(function ($httpProvider, $routeProvider, $mdThemingProvider) {
+    /*$mdThemingProvider.theme('default')
+     .primaryPalette('brown')
+     .accentPalette('red');*/
 
     $routeProvider.when('/hadiths', {
       templateUrl: getHtmlBasePath() + 'hadiths.html',
       controller: 'HadithsCtrl',
+      controllerAs: 'ctrl',
+    }).when('/hadith/:hadithId', {
+      templateUrl: getHtmlBasePath() + 'hadith.html',
+      controller: 'HadithCtrl',
+      controllerAs: 'ctrl',
+    }).when('/persons', {
+      templateUrl: getHtmlBasePath() + 'persons.html',
+      controller: 'PersonsCtrl',
+      controllerAs: 'ctrl',
+    }).when('/person/:personId', {
+      templateUrl: getHtmlBasePath() + 'person.html',
+      controller: 'PersonCtrl',
       controllerAs: 'ctrl',
     }).when('/tags', {
       templateUrl: getHtmlBasePath() + 'tags.html',
       controller: 'TagsCtrl',
       controllerAs: 'ctrl',
     });
-  });
+
+    $httpProvider.interceptors.push([
+      "$q", "$rootScope", function ($q, $rootScope) {
+        return {
+          'request': function (config) {
+            //To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
+            if (!config.headers.hasOwnProperty("X-global"))
+              $rootScope.pendingRequests++;
+            return config || $q.when(config);
+          },
+          'requestError': function (rejection) {
+            if ($rootScope.pendingRequests >= 1)
+              $rootScope.pendingRequests--;
+            return $q.reject(rejection);
+          },
+          'response': function (response) {
+            if ($rootScope.pendingRequests >= 1)
+              $rootScope.pendingRequests--;
+            return response || $q.when(response);
+          },
+          'responseError': function (rejection) {
+            if ($rootScope.pendingRequests >= 1)
+              $rootScope.pendingRequests--;
+            return $q.reject(rejection);
+          }
+        };
+      }
+    ]);
+  }).run(['$rootScope', '$mdDialog', function ($rootScope) {
+    $rootScope.pendingRequests = 0;
+  }]);
+
 
   HadithHouseApp.controller('HadithHouseCtrl',
     function ($scope, $location, $mdSidenav) {

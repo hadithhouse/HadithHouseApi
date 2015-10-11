@@ -31,6 +31,46 @@
     var getApiUrl = window['getApiUrl'];
 
     var cachedPersons = null;
+    var personsDict = {};
+    var personsDictCreated = false;
+
+    /**
+     * Retrieves the person having the given ID.
+     * @param personId The ID of the person.
+     * @returns A promise resolving on success to the required person.
+     */
+    function getPerson(personId) {
+      var deferred = $q.defer();
+
+      if (personsDict[personId]) {
+        deferred.resolve(personsDict[personId]);
+        return deferred.promise;
+      }
+
+      $http.get(getApiUrl() + 'persons/' + personId).then(function onSuccess(response) {
+        var person = response.data;
+        deferred.resolve(person);
+      }, function onError(reason) {
+        deferred.reject(reason);
+      });
+
+      return deferred.promise;
+    }
+
+    function getPersonSync(personId) {
+      if (!personsDictCreated) {
+        throw "Persons are not loaded yet.";
+      }
+      return personsDict[personId] || null;
+    }
+
+    function createPersonsDict() {
+      personsDict = {};
+      personsDictCreated = true;
+      _.each(cachedPersons, function(person) {
+        personsDict[person.id] = person;
+      });
+    }
 
     function getPersons() {
       var deferred = $q.defer();
@@ -42,9 +82,10 @@
 
       $http.get(getApiUrl() + 'persons/').then(function onSuccess(response) {
         cachedPersons = response.data;
+        createPersonsDict();
         deferred.resolve(cachedPersons);
-      }, function onError() {
-        deferred.reject();
+      }, function onError(reason) {
+        deferred.reject(reason);
 
         $mdDialog.show(
           $mdDialog.alert()
@@ -59,8 +100,55 @@
       return deferred.promise;
     }
 
+    function postPerson(person) {
+      var d = $http.post(getApiUrl() + 'persons/', person);
+      d.then(function onSuccess(result) {
+        var newPerson = result.data;
+        if (cachedPersons !== null) {
+          cachedPersons.push(newPerson);
+        }
+      });
+      return d;
+    }
+
+    function putPerson(person) {
+      var d = $http.put(getApiUrl() + 'persons/' + person.id, person);
+      d.then(function onSuccess(result) {
+        var newPerson = result.data;
+        if (cachedPersons !== null) {
+          for (var i = 0; i < cachedPersons.length; i++) {
+            if (cachedPersons[i].id === newPerson.id) {
+              cachedPersons[i] = newPerson;
+              break;
+            }
+          }
+        }
+      });
+      return d;
+    }
+
+    function deletePerson(personId) {
+      var d = $http.delete(getApiUrl() + 'persons/' + personId);
+      d.then(function onSuccess(result) {
+        var newPerson = result.data;
+        if (cachedPersons !== null) {
+          for (var i = 0; i < cachedPersons.length; i++) {
+            if (cachedPersons[i].id === personId) {
+              cachedPersons.splice(i, 1);
+              break;
+            }
+          }
+        }
+      });
+      return d;
+    }
     return {
-      getPersons: getPersons
+      getPerson: getPerson,
+      getPersonSync: getPersonSync,
+      getPersons: getPersons,
+      postPerson: postPerson,
+      putPerson: putPerson,
+      deletePerson: deletePerson
     };
   });
 }());

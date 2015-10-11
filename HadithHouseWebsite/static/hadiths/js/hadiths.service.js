@@ -30,15 +30,114 @@
   HadithHouseApp.factory('HadithsService', function ($http, $q, $mdDialog) {
     var getApiUrl = window['getApiUrl'];
 
-    function postHadith(hadith) {
-      $http.post(getApiUrl() + 'hadiths/', hadith).then(
-        function onSuccess() {
+    var cachedHadiths = null;
+
+    function reloadHadiths() {
+      // Remove cached hadiths and sends a request to load hadiths.
+      cachedHadiths = null;
+      return getHadiths();
+    }
+
+    function getHadith(hadithId) {
+      var deferred = $q.defer();
+
+      $http.get(getApiUrl() + 'hadiths/' + hadithId).then(function onSuccess(response) {
+        var hadith = response.data;
+        deferred.resolve(hadith);
       }, function onError() {
+        deferred.reject();
+
+        // TODO: We could tell whether the ID Is invalid by checking the detail of the
+        // server error.
+        $mdDialog.show(
+          $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .title("Error")
+            .content("Couldn't load hadith! The ID might be invalid. Otherwire, please try again or refresh the page.")
+            .ariaLabel('Error')
+            .ok('OK')
+        );
       });
+
+      return deferred.promise;
+    }
+
+    function getHadiths(refreshCache) {
+      var deferred = $q.defer();
+
+      if (cachedHadiths != null && refreshCache !== true) {
+        deferred.resolve(cachedHadiths);
+        return deferred.promise;
+      }
+
+      $http.get(getApiUrl() + 'hadiths/').then(function onSuccess(response) {
+        cachedHadiths = response.data;
+        deferred.resolve(cachedHadiths);
+      }, function onError() {
+        deferred.reject();
+
+        $mdDialog.show(
+          $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .title("Error")
+            .content("Couldn't load hadiths! Please try again or refresh the page.")
+            .ariaLabel('Error')
+            .ok('OK')
+        );
+      });
+
+      return deferred.promise;
+    }
+
+    function postHadith(hadith) {
+      var d = $http.post(getApiUrl() + 'hadiths/', hadith);
+      d.then(function onSuccess(result) {
+        var newHadith = result.data;
+        if (cachedHadiths !== null) {
+          cachedHadiths.push(newHadith);
+        }
+      });
+      return d;
+    }
+
+    function putHadith(hadith) {
+      var d = $http.put(getApiUrl() + 'hadiths/' + hadith.id, hadith);
+      d.then(function onSuccess(result) {
+        var newHadith = result.data;
+        if (cachedHadiths !== null) {
+          for (var i = 0; i < cachedHadiths.length; i++) {
+            if (cachedHadiths[i].id === newHadith.id) {
+              cachedHadiths[i] = newHadith;
+              break;
+            }
+          }
+        }
+      });
+      return d;
+    }
+
+    function deleteHadith(hadithId) {
+      var d = $http.delete(getApiUrl() + 'hadiths/' + hadithId);
+      d.then(function onSuccess(result) {
+        var newHadith = result.data;
+        if (cachedHadiths !== null) {
+          for (var i = 0; i < cachedHadiths.length; i++) {
+            if (cachedHadiths[i].id === hadithId) {
+              cachedHadiths.splice(i, 1);
+              break;
+            }
+          }
+        }
+      });
+      return d;
     }
 
     return {
-      postHadith: postHadith
+      getHadith: getHadith,
+      getHadiths: getHadiths,
+      postHadith: postHadith,
+      putHadith: putHadith,
+      deleteHadith: deleteHadith
     };
   });
 }());
