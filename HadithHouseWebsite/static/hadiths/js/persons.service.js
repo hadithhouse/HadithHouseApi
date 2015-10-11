@@ -21,13 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/*
-(function() {
+
+(function () {
   'use strict';
 
-  var HadithPageModule = angular.module('HadithPageModule', []);
+  var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithPageModule.controller('HadithPageCtrl', ['$scope',
-    function($scope) {
-    }]);
-}());*/
+  HadithHouseApp.factory('PersonsService', function ($http, $q, $mdDialog) {
+    var getApiUrl = window['getApiUrl'];
+
+    var cachedPersons = null;
+
+    function getPersons() {
+      var deferred = $q.defer();
+
+      if (cachedPersons != null) {
+        deferred.resolve(cachedPersons);
+        return deferred.promise;
+      }
+
+      $http.get(getApiUrl() + 'persons/').then(function onSuccess(response) {
+        cachedPersons = response.data;
+        deferred.resolve(cachedPersons);
+      }, function onError() {
+        deferred.reject();
+
+        $mdDialog.show(
+          $mdDialog.alert()
+            .clickOutsideToClose(true)
+            .title("Error")
+            .content("Couldn't load persons! Please try again or refresh the page.")
+            .ariaLabel('Error')
+            .ok('OK')
+        );
+      });
+
+      return deferred.promise;
+    }
+
+    return {
+      getPersons: getPersons
+    };
+  });
+}());
+

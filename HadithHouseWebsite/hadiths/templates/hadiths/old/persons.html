@@ -1,0 +1,24 @@
+{% comment %}
+{% extends "hadiths/base.html" %}
+{% load static %}
+
+{% block title %}Hadith House - Persons{% endblock %}
+
+{% block header_scripts %}
+{% endblock %}
+
+{% block content %}
+
+  {% for person in persons %}
+    <div>
+    <a>{{ person.full_name }}</a>
+    </div>
+  {% endfor %}
+
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/javascript" src="{% static 'hadiths/js/personspage.js' %}">
+  </script>
+{% endblock %}
+{% endcomment %}

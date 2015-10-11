@@ -1,0 +1,26 @@
+{% comment %}
+{% extends "hadiths/base.html" %}
+{% load static %}
+
+{% block header_scripts %}
+{% endblock %}
+
+{% block title %}
+الأحاديث
+{% endblock %}
+
+{% block content %}
+
+  {% for hadith in hadiths %}
+    <div>
+    <a href="/hadith/{{ hadith.id }}">{{ hadith.text|truncatechars:128 }}</a>
+    </div>
+  {% endfor %}
+
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/javascript" src="{% static 'hadiths/js/hadithspage.js' %}">
+  </script>
+{% endblock %}
+{% endcomment %}

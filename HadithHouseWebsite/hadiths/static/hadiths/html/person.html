@@ -1,0 +1,64 @@
+<div ng-if="ctrl.error">
+  Couldn't load person or the person is not found.
+</div>
+<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+  <h1>
+    {{ ctrl.person.display_name }}
+    <md-icon class="material-icons" ng-click="ctrl.startEditing()" ng-hide="ctrl.isEditing">edit</md-icon>
+    <md-icon class="material-icons" ng-click="ctrl.cancelEditing()" ng-hide="!ctrl.isEditing || ctrl.addingNew">cancel</md-icon>
+    <md-icon class="material-icons" ng-click="ctrl.finishEditing()" ng-hide="!ctrl.isEditing">save</md-icon>
+  </h1>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Title</label>
+      <input ng-model="ctrl.person.title" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+    <md-input-container flex>
+      <label>Full Name</label>
+      <input ng-model="ctrl.person.full_name" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+    <md-input-container>
+      <label>Display Name</label>
+      <input ng-model="ctrl.person.display_name" ng-disabled="!ctrl.isEditing"/>
+    </md-input-container>
+  </div>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Brief Description</label>
+      <textarea ng-model="ctrl.person.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
+    </md-input-container>
+  </div>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Birth Year</label>
+      <input ng-model="ctrl.person.birth_year" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+    <md-input-container flex>
+      <label>Birth Month</label>
+      <input ng-model="ctrl.person.birth_month" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+    <md-input-container flex>
+      <label>Birth Day</label>
+      <input ng-model="ctrl.person.birth_day" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+  </div>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Death Year</label>
+      <input ng-model="ctrl.person.death_year" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+    <md-input-container flex>
+      <label>Death Month</label>
+      <input ng-model="ctrl.person.death_month" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+    <md-input-container flex>
+      <label>Death Day</label>
+      <input ng-model="ctrl.person.death_day" ng-disabled="!ctrl.isEditing" />
+    </md-input-container>
+  </div>
+
+</div>

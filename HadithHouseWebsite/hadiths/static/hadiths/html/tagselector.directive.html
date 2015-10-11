@@ -1,0 +1,28 @@
+<span>
+  <md-chips ng-model="ctrl.tagNames" readonly="ctrl.readOnly"
+            md-autocomplete-snap
+            md-on-append="ctrl.onAppend()"
+            md-require-match="!ctrl.allowAddingTags">
+    <md-autocomplete
+        md-selected-item="ctrl.selectedTag"
+        md-selected-item-change=""
+        md-search-text="ctrl.tagQuery"
+        md-search-text-change=""
+        md-items="tagName in ctrl.findTagNames(ctrl.tagQuery)"
+        md-item-text="tagName"
+        md-no-cache="true"
+        placeholder="Search for a tag">
+      <md-item-template>
+        <span md-highlight-text="ctrl.tagQuery">{{ tagName }}</span>
+      </md-item-template>
+      <md-not-found>
+        No matches found for "{{ ctrl.tagQuery }}".
+      </md-not-found>
+    </md-autocomplete>
+    <md-chip-template>
+      <span>
+        <strong>{{$chip}}</strong>
+      </span>
+    </md-chip-template>
+  </md-chips>
+</span>

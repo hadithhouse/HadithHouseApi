@@ -21,13 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/*
-(function() {
+
+(function () {
   'use strict';
 
-  var HadithPageModule = angular.module('HadithPageModule', []);
+  var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithPageModule.controller('HadithPageCtrl', ['$scope',
-    function($scope) {
-    }]);
-}());*/
+  HadithHouseApp.factory('ToastService', function ($mdToast) {
+    var toastPosition = {
+      bottom: false,
+      top: true,
+      left: false,
+      right: true
+    };
+
+    function getToastPosition() {
+      return Object.keys(toastPosition)
+        .filter(function (pos) {
+          return toastPosition[pos];
+        }).join(' ');
+    }
+
+    // TODO: Add a method for displaying error toasts.
+
+    /**
+     * Shows a test with the given message.
+     * @param message The message to show.
+     */
+    function show(message) {
+      $mdToast.show($mdToast.simple()
+        .content(message)
+        .position(getToastPosition())
+        .hideDelay(3000));
+    }
+
+    return {
+      show: show
+    };
+  });
+}());

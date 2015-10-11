@@ -1,0 +1,23 @@
+<div ng-if="ctrl.error">
+  Couldn't load hadith or the hadith is not found.
+</div>
+<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+  <h1>
+    Hadith {{ ctrl.hadith.id }}
+    <md-icon class="material-icons" ng-click="ctrl.startEditing()" ng-hide="ctrl.isEditing">edit</md-icon>
+    <md-icon class="material-icons" ng-click="ctrl.cancelEditing()" ng-hide="!ctrl.isEditing || ctrl.addingNew">cancel
+    </md-icon>
+    <md-icon class="material-icons" ng-click="ctrl.finishEditing()" ng-hide="!ctrl.isEditing">save</md-icon>
+  </h1>
+
+  <label>Text</label>
+  <md-input-container ng-disabled="!ctrl.isEditing">
+    <input ng-model="ctrl.hadith.text"/>
+  </md-input-container>
+
+  <label>Person</label>
+  <hh-person-selector persons-ids="ctrl.hadithPersonsIds" read-only="!ctrl.isEditing" single-select="true"></hh-person-selector>
+
+  <label>Tags</label>
+  <hh-tag-selector tag-names="ctrl.hadith.tags" read-only="!ctrl.isEditing" allow-adding-tags="true"></hh-tag-selector>
+</div>

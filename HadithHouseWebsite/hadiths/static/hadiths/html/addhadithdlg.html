@@ -1,0 +1,64 @@
+<md-dialog aria-label="Add New Hadith">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Add New Hadith</h2>
+        <span flex></span>
+        <!-- TODO: Download icons -->
+        <md-button class="md-icon-button" ng-click="ctrl.cancel()">
+          <md-icon aria-label="Close dialog">close</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px;">
+
+      <md-input-container flex>
+        <label>Hadith Text</label>
+        <textarea ng-model="ctrl.newHadith.text"/>
+      </md-input-container>
+
+      <md-autocomplete
+          md-selected-item="ctrl.newHadith.person"
+          md-selected-item-change=""
+          md-search-text="ctrl.personQuery"
+          md-search-text-change=""
+          md-items="person in ctrl.findPersons(ctrl.personQuery)"
+          md-item-text="person.display_name"
+          placeholder="Search for a person">
+        <md-item-template>
+          <span md-highlight-text="ctrl.personQuery">{{ person.display_name }}</span>
+        </md-item-template>
+        <md-not-found>
+          No matches found for "{{ ctrl.personQuery }}".
+        </md-not-found>
+      </md-autocomplete>
+
+      <md-chips ng-model="ctrl.newHadith.tags" md-autocomplete-snap md-require-match>
+        <md-autocomplete
+            md-selected-item="ctrl.selectedTag"
+            md-selected-item-change=""
+            md-search-text="ctrl.tagQuery"
+            md-search-text-change=""
+            md-items="tag in ctrl.findTags(ctrl.tagQuery)"
+            md-item-text="tag"
+            placeholder="Search for a tag">
+          <span md-highlight-text="ctrl.tagQuery">{{ tag.name }}</span>
+        </md-autocomplete>
+        <md-chip-template>
+        <span>
+          <strong>{{$chip.name}}</strong>
+        </span>
+        </md-chip-template>
+      </md-chips>
+
+    </md-dialog-content>
+    <div class="md-actions" layout="row">
+      <md-button ng-click="ctrl.cancel()">
+        Cancel
+      </md-button>
+      <md-button ng-click="ctrl.add()" style="margin-right:20px;">
+        {{ ctrl.isSaveMode() ? 'Save' : 'Add' }}
+      </md-button>
+    </div>
+  </form>
+</md-dialog>

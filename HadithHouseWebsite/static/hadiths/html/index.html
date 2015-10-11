@@ -24,9 +24,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-route.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-aria.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-resource.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.0/angular-material.min.js"></script>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.0/angular-material.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">
   <script
       src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.5.0/angular-material-icons.min.js"></script>
 
@@ -36,12 +35,15 @@
 
   <!-- Underscore -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+  <!-- HadithHouse -->
+  <script src="{% static 'hadiths/js/string.js' %}"></script>
 </head>
-<body layout="column" ng-app="HadithHouseApp" ng-controller="HadithHouseCtrl as ctrl">
+<body layout="column" ng-app="HadithHouseApp" ng-controller="HadithHouseCtrl">
 
 <md-toolbar layout="row">
   <div class="md-toolbar-tools">
-    <md-button ng-click="ctrl.toggleSideNav('left')" hide-gt-sm class="md-icon-button">
+    <md-button ng-click="toggleSideNav('left')" hide-gt-sm class="md-icon-button">
       <md-icon aria-label="Menu" md-svg-icon="https://s3-us-west-2.amazonaws.com/s.cdpn.io/68133/menu.svg"></md-icon>
     </md-button>
     <h1>Hadith House</h1>
@@ -51,12 +53,13 @@
 {% verbatim %}
 <div layout="row" flex>
   <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
+              ng-controller="SideNavCtrl as sideNavCtrl"
               md-component-id="left"
               md-is-locked-open="$mdMedia('gt-sm')">
 
     <md-list>
-      <md-list-item ng-repeat="item in ctrl.items">
-        <md-button ng-click="ctrl.selectItem(item)" ng-class="{'selected' : item === ctrl.selected }">
+      <md-list-item ng-repeat="item in sideNavCtrl.items">
+        <md-button ng-click="sideNavCtrl.selectItem(item)" ng-class="{'selected' : item === sideNavCtrl.selected }">
           {{ item.name }}
         </md-button>
       </md-list-item>
@@ -67,10 +70,11 @@
 
   <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
     <md-content flex id="content">
-      <div style="height: 10px;">
-        <md-progress-linear md-mode="indeterminate" ng-show="pendingRequests > 0"></md-progress-linear>
-      </div>
-      <div ng-view></div>
+      <h2>{{ sideNavCtrl.selected.name }}</h2>
+
+      <md-button class="md-fab md-mini" ng-click="showAddHadithDialog()">
+        <md-icon class="material-icons">add</md-icon>
+      </md-button>
     </md-content>
   </div>
 </div>
@@ -78,29 +82,13 @@
 {% endverbatim %}
 
 <script>
-  function getHtmlBasePath() {
-    return '{% static 'hadiths/html' %}/';
-  }
-
-  function getApiUrl() {
-    return '/apis/';
-  }
+  var htmlBasePath = '{% static 'hadiths/html' %}';
+  alert(htmlBasePath);
 </script>
 <link rel="stylesheet" href="{% static 'hadiths/css/styles.css' %}">
 <script src="{% static 'hadiths/js/app.js' %}"></script>
-<script src="{% static 'hadiths/js/addhadithdlg.js' %}"></script>
-<script src="{% static 'hadiths/js/addtagdlg.js' %}"></script>
-<script src="{% static 'hadiths/js/person.js' %}"></script>
-<script src="{% static 'hadiths/js/persons.js' %}"></script>
-<script src="{% static 'hadiths/js/hadith.js' %}"></script>
-<script src="{% static 'hadiths/js/hadiths.js' %}"></script>
-<script src="{% static 'hadiths/js/tags.js' %}"></script>
-<script src="{% static 'hadiths/js/persons.service.js' %}"></script>
-<script src="{% static 'hadiths/js/hadiths.service.js' %}"></script>
-<script src="{% static 'hadiths/js/tags.service.js' %}"></script>
-<script src="{% static 'hadiths/js/toast.service.js' %}"></script>
-<script src="{% static 'hadiths/js/tagselector.directive.js' %}"></script>
-<script src="{% static 'hadiths/js/personselector.directive.js' %}"></script>
+<script src="{% static 'hadiths/js/SideNavCtrl.js' %}"></script>
 
 </body>
 </html>
+

@@ -1,0 +1,13 @@
+<section class="md-whiteframe-z1">
+
+<md-list>
+  <md-list-item ng-repeat="tag in ctrl.tags">
+    <p> {{ tag.name }} </p>
+    <md-icon class="material-icons" ng-click="ctrl.deleteTag(tag)">delete</md-icon>
+  </md-list-item>
+</md-list>
+
+<md-button class="md-fab md-mini" ng-click="ctrl.showAddTagDialog($event)">
+  <md-icon class="material-icons">add</md-icon>
+</md-button>
+</section>

@@ -1,0 +1,34 @@
+{% comment %}
+{% extends "hadiths/base.html" %}
+{% load static %}
+
+{% block header_scripts %}
+{% endblock %}
+
+{% block content %}
+
+  <h2>متن الحديث</h2>
+  <p>
+    {{ hadith.text }}
+  </p>
+
+  <h2>سلاسل الحديث</h2>
+  {% for chain in chains %}
+
+    <div>
+      {% for link in chain.links %}
+        <div>
+        {{ link.person_name }}
+        </div>
+      {% endfor %}
+    </div>
+
+  {% endfor %}
+
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/javascript" src="{% static 'hadiths/js/hadithpage.js' %}">
+  </script>
+{% endblock %}
+{% endcomment %}
