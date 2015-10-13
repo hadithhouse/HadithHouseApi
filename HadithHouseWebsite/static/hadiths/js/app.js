@@ -87,8 +87,51 @@
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $location, $mdSidenav) {
+    function ($scope, $location, $mdSidenav, FacebookService) {
       var ctrl = this;
+
+      ctrl.fbUser = null;
+      ctrl.fetchedLoginStatus = false;
+      ctrl.fbAccessToken = null;
+
+      // Watch the initialization of FB API.
+      $scope.$watch(function () { return fbApiInit; }, function () {
+        if (!fbApiInit) {
+          return;
+        }
+        FacebookService.getLoginStatus().then(function(response) {
+          if (response.status === 'connected') {
+            ctrl.fbAccessToken = response.authResponse.accessToken;
+            ctrl.getLoginStatus();
+          } else {
+            ctrl.fetchedLoginStatus = true;
+          }
+        });
+      });
+
+      ctrl.fbLogin = function () {
+        FacebookService.login().then(function(response) {
+          ctrl.getLoginStatus();
+        });
+      };
+
+      ctrl.fbLogout = function () {
+        FacebookService.logout().then(function(response) {
+          ctrl.fbUser = null;
+          ctrl.fbAccessToken = null;
+        });
+      };
+
+      ctrl.getLoginStatus = function() {
+        FacebookService.getLoggedInUser().then(function(user) {
+          ctrl.fetchedLoginStatus = true;
+          ctrl.fbUser = {
+            id: user.id,
+            link: user.link,
+            profilePicUrl: user.picture.data.url
+          }
+        });
+      };
 
       // Load all registered items
       ctrl.items = [

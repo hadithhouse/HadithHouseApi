@@ -1,9 +1,12 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
+from HadithHouseWebsite.server_settings import get_fb_appid
 
 def index(request):
   template = loader.get_template('hadiths/index.html')
-  context = RequestContext(request, { })
+  context = RequestContext(request, {
+    'appId': get_fb_appid()
+  })
   return HttpResponse(template.render(context))
 
 # Converting to SPA, so removing those views.

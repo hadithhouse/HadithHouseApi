@@ -39,12 +39,71 @@
 </head>
 <body layout="column" ng-app="HadithHouseApp" ng-controller="HadithHouseCtrl as ctrl">
 
+<!-- Facebook Authentication -->
+<script>
+  var fbApiInit = false;
+
+  window.fbAsyncInit = function () {
+    FB.init({
+      appId: '{{ appId }}',
+      xfbml: true,
+      version: 'v2.4'
+    });
+
+    fbApiInit = true;
+
+    // If Angular is already initialized, manually call $digest of the body
+    // to trigger the handler of any $watch on fbLoginStatus.
+    if (angular) {
+      var bodyScope = angular.element('body').scope();
+      bodyScope.$digest();
+    }
+  };
+
+  (function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+      return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
 <md-toolbar layout="row">
   <div class="md-toolbar-tools">
     <md-button ng-click="ctrl.toggleSideNav('left')" hide-gt-sm class="md-icon-button">
+      <!-- TODO: Use an icon from Angular Material rather than the hardcoded link. -->
       <md-icon aria-label="Menu" md-svg-icon="https://s3-us-west-2.amazonaws.com/s.cdpn.io/68133/menu.svg"></md-icon>
     </md-button>
     <h1>Hadith House</h1>
+
+    <span flex></span>
+    <md-button ng-if="ctrl.fetchedLoginStatus && ctrl.fbUser === null"
+               ng-click="ctrl.fbLogin()">
+      Login with Facebook
+    </md-button>
+
+    {% verbatim %}
+    <div ng-if="ctrl.fetchedLoginStatus && ctrl.fbUser !== null">
+      <md-menu>
+        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
+          <img ng-if="ctrl.fbUser.profilePicUrl" ng-src="{{ ctrl.fbUser.profilePicUrl }}"/>
+        </md-button>
+
+        <md-menu-content width="4">
+          <md-menu-item>
+            <md-button ng-href="{{ ctrl.fbUser.link }}">Profile</md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="ctrl.fbLogout()">Logout</md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+    </div>
+    {% endverbatim %}
   </div>
 </md-toolbar>
 
@@ -101,6 +160,7 @@
 <script src="{% static 'hadiths/js/toast.service.js' %}"></script>
 <script src="{% static 'hadiths/js/tagselector.directive.js' %}"></script>
 <script src="{% static 'hadiths/js/personselector.directive.js' %}"></script>
+<script src="{% static 'hadiths/js/facebook.service.js' %}"></script>
 
 </body>
 </html>
