@@ -139,7 +139,7 @@
     return {
       restrict: 'E',
       replace: true,
-      templateUrl: getHtmlBasePath() + 'tagselector.directive.html',
+      templateUrl: getHtmlBasePath() + 'directives/tagselector.directive.html',
       controller: 'TagSelectorCtrl',
       controllerAs: 'ctrl',
       bindToController: true,

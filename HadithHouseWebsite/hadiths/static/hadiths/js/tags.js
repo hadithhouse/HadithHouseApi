@@ -64,7 +64,7 @@
         locals: {
           tag: null
         },
-        templateUrl: getHtmlBasePath() + 'addtagdlg.html',
+        templateUrl: getHtmlBasePath() + 'dialogs/addtag.dialog.html',
         //parent: angular.element(document.body),
         targetEvent: event,
         clickOutsideToClose: true
@@ -82,7 +82,7 @@
         locals: {
           tag: tag
         },
-        templateUrl: getHtmlBasePath() + 'addtagdlg.html',
+        templateUrl: getHtmlBasePath() + 'dialogs/addtag.dialog.html',
         //parent: angular.element(document.body),
         targetEvent: event,
         clickOutsideToClose: true

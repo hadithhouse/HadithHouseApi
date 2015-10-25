@@ -104,7 +104,7 @@ function waitForPromises(promises, callback) {
     return {
       restrict: 'E',
       replace: true,
-      templateUrl: getHtmlBasePath() + 'personselector.directive.html',
+      templateUrl: getHtmlBasePath() + 'directives/personselector.directive.html',
       controller: 'PersonSelectorCtrl',
       controllerAs: 'ctrl',
       bindToController: true,

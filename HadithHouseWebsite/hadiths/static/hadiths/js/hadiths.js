@@ -32,41 +32,5 @@
           });
         });
       };
-
-      ctrl.showAddHadithDialog = function (event) {
-        $mdDialog.show({
-          bindToController: true,
-          controller: 'AddHadithDialogCtrl',
-          controllerAs: 'ctrl',
-          locals: {
-            hadith: null
-          },
-          templateUrl: getHtmlBasePath() + 'addhadithdlg.html',
-          //parent: angular.element(document.body),
-          targetEvent: event,
-          clickOutsideToClose: true
-        }).then(function onAdd(newHadith) {
-          ctrl.loadHadiths();
-        }, function onCancel() {
-        });
-      };
-
-      ctrl.showEditHadithDialog = function (event, hadith) {
-        $mdDialog.show({
-          bindToController: true,
-          controller: 'AddHadithDialogCtrl',
-          controllerAs: 'ctrl',
-          locals: {
-            hadith: hadith
-          },
-          templateUrl: getHtmlBasePath() + 'addhadithdlg.html',
-          //parent: angular.element(document.body),
-          targetEvent: event,
-          clickOutsideToClose: true
-        }).then(function onSave(newHadith) {
-          ctrl.loadHadiths();
-        }, function onCancel() {
-        });
-      };
     });
 }());
