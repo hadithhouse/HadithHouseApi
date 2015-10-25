@@ -27,12 +27,23 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.factory('PersonsService', function ($http, $q, $mdDialog) {
-    var getApiUrl = window['getApiUrl'];
-
+  HadithHouseApp.factory('PersonsService', function ($http, $q, $mdDialog, $rootScope) {
     var cachedPersons = null;
     var personsDict = {};
     var personsDictCreated = false;
+
+    // TODO: This function duplicated in the other services as well; consider
+    // defining it somewhere else, e.g. $rootScope.
+    function getUrl(relativePath) {
+      var getApiUrl = window['getApiUrl'];
+
+      var accessToken = $rootScope.fbAccessToken;
+      if (accessToken !== null) {
+        return getApiUrl() + relativePath + '?access_token=' + accessToken;
+      } else {
+        return getApiUrl() + relativePath;
+      }
+    }
 
     /**
      * Retrieves the person having the given ID.
@@ -47,7 +58,7 @@
         return deferred.promise;
       }
 
-      $http.get(getApiUrl() + 'persons/' + personId).then(function onSuccess(response) {
+      $http.get(getUrl('persons/' + personId)).then(function onSuccess(response) {
         var person = response.data;
         deferred.resolve(person);
       }, function onError(reason) {
@@ -80,7 +91,7 @@
         return deferred.promise;
       }
 
-      $http.get(getApiUrl() + 'persons/').then(function onSuccess(response) {
+      $http.get(getUrl('persons/')).then(function onSuccess(response) {
         cachedPersons = response.data;
         createPersonsDict();
         deferred.resolve(cachedPersons);
@@ -101,7 +112,7 @@
     }
 
     function postPerson(person) {
-      var d = $http.post(getApiUrl() + 'persons/', person);
+      var d = $http.post(getUrl('persons/'), person);
       d.then(function onSuccess(result) {
         var newPerson = result.data;
         if (cachedPersons !== null) {
@@ -112,7 +123,7 @@
     }
 
     function putPerson(person) {
-      var d = $http.put(getApiUrl() + 'persons/' + person.id, person);
+      var d = $http.put(getUrl('persons/' + person.id), person);
       d.then(function onSuccess(result) {
         var newPerson = result.data;
         if (cachedPersons !== null) {
@@ -128,7 +139,7 @@
     }
 
     function deletePerson(personId) {
-      var d = $http.delete(getApiUrl() + 'persons/' + personId);
+      var d = $http.delete(getUrl('persons/' + personId));
       d.then(function onSuccess(result) {
         var newPerson = result.data;
         if (cachedPersons !== null) {

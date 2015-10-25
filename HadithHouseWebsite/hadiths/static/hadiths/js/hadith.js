@@ -4,7 +4,7 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('HadithCtrl',
-    function ($scope, $mdDialog, $location, $routeParams, $resource, HadithsService, ToastService) {
+    function ($scope, $mdDialog, $location, $routeParams, HadithsService, ToastService) {
       var ctrl = this;
 
       // Is the user loading an existing hadith or adding a new one?

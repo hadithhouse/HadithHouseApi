@@ -27,10 +27,21 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.factory('HadithsService', function ($http, $q, $mdDialog) {
-    var getApiUrl = window['getApiUrl'];
-
+  HadithHouseApp.factory('HadithsService', function ($http, $q, $mdDialog, $rootScope) {
     var cachedHadiths = null;
+
+    // TODO: This function duplicated in the other services as well; consider
+    // defining it somewhere else, e.g. $rootScope.
+    function getUrl(relativePath) {
+      var getApiUrl = window['getApiUrl'];
+
+      var accessToken = $rootScope.fbAccessToken;
+      if (accessToken !== null) {
+        return getApiUrl() + relativePath + '?access_token=' + accessToken;
+      } else {
+        return getApiUrl() + relativePath;
+      }
+    }
 
     function reloadHadiths() {
       // Remove cached hadiths and sends a request to load hadiths.
@@ -41,7 +52,7 @@
     function getHadith(hadithId) {
       var deferred = $q.defer();
 
-      $http.get(getApiUrl() + 'hadiths/' + hadithId).then(function onSuccess(response) {
+      $http.get(getUrl('hadiths/' + hadithId)).then(function onSuccess(response) {
         var hadith = response.data;
         deferred.resolve(hadith);
       }, function onError() {
@@ -70,7 +81,7 @@
         return deferred.promise;
       }
 
-      $http.get(getApiUrl() + 'hadiths/').then(function onSuccess(response) {
+      $http.get(getUrl('hadiths/')).then(function onSuccess(response) {
         cachedHadiths = response.data;
         deferred.resolve(cachedHadiths);
       }, function onError() {
@@ -90,7 +101,7 @@
     }
 
     function postHadith(hadith) {
-      var d = $http.post(getApiUrl() + 'hadiths/', hadith);
+      var d = $http.post(getUrl('hadiths/'), hadith);
       d.then(function onSuccess(result) {
         var newHadith = result.data;
         if (cachedHadiths !== null) {
@@ -101,7 +112,7 @@
     }
 
     function putHadith(hadith) {
-      var d = $http.put(getApiUrl() + 'hadiths/' + hadith.id, hadith);
+      var d = $http.put(getUrl('hadiths/' + hadith.id), hadith);
       d.then(function onSuccess(result) {
         var newHadith = result.data;
         if (cachedHadiths !== null) {
@@ -117,7 +128,7 @@
     }
 
     function deleteHadith(hadithId) {
-      var d = $http.delete(getApiUrl() + 'hadiths/' + hadithId);
+      var d = $http.delete(getUrl('hadiths/' + hadithId));
       d.then(function onSuccess(result) {
         var newHadith = result.data;
         if (cachedHadiths !== null) {

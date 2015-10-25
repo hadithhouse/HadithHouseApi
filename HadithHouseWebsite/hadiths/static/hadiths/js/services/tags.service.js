@@ -27,10 +27,21 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.factory('TagsService', function ($http, $q, $mdDialog) {
-    var getApiUrl = window['getApiUrl'];
-
+  HadithHouseApp.factory('TagsService', function ($http, $q, $mdDialog, $rootScope) {
     var cachedTags = null;
+
+    // TODO: This function duplicated in the other services as well; consider
+    // defining it somewhere else, e.g. $rootScope.
+    function getUrl(relativePath) {
+      var getApiUrl = window['getApiUrl'];
+
+      var accessToken = $rootScope.fbAccessToken;
+      if (accessToken !== null) {
+        return getApiUrl() + relativePath + '?access_token=' + accessToken;
+      } else {
+        return getApiUrl() + relativePath;
+      }
+    }
 
     function reloadTags() {
       // Remove cached tags and sends a request to load tags.
@@ -46,7 +57,7 @@
         return deferred.promise;
       }
 
-      $http.get(getApiUrl() + 'hadithtags/').then(function onSuccess(response) {
+      $http.get(getUrl('hadithtags/')).then(function onSuccess(response) {
         cachedTags = response.data;
         deferred.resolve(cachedTags);
       }, function onError() {
@@ -66,7 +77,7 @@
     }
 
     function postTag(tag) {
-      var d = $http.post(getApiUrl() + 'hadithtags/', tag);
+      var d = $http.post(getUrl('hadithtags/'), tag);
       d.then(function onSuccess(result) {
         var newTag = result.data;
         if (cachedTags !== null) {
@@ -77,7 +88,7 @@
     }
 
     function putTag(tag) {
-      var d = $http.put(getApiUrl() + 'hadithtags/' + tag.id, tag);
+      var d = $http.put(getUrl('hadithtags/' + tag.id), tag);
       d.then(function onSuccess(result) {
         var newTag = result.data;
         if (cachedTags !== null) {
@@ -93,7 +104,7 @@
     }
 
     function deleteTag(tagId) {
-      var d = $http.delete(getApiUrl() + 'hadithtags/' + tagId);
+      var d = $http.delete(getUrl('hadithtags/' + tagId));
       d.then(function onSuccess(result) {
         var newTag = result.data;
         if (cachedTags !== null) {

@@ -4,16 +4,15 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('PersonCtrl',
-    function ($mdDialog, $location, $routeParams, $resource, PersonsService, ToastService) {
-      var Person = $resource(getApiUrl() + 'persons/:personId');
-
+    function ($mdDialog, $location, $routeParams, PersonsService, ToastService) {
       var ctrl = this;
 
       ctrl.error = false;
 
-      // Make a request to load the person.
+      // Is the user loading an existing person or adding a new one?
       ctrl.personId = $routeParams.personId;
       if (ctrl.personId === 'new') {
+        // ...adding new person.
         ctrl.person = {
           title: '',
           display_name: '',
@@ -29,8 +28,12 @@
         ctrl.addingNew = true;
         ctrl.isEditing = true;
       } else {
-        // TODO: Add error handler and set ctrl.error to true on error.
-        ctrl.person = Person.get({personId: ctrl.personId});
+        // ...loading an existing hadith.
+        PersonsService.getPerson(ctrl.personId).then(function onSuccess(person) {
+          ctrl.person = person;
+        }, function onError() {
+
+        });
         ctrl.addingNew = false;
         ctrl.isEditing = false;
       }

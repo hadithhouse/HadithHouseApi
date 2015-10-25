@@ -37,11 +37,13 @@
   <!-- Underscore -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 </head>
-<body layout="column" ng-app="HadithHouseApp" ng-controller="HadithHouseCtrl as ctrl">
+<body layout="column" ng-controller="HadithHouseCtrl as ctrl">
 
 <!-- Facebook Authentication -->
 <script>
   var fbApiInit = false;
+  var fbAccessToken = null;
+  var fbFetchedLoginStatus = false;
 
   window.fbAsyncInit = function () {
     FB.init({
@@ -52,12 +54,23 @@
 
     fbApiInit = true;
 
-    // If Angular is already initialized, manually call $digest of the body
-    // to trigger the handler of any $watch on fbLoginStatus.
-    if (angular) {
-      var bodyScope = angular.element('body').scope();
-      bodyScope.$digest();
-    }
+    FB.getLoginStatus(function (response) {
+      fbFetchedLoginStatus = true;
+      if (response.status === 'connected') {
+        // The user is logged in to Facebook and has authenticated
+        // the application.
+        fbAccessToken = response.authResponse.accessToken;
+      } else if (response.status === 'not_authorized') {
+        // The user is logged in to Facebook, but has not authenticated
+        // the application.
+        fbAccessToken = null;
+      } else {
+        // The user isn't logged in to Facebook.
+        fbAccessToken = null;
+      }
+
+      angular.bootstrap(document.body, ['HadithHouseApp']);
+    });
   };
 
   (function (d, s, id) {
@@ -81,21 +94,21 @@
     <h1>Hadith House</h1>
 
     <span flex></span>
-    <md-button ng-if="ctrl.fetchedLoginStatus && ctrl.fbUser === null"
+    <md-button ng-if="fetchedLoginStatus && fbUser === null"
                ng-click="ctrl.fbLogin()">
       Login with Facebook
     </md-button>
 
     {% verbatim %}
-    <div ng-if="ctrl.fetchedLoginStatus && ctrl.fbUser !== null">
+    <div ng-if="fetchedLoginStatus && fbUser !== null">
       <md-menu>
         <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
-          <img ng-if="ctrl.fbUser.profilePicUrl" ng-src="{{ ctrl.fbUser.profilePicUrl }}"/>
+          <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}"/>
         </md-button>
 
         <md-menu-content width="4">
           <md-menu-item>
-            <md-button ng-href="{{ ctrl.fbUser.link }}">Profile</md-button>
+            <md-button ng-href="{{ fbUser.link }}">Profile</md-button>
           </md-menu-item>
           <md-menu-item>
             <md-button ng-click="ctrl.fbLogout()">Logout</md-button>

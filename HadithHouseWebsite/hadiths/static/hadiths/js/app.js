@@ -87,51 +87,40 @@
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $location, $mdSidenav, FacebookService) {
+    function ($scope, $rootScope, $location, $mdSidenav, FacebookService) {
       var ctrl = this;
 
-      ctrl.fbUser = null;
-      ctrl.fetchedLoginStatus = false;
-      ctrl.fbAccessToken = null;
-
-      // Watch the initialization of FB API.
-      $scope.$watch(function () { return fbApiInit; }, function () {
-        if (!fbApiInit) {
-          return;
-        }
-        FacebookService.getLoginStatus().then(function(response) {
-          if (response.status === 'connected') {
-            ctrl.fbAccessToken = response.authResponse.accessToken;
-            ctrl.getLoginStatus();
-          } else {
-            ctrl.fetchedLoginStatus = true;
-          }
-        });
-      });
+      $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
+      $rootScope.fbUser = null;
+      $rootScope.fbAccessToken = fbAccessToken;
 
       ctrl.fbLogin = function () {
         FacebookService.login().then(function(response) {
-          ctrl.getLoginStatus();
+          ctrl.getLoggedInUser();
         });
       };
 
       ctrl.fbLogout = function () {
         FacebookService.logout().then(function(response) {
-          ctrl.fbUser = null;
-          ctrl.fbAccessToken = null;
+          $rootScope.fbUser = null;
+          $rootScope.fbAccessToken = null;
         });
       };
 
-      ctrl.getLoginStatus = function() {
+      ctrl.getLoggedInUser = function() {
         FacebookService.getLoggedInUser().then(function(user) {
-          ctrl.fetchedLoginStatus = true;
-          ctrl.fbUser = {
+          $rootScope.fetchedLoginStatus = true;
+          $rootScope.fbUser = {
             id: user.id,
             link: user.link,
             profilePicUrl: user.picture.data.url
           }
         });
       };
+
+      if ($rootScope.fbAccessToken !== null) {
+        ctrl.getLoggedInUser();
+      }
 
       // Load all registered items
       ctrl.items = [
