@@ -3,6 +3,9 @@
 HadithHouseWebsite/database_settings.py
 HadithHouseWebsite/server_settings.py
 
+# Django's files generated using collectstatic command.
+static/
+
 # PyCharm files
 /.idea/workspace.xml
 /.idea/libraries
