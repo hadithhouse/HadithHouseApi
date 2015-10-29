@@ -1,8 +1,7 @@
-from rest_framework import generics
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 
-from hadiths.models import Hadith, Person, HadithTag
-from hadiths.serializers import HadithSerializer, PersonSerializer, HadithTagSerializer
+from hadiths.models import Hadith, Person, HadithTag, User
+from hadiths.serializers import HadithSerializer, PersonSerializer, HadithTagSerializer, UserSerializer
 
 
 class PersonSetView(FBAuthListCreateAPIView):
@@ -33,3 +32,13 @@ class HadithSetView(FBAuthListCreateAPIView):
 class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
   queryset = Hadith.objects.all()
   serializer_class = HadithSerializer
+
+
+class UserSetView(FBAuthListCreateAPIView):
+  queryset = User.objects.all()
+  serializer_class = UserSerializer
+
+
+class UserView(FBAuthRetrieveUpdateDestroyAPIView):
+  queryset = User.objects.all()
+  serializer_class = UserSerializer
