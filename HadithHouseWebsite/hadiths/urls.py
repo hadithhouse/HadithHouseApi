@@ -16,5 +16,7 @@ urlpatterns = patterns(
   url(r'^apis/hadithtags/$', apiviews.HadithTagSetView.as_view()),
   url(r'^apis/hadithtags/(?P<pk>\w+)$', apiviews.HadithTagView.as_view()),
   url(r'^apis/hadiths/$', apiviews.HadithSetView.as_view()),
-  url(r'^apis/hadiths/(?P<pk>[0-9]+)$', apiviews.HadithView.as_view())
+  url(r'^apis/hadiths/(?P<pk>[0-9]+)$', apiviews.HadithView.as_view()),
+  url(r'^apis/users/$', apiviews.UserSetView.as_view()),
+  url(r'^apis/users/(?P<pk>[0-9]+)$', apiviews.UserView.as_view())
 )

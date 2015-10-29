@@ -52,10 +52,9 @@ def requires_write_perm(func):
   :return: The decorated function
   """
   def wrapper(self, request, *args, **kwargs):
-    # FIXME: Temporarily allow write permissions to all.
-    #user = get_current_user(request.query_params)
-    #if user is None or not user['has_write_perm']:
-    #  return get_auth_error_response()
+    user = get_current_user(request.query_params)
+    if user is None or not user['has_write_perm']:
+      return get_auth_error_response()
     return func(self, request, *args, **kwargs)
   return wrapper
 

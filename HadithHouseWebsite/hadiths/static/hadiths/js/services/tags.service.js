@@ -37,7 +37,7 @@
 
       var accessToken = $rootScope.fbAccessToken;
       if (accessToken !== null) {
-        return getApiUrl() + relativePath + '?access_token=' + accessToken;
+        return getApiUrl() + relativePath + '?fb_token=' + accessToken;
       } else {
         return getApiUrl() + relativePath;
       }
