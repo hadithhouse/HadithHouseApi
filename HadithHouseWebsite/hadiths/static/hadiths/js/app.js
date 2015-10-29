@@ -87,7 +87,7 @@
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $rootScope, $location, $mdSidenav, FacebookService) {
+    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UsersService) {
       var ctrl = this;
 
       $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
@@ -107,7 +107,7 @@
         });
       };
 
-      ctrl.getLoggedInUser = function() {
+      ctrl.getUserInfo = function() {
         FacebookService.getLoggedInUser().then(function(user) {
           $rootScope.fetchedLoginStatus = true;
           $rootScope.fbUser = {
@@ -116,11 +116,12 @@
             profilePicUrl: user.picture.data.url
           }
         });
+        UsersService.getCurrentUser().then(function onSuccess() {
+          debugger;
+        });
       };
 
-      if ($rootScope.fbAccessToken !== null) {
-        ctrl.getLoggedInUser();
-      }
+      ctrl.getUserInfo();
 
       // Load all registered items
       ctrl.items = [
