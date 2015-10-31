@@ -5,91 +5,90 @@ from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 from hadiths.models import Hadith, Person, HadithTag, User
 from hadiths.serializers import HadithSerializer, PersonSerializer, HadithTagSerializer, UserSerializer
-from models import \
-  PERMISSION_CAN_ADD_USER, \
-  PERMISSION_CAN_EDIT_USER, \
-  PERMISSION_CAN_DELETE_USER, \
-  PERMISSION_CAN_ADD_HADITH, \
-  PERMISSION_CAN_EDIT_HADITH, \
-  PERMISSION_CAN_DELETE_HADITH, \
-  PERMISSION_CAN_ADD_PERSON, \
-  PERMISSION_CAN_EDIT_PERSON, \
-  PERMISSION_CAN_DELETE_PERSON, \
-  PERMISSION_CAN_ADD_TAG, \
-  PERMISSION_CAN_EDIT_TAG, \
-  PERMISSION_CAN_DELETE_TAG
+from models import PERMISSIONS
 
 
 class PersonSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
   queryset = Person.objects.all()
   serializer_class = PersonSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_PERSON
+  post_permission = PERMISSIONS['CAN_ADD_PERSON']
 
 
 class PersonView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
   queryset = Person.objects.all()
   serializer_class = PersonSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_PERSON
-  patch_permission = PERMISSION_CAN_EDIT_PERSON
-  delete_permission = PERMISSION_CAN_DELETE_PERSON
+  post_permission = PERMISSIONS['CAN_ADD_PERSON']
+  put_permission = PERMISSIONS['CAN_EDIT_PERSON']
+  patch_permission = PERMISSIONS['CAN_EDIT_PERSON']
+  delete_permission = PERMISSIONS['CAN_DELETE_PERSON']
 
 
 class HadithTagSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
   queryset = HadithTag.objects.all()
   serializer_class = HadithTagSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_TAG
+  post_permission = PERMISSIONS['CAN_ADD_TAG']
 
 
 class HadithTagView(FBAuthRetrieveUpdateDestroyAPIView):
   queryset = HadithTag.objects.all()
   serializer_class = HadithTagSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_TAG
-  patch_permission = PERMISSION_CAN_EDIT_TAG
-  delete_permission = PERMISSION_CAN_DELETE_TAG
+  post_permission = PERMISSIONS['CAN_ADD_TAG']
+  put_permission = PERMISSIONS['CAN_EDIT_TAG']
+  patch_permission = PERMISSIONS['CAN_EDIT_TAG']
+  delete_permission = PERMISSIONS['CAN_DELETE_TAG']
 
 
 class HadithSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
   queryset = Hadith.objects.all()
   serializer_class = HadithSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_HADITH
+  post_permission = PERMISSIONS['CAN_ADD_HADITH']
 
 
 class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
   queryset = Hadith.objects.all()
   serializer_class = HadithSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_HADITH
-  patch_permission = PERMISSION_CAN_EDIT_HADITH
-  delete_permission = PERMISSION_CAN_DELETE_HADITH
+  post_permission = PERMISSIONS['CAN_ADD_HADITH']
+  put_permission = PERMISSIONS['CAN_EDIT_HADITH']
+  patch_permission = PERMISSIONS['CAN_EDIT_HADITH']
+  delete_permission = PERMISSIONS['CAN_DELETE_HADITH']
 
 
 class UserSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_USER
+  post_permission = PERMISSIONS['CAN_ADD_USER']
 
 
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_permission = None
-  post_permission = PERMISSION_CAN_ADD_USER
-  patch_permission = PERMISSION_CAN_EDIT_USER
-  delete_permission = PERMISSION_CAN_DELETE_USER
-
-
-class CurrentUserView(generics.RetrieveAPIView):
-  serializer_class = UserSerializer
+  post_permission = PERMISSIONS['CAN_ADD_USER']
+  put_permission = PERMISSIONS['CAN_EDIT_USER']
+  patch_permission = PERMISSIONS['CAN_EDIT_USER']
+  delete_permission = PERMISSIONS['CAN_DELETE_USER']
 
   def get(self, request, *args, **kwargs):
-    user = fbapi.get_current_user(request.query_params)
-    if user is None:
-      return fbapi.get_auth_error_response()
-    serializer = self.get_serializer(user)
-    return Response(serializer.data)
+    id = kwargs['id']
+    if id == 'current':
+      user = fbapi.get_current_user(request.query_params)
+      if user is None:
+        return fbapi.get_auth_error_response()
+      serializer = self.get_serializer(user)
+      return Response(serializer.data)
+    else:
+      return super(UserView, self).get(request, *args, **kwargs)

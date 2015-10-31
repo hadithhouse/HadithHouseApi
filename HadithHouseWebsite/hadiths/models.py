@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.db import models
 
 
@@ -56,20 +58,22 @@ class ChainLink(models.Model):
 
 
 # TODO: Move this to a better place.
-PERMISSION_CAN_ADD_USER = 1 << 0
-PERMISSION_CAN_EDIT_USER = 1 << 1
-PERMISSION_CAN_DELETE_USER = 1 << 2
-PERMISSION_CAN_ADD_HADITH = 1 << 3
-PERMISSION_CAN_EDIT_HADITH = 1 << 4
-PERMISSION_CAN_DELETE_HADITH = 1 << 5
-PERMISSION_CAN_ADD_PERSON = 1 << 6
-PERMISSION_CAN_EDIT_PERSON = 1 << 7
-PERMISSION_CAN_DELETE_PERSON = 1 << 8
-PERMISSION_CAN_ADD_TAG = 1 << 9
-PERMISSION_CAN_EDIT_TAG = 1 << 10
-PERMISSION_CAN_DELETE_TAG = 1 << 11
-PERMISSION_CAN_APPROVE_UNAPPROVED_DATA = 1 << 12
-PERMISSION_CAN_UNAPPROVE_APPROVED_DATA = 1 << 13
+PERMISSIONS = OrderedDict([
+  ('CAN_ADD_USER', 1 << 0),
+  ('CAN_EDIT_USER', 1 << 1),
+  ('CAN_DELETE_USER', 1 << 2),
+  ('CAN_ADD_HADITH', 1 << 3),
+  ('CAN_EDIT_HADITH', 1 << 4),
+  ('CAN_DELETE_HADITH', 1 << 5),
+  ('CAN_ADD_PERSON', 1 << 6),
+  ('CAN_EDIT_PERSON', 1 << 7),
+  ('CAN_DELETE_PERSON', 1 << 8),
+  ('CAN_ADD_TAG', 1 << 9),
+  ('CAN_EDIT_TAG', 1 << 10),
+  ('CAN_DELETE_TAG', 1 << 11),
+  ('CAN_APPROVE_UNAPPROVED_DATA', 1 << 12),
+  ('CAN_UNAPPROVE_APPROVED_DATA', 1 << 13)
+])
 
 
 class User(models.Model):
@@ -80,44 +84,11 @@ class User(models.Model):
   def get_unregistered_user(cls, fb_id):
     return User(fb_id=fb_id, permissions=0)
 
-  def set_permission(self, permission):
-    self.permissions |= permission
-
-  def clear_permission(self, permission):
-    self.permissions &= ~permission
+  def set_permission(self, permission, set_or_clear):
+    if set_or_clear:
+      self.permissions |= permission
+    else:
+      self.permissions &= ~permission
 
   def has_permission(self, permission):
     return (self.permissions & permission) == permission
-
-  def can_add_hadith(self):
-    return (self.permissions & PERMISSION_CAN_ADD_HADITH) != 0
-
-  def can_edit_hadith(self):
-    return (self.permissions & PERMISSION_CAN_EDIT_HADITH) != 0
-
-  def can_delete_hadith(self):
-    return (self.permissions & PERMISSION_CAN_DELETE_HADITH) != 0
-
-  def can_add_person(self):
-    return (self.permissions & PERMISSION_CAN_ADD_PERSON) != 0
-
-  def can_edit_person(self):
-    return (self.permissions & PERMISSION_CAN_EDIT_PERSON) != 0
-
-  def can_delete_person(self):
-    return (self.permissions & PERMISSION_CAN_DELETE_PERSON) != 0
-
-  def can_add_tag(self):
-    return (self.permissions & PERMISSION_CAN_ADD_TAG) != 0
-
-  def can_edit_tag(self):
-    return (self.permissions & PERMISSION_CAN_EDIT_TAG) != 0
-
-  def can_delete_tag(self):
-    return (self.permissions & PERMISSION_CAN_DELETE_TAG) != 0
-
-  def can_approve_unapproved_data(self):
-    return (self.permissions & PERMISSION_CAN_APPROVE_UNAPPROVED_DATA) != 0
-
-  def can_unapprove_approved_data(self):
-    return (self.permissions & PERMISSION_CAN_UNAPPROVE_APPROVED_DATA) != 0

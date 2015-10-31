@@ -1,7 +1,9 @@
+from collections import OrderedDict
+
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
 
-from hadiths.models import Hadith, Person, HadithTag, User
+from hadiths.models import Hadith, Person, HadithTag, User, PERMISSIONS
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -63,13 +65,36 @@ class HadithSerializer(serializers.ModelSerializer):
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
 
-class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ['id', 'fb_id', 'permissions', 'can_add_hadith', 'can_edit_hadith', 'can_delete_hadith', 'can_add_person',
-              'can_edit_person', 'can_delete_person', 'can_add_tag', 'can_edit_tag', 'can_delete_tag',
-              'can_approve_unapproved_data', 'can_unapprove_approved_data']
-    write_only_fields = ['permissions']
-    read_only_fields = ['can_add_hadith', 'can_edit_hadith', 'can_delete_hadith', 'can_add_person', 'can_edit_person',
-                        'can_delete_person', 'can_add_tag', 'can_edit_tag', 'can_delete_tag',
-                        'can_approve_unapproved_data', 'can_unapprove_approved_data']
+class UserSerializer(serializers.Serializer):
+  id = serializers.IntegerField(read_only=True)
+  fb_id = serializers.IntegerField()
+
+  def __init__(self, *args, **kwargs):
+    for perm_name in PERMISSIONS:
+      self.fields[perm_name.lower()] = serializers.BooleanField()
+    super(UserSerializer, self).__init__(*args, **kwargs)
+
+  def create(self, validated_data):
+    instance = User.objects.create()
+    instance.fb_id = validated_data.get('fb_id')
+    for perm_name, perm_value in PERMISSIONS.iteritems():
+      instance.set_permission(perm_value, validated_data.get(perm_name, False))
+    return instance
+
+  def update(self, instance, validated_data):
+    instance.fb_id = validated_data.get('fb_id', instance.fb_id)
+    for perm_name, perm_value in PERMISSIONS.iteritems():
+      permitted = validated_data.get(perm_name.lower(), instance.has_permission(perm_value))
+      instance.set_permission(perm_value, permitted)
+    instance.save()
+    return instance
+
+  def to_representation(self, instance):
+    ret = OrderedDict()
+    ret['id'] = instance.id
+    ret['fb_id'] = instance.fb_id
+    for perm_name, perm_value in PERMISSIONS.iteritems():
+      ret[perm_name.lower()] = instance.has_permission(perm_value)
+    return ret
+
+
