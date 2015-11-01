@@ -24,7 +24,7 @@
           death_year: '',
           death_month: '',
           death_day: '',
-        }
+        };
         ctrl.addingNew = true;
         ctrl.isEditing = true;
       } else {

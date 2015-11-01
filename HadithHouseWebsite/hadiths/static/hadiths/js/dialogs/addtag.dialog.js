@@ -20,7 +20,6 @@
     }
 
     ctrl.cancel = function () {
-      $scope = $scope;
       $mdDialog.cancel();
     };
 

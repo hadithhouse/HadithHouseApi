@@ -148,7 +148,7 @@
           return false;
         }
         return true;
-      }
+      };
 
       /**
        * Called when the user clicks on the X icon to cancel the changes made.
