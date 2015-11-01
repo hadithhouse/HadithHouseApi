@@ -28,6 +28,8 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.factory('FacebookService', function ($q) {
+    var fbUserId = window['fbUserId'];
+
     function login() {
       var deferred = $q.defer();
       FB.login(function (response) {
@@ -86,12 +88,27 @@
       return deferred.promise;
     }
 
+    function getUserFriends(userId) {
+      var deferred = $q.defer();
+      FB.api('/' + fbUserId + '/friends',
+        function (response) {
+          if (response && !response.error) {
+            deferred.resolve(response.data.url);
+          } else {
+            deferred.reject(null);
+          }
+        }
+      );
+      return deferred.promise;
+    }
+
     return {
       login: login,
       logout: logout,
       getLoginStatus: getLoginStatus,
       getLoggedInUser: getLoggedInUser,
-      getProfilePictureUrl: getProfilePictureUrl
+      getProfilePictureUrl: getProfilePictureUrl,
+      getUserFriends: getUserFriends
     };
   });
 }());
