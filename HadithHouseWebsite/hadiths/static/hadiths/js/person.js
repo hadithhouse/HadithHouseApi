@@ -91,8 +91,12 @@
           ctrl.isEditing = false;
           ctrl.addingNew = false;
           ToastService.show("Person added.");
-        }, function onFail() {
-          ToastService.show("Failed to add person. Please try again.");
+        }, function onFail(result) {
+          if (result.data) {
+            ToastService.show("Failed to add person. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to add person. Please try again.");
+          }
         });
       }
 
@@ -102,11 +106,15 @@
           // Successfully saved changes. Don't need to do anything.
           ctrl.isEditing = false;
           ToastService.show("Changes saved.");
-        }, function onFail() {
+        }, function onFail(result) {
           // Failed to save the changes. Restore the old data and show a toast.
           ctrl.isEditing = false;
           restoreCopyOfPerson();
-          ToastService.show("Failed to save person. Please try again.");
+          if (result.data) {
+            ToastService.show("Failed to save person. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to save person. Please try again.");
+          }
         });
       }
       /**

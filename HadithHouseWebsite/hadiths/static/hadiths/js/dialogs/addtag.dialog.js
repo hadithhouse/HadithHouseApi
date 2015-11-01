@@ -32,15 +32,23 @@
         TagsService.putTag(newTag).then(function onSuccess() {
           ToastService.show('Tag saved');
           $mdDialog.hide(newTag);
-        }, function onError() {
-          ToastService.show("Couldn't save tag! Please try again.");
+        }, function onError(result) {
+          if (result.data) {
+            ToastService.show("Failed to save tag. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to save tag. Please try again.");
+          }
         });
       } else {
         TagsService.postTag(newTag).then(function onSuccess() {
           ToastService.show('Tag added');
           $mdDialog.hide(newTag);
-        }, function onError() {
-          ToastService.show("Couldn't add tag! Please try again.");
+        }, function onError(result) {
+          if (result.data) {
+            ToastService.show("Failed to add tag. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to add tag. Please try again.");
+          }
         });
       }
 

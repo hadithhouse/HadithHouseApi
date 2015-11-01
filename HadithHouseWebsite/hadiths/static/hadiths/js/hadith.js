@@ -99,8 +99,12 @@
           ctrl.isEditing = false;
           ctrl.addingNew = false;
           ToastService.show("Hadith added.");
-        }, function onFail() {
-          ToastService.show("Failed to add hadith. Please try again.");
+        }, function onFail(result) {
+          if (result.data) {
+            ToastService.show("Failed to add hadith. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to add hadith. Please try again.");
+          }
         });
       }
 
@@ -116,7 +120,11 @@
         }, function onFail() {
           // Failed to save the changes. Restore the old data and show a toast.
           ctrl.cancelEditing();
-          ToastService.show("Failed to save hadith. Please try again.");
+          if (result.data) {
+            ToastService.show("Failed to save hadith. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to save hadith. Please try again.");
+          }
         });
       }
 

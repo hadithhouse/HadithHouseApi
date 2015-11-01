@@ -27,8 +27,12 @@
           HadithsService.deleteHadith(hadith.id).then(function onSuccess() {
             ToastService.show('Hadith deleted');
             ctrl.loadHadiths();
-          }, function onError() {
-            ToastService.show("Couldn't delete hadith. Please try again!");
+          }, function onError(result) {
+            if (result.data) {
+              ToastService.show("Failed to delete hadith. Error was: " + result.data);
+            } else {
+              ToastService.show("Failed to delete hadith. Please try again!");
+            }
           });
         });
       };

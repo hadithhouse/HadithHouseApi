@@ -50,8 +50,12 @@
         TagsService.deleteTag(tag.id).then(function onSuccess() {
           ToastService.show('Tag deleted');
           ctrl.loadTags();
-        }, function onError() {
-          ToastService.show("Couldn't delete tag. Please try again!");
+        }, function onError(result) {
+          if (result.data) {
+            ToastService.show("Failed to delete tag. Error was: " + result.data);
+          } else {
+            ToastService.show("Failed to delete tag. Please try again!");
+          }
         });
       });
     };

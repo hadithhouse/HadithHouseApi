@@ -27,8 +27,12 @@
           PersonsService.deletePerson(person.id).then(function onSuccess() {
             ToastService.show('Person deleted');
             ctrl.loadPersons();
-          }, function onError() {
-            ToastService.show("Couldn't delete person. Please try again!");
+          }, function onError(result) {
+            if (result.data) {
+              ToastService.show("Failed to delete person. Error was: " + result.data);
+            } else {
+              ToastService.show("Failed to delete person. Please try again!");
+            }
           });
         });
       };
