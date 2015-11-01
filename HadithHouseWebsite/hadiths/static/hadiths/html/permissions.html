@@ -1,0 +1,19 @@
+Permissions to make changes to the data are only given to selected users to ensure the authenticity and
+quality of the data. Hence, this page only shows you your current permission and it is not possible to
+make changes to those permissions.
+
+<br/>
+<br/>
+
+<div class="md-whiteframe-z1">
+  <md-list>
+    <md-list-item ng-repeat="perm in ctrl.userPermissions">
+      <div style="width: 100%;">
+        <md-icon class="material-icons" ng-if="perm.value" style="color: green;">check circle</md-icon>
+        <md-icon class="material-icons" ng-if="!perm.value" style="color: red;">clear</md-icon>
+        {{ perm.displayName }}
+      </div>
+      <md-divider ng-if="!$last"></md-divider>
+    </md-list-item>
+  </md-list>
+</div>

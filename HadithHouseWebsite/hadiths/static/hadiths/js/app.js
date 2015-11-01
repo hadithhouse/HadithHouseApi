@@ -48,6 +48,10 @@
       templateUrl: getHtmlBasePath() + 'person.html',
       controller: 'PersonCtrl',
       controllerAs: 'ctrl',
+    }).when('/permissions', {
+      templateUrl: getHtmlBasePath() + 'permissions.html',
+      controller: 'PermissionsCtrl',
+      controllerAs: 'ctrl',
     }).when('/tags', {
       templateUrl: getHtmlBasePath() + 'tags.html',
       controller: 'TagsCtrl',
@@ -116,15 +120,20 @@
             profilePicUrl: user.picture.data.url
           }
         });
-        UsersService.getCurrentUser().then(function onSuccess() {
-          debugger;
+        UsersService.getCurrentUser().then(function onSuccess(user) {
+          $rootScope.user = user;
+          // If the user has any permission, add 'Permissions' menu item so the
+          // user can view his/her current permissions.
+          if (_.some(user.permissions, function(value, key) { return value; })) {
+            ctrl.menuItems.push({name: 'Permissions', urlPath: 'permissions'});
+          }
         });
       };
 
       ctrl.getUserInfo();
 
       // Load all registered items
-      ctrl.items = [
+      ctrl.menuItems = [
         {name: 'Hadiths', urlPath: 'hadiths'},
         {name: 'Persons', urlPath: 'persons'},
         {name: 'Tags', urlPath: 'tags'}
@@ -132,15 +141,15 @@
 
       var path = $location.path() ? $location.path().substr(1) : null;
       if (path) {
-        for (var i = 0; i < ctrl.items.length; i++) {
-          if (ctrl.items[i].urlPath == path) {
-            ctrl.selected = ctrl.items[i];
+        for (var i = 0; i < ctrl.menuItems.length; i++) {
+          if (ctrl.menuItems[i].urlPath == path) {
+            ctrl.selected = ctrl.menuItems[i];
             break;
           }
         }
       }
       if (!ctrl.selected) {
-        ctrl.selected = ctrl.items[0];
+        ctrl.selected = ctrl.menuItems[0];
       }
 
       $scope.$on('toggleSideNav', function () {
@@ -151,8 +160,8 @@
         $mdSidenav('left').toggle();
       }
 
-      ctrl.selectItem = function (item) {
-        ctrl.selected = angular.isNumber(item) ? $scope.items[item] : item;
+      ctrl.selectMenuItem = function (item) {
+        ctrl.selected = angular.isNumber(item) ? ctrl.menuItems[item] : item;
         $location.path(ctrl.selected.urlPath);
         toggleItemsList();
       };

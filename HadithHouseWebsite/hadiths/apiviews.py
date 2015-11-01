@@ -68,7 +68,7 @@ class UserSetView(FBAuthListCreateAPIView):
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_perm_code = None
-  post_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
+  post_perm_code = Permission.get_code_by_name('Can Control Permissions')
 
 
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
