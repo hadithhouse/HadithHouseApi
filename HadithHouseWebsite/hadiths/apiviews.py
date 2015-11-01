@@ -1,86 +1,85 @@
-from rest_framework import generics
 from rest_framework.response import Response
 
 from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
-from hadiths.models import Hadith, Person, HadithTag, User
-from hadiths.serializers import HadithSerializer, PersonSerializer, HadithTagSerializer, UserSerializer
-from models import PERMISSIONS
+from hadiths.models import Hadith, Person, HadithTag, User, Permission
+from hadiths.serializers import HadithSerializer, PersonSerializer, HadithTagSerializer, UserSerializer, \
+  PermissionSerializer
 
 
 class PersonSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
   queryset = Person.objects.all()
   serializer_class = PersonSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_PERSON']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Persons')
 
 
 class PersonView(FBAuthRetrieveUpdateDestroyAPIView):
   lookup_field = 'id'
   queryset = Person.objects.all()
   serializer_class = PersonSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_PERSON']
-  put_permission = PERMISSIONS['CAN_EDIT_PERSON']
-  patch_permission = PERMISSIONS['CAN_EDIT_PERSON']
-  delete_permission = PERMISSIONS['CAN_DELETE_PERSON']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Persons')
+  put_perm_code = Permission.get_code_by_name('Can Edit Persons')
+  patch_perm_code = Permission.get_code_by_name('Can Edit Persons')
+  delete_perm_code = Permission.get_code_by_name('Can Delete Persons')
 
 
 class HadithTagSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
   queryset = HadithTag.objects.all()
   serializer_class = HadithTagSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_TAG']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Hadith Tags')
 
 
 class HadithTagView(FBAuthRetrieveUpdateDestroyAPIView):
   queryset = HadithTag.objects.all()
   serializer_class = HadithTagSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_TAG']
-  put_permission = PERMISSIONS['CAN_EDIT_TAG']
-  patch_permission = PERMISSIONS['CAN_EDIT_TAG']
-  delete_permission = PERMISSIONS['CAN_DELETE_TAG']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Hadith Tags')
+  put_perm_code = Permission.get_code_by_name('Can Edit Hadith Tags')
+  patch_perm_code = Permission.get_code_by_name('Can Edit Hadith Tags')
+  delete_perm_code = Permission.get_code_by_name('Can Delete Hadith Tags')
 
 
 class HadithSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
   queryset = Hadith.objects.all()
   serializer_class = HadithSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_HADITH']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Hadiths')
 
 
 class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
   lookup_field = 'id'
   queryset = Hadith.objects.all()
   serializer_class = HadithSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_HADITH']
-  put_permission = PERMISSIONS['CAN_EDIT_HADITH']
-  patch_permission = PERMISSIONS['CAN_EDIT_HADITH']
-  delete_permission = PERMISSIONS['CAN_DELETE_HADITH']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Hadiths')
+  put_perm_code = Permission.get_code_by_name('Can Edit Hadiths')
+  patch_perm_code = Permission.get_code_by_name('Can Edit Hadiths')
+  delete_perm_code = Permission.get_code_by_name('Can Delete Hadiths')
 
 
 class UserSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
   queryset = User.objects.all()
   serializer_class = UserSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_USER']
+  get_perm_code = None
+  post_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
 
 
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
   lookup_field = 'id'
   queryset = User.objects.all()
   serializer_class = UserSerializer
-  get_permission = None
-  post_permission = PERMISSIONS['CAN_ADD_USER']
-  put_permission = PERMISSIONS['CAN_EDIT_USER']
-  patch_permission = PERMISSIONS['CAN_EDIT_USER']
-  delete_permission = PERMISSIONS['CAN_DELETE_USER']
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  put_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  patch_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  delete_perm_code = Permission.get_code_by_name('Can Control Permissions')
 
   def get(self, request, *args, **kwargs):
     id = kwargs['id']
@@ -92,3 +91,22 @@ class UserView(FBAuthRetrieveUpdateDestroyAPIView):
       return Response(serializer.data)
     else:
       return super(UserView, self).get(request, *args, **kwargs)
+
+
+class PermissionSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = Permission.objects.all()
+  serializer_class = PermissionSerializer
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Control Permissions')
+
+
+class PermissionView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
+  queryset = Permission.objects.all()
+  serializer_class = PermissionSerializer
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  put_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  patch_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  delete_perm_code = Permission.get_code_by_name('Can Control Permissions')

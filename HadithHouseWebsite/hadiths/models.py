@@ -57,24 +57,6 @@ class ChainLink(models.Model):
   order = models.SmallIntegerField(null=False, blank=False)
 
 
-# TODO: Move this to a better place.
-PERMISSIONS = OrderedDict([
-  ('CAN_ADD_USER', 1 << 0),
-  ('CAN_EDIT_USER', 1 << 1),
-  ('CAN_DELETE_USER', 1 << 2),
-  ('CAN_ADD_HADITH', 1 << 3),
-  ('CAN_EDIT_HADITH', 1 << 4),
-  ('CAN_DELETE_HADITH', 1 << 5),
-  ('CAN_ADD_PERSON', 1 << 6),
-  ('CAN_EDIT_PERSON', 1 << 7),
-  ('CAN_DELETE_PERSON', 1 << 8),
-  ('CAN_ADD_TAG', 1 << 9),
-  ('CAN_EDIT_TAG', 1 << 10),
-  ('CAN_DELETE_TAG', 1 << 11),
-  ('CAN_APPROVE_UNAPPROVED_DATA', 1 << 12),
-  ('CAN_UNAPPROVE_APPROVED_DATA', 1 << 13)
-])
-
 
 class User(models.Model):
   fb_id = models.BigIntegerField(unique=True, db_index=True)
@@ -84,11 +66,30 @@ class User(models.Model):
   def get_unregistered_user(cls, fb_id):
     return User(fb_id=fb_id, permissions=0)
 
-  def set_permission(self, permission, set_or_clear):
+  def set_permission(self, perm_code, set_or_clear):
     if set_or_clear:
-      self.permissions |= permission
+      self.permissions |= perm_code
     else:
-      self.permissions &= ~permission
+      self.permissions &= ~perm_code
 
-  def has_permission(self, permission):
-    return (self.permissions & permission) == permission
+  def has_permission(self, perm_code):
+    return (self.permissions & perm_code) == perm_code
+
+
+class Permission(models.Model):
+  name = models.CharField(max_length=128, unique=True)
+  desc = models.CharField(max_length=512)
+  code = models.BigIntegerField(unique=True)
+
+  @classmethod
+  def get_all(cls):
+    if not hasattr(cls, 'cached_all'):
+      cls.cached_all = cls.objects.all()
+    return cls.cached_all
+
+  @classmethod
+  def get_code_by_name(cls, name):
+    matches = filter(lambda perm: perm.name == name, cls.get_all())
+    if len(matches) == 0:
+      raise KeyError("Couldn't find a permission with the name '%s'" % name)
+    return matches[0].code

@@ -3,7 +3,7 @@ from collections import OrderedDict
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
 
-from hadiths.models import Hadith, Person, HadithTag, User, PERMISSIONS
+from hadiths.models import Hadith, Person, HadithTag, User, Permission
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -68,24 +68,27 @@ class HadithSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.Serializer):
   id = serializers.IntegerField(read_only=True)
   fb_id = serializers.IntegerField()
-
-  def __init__(self, *args, **kwargs):
-    for perm_name in PERMISSIONS:
-      self.fields[perm_name.lower()] = serializers.BooleanField()
-    super(UserSerializer, self).__init__(*args, **kwargs)
+  permissions = serializers.DictField()
 
   def create(self, validated_data):
     instance = User.objects.create()
     instance.fb_id = validated_data.get('fb_id')
-    for perm_name, perm_value in PERMISSIONS.iteritems():
-      instance.set_permission(perm_value, validated_data.get(perm_name, False))
+    permissions = validated_data.get('permissions', None)
+    if permissions is not None:
+      for perm in Permission.get_all():
+        field_name = perm.name.lower().replace(' ', '_')
+        if field_name in permissions:
+          instance.set_permission(perm.code, permissions[perm.name])
     return instance
 
   def update(self, instance, validated_data):
     instance.fb_id = validated_data.get('fb_id', instance.fb_id)
-    for perm_name, perm_value in PERMISSIONS.iteritems():
-      permitted = validated_data.get(perm_name.lower(), instance.has_permission(perm_value))
-      instance.set_permission(perm_value, permitted)
+    permissions = validated_data.get('permissions', None)
+    if permissions is not None:
+      for perm in Permission.get_all():
+        field_name = perm.name.lower().replace(' ', '_')
+        if field_name in permissions:
+          instance.set_permission(perm.code, permissions[field_name])
     instance.save()
     return instance
 
@@ -93,8 +96,14 @@ class UserSerializer(serializers.Serializer):
     ret = OrderedDict()
     ret['id'] = instance.id
     ret['fb_id'] = instance.fb_id
-    for perm_name, perm_value in PERMISSIONS.iteritems():
-      ret[perm_name.lower()] = instance.has_permission(perm_value)
+    ret['permissions'] = OrderedDict()
+    for perm in Permission.get_all():
+      field_name = perm.name.lower().replace(' ', '_')
+      ret['permissions'][field_name] = instance.has_permission(perm.code)
     return ret
 
 
+class PermissionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Permission
+    fields = ['id', 'name', 'desc', 'code']
