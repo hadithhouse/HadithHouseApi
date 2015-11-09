@@ -27,8 +27,12 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  function TagsCtrl($mdDialog, TagsService, ToastService) {
+  function TagsCtrl($scope, $rootScope, $mdDialog, TagsService, ToastService) {
     var ctrl = this;
+
+    $scope.$watch(function () { return $rootScope.user; }, function () {
+      ctrl.user = $rootScope.user;
+    });
 
     ctrl.loadTags = function() {
       TagsService.getTags().then(function onSuccess(tags) {

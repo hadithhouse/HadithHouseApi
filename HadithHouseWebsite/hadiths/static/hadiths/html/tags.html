@@ -3,8 +3,14 @@
   <md-list>
     <md-list-item ng-repeat="tag in ctrl.tags">
       <div style="width: 100%;">
-        <md-icon class="material-icons" ng-click="ctrl.showEditTagDialog($event, tag)">edit</md-icon>
-        <md-icon class="material-icons" ng-click="ctrl.deleteTag($event, tag)">close</md-icon>
+        <md-icon class="material-icons"
+                 ng-click="ctrl.showEditTagDialog($event, tag)"
+                 ng-if="ctrl.user.permissions.can_edit_hadith_tags">edit
+        </md-icon>
+        <md-icon class="material-icons"
+                 ng-click="ctrl.deleteTag($event, tag)"
+                 ng-if="ctrl.user.permissions.can_delete_hadith_tags">close
+        </md-icon>
         {{ tag.name }}
       </div>
       <md-divider ng-if="!$last"></md-divider>
@@ -12,6 +18,8 @@
   </md-list>
 </div>
 
-<md-button class="md-fab md-mini" ng-click="ctrl.showAddTagDialog($event)">
+<md-button class="md-fab md-mini"
+           ng-click="ctrl.showAddTagDialog($event)"
+           ng-if="ctrl.user.permissions.can_add_hadith_tags">
   <md-icon class="material-icons">add</md-icon>
 </md-button>

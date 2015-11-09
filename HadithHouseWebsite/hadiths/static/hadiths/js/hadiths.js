@@ -4,8 +4,12 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('HadithsCtrl',
-    function ($mdDialog, HadithsService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, HadithsService, ToastService) {
       var ctrl = this;
+
+      $scope.$watch(function () { return $rootScope.user; }, function () {
+        ctrl.user = $rootScope.user;
+      });
 
       ctrl.loadHadiths = function() {
         HadithsService.getHadiths().then(function onSuccess(hadiths) {

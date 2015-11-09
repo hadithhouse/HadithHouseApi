@@ -4,10 +4,14 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('PersonCtrl',
-    function ($mdDialog, $location, $routeParams, PersonsService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, $location, $routeParams, PersonsService, ToastService) {
       var ctrl = this;
 
       ctrl.error = false;
+
+      $scope.$watch(function () { return $rootScope.user; }, function () {
+        ctrl.user = $rootScope.user;
+      });
 
       // Is the user loading an existing person or adding a new one?
       ctrl.personId = $routeParams.personId;

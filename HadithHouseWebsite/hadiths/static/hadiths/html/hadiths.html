@@ -3,9 +3,11 @@
   <md-list>
     <md-list-item ng-repeat="hadith in ctrl.hadiths">
       <div style="width: 100%;">
-        <md-icon class="material-icons" ng-click="ctrl.deleteHadith($event, hadith)">close</md-icon>
+        <md-icon class="material-icons"
+                 ng-click="ctrl.deleteHadith($event, hadith)"
+            ng-if="ctrl.user.permissions.can_delete_hadiths">close</md-icon>
         <a ng-href="#/hadith/{{ hadith.id }}">
-        {{ hadith.text | limitTo:50 }}
+          {{ hadith.text | limitTo:50 }}
         </a>
       </div>
       <md-divider ng-if="!$last"></md-divider>
@@ -13,7 +15,9 @@
   </md-list>
 </div>
 
-<md-button class="md-fab md-mini" ng-href="#/hadith/new">
+<md-button class="md-fab md-mini"
+           ng-href="#/hadith/new"
+           ng-if="ctrl.user.permissions.can_add_hadiths">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 

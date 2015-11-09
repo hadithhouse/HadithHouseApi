@@ -3,9 +3,12 @@
   <md-list>
     <md-list-item ng-repeat="person in ctrl.persons">
       <div style="width: 100%;">
-        <md-icon class="material-icons" ng-click="ctrl.deletePerson($event, person)">close</md-icon>
+        <md-icon class="material-icons"
+                 ng-click="ctrl.deletePerson($event, person)"
+                 ng-if="ctrl.user.permissions.can_delete_persons">close
+        </md-icon>
         <a ng-href="#/person/{{ person.id }}">
-        {{ person.display_name || person.full_name }}
+          {{ person.display_name || person.full_name }}
         </a>
       </div>
       <md-divider ng-if="!$last"></md-divider>
@@ -13,7 +16,9 @@
   </md-list>
 </div>
 
-<md-button class="md-fab md-mini" ng-href="#/person/new">
+<md-button class="md-fab md-mini"
+           ng-href="#/person/new"
+           ng-if="ctrl.user.permissions.can_add_persons">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 
