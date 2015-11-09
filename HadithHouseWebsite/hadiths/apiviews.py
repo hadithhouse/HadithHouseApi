@@ -35,6 +35,7 @@ class HadithTagSetView(FBAuthListCreateAPIView):
 
 
 class HadithTagView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
   queryset = HadithTag.objects.all()
   serializer_class = HadithTagSerializer
   get_perm_code = None
