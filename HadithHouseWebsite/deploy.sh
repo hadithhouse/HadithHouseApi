@@ -1,3 +1,6 @@
+set -e 
+set -o pipefail
+
 echo "Deleting /var/www/HadithHouseWebsite/"
 rm -rf /var/www/HadithHouseWebsite/*
 
@@ -12,4 +15,3 @@ cp -r ./* /var/www/HadithHouseWebsite/
 
 echo "Restarting Apache2 server"
 sudo /usr/bin/service apache2 restart
-
