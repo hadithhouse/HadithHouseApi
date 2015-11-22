@@ -1,0 +1,12 @@
+On Windows
+==========
+To setup the server on Windows:
+
+1. Install Python 2.7. Ensure that you select the option to add Python's path to PATH environment variable. (HadithHouse uses Python 2.7 but there is an issue for discussing upgrading to Pythno 3.4: https://github.com/hadithhouse/hadithhouse/issues/9)
+2. Install the necessary Django's packages:
+  a. pip install django==1.7.10 (HadithHouse is not using the latest Django yet. Check this issue for more information: https://github.com/hadithhouse/hadithhouse/issues/8)
+  b. pip install djangorestframework
+  c. pip install urlfetch
+3. You need to install MySQL connector for Python:
+  https://dev.mysql.com/downloads/connector/
+4. Create server_settings.py under HadithHouseWebsite\HadithHouseWebsite by using the template server_settings-template.py
