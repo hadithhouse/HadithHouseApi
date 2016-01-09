@@ -33,7 +33,7 @@
             ctrl.loadHadiths();
           }, function onError(result) {
             if (result.data) {
-              ToastService.show("Failed to delete hadith. Error was: " + result.data);
+              ToastService.showDjangoError("Failed to delete hadith.", result.data);
             } else {
               ToastService.show("Failed to delete hadith. Please try again!");
             }

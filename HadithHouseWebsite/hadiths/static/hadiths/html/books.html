@@ -1,0 +1,24 @@
+<div class="md-whiteframe-z1">
+
+  <md-list>
+    <md-list-item ng-repeat="book in ctrl.books">
+      <div style="width: 100%;">
+        <md-icon class="material-icons"
+                 ng-click="ctrl.deleteBook($event, book)"
+                 ng-if="ctrl.user.permissions.can_delete_books">close
+        </md-icon>
+        <a ng-href="#/book/{{ book.id }}">
+          {{ book.title }}
+        </a>
+      </div>
+      <md-divider ng-if="!$last"></md-divider>
+    </md-list-item>
+  </md-list>
+</div>
+
+<md-button class="md-fab md-mini"
+           ng-href="#/book/new"
+           ng-if="ctrl.user.permissions.can_add_books">
+  <md-icon class="material-icons">add</md-icon>
+</md-button>
+

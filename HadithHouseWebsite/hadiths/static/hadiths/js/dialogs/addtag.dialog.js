@@ -34,7 +34,7 @@
           $mdDialog.hide(newTag);
         }, function onError(result) {
           if (result.data) {
-            ToastService.show("Failed to save tag. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to save tag.", result.data);
           } else {
             ToastService.show("Failed to save tag. Please try again.");
           }
@@ -45,7 +45,7 @@
           $mdDialog.hide(newTag);
         }, function onError(result) {
           if (result.data) {
-            ToastService.show("Failed to add tag. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to add tag.", result.data);
           } else {
             ToastService.show("Failed to add tag. Please try again.");
           }

@@ -25,6 +25,14 @@ class Person(models.Model):
     return self.display_name or self.full_name
 
 
+class Book(models.Model):
+  title = models.CharField(max_length=128, unique=True)
+  brief_desc = models.CharField(max_length=256, null=True, blank=True)
+  pub_year = models.SmallIntegerField(null=True, blank=True)
+  added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
+  updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+
+
 class HadithTag(models.Model):
   """A model describing a tag for hadiths."""
   name = models.CharField(max_length=32, unique=True)
@@ -39,6 +47,7 @@ class Hadith(models.Model):
   """A model describing a hadith."""
   text = models.TextField()
   person = models.ForeignKey(Person)
+  book = models.ForeignKey(Book, null=True)
   tags = models.ManyToManyField(HadithTag)
   added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
@@ -55,7 +64,6 @@ class ChainLink(models.Model):
   chain = models.ForeignKey(Chain)
   person = models.ForeignKey(Person)
   order = models.SmallIntegerField(null=False, blank=False)
-
 
 
 class User(models.Model):

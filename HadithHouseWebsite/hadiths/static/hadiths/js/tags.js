@@ -56,7 +56,7 @@
           ctrl.loadTags();
         }, function onError(result) {
           if (result.data) {
-            ToastService.show("Failed to delete tag. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to delete tag.", result.data);
           } else {
             ToastService.show("Failed to delete tag. Please try again!");
           }

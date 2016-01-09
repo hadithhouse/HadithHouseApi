@@ -48,15 +48,35 @@
      * Shows a test with the given message.
      * @param message The message to show.
      */
-    function show(message) {
+    function show(message, delay) {
+      if (!delay) {
+        delay = 10000;
+      }
       $mdToast.show($mdToast.simple()
         .content(message)
         .position(getToastPosition())
-        .hideDelay(3000));
+        .hideDelay(10000));
+    }
+
+    /**
+     * Shows an error coming from a Django API.
+     * @param message The message to show.
+     * @param result Django API's result.
+     */
+    function showDjangoError(msg, result) {
+      msg += '\n';
+      _.each(result, function (errors, fieldName) {
+        msg += fieldName;
+        msg += ': ';
+        msg += errors.join(', ');
+        msg += '\n';
+      });
+      show(msg);
     }
 
     return {
-      show: show
+      show: show,
+      showDjangoError: showDjangoError
     };
   });
 }());

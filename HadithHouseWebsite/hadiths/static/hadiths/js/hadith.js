@@ -17,6 +17,7 @@
         // ...adding new hadith.
         ctrl.hadith = {
           text: '',
+          book: null,
           person: 1,
           tags: []
         };
@@ -61,6 +62,32 @@
         }
       });
 
+      // If the ID of the book changes in the book-selector directive,
+      // reflect the change to the hadith object.
+      $scope.$watch(function() { return ctrl.hadithBooksIds; }, function(newValue, oldValue) {
+        if (newValue === oldValue || !ctrl.hadith) {
+          return;
+        }
+        if (ctrl.hadithBooksIds && ctrl.hadithBooksIds.length > 0) {
+          ctrl.hadith.book = ctrl.hadithBooksIds[0];
+        } else {
+          ctrl.hadith.book = null;
+        }
+      });
+
+      // If the ID of the book in the hadith object changes, reflect the change
+      // to the book-selector directive.
+      $scope.$watch('ctrl.hadith.book', function(newValue, oldValue) {
+        if (newValue === oldValue) {
+          return;
+        }
+        if (ctrl.hadith.book !== null) {
+          ctrl.hadithBooksIds = [ctrl.hadith.book];
+        } else {
+          ctrl.hadithBooksIds = [];
+        }
+      });
+
       var oldHadith = {};
 
       /**
@@ -70,6 +97,7 @@
       function saveCopyOfHadith() {
         oldHadith.text = ctrl.hadith.text;
         oldHadith.person = ctrl.hadith.person;
+        oldHadith.book = ctrl.hadith.book;
         oldHadith.tags = ctrl.hadith.tags.slice();
       }
 
@@ -80,6 +108,7 @@
       function restoreCopyOfHadith() {
         ctrl.hadith.text = oldHadith.text;
         ctrl.hadith.person = oldHadith.person;
+        ctrl.hadith.book = oldHadith.book;
         ctrl.hadith.tags = oldHadith.tags.slice();
       }
 
@@ -105,7 +134,7 @@
           ToastService.show("Hadith added.");
         }, function onFail(result) {
           if (result.data) {
-            ToastService.show("Failed to add hadith. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to add hadith.", result.data);
           } else {
             ToastService.show("Failed to add hadith. Please try again.");
           }
@@ -125,7 +154,7 @@
           // Failed to save the changes. Restore the old data and show a toast.
           ctrl.cancelEditing();
           if (result.data) {
-            ToastService.show("Failed to save hadith. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to save hadith.", result.data);
           } else {
             ToastService.show("Failed to save hadith. Please try again.");
           }

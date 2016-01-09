@@ -40,6 +40,14 @@
       templateUrl: getHtmlBasePath() + 'hadith.html',
       controller: 'HadithCtrl',
       controllerAs: 'ctrl',
+    }).when('/books', {
+      templateUrl: getHtmlBasePath() + 'books.html',
+      controller: 'BooksCtrl',
+      controllerAs: 'ctrl',
+    }).when('/book/:bookId', {
+      templateUrl: getHtmlBasePath() + 'book.html',
+      controller: 'BookCtrl',
+      controllerAs: 'ctrl',
     }).when('/persons', {
       templateUrl: getHtmlBasePath() + 'persons.html',
       controller: 'PersonsCtrl',
@@ -135,6 +143,7 @@
       // Load all registered items
       ctrl.menuItems = [
         {name: 'Hadiths', urlPath: 'hadiths'},
+        {name: 'Books', urlPath: 'books'},
         {name: 'Persons', urlPath: 'persons'},
         {name: 'Tags', urlPath: 'tags'}
       ];

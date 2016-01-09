@@ -2,9 +2,9 @@ from rest_framework.response import Response
 
 from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
-from hadiths.models import Hadith, Person, HadithTag, User, Permission
-from hadiths.serializers import HadithSerializer, PersonSerializer, HadithTagSerializer, UserSerializer, \
-  PermissionSerializer
+from hadiths.models import Hadith, Person, Book, HadithTag, User, Permission
+from hadiths.serializers import HadithSerializer, PersonSerializer, BookSerializer, HadithTagSerializer, \
+  UserSerializer, PermissionSerializer
 
 
 class PersonSetView(FBAuthListCreateAPIView):
@@ -24,6 +24,25 @@ class PersonView(FBAuthRetrieveUpdateDestroyAPIView):
   put_perm_code = Permission.get_code_by_name('Can Edit Persons')
   patch_perm_code = Permission.get_code_by_name('Can Edit Persons')
   delete_perm_code = Permission.get_code_by_name('Can Delete Persons')
+
+
+class BookSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = Book.objects.all()
+  serializer_class = BookSerializer
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Books')
+
+
+class BookView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
+  queryset = Book.objects.all()
+  serializer_class = BookSerializer
+  get_perm_code = None
+  post_perm_code = Permission.get_code_by_name('Can Add Books')
+  put_perm_code = Permission.get_code_by_name('Can Edit Books')
+  patch_perm_code = Permission.get_code_by_name('Can Edit Books')
+  delete_perm_code = Permission.get_code_by_name('Can Delete Books')
 
 
 class HadithTagSetView(FBAuthListCreateAPIView):

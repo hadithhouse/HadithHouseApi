@@ -11,6 +11,8 @@ urlpatterns = patterns(
   # url(r'^hadith/(?P<hadith_id>\d+)$', views.hadith, name='hadith'),
   # url(r'^hadiths$', views.hadiths, name='hadiths'),
   # APIs
+  url(r'^apis/books/$', apiviews.BookSetView.as_view()),
+  url(r'^apis/books/(?P<id>[0-9]+)$', apiviews.BookView.as_view()),
   url(r'^apis/persons/$', apiviews.PersonSetView.as_view()),
   url(r'^apis/persons/(?P<id>[0-9]+)$', apiviews.PersonView.as_view()),
   url(r'^apis/hadithtags/$', apiviews.HadithTagSetView.as_view()),

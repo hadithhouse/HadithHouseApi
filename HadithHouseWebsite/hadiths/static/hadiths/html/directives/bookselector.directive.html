@@ -1,0 +1,27 @@
+<span>
+  <md-chips ng-model="ctrl.books" readonly="ctrl.readOnly"
+            md-autocomplete-snap
+            md-require-match="true">
+    <md-autocomplete
+        md-selected-item="ctrl.selectedTag"
+        md-selected-item-change=""
+        md-search-text="ctrl.bookQuery"
+        md-search-text-change=""
+        md-items="book in ctrl.findBooks(ctrl.bookQuery)"
+        md-item-text="bookName"
+        placeholder="Search for a book">
+      <md-item-template>
+        <span md-highlight-text="ctrl.bookQuery">{{ book.title }}</span>
+      </md-item-template>
+      <md-not-found>
+        No matches found for "{{ ctrl.bookQuery }}".
+      </md-not-found>
+    </md-autocomplete>
+    <md-chip-template>
+      <span>
+        <strong>{{ $chip.title }}</strong>
+      </span>
+    </md-chip-template>
+  </md-chips>
+</span>
+

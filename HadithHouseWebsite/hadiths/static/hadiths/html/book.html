@@ -1,0 +1,44 @@
+<div ng-if="ctrl.error">
+  Couldn't load book or the book is not found.
+</div>
+<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+  <h1>
+    {{ ctrl.book.title }}
+    <md-icon class="material-icons"
+             ng-click="ctrl.startEditing()"
+             ng-hide="ctrl.isEditing"
+             ng-if="ctrl.user.permissions.can_edit_books">edit
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-click="ctrl.cancelEditing()"
+             ng-hide="!ctrl.isEditing || ctrl.addingNew"
+             ng-if="ctrl.user.permissions.can_edit_books">cancel
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-click="ctrl.finishEditing()"
+             ng-hide="!ctrl.isEditing"
+             ng-if="ctrl.user.permissions.can_edit_books">save
+    </md-icon>
+  </h1>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Title</label>
+      <input ng-model="ctrl.book.title" ng-disabled="!ctrl.isEditing"/>
+    </md-input-container>
+  </div>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Brief Description</label>
+      <textarea ng-model="ctrl.book.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
+    </md-input-container>
+  </div>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Publication Year</label>
+      <input ng-model="ctrl.book.pub_year" ng-disabled="!ctrl.isEditing"/>
+    </md-input-container>
+  </div>
+</div>

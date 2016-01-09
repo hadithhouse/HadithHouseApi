@@ -97,7 +97,7 @@
           ToastService.show("Person added.");
         }, function onFail(result) {
           if (result.data) {
-            ToastService.show("Failed to add person. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to add person.", result.data);
           } else {
             ToastService.show("Failed to add person. Please try again.");
           }
@@ -115,7 +115,7 @@
           ctrl.isEditing = false;
           restoreCopyOfPerson();
           if (result.data) {
-            ToastService.show("Failed to save person. Error was: " + result.data);
+            ToastService.showDjangoError("Failed to save person.", result.data);
           } else {
             ToastService.show("Failed to save person. Please try again.");
           }

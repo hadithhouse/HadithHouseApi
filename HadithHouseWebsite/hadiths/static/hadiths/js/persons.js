@@ -33,7 +33,7 @@
             ctrl.loadPersons();
           }, function onError(result) {
             if (result.data) {
-              ToastService.show("Failed to delete person. Error was: " + result.data);
+              ToastService.showDjangoError("Failed to delete person.", result.data);
             } else {
               ToastService.show("Failed to delete person. Please try again!");
             }
