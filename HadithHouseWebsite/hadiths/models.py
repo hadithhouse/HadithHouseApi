@@ -95,7 +95,7 @@ class Permission(models.Model):
 
   @classmethod
   def get_code_by_name(cls, name):
-    matches = filter(lambda perm: perm.name == name, cls.get_all())
+    matches = list(filter(lambda perm: perm.name == name, cls.get_all()))
     if len(matches) == 0:
       raise KeyError("Couldn't find a permission with the name '%s'" % name)
     return matches[0].code

@@ -16,7 +16,7 @@ def fb_get(path, access_token):
     'access_token': access_token
   }
   response = urlfetch.fetch(url, method='GET')
-  result = json.loads(response.content)
+  result = json.loads(response.content.decode('utf-8'))
   if response.status_code != 200:
     raise Exception(result['error']['message'])
   return result
