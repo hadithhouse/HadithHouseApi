@@ -15,7 +15,6 @@ from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_a
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -24,8 +23,6 @@ SECRET_KEY = '(8rs1@c-&_9z(8ur%ydax^gf-p5)58y%94huyaa2&p1b-%1uwj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_debug()
-
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = get_allowed_hosts()
 
@@ -80,7 +77,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
@@ -95,6 +91,27 @@ STATICFILES_DIRS = (
   # Don't forget to use absolute paths, not relative paths.
 )
 
-TEMPLATE_DIRS = (
-  os.path.join(BASE_DIR, 'templates'),
-)
+TEMPLATES = [
+  {
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [
+      # insert your TEMPLATE_DIRS here
+      os.path.join(BASE_DIR, 'templates'),
+    ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+      'context_processors': [
+        # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+        # list if you haven't customized them:
+        'django.contrib.auth.context_processors.auth',
+        'django.template.context_processors.debug',
+        'django.template.context_processors.i18n',
+        'django.template.context_processors.media',
+        'django.template.context_processors.static',
+        'django.template.context_processors.tz',
+        'django.contrib.messages.context_processors.messages',
+      ],
+      'debug': get_debug()
+    },
+  },
+]
