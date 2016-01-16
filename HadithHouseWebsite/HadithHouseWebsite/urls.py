@@ -1,8 +1,5 @@
-from django.conf.urls import patterns, include, url
-#from django.contrib import admin
+from django.conf.urls import include, url
 
-urlpatterns = patterns(
-  '', # No prefix
+urlpatterns = [
   url(r'^', include('hadiths.urls'))
-  #url(r'^admin/', include(admin.site.urls)),
-)
+]

@@ -3,8 +3,7 @@ from django.conf.urls import patterns, url
 from hadiths import views
 from hadiths import apiviews
 
-urlpatterns = patterns(
-  '',
+urlpatterns = [
   url(r'^$', views.index, name='index'),
   # Converting to SPA, so removing those URLs.
   # url(r'^persons$', views.persons, name='persons'),
@@ -23,4 +22,4 @@ urlpatterns = patterns(
   url(r'^apis/users/(?P<id>([0-9]+|current))$', apiviews.UserView.as_view()),
   url(r'^apis/permissions/$', apiviews.PermissionSetView.as_view()),
   url(r'^apis/permissions/(?P<id>([0-9]+|current))$', apiviews.PermissionView.as_view())
-)
+]

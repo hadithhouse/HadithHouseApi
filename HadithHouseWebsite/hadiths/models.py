@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from django.db import models
 
 
@@ -18,8 +16,8 @@ class Person(models.Model):
   death_year = models.SmallIntegerField(null=True, blank=True)
   death_month = models.SmallIntegerField(null=True, blank=True)
   death_day = models.SmallIntegerField(null=True, blank=True)
-  added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
-  updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+  added_on = models.DateTimeField(auto_now_add=True)
+  updated_on = models.DateTimeField(auto_now=True)
 
   def __unicode__(self):
     return self.display_name or self.full_name
@@ -29,15 +27,15 @@ class Book(models.Model):
   title = models.CharField(max_length=128, unique=True)
   brief_desc = models.CharField(max_length=256, null=True, blank=True)
   pub_year = models.SmallIntegerField(null=True, blank=True)
-  added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
-  updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+  added_on = models.DateTimeField(auto_now_add=True)
+  updated_on = models.DateTimeField(auto_now=True)
 
 
 class HadithTag(models.Model):
   """A model describing a tag for hadiths."""
   name = models.CharField(max_length=32, unique=True)
-  added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
-  updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+  added_on = models.DateTimeField(auto_now_add=True)
+  updated_on = models.DateTimeField(auto_now=True)
 
   def __unicode__(self):
     return self.name
@@ -49,8 +47,8 @@ class Hadith(models.Model):
   person = models.ForeignKey(Person)
   book = models.ForeignKey(Book, null=True)
   tags = models.ManyToManyField(HadithTag)
-  added_on = models.DateTimeField(auto_now=False, auto_now_add=True)
-  updated_on = models.DateTimeField(auto_now=True, auto_now_add=True)
+  added_on = models.DateTimeField(auto_now_add=True)
+  updated_on = models.DateTimeField(auto_now=True)
 
   def __unicode__(self):
     return self.text[:100] + '...' if len(self.text) > 100 else self.text
