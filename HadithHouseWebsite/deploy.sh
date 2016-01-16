@@ -19,6 +19,10 @@ cp ${SERVER_SETTINGS_PATH}/server_settings.py HadithHouseWebsite/
 echo "Running manage.py collectstatic to collect static files."
 python manage.py collectstatic --noinput
 
+# Apply Django's migrations.
+echo "Running manage.py migrate to apply migrations."
+python manage.py migrate
+
 # Copy the project onto the deployment directory.
 echo "Copying `pwd`/* to $DEPLOYMENT_PATH"
 cp -r ./* ${DEPLOYMENT_PATH}/
