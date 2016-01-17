@@ -114,8 +114,8 @@
     {% verbatim %}
     <div ng-if="fetchedLoginStatus && fbUser !== null">
       <md-menu>
-        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
-          <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}"/>
+        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="User Menu">
+          <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}" style="position: relative; left: -10px; top: -10px;"/>
         </md-button>
 
         <md-menu-content width="4">
