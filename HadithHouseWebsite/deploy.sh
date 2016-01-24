@@ -23,6 +23,10 @@ python manage.py collectstatic --noinput
 echo "Running manage.py migrate to apply migrations."
 python manage.py migrate
 
+# Creating directory $DEPLOYMENT_PATH if it is not created.
+echo "Creating directory $DEPLOYMENT_PATH if it is not created."
+sudo /bin/mkdir -p $DEPLOYMENT_PATH
+
 # Copy the project onto the deployment directory.
 echo "Copying `pwd`/* to $DEPLOYMENT_PATH"
 cp -r ./* ${DEPLOYMENT_PATH}/
