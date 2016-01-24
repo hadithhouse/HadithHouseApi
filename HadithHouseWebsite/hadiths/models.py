@@ -1,3 +1,5 @@
+import sys
+
 from django.db import models
 
 
@@ -89,12 +91,20 @@ class Permission(models.Model):
 
   @classmethod
   def get_all(cls):
+    if len(sys.argv) == 2 and sys.argv[0:2] == ['manage.py', 'migrate']:
+      # In case we are just creating the database tables by running the
+      # migrations, the permissions table won't be available so continuing
+      # this method causes an exception, so we just return an empty list
+      # is this function is not needed during migration applications.
+      return []
     if not hasattr(cls, 'cached_all'):
       cls.cached_all = cls.objects.all()
     return cls.cached_all
 
   @classmethod
   def get_code_by_name(cls, name):
+    if len(sys.argv) == 2 and sys.argv[0:2] == ['manage.py', 'migrate']:
+      return None
     matches = list(filter(lambda perm: perm.name == name, cls.get_all()))
     if len(matches) == 0:
       raise KeyError("Couldn't find a permission with the name '%s'" % name)
