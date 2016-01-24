@@ -9,7 +9,7 @@ set -o pipefail
 
 # Deleting the current files in the deployment directory.
 echo "Deleting ${DEPLOYMENT_PATH}"
-rm -rf ${DEPLOYMENT_PATH}/*
+sudo rm -rf ${DEPLOYMENT_PATH}/*
 
 # Copy server settings file into te build directory.
 echo "Copy server_settings.py from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
@@ -25,13 +25,13 @@ python manage.py migrate
 
 # Creating directory $DEPLOYMENT_PATH if it is not created.
 echo "Creating directory $DEPLOYMENT_PATH if it is not created."
-sudo /bin/mkdir -p $DEPLOYMENT_PATH
+sudo mkdir -p $DEPLOYMENT_PATH
 
 # Copy the project onto the deployment directory.
 echo "Copying `pwd`/* to $DEPLOYMENT_PATH"
-cp -r ./* ${DEPLOYMENT_PATH}/
+sudo cp -r ./* ${DEPLOYMENT_PATH}/
 
 # Restart Apache2 server.
 echo "Restarting Apache2 server"
-sudo /usr/bin/service apache2 restart
+sudo service apache2 restart
 
