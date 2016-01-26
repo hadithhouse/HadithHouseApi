@@ -20,6 +20,8 @@ class Person(models.Model):
   death_day = models.SmallIntegerField(null=True, blank=True)
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
+  added_by = models.BigIntegerField(null=True)
+  updated_by = models.BigIntegerField(null=True)
 
   def __unicode__(self):
     return self.display_name or self.full_name
@@ -31,6 +33,8 @@ class Book(models.Model):
   pub_year = models.SmallIntegerField(null=True, blank=True)
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
+  added_by = models.BigIntegerField(null=True)
+  updated_by = models.BigIntegerField(null=True)
 
 
 class HadithTag(models.Model):
@@ -38,6 +42,8 @@ class HadithTag(models.Model):
   name = models.CharField(max_length=32, unique=True)
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
+  added_by = models.BigIntegerField(null=True)
+  updated_by = models.BigIntegerField(null=True)
 
   def __unicode__(self):
     return self.name
@@ -51,6 +57,8 @@ class Hadith(models.Model):
   tags = models.ManyToManyField(HadithTag)
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
+  added_by = models.BigIntegerField(null=True)
+  updated_by = models.BigIntegerField(null=True)
 
   def __unicode__(self):
     return self.text[:100] + '...' if len(self.text) > 100 else self.text
@@ -91,7 +99,8 @@ class Permission(models.Model):
 
   @classmethod
   def get_all(cls):
-    if len(sys.argv) == 2 and sys.argv[0:2] == ['manage.py', 'migrate']:
+    if len(sys.argv) == 2 and sys.argv[0].endswith('manage.py') and \
+            sys.argv[1] == 'migrate':
       # In case we are just creating the database tables by running the
       # migrations, the permissions table won't be available so continuing
       # this method causes an exception, so we just return an empty list
@@ -103,7 +112,8 @@ class Permission(models.Model):
 
   @classmethod
   def get_code_by_name(cls, name):
-    if len(sys.argv) == 2 and sys.argv[0:2] == ['manage.py', 'migrate']:
+    if len(sys.argv) == 2 and sys.argv[0].endswith('manage.py') and \
+        sys.argv[1] == 'migrate':
       return None
     matches = list(filter(lambda perm: perm.name == name, cls.get_all()))
     if len(matches) == 0:
