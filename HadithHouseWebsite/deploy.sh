@@ -1,7 +1,8 @@
 #!/bin/bash
 
 SERVER_SETTINGS_PATH='/home/jenkins'
-DEPLOYMENT_PATH='/var/www/HadithHouseWebsite'
+DEPLOYMENT_PATH='/var/www/hadithhouse'
+LOGS_PATH='/var/log/hadithhouse'
 
 # Stops the execution of the script if any command, including pipes, fail.
 set -e 
@@ -10,6 +11,10 @@ set -o pipefail
 # Deleting the current files in the deployment directory.
 echo "Deleting ${DEPLOYMENT_PATH}"
 sudo rm -rf ${DEPLOYMENT_PATH}/*
+
+# Create the logs directory if it is not created
+echo "Creating the logs directory if it is not created"
+sudo mkdir -p $LOGS_PATH
 
 # Copy server settings file into te build directory.
 echo "Copy server_settings.py from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
