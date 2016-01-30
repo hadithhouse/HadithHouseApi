@@ -15,6 +15,8 @@ sudo rm -rf ${DEPLOYMENT_PATH}/*
 # Create the logs directory if it is not created
 echo "Creating the logs directory if it is not created"
 sudo mkdir -p $LOGS_PATH
+# TODO: Is there any concern about giving such permissions to the log directory?
+sudo chmod 777 $LOGS_PATH
 
 # Copy server settings file into te build directory.
 echo "Copy server_settings.py from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
