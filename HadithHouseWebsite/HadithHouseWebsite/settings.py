@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts
+from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts, get_log_dir
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -23,6 +23,7 @@ SECRET_KEY = '(8rs1@c-&_9z(8ur%ydax^gf-p5)58y%94huyaa2&p1b-%1uwj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_debug()
+DJANGO_LOG_LEVEL=DEBUG
 
 ALLOWED_HOSTS = get_allowed_hosts()
 
@@ -115,3 +116,58 @@ TEMPLATES = [
     },
   },
 ]
+
+LOGGING = {
+  'version': 1,
+  'disable_existing_loggers': False,
+  'formatters': {
+    'verbose': {
+      'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+    },
+    'simple': {
+      'format': '%(levelname)s %(message)s'
+    },
+  },
+  'filters': {
+    'require_debug_true': {
+      '()': 'django.utils.log.RequireDebugTrue',
+    },
+  },
+  'handlers': {
+    'django_log_file': {
+      'level': 'DEBUG',
+      'class': 'logging.FileHandler',
+      'filename': os.path.join(get_log_dir(), 'django.log')
+    },
+    'django_requests_log_file': {
+      'level': 'DEBUG',
+      'class': 'logging.FileHandler',
+      'filename': os.path.join(get_log_dir(), 'django.request.log')
+    },
+    'django_db_backends_log_file': {
+      'level': 'DEBUG',
+      'class': 'logging.FileHandler',
+      'filename': os.path.join(get_log_dir(), 'django.db.backends.log')
+    },
+    'mail_admins': {
+      'level': 'ERROR',
+      'class': 'django.utils.log.AdminEmailHandler'
+    }
+  },
+  'loggers': {
+    'django': {
+      'handlers': ['django_log_file'],
+      'propagate': True,
+    },
+    'django.request': {
+      'handlers': ['django_requests_log_file'],
+      'level': 'ERROR',
+      'propagate': False,
+    },
+    'django.db.backends': {
+      'level': 'DEBUG',
+      'handlers': ['django_db_backends_log_file'],
+      'propagate': False,
+    },
+  }
+}

@@ -60,3 +60,7 @@ def get_dev_settings():
     }
   }
 
+
+def get_log_dir():
+  return '<The path to the directory that will contain the log files>'
+
