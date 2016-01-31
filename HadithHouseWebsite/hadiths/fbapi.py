@@ -63,11 +63,16 @@ def get_auth_error_response():
 
 
 def current_user_has_permission(request, permission):
-  if permission is not None:
-    user = get_current_user(request.query_params)
-    if user is None or not user.has_permission(permission):
-      return False
-  return True
+  if permission is None:
+    return True
+  user = get_current_user(request.query_params)
+  user_has_permission(user, permission)
+
+
+def user_has_permission(user, permission):
+  if permission is None:
+    return True
+  return user is not None and user.has_permission(permission)
 
 
 def requires_permission(func, permission):
