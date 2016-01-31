@@ -12,7 +12,7 @@ class PersonSerializer(serializers.ModelSerializer):
     fields = ['id', 'title', 'display_name', 'full_name', 'ref', 'brief_desc',
               'birth_year', 'birth_month', 'birth_day',
               'death_year', 'death_month', 'death_day',
-              'added_on', 'updated_on']
+              'added_on', 'updated_on', 'added_by', 'updated_by']
 
   # Manually specify the format of added_on and updated_on because otherwise for some
   # reason the format returned by POST requests is different to the one retrieved
@@ -25,7 +25,7 @@ class PersonSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
   class Meta:
     model = Book
-    fields = ['id', 'title', 'brief_desc', 'pub_year','added_on', 'updated_on']
+    fields = ['id', 'title', 'brief_desc', 'pub_year','added_on', 'updated_on', 'added_by', 'updated_by']
 
   # Manually specify the format of added_on and updated_on because otherwise for some
   # reason the format returned by POST requests is different to the one retrieved
@@ -52,7 +52,7 @@ class TagListingField(serializers.RelatedField):
 class HadithTagSerializer(serializers.ModelSerializer):
   class Meta:
     model = HadithTag
-    fields = ['id', 'name', 'added_on', 'updated_on']
+    fields = ['id', 'name', 'added_on', 'updated_on', 'added_by', 'updated_by']
 
   # Manually specify the format of added_on and updated_on because otherwise for some
   # reason the format returned by POST requests is different to the one retrieved
@@ -67,7 +67,7 @@ class HadithSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Hadith
-    fields = ['id', 'text', 'person', 'book', 'tags', 'added_on', 'updated_on']
+    fields = ['id', 'text', 'person', 'book', 'tags', 'added_on', 'updated_on', 'added_by', 'updated_by']
 
   # tags = serializers.PrimaryKeyRelatedField(many=True, queryset=HadithTag.objects.all(), required=False)
   # Manually specify the format of added_on and updated_on because otherwise for some
