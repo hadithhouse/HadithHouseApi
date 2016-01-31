@@ -46,6 +46,5 @@ class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     user = get_current_user(request.query_params)
     if not user_has_permission(user, self.delete_perm_code):
       return get_auth_error_response()
-    request.data['updated_by'] = user.fb_id
     return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(request, *args, **kwargs)
 
