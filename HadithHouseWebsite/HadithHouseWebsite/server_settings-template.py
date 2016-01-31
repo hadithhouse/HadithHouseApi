@@ -38,8 +38,8 @@ def get_db_settings():
 def get_local_db_settings():
   return {
     'default': {
-      'ENGINE': '<mysql.connector.django | django.db.backends.mysql>',
-      'NAME': 'HadithHouseLocal',
+      'ENGINE': '<django.db.backends.postgresql  | mysql.connector.django | django.db.backends.mysql>',
+      'NAME': 'HadithHouse',
       'USER': '<The username for your MySQL server>',
       'PASSWORD': '<The password for your username>',
       'HOST': '<The address of your MySQL server>',
@@ -51,8 +51,8 @@ def get_local_db_settings():
 def get_dev_settings():
   return {
     'default': {
-      'ENGINE': '<mysql.connector.django | django.db.backends.mysql>',
-      'NAME': 'HadithHouseDev',
+      'ENGINE': '<django.db.backends.postgresql | mysql.connector.django | django.db.backends.mysql>',
+      'NAME': 'HadithHouse',
       'USER': '<The username for your MySQL server>',
       'PASSWORD': '<The password for your username>',
       'HOST': '<The address of your MySQL server>',
