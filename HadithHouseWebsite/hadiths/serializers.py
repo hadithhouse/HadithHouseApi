@@ -9,7 +9,7 @@ from hadiths.models import Hadith, Book, Person, HadithTag, User, Permission
 class PersonSerializer(serializers.ModelSerializer):
   class Meta:
     model = Person
-    fields = ['id', 'title', 'display_name', 'full_name', 'ref', 'brief_desc',
+    fields = ['id', 'title', 'display_name', 'full_name', 'brief_desc',
               'birth_year', 'birth_month', 'birth_day',
               'death_year', 'death_month', 'death_day',
               'added_on', 'updated_on', 'added_by', 'updated_by']

@@ -8,7 +8,6 @@ class Person(models.Model):
   title = models.CharField(max_length=16)
   display_name = models.CharField(max_length=48)
   full_name = models.CharField(max_length=128)
-  ref = models.CharField(max_length=32, null=True, blank=True, unique=True)
   brief_desc = models.CharField(max_length=256)
   # We don't use DateField because it doesn't allow us to keep null
   # some parts of the date if they are unknown.

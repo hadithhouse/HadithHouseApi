@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hadiths', '0003_20150602_addfirsthadith'),
+        ('hadiths', '0003_20150602_addfirsthadiths'),
     ]
 
     operations = [

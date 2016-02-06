@@ -61,7 +61,6 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=16)),
                 ('display_name', models.CharField(max_length=48)),
                 ('full_name', models.CharField(max_length=128)),
-                ('ref', models.CharField(max_length=32, unique=True, null=True, blank=True)),
                 ('brief_desc', models.CharField(max_length=256)),
                 ('birth_year', models.SmallIntegerField(null=True, blank=True)),
                 ('birth_month', models.SmallIntegerField(null=True, blank=True)),
