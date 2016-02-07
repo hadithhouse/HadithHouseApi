@@ -16,7 +16,7 @@ def add_prophet_muhammad_pbuh(apps, schema_editor):
       death_year=prophet_muhammad['death_year'])
 
 
-def add_imam_sadiq(apps, schema_editor):
+def add_imam_alsadiq(apps, schema_editor):
   Person = apps.get_model('hadiths', 'Person')
   db_alias = schema_editor.connection.alias
   Person.objects.using(db_alias).get_or_create(
@@ -43,7 +43,7 @@ def add_persons_of_first_sunni_hadith(apps, schema_editor):
 @atomic
 def add_initial_data(apps, schema_editor):
   add_prophet_muhammad_pbuh(apps, schema_editor)
-  add_imam_sadiq(apps, schema_editor)
+  add_imam_alsadiq(apps, schema_editor)
   add_persons_of_first_shia_hadith(apps, schema_editor)
   add_persons_of_first_sunni_hadith(apps, schema_editor)
 

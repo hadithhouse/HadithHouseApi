@@ -6,9 +6,9 @@ from django.db import models
 class Person(models.Model):
   """A model describing a person."""
   title = models.CharField(max_length=16)
-  display_name = models.CharField(max_length=48)
-  full_name = models.CharField(max_length=128)
-  brief_desc = models.CharField(max_length=256)
+  display_name = models.CharField(max_length=128, unique=True, null=True, blank=True)
+  full_name = models.CharField(max_length=255, unique=True)
+  brief_desc = models.CharField(max_length=512, null=True, blank=True)
   # We don't use DateField because it doesn't allow us to keep null
   # some parts of the date if they are unknown.
   birth_year = models.SmallIntegerField(null=True, blank=True)
