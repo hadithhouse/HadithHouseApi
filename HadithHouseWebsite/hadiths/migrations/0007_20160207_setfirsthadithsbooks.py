@@ -25,7 +25,7 @@ def set_firsthadiths_books(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0011_auto_20160126_2318')
+    ('hadiths', '0006_20151101_addpermissions')
   ]
 
   operations = [

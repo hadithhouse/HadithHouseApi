@@ -23,7 +23,7 @@
  */
 
 function waitForPromises(promises, callback) {
-  
+
 }
 
 (function () {
@@ -56,15 +56,19 @@ function waitForPromises(promises, callback) {
       if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
         return;
       }
-      PersonsService.getPersons().then(function() {
+      PersonsService.getPersons().then(function () {
         ctrl.persons = ctrl.personsIds.map(function (id) {
           return PersonsService.getPersonSync(id);
         });
       });
     }
 
-    $scope.$watch(function() { return ctrl.personsIds; }, onPersonsIdsChanged);
-    $scope.$watchCollection(function() { return ctrl.personsIds; }, onPersonsIdsChanged);
+    $scope.$watch(function () {
+      return ctrl.personsIds;
+    }, onPersonsIdsChanged);
+    $scope.$watchCollection(function () {
+      return ctrl.personsIds;
+    }, onPersonsIdsChanged);
 
     function onPersonsChanged(newValue, oldValue) {
       if (ctrl.persons) {
@@ -73,18 +77,22 @@ function waitForPromises(promises, callback) {
         if (ctrl.singleSelect === true && ctrl.persons.length > 1) {
           ctrl.persons.splice(0, ctrl.persons.length - 1);
         }
-        ctrl.personsIds = ctrl.persons.map(function(person) {
+        ctrl.personsIds = ctrl.persons.map(function (person) {
           return person.id;
         });
       }
     }
 
-    $scope.$watch(function() { return ctrl.persons; }, onPersonsChanged);
-    $scope.$watchCollection(function() { return ctrl.persons; }, onPersonsChanged);
+    $scope.$watch(function () {
+      return ctrl.persons;
+    }, onPersonsChanged);
+    $scope.$watchCollection(function () {
+      return ctrl.persons;
+    }, onPersonsChanged);
 
     /*ctrl.onPersonChange = function() {
-      ctrl.personId = ctrl.person.id;
-    };*/
+     ctrl.personId = ctrl.person.id;
+     };*/
 
     ctrl.findPersons = function (query) {
       if (!ctrl.availPersonsLoaded) {
@@ -93,9 +101,9 @@ function waitForPromises(promises, callback) {
 
       return ctrl.availPersons.filter(function (person) {
         return (person.title.indexOf(query) > -1 ||
-          person.display_name.indexOf(query) > -1 ||
-          person.full_name.indexOf(query) > -1 ||
-          person.brief_desc.indexOf(query) > -1);
+        (person.display_name && person.display_name.indexOf(query) > -1) ||
+        (person.full_name && person.full_name.indexOf(query) > -1) ||
+        (person.brief_desc && person.brief_desc.indexOf(query) > -1));
       });
     };
   });

@@ -35,6 +35,9 @@ class Book(models.Model):
   added_by = models.BigIntegerField(null=True)
   updated_by = models.BigIntegerField(null=True)
 
+  def __unicode__(self):
+    return self.title[:50] + '...' if len(self.title) > 50 else self.title
+
 
 class HadithTag(models.Model):
   """A model describing a tag for hadiths."""
@@ -51,9 +54,9 @@ class HadithTag(models.Model):
 class Hadith(models.Model):
   """A model describing a hadith."""
   text = models.TextField()
-  person = models.ForeignKey(Person)
-  book = models.ForeignKey(Book, null=True)
-  tags = models.ManyToManyField(HadithTag)
+  person = models.ForeignKey(Person, related_name='hadiths')
+  book = models.ForeignKey(Book, null=True, related_name='hadiths')
+  tags = models.ManyToManyField(HadithTag, related_name='hadiths')
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
   added_by = models.BigIntegerField(null=True)
@@ -64,12 +67,12 @@ class Hadith(models.Model):
 
 
 class Chain(models.Model):
-  hadith = models.ForeignKey(Hadith)
+  hadith = models.ForeignKey(Hadith, related_name='chains')
 
 
 class ChainLink(models.Model):
-  chain = models.ForeignKey(Chain)
-  person = models.ForeignKey(Person)
+  chain = models.ForeignKey(Chain, related_name='chainlinks')
+  person = models.ForeignKey(Person, related_name='chainlinks')
   order = models.SmallIntegerField(null=False, blank=False)
 
 

@@ -19,7 +19,17 @@ def add_permissions(apps, schema_editor):
       current_code[0] <<= 1
     return current_code[0]
 
-  # Create the hadith
+  # Add permissions
+  Permission.objects.using(db_alias).get_or_create(
+    name='Can Approve Data',
+    desc='Allow the user to approve hadiths, persons, etc.',
+    code=get_new_code()
+  )
+  Permission.objects.using(db_alias).get_or_create(
+    name='Can Deny Data',
+    desc='Allow the user to deny hadiths, persons, etc.',
+    code=get_new_code()
+  )
   Permission.objects.using(db_alias).get_or_create(
     name='Can Control Permissions',
     desc='Allow the user to add/remove permission types and grant or forfeit user permissions.',
@@ -32,7 +42,7 @@ def add_permissions(apps, schema_editor):
   )
   Permission.objects.using(db_alias).get_or_create(
     name='Can Edit Hadiths',
-    desc='Allow the user to edit existing hadiths',
+    desc='Allow the user to edit existing hadiths.',
     code=get_new_code()
   )
   Permission.objects.using(db_alias).get_or_create(
@@ -47,7 +57,7 @@ def add_permissions(apps, schema_editor):
   )
   Permission.objects.using(db_alias).get_or_create(
     name='Can Edit Persons',
-    desc='Allow the user to edit existing persons',
+    desc='Allow the user to edit existing persons.',
     code=get_new_code()
   )
   Permission.objects.using(db_alias).get_or_create(
@@ -62,7 +72,7 @@ def add_permissions(apps, schema_editor):
   )
   Permission.objects.using(db_alias).get_or_create(
     name='Can Edit Hadith Tags',
-    desc='Allow the user to edit existing hadith tags',
+    desc='Allow the user to edit existing hadith tags.',
     code=get_new_code()
   )
   Permission.objects.using(db_alias).get_or_create(
@@ -71,20 +81,25 @@ def add_permissions(apps, schema_editor):
     code=get_new_code()
   )
   Permission.objects.using(db_alias).get_or_create(
-    name='Can Approve Data',
-    desc='Allow the user to approve hadiths, persons, etc.',
+    name='Can Add Books',
+    desc='Allow the user to add new books.',
     code=get_new_code()
   )
   Permission.objects.using(db_alias).get_or_create(
-    name='Can Deny Data',
-    desc='Allow the user to deny hadiths, persons, etc.',
+    name='Can Edit Books',
+    desc='Allow the user to edit existing books.',
+    code=get_new_code()
+  )
+  Permission.objects.using(db_alias).get_or_create(
+    name='Can Delete Books',
+    desc='Allow the user to delete books.',
     code=get_new_code()
   )
 
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0006_permission')
+    ('hadiths', '0005_20151027_addrafidtousers')
   ]
 
   operations = [

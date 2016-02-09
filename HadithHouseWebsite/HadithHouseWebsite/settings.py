@@ -23,7 +23,7 @@ SECRET_KEY = '(8rs1@c-&_9z(8ur%ydax^gf-p5)58y%94huyaa2&p1b-%1uwj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_debug()
-DJANGO_LOG_LEVEL=DEBUG
+DJANGO_LOG_LEVEL = DEBUG
 
 ALLOWED_HOSTS = get_allowed_hosts()
 
@@ -170,4 +170,8 @@ LOGGING = {
       'propagate': False,
     },
   }
+}
+
+REST_FRAMEWORK = {
+  'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }

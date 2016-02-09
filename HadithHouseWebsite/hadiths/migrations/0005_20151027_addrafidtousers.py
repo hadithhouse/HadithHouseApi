@@ -19,7 +19,7 @@ def add_rafid_to_users(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0004_user')
+    ('hadiths', '0003_20150602_addfirsthadiths')
   ]
 
   operations = [
