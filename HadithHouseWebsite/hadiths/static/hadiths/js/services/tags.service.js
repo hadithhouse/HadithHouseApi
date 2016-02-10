@@ -58,7 +58,7 @@
       }
 
       $http.get(getUrl('hadithtags/')).then(function onSuccess(response) {
-        cachedTags = response.data;
+        cachedTags = response.data.results;
         deferred.resolve(cachedTags);
       }, function onError() {
         deferred.reject();

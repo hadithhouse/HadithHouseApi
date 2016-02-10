@@ -92,7 +92,7 @@
       }
 
       $http.get(getUrl('persons/')).then(function onSuccess(response) {
-        cachedPersons = response.data;
+        cachedPersons = response.data.results;
         createPersonsDict();
         deferred.resolve(cachedPersons);
       }, function onError(reason) {

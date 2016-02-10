@@ -92,7 +92,7 @@
       }
 
       $http.get(getUrl('books/')).then(function onSuccess(response) {
-        cachedBooks = response.data;
+        cachedBooks = response.data.results;
         createBooksDict();
         deferred.resolve(cachedBooks);
       }, function onError(reason) {

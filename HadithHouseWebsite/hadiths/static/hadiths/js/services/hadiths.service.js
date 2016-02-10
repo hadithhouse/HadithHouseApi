@@ -82,7 +82,7 @@
       }
 
       $http.get(getUrl('hadiths/')).then(function onSuccess(response) {
-        cachedHadiths = response.data;
+        cachedHadiths = response.data.results;
         deferred.resolve(cachedHadiths);
       }, function onError() {
         deferred.reject();

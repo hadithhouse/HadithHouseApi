@@ -1,5 +1,6 @@
 from rest_framework.filters import DjangoFilterBackend, SearchFilter
 from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from hadiths import fbapi
@@ -142,6 +143,8 @@ class PermissionSetView(FBAuthListCreateAPIView):
   serializer_class = PermissionSerializer
   get_perm_code = None
   post_perm_code = Permission.get_code_by_name('Can Control Permissions')
+  # Permissions are not that many and so pagination is not necessary.
+  pagination_class = None
 
 
 class PermissionView(FBAuthRetrieveUpdateDestroyAPIView):
