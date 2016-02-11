@@ -45,7 +45,7 @@ class BookSetView(FBAuthListCreateAPIView):
   get_perm_code = None
   post_perm_code = Permission.get_code_by_name('Can Add Books')
   filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
-  filter_fields = common_filter_fields
+  filter_fields = common_filter_fields + ('pub_year', )
   search_fields = ('title',)
   ordering_fields = common_ordering_fields + ('title', )
 
