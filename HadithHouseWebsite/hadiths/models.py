@@ -4,6 +4,9 @@ from django.db import models
 
 
 class Person(models.Model):
+  class Meta:
+    db_table = 'persons'
+
   """A model describing a person."""
   title = models.CharField(max_length=16)
   display_name = models.CharField(max_length=128, unique=True, null=True, blank=True)
@@ -30,6 +33,9 @@ class Person(models.Model):
 
 
 class Book(models.Model):
+  class Meta:
+    db_table = 'books'
+
   title = models.CharField(max_length=128, unique=True)
   brief_desc = models.CharField(max_length=256, null=True, blank=True)
   pub_year = models.SmallIntegerField(null=True, blank=True, db_index=True)
@@ -44,6 +50,9 @@ class Book(models.Model):
 
 
 class HadithTag(models.Model):
+  class Meta:
+    db_table = 'hadithtags'
+
   """A model describing a tag for hadiths."""
   name = models.CharField(max_length=32, unique=True)
   # TODO: Do we need to index added_on and updated_on?
@@ -57,6 +66,9 @@ class HadithTag(models.Model):
 
 
 class Hadith(models.Model):
+  class Meta:
+    db_table = 'hadiths'
+
   """A model describing a hadith."""
   text = models.TextField(db_index=True)
   # Django automatically index foreign keys, but adding Index=True to make it clear.
@@ -74,11 +86,17 @@ class Hadith(models.Model):
 
 
 class Chain(models.Model):
+  class Meta:
+    db_table = 'chains'
+
   # Django automatically index foreign keys, but adding Index=True to make it clear.
   hadith = models.ForeignKey(Hadith, related_name='chains', db_index=True)
 
 
 class ChainLink(models.Model):
+  class Meta:
+    db_table = 'chainlinks'
+
   # Django automatically index foreign keys, but adding Index=True to make it clear.
   chain = models.ForeignKey(Chain, related_name='chainlinks', db_index=True)
   person = models.ForeignKey(Person, related_name='chainlinks', db_index=True)
@@ -87,6 +105,9 @@ class ChainLink(models.Model):
 
 
 class User(models.Model):
+  class Meta:
+    db_table = 'users'
+
   fb_id = models.BigIntegerField(unique=True)
   permissions = models.BigIntegerField()
 
@@ -105,6 +126,9 @@ class User(models.Model):
 
 
 class Permission(models.Model):
+  class Meta:
+    db_table = 'permissions'
+
   name = models.CharField(max_length=128, unique=True)
   desc = models.CharField(max_length=512)
   code = models.BigIntegerField(unique=True)
@@ -112,7 +136,7 @@ class Permission(models.Model):
   @classmethod
   def get_all(cls):
     if len(sys.argv) == 2 and sys.argv[0].endswith('manage.py') and \
-            sys.argv[1] == 'migrate':
+        (sys.argv[1] == 'migrate' or sys.argv[1] == 'makemigrations'):
       # In case we are just creating the database tables by running the
       # migrations, the permissions table won't be available so continuing
       # this method causes an exception, so we just return an empty list
@@ -125,7 +149,7 @@ class Permission(models.Model):
   @classmethod
   def get_code_by_name(cls, name):
     if len(sys.argv) == 2 and sys.argv[0].endswith('manage.py') and \
-        sys.argv[1] == 'migrate':
+        (sys.argv[1] == 'migrate' or sys.argv[1] == 'makemigrations'):
       return None
     matches = list(filter(lambda perm: perm.name == name, cls.get_all()))
     if len(matches) == 0:
