@@ -9,18 +9,21 @@ class Person(models.Model):
   display_name = models.CharField(max_length=128, unique=True, null=True, blank=True)
   full_name = models.CharField(max_length=255, unique=True)
   brief_desc = models.CharField(max_length=512, null=True, blank=True)
-  # We don't use DateField because it doesn't allow us to keep null
+  # NOTE: We don't use DateField because it doesn't allow us to keep null
   # some parts of the date if they are unknown.
+  # NOTE: I am not indexing these fields because I don't think they will be
+  # frequently used for filtering.
   birth_year = models.SmallIntegerField(null=True, blank=True)
   birth_month = models.SmallIntegerField(null=True, blank=True)
   birth_day = models.SmallIntegerField(null=True, blank=True)
   death_year = models.SmallIntegerField(null=True, blank=True)
   death_month = models.SmallIntegerField(null=True, blank=True)
   death_day = models.SmallIntegerField(null=True, blank=True)
+  # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
-  added_by = models.BigIntegerField(null=True)
-  updated_by = models.BigIntegerField(null=True)
+  added_by = models.BigIntegerField(null=True, db_index=True)
+  updated_by = models.BigIntegerField(null=True, db_index=True)
 
   def __unicode__(self):
     return self.display_name or self.full_name
@@ -29,11 +32,12 @@ class Person(models.Model):
 class Book(models.Model):
   title = models.CharField(max_length=128, unique=True)
   brief_desc = models.CharField(max_length=256, null=True, blank=True)
-  pub_year = models.SmallIntegerField(null=True, blank=True)
+  pub_year = models.SmallIntegerField(null=True, blank=True, db_index=True)
+  # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
-  added_by = models.BigIntegerField(null=True)
-  updated_by = models.BigIntegerField(null=True)
+  added_by = models.BigIntegerField(null=True, db_index=True)
+  updated_by = models.BigIntegerField(null=True, db_index=True)
 
   def __unicode__(self):
     return self.title[:50] + '...' if len(self.title) > 50 else self.title
@@ -42,10 +46,11 @@ class Book(models.Model):
 class HadithTag(models.Model):
   """A model describing a tag for hadiths."""
   name = models.CharField(max_length=32, unique=True)
+  # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
-  added_by = models.BigIntegerField(null=True)
-  updated_by = models.BigIntegerField(null=True)
+  added_by = models.BigIntegerField(null=True, db_index=True)
+  updated_by = models.BigIntegerField(null=True, db_index=True)
 
   def __unicode__(self):
     return self.name
@@ -53,31 +58,36 @@ class HadithTag(models.Model):
 
 class Hadith(models.Model):
   """A model describing a hadith."""
-  text = models.TextField()
-  person = models.ForeignKey(Person, related_name='hadiths')
-  book = models.ForeignKey(Book, null=True, related_name='hadiths')
+  text = models.TextField(db_index=True)
+  # Django automatically index foreign keys, but adding Index=True to make it clear.
+  person = models.ForeignKey(Person, related_name='hadiths', db_index=True)
+  book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True)
   tags = models.ManyToManyField(HadithTag, related_name='hadiths')
+  # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
-  added_by = models.BigIntegerField(null=True)
-  updated_by = models.BigIntegerField(null=True)
+  added_by = models.BigIntegerField(null=True, db_index=True)
+  updated_by = models.BigIntegerField(null=True, db_index=True)
 
   def __unicode__(self):
     return self.text[:100] + '...' if len(self.text) > 100 else self.text
 
 
 class Chain(models.Model):
-  hadith = models.ForeignKey(Hadith, related_name='chains')
+  # Django automatically index foreign keys, but adding Index=True to make it clear.
+  hadith = models.ForeignKey(Hadith, related_name='chains', db_index=True)
 
 
 class ChainLink(models.Model):
-  chain = models.ForeignKey(Chain, related_name='chainlinks')
-  person = models.ForeignKey(Person, related_name='chainlinks')
+  # Django automatically index foreign keys, but adding Index=True to make it clear.
+  chain = models.ForeignKey(Chain, related_name='chainlinks', db_index=True)
+  person = models.ForeignKey(Person, related_name='chainlinks', db_index=True)
+  # TODO: Do we need an index here?
   order = models.SmallIntegerField(null=False, blank=False)
 
 
 class User(models.Model):
-  fb_id = models.BigIntegerField(unique=True, db_index=True)
+  fb_id = models.BigIntegerField(unique=True)
   permissions = models.BigIntegerField()
 
   @classmethod
