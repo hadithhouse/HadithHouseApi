@@ -99,7 +99,7 @@ def add_permissions(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0005_20151027_addrafidtousers')
+    ('hadiths', '0004_20151027_addrafidtousers')
   ]
 
   operations = [
