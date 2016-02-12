@@ -74,7 +74,7 @@ class Hadith(models.Model):
   # Django automatically index foreign keys, but adding Index=True to make it clear.
   person = models.ForeignKey(Person, related_name='hadiths', db_index=True)
   book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True)
-  tags = models.ManyToManyField(HadithTag, related_name='hadiths')
+  tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths')
   # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
