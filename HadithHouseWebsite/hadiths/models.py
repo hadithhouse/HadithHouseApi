@@ -72,8 +72,8 @@ class Hadith(models.Model):
   """A model describing a hadith."""
   text = models.TextField(db_index=True)
   # Django automatically index foreign keys, but adding Index=True to make it clear.
-  person = models.ForeignKey(Person, related_name='hadiths', db_index=True)
-  book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True)
+  person = models.ForeignKey(Person, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
+  book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
   tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths')
   # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
@@ -90,7 +90,7 @@ class Chain(models.Model):
     db_table = 'chains'
 
   # Django automatically index foreign keys, but adding Index=True to make it clear.
-  hadith = models.ForeignKey(Hadith, related_name='chains', db_index=True)
+  hadith = models.ForeignKey(Hadith, related_name='chains', db_index=True, on_delete=models.CASCADE)
 
 
 class ChainLink(models.Model):
@@ -98,8 +98,8 @@ class ChainLink(models.Model):
     db_table = 'chainlinks'
 
   # Django automatically index foreign keys, but adding Index=True to make it clear.
-  chain = models.ForeignKey(Chain, related_name='chainlinks', db_index=True)
-  person = models.ForeignKey(Person, related_name='chainlinks', db_index=True)
+  chain = models.ForeignKey(Chain, related_name='chainlinks', db_index=True, on_delete=models.CASCADE)
+  person = models.ForeignKey(Person, related_name='chainlinks', db_index=True, on_delete=models.PROTECT)
   # TODO: Do we need an index here?
   order = models.SmallIntegerField(null=False, blank=False)
 
