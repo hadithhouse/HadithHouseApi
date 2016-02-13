@@ -1,7 +1,9 @@
+from django.db.models import ProtectedError
 from rest_framework.filters import DjangoFilterBackend, SearchFilter
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
 
 from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
@@ -37,6 +39,14 @@ class PersonView(FBAuthRetrieveUpdateDestroyAPIView):
   patch_perm_code = 'change_person'
   delete_perm_code = 'delete_person'
 
+  def handle_exception(self, ex):
+    if isinstance(ex, ProtectedError):
+      return Response({
+        'detail': 'Cannot delete person because it is still referenced. Delete '
+                  'all entities, e.g. hadiths, referencing it and try again.',
+      }, status=HTTP_403_FORBIDDEN, exception=True)
+    return super(PersonView, self).handle_exception(ex)
+
 
 class BookSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
@@ -45,9 +55,9 @@ class BookSetView(FBAuthListCreateAPIView):
   get_perm_code = None
   post_perm_code = 'add_book'
   filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
-  filter_fields = common_filter_fields + ('pub_year', )
+  filter_fields = common_filter_fields + ('pub_year',)
   search_fields = ('title',)
-  ordering_fields = common_ordering_fields + ('title', )
+  ordering_fields = common_ordering_fields + ('title',)
 
 
 class BookView(FBAuthRetrieveUpdateDestroyAPIView):
@@ -59,6 +69,14 @@ class BookView(FBAuthRetrieveUpdateDestroyAPIView):
   put_perm_code = 'change_book'
   patch_perm_code = 'change_book'
   delete_perm_code = 'delete_book'
+
+  def handle_exception(self, ex):
+    if isinstance(ex, ProtectedError):
+      return Response({
+        'detail': 'Cannot delete book because it is still referenced. Delete '
+                  'all entities, e.g. hadiths, referencing it and try again.',
+      }, status=HTTP_403_FORBIDDEN, exception=True)
+    return super(BookView, self).handle_exception(ex)
 
 
 class HadithTagSetView(FBAuthListCreateAPIView):
@@ -120,10 +138,10 @@ class UserView(FBAuthRetrieveUpdateDestroyAPIView):
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_perm_code = None
-  post_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
-  put_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
-  patch_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
-  delete_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
+  post_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
+  put_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
+  patch_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
+  delete_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
 
   def get(self, request, *args, **kwargs):
     id = kwargs['id']

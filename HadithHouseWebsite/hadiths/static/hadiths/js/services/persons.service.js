@@ -141,7 +141,6 @@
     function deletePerson(personId) {
       var d = $http.delete(getUrl('persons/' + personId));
       d.then(function onSuccess(result) {
-        var newPerson = result.data;
         if (cachedPersons !== null) {
           for (var i = 0; i < cachedPersons.length; i++) {
             if (cachedPersons[i].id === personId) {

@@ -141,7 +141,6 @@
     function deleteBook(bookId) {
       var d = $http.delete(getUrl('books/' + bookId));
       d.then(function onSuccess(result) {
-        var newBook = result.data;
         if (cachedBooks !== null) {
           for (var i = 0; i < cachedBooks.length; i++) {
             if (cachedBooks[i].id === bookId) {

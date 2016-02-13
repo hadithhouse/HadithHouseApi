@@ -32,8 +32,10 @@
             ToastService.show('Book deleted');
             ctrl.loadBooks();
           }, function onError(result) {
-            if (result.data) {
-              ToastService.showDjangoError("Failed to delete book.", result.data);
+            if (result.data && result.data.detail) {
+              ToastService.show("Failed to delete person. Error was: " + result.data.detail);
+            } else if (result.data) {
+              ToastService.show("Failed to delete book. Error was: " + result.data);
             } else {
               ToastService.show("Failed to delete book. Please try again!");
             }
