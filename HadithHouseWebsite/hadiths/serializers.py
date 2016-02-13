@@ -1,16 +1,26 @@
+from collections import OrderedDict
+
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
 
 from hadiths.models import Hadith, Book, Person, HadithTag  # , User, Permission
 
+class AutoTrackSerializer(serializers.ModelSerializer):
+  def create(self, validated_data):
+    validated_data['added_by'] = self.context['request'].user
+    return super(AutoTrackSerializer, self).create(validated_data)
+
+  def update(self, instance, validated_data):
+    validated_data['updated_by'] = self.context['request'].user
+    return super(AutoTrackSerializer, self).update(instance, validated_data)
 
 # NOTE: We manually specify the format of added_on and updated_on because otherwise for some
 # reason the format returned by POST requests is different to the one retrieved
 # by GET requests. See this for more information:
 # http://stackoverflow.com/questions/31225467/generics-retrieveupdatedestroyapiview-and-generics-listcreateapiview-format-date
 
-class PersonSerializer(serializers.ModelSerializer):
+class PersonSerializer(AutoTrackSerializer):
   class Meta:
     model = Person
     fields = ['id', 'title', 'display_name', 'full_name', 'brief_desc',
@@ -22,7 +32,7 @@ class PersonSerializer(serializers.ModelSerializer):
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(AutoTrackSerializer):
   class Meta:
     model = Book
     fields = ['id', 'title', 'brief_desc', 'pub_year', 'added_on', 'updated_on', 'added_by', 'updated_by']
@@ -45,7 +55,7 @@ class TagListingField(serializers.RelatedField):
       raise APIException('Invalid tag name: ' + tag_name)
 
 
-class HadithTagSerializer(serializers.ModelSerializer):
+class HadithTagSerializer(AutoTrackSerializer):
   class Meta:
     model = HadithTag
     fields = ['id', 'name', 'added_on', 'updated_on', 'added_by', 'updated_by']
@@ -54,7 +64,7 @@ class HadithTagSerializer(serializers.ModelSerializer):
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
 
-class HadithSerializer(serializers.ModelSerializer):
+class HadithSerializer(AutoTrackSerializer):
   tags = TagListingField(many=True, queryset=HadithTag.objects.all(), required=False)
 
   class Meta:
