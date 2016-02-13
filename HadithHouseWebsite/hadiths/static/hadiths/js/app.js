@@ -56,10 +56,6 @@
       templateUrl: getHtmlBasePath() + 'person.html',
       controller: 'PersonCtrl',
       controllerAs: 'ctrl',
-    }).when('/permissions', {
-      templateUrl: getHtmlBasePath() + 'permissions.html',
-      controller: 'PermissionsCtrl',
-      controllerAs: 'ctrl',
     }).when('/tags', {
       templateUrl: getHtmlBasePath() + 'tags.html',
       controller: 'TagsCtrl',
@@ -129,12 +125,12 @@
           }
         });
         UsersService.getCurrentUser().then(function onSuccess(user) {
-          $rootScope.user = user;
-          // If the user has any permission, add 'Permissions' menu item so the
-          // user can view his/her current permissions.
-          if (_.some(user.permissions, function(value, key) { return value; })) {
-            ctrl.menuItems.push({name: 'Permissions', urlPath: 'permissions'});
+          var perms = {};
+          for (var i in user.permissions) {
+            perms[user.permissions[i]] = true;
           }
+          user.permissions = perms;
+          $rootScope.user = user;
         });
       };
 

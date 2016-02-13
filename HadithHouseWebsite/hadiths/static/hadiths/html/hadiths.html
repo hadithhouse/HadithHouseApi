@@ -5,7 +5,7 @@
       <div style="width: 100%;">
         <md-icon class="material-icons"
                  ng-click="ctrl.deleteHadith($event, hadith)"
-            ng-if="ctrl.user.permissions.can_delete_hadiths">close</md-icon>
+            ng-if="ctrl.user.permissions.delete_hadith">close</md-icon>
         <a ng-href="#/hadith/{{ hadith.id }}">
           {{ hadith.text | limitTo:50 }}
         </a>
@@ -17,7 +17,7 @@
 
 <md-button class="md-fab md-mini"
            ng-href="#/hadith/new"
-           ng-if="ctrl.user.permissions.can_add_hadiths">
+           ng-if="ctrl.user.permissions.add_hadith">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 

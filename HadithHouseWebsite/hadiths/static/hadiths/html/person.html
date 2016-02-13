@@ -7,17 +7,17 @@
     <md-icon class="material-icons"
              ng-click="ctrl.startEditing()"
              ng-hide="ctrl.isEditing"
-             ng-if="ctrl.user.permissions.can_edit_persons">edit
+             ng-if="ctrl.user.permissions.change_person">edit
     </md-icon>
     <md-icon class="material-icons"
              ng-click="ctrl.cancelEditing()"
              ng-hide="!ctrl.isEditing || ctrl.addingNew"
-             ng-if="ctrl.user.permissions.can_edit_persons">cancel
+             ng-if="ctrl.user.permissions.change_person">cancel
     </md-icon>
     <md-icon class="material-icons"
              ng-click="ctrl.finishEditing()"
              ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.user.permissions.can_edit_persons">save
+             ng-if="ctrl.user.permissions.change_person">save
     </md-icon>
   </h1>
 

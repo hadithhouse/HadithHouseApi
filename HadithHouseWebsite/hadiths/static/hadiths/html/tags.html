@@ -5,11 +5,11 @@
       <div style="width: 100%;">
         <md-icon class="material-icons"
                  ng-click="ctrl.showEditTagDialog($event, tag)"
-                 ng-if="ctrl.user.permissions.can_edit_hadith_tags">edit
+                 ng-if="ctrl.user.permissions.change_hadithtag">edit
         </md-icon>
         <md-icon class="material-icons"
                  ng-click="ctrl.deleteTag($event, tag)"
-                 ng-if="ctrl.user.permissions.can_delete_hadith_tags">close
+                 ng-if="ctrl.user.permissions.delete_hadithtag">close
         </md-icon>
         {{ tag.name }}
       </div>
@@ -20,6 +20,6 @@
 
 <md-button class="md-fab md-mini"
            ng-click="ctrl.showAddTagDialog($event)"
-           ng-if="ctrl.user.permissions.can_add_hadith_tags">
+           ng-if="ctrl.user.permissions.add_hadithtag">
   <md-icon class="material-icons">add</md-icon>
 </md-button>

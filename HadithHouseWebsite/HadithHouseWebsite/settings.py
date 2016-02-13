@@ -32,6 +32,7 @@ SERVER_EMAIL = 'noreply@hadithhouse.net'
 # Application definition
 
 INSTALLED_APPS = (
+  'django.contrib.admin',
   'django.contrib.auth',
   'django.contrib.contenttypes',
   'django.contrib.sessions',
@@ -175,4 +176,7 @@ REST_FRAMEWORK = {
   'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
   'DEFAULT_PAGINATION_CLASS': 'hadiths.pagination.DefaultPagination',
   'PAGE_SIZE': 50,
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+    'hadiths.auth.FacebookAuthentication',
+  )
 }

@@ -7,17 +7,17 @@
     <md-icon class="material-icons"
              ng-click="ctrl.startEditing()"
              ng-hide="ctrl.isEditing"
-             ng-if="ctrl.user.permissions.can_edit_hadiths">edit
+             ng-if="ctrl.user.permissions.change_hadith">edit
     </md-icon>
     <md-icon class="material-icons"
              ng-click="ctrl.cancelEditing()"
              ng-hide="!ctrl.isEditing || ctrl.addingNew"
-             ng-if="ctrl.user.permissions.can_edit_hadiths">cancel
+             ng-if="ctrl.user.permissions.change_hadith">cancel
     </md-icon>
     <md-icon class="material-icons"
              ng-click="ctrl.finishEditing()"
              ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.user.permissions.can_edit_hadiths">save
+             ng-if="ctrl.user.permissions.change_hadith">save
     </md-icon>
   </h1>
 
