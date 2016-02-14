@@ -37,12 +37,7 @@
     function getUrl(relativePath) {
       var getApiUrl = window['getApiUrl'];
 
-      var accessToken = $rootScope.fbAccessToken;
-      if (accessToken !== null) {
-        return getApiUrl() + relativePath + '?fb_token=' + accessToken;
-      } else {
-        return getApiUrl() + relativePath;
-      }
+      return getApiUrl() + relativePath;
     }
 
     /**

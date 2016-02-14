@@ -67,8 +67,14 @@
         return {
           'request': function (config) {
             //To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
-            if (!config.headers.hasOwnProperty("X-global"))
+            if (!config.headers.hasOwnProperty("X-global")) {
               $rootScope.pendingRequests++;
+            }
+            // If this is a request to the API, appends Facebook authentication token.
+            if (config.url.startsWith('/apis/') && $rootScope.fbAccessToken !== null) {
+              config.params = config.params || {};
+              config.params['fb_token'] = $rootScope.fbAccessToken;
+            }
             return config || $q.when(config);
           },
           'requestError': function (rejection) {
