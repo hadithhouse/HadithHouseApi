@@ -25,7 +25,7 @@
 (function () {
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.controller('TagSelectorCtrl', function ($scope, $q, $mdDialog, TagsService, ToastService) {
+  HadithHouseApp.controller('TagSelectorCtrl', function ($scope, $q, $mdDialog, HadithTag) {
     var ctrl = this;
 
     ctrl.singleSelect = false;
@@ -46,7 +46,7 @@
      * purposes.
      */
     function loadAvailTags() {
-      TagsService.getTags().then(function onSuccess(tags) {
+      HadithTag.query(function onSuccess(tags) {
         ctrl.availTagsLoaded = true;
         ctrl.availTagNames = tags.map(function (tag) {
           return tag.name;
@@ -65,7 +65,9 @@
       ctrl.tagNames.splice(0, ctrl.tagNames.length - 1);
     }
 
-    $scope.$watchCollection(function() { return ctrl.tagNames; }, function() {
+    $scope.$watchCollection(function () {
+      return ctrl.tagNames;
+    }, function () {
       if (ctrl.singleSelect === true && ctrl.tagNames && ctrl.tagNames.length > 1) {
         removeAllTagsButLast();
       }
@@ -93,12 +95,13 @@
 
       var deferred = $q.defer();
       $mdDialog.show(confirm).then(function onConfirm() {
-        TagsService.postTag({name: tagName}).then(function onSuccess() {
+        var tag = new HadithTag({name: tagName});
+        tag.$save(function () {
           // The tag was successfully added so we add to the list of available
           // tags for auto completion.
           ctrl.availTagNames.push(tagName);
           deferred.resolve();
-        }, function onError() {
+        }, function () {
           undoAddingTag(tagName);
           deferred.reject("Couldn't create tag. Please try again.");
         });
@@ -117,7 +120,7 @@
       }
     }
 
-    ctrl.onAppend = function() {
+    ctrl.onAppend = function () {
       if (ctrl.allowAddingTags) {
         onAddingNewTag(ctrl.tagQuery);
       }

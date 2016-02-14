@@ -29,7 +29,7 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.factory('Tag', function ($resource) {
+  HadithHouseApp.factory('HadithTag', function ($resource) {
     return $resource('/apis/hadithtags/:id', {id: '@id'}, {
       'query': {
         method: 'GET',

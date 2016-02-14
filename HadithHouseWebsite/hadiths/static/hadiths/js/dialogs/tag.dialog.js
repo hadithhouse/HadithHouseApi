@@ -3,7 +3,7 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  function TagDialogCtrl($scope, $mdDialog, Tag, ToastService) {
+  function TagDialogCtrl($scope, $mdDialog, HadithTag, ToastService) {
     var ctrl = this;
 
     ctrl.isSaveMode = function () {
@@ -16,7 +16,7 @@
         name: ctrl.tag.name
       };
     } else {
-      ctrl.tag = new Tag({
+      ctrl.tag = new HadithTag({
         name: ''
       });
     }
