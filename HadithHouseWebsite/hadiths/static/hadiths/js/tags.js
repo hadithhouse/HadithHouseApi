@@ -27,7 +27,7 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  function TagsCtrl($scope, $rootScope, $mdDialog, TagsService, ToastService) {
+  function TagsCtrl($scope, $rootScope, $mdDialog, Tag, ToastService) {
     var ctrl = this;
 
     $scope.$watch(function () { return $rootScope.user; }, function () {
@@ -35,11 +35,7 @@
     });
 
     ctrl.loadTags = function() {
-      TagsService.getTags().then(function onSuccess(tags) {
-        ctrl.tags = tags;
-      }, function onError() {
-        // TODO: Show an alert.
-      });
+      ctrl.tags = Tag.query();
     };
     ctrl.loadTags();
 
@@ -51,7 +47,7 @@
         .cancel('No')
         .targetEvent(event);
       $mdDialog.show(confirm).then(function () {
-        TagsService.deleteTag(tag.id).then(function onSuccess() {
+        Tag.delete(tag.id, function onSuccess() {
           ToastService.show('Tag deleted');
           ctrl.loadTags();
         }, function onError(result) {
@@ -67,12 +63,12 @@
     ctrl.showAddTagDialog = function (event) {
       $mdDialog.show({
         bindToController: true,
-        controller: 'AddTagDialogCtrl',
+        controller: 'TagDialogCtrl',
         controllerAs: 'ctrl',
         locals: {
           tag: null
         },
-        templateUrl: getHtmlBasePath() + 'dialogs/addtag.dialog.html',
+        templateUrl: getHtmlBasePath() + 'dialogs/tag.dialog.html',
         //parent: angular.element(document.body),
         targetEvent: event,
         clickOutsideToClose: true
@@ -85,12 +81,12 @@
     ctrl.showEditTagDialog = function (event, tag) {
       $mdDialog.show({
         bindToController: true,
-        controller: 'AddTagDialogCtrl',
+        controller: 'TagDialogCtrl',
         controllerAs: 'ctrl',
         locals: {
           tag: tag
         },
-        templateUrl: getHtmlBasePath() + 'dialogs/addtag.dialog.html',
+        templateUrl: getHtmlBasePath() + 'dialogs/tag.dialog.html',
         //parent: angular.element(document.body),
         targetEvent: event,
         clickOutsideToClose: true
