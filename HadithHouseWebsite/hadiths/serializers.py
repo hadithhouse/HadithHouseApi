@@ -41,18 +41,22 @@ class BookSerializer(AutoTrackSerializer):
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
 
-class TagListingField(serializers.RelatedField):
-  def to_representation(self, tag):
-    return tag.name
-
-  def to_internal_value(self, tag_name):
-    try:
-      tag = HadithTag.objects.get(name=tag_name)
-      if tag is None:
-        raise APIException('Invalid tag name: ' + tag_name)
-      return tag
-    except:
-      raise APIException('Invalid tag name: ' + tag_name)
+# TODO: Consider changing this class to allow the user to either send tag names
+# or tag IDs by checking whether tag_id_or_name is an integer or a string. Then
+# use it in the HadithTagSerializer class.
+#class TagListingField(serializers.RelatedField):
+#  def to_representation(self, tag):
+#    return {'id': tag.id,
+#            'name': tag.name}
+#
+#  def to_internal_value(self, tag_id_or_name):
+#    try:
+#      tag = HadithTag.objects.get(name=tag_id_or_name)
+#      if tag is None:
+#        raise APIException('Invalid tag name: ' + tag_id_or_name)
+#      return tag
+#    except:
+#      raise APIException('Invalid tag name: ' + tag_id_or_name)
 
 
 class HadithTagSerializer(AutoTrackSerializer):
@@ -65,7 +69,7 @@ class HadithTagSerializer(AutoTrackSerializer):
 
 
 class HadithSerializer(AutoTrackSerializer):
-  tags = TagListingField(many=True, queryset=HadithTag.objects.all(), required=False)
+  #tags = TagListingField(many=True, queryset=HadithTag.objects.all(), required=False)
 
   class Meta:
     model = Hadith
