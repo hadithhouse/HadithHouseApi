@@ -27,19 +27,17 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  function TagsCtrl($scope, $rootScope, $mdDialog, TagsService, ToastService) {
+  function TagsCtrl($scope, $rootScope, $mdDialog, HadithTag, ToastService) {
     var ctrl = this;
 
-    $scope.$watch(function () { return $rootScope.user; }, function () {
+    $scope.$watch(function () {
+      return $rootScope.user;
+    }, function () {
       ctrl.user = $rootScope.user;
     });
 
-    ctrl.loadTags = function() {
-      TagsService.getTags().then(function onSuccess(tags) {
-        ctrl.tags = tags;
-      }, function onError() {
-        // TODO: Show an alert.
-      });
+    ctrl.loadTags = function () {
+      ctrl.tags = HadithTag.query();
     };
     ctrl.loadTags();
 
@@ -51,7 +49,10 @@
         .cancel('No')
         .targetEvent(event);
       $mdDialog.show(confirm).then(function () {
-        TagsService.deleteTag(tag.id).then(function onSuccess() {
+        HadithTag.delete({id: tag.id}, function onSuccess() {
+          ctrl.tags = ctrl.tags.filter(function (t) {
+            return t.id !== tag.id;
+          });
           ToastService.show('Tag deleted');
           ctrl.loadTags();
         }, function onError(result) {
@@ -67,16 +68,21 @@
     ctrl.showAddTagDialog = function (event) {
       $mdDialog.show({
         bindToController: true,
-        controller: 'AddTagDialogCtrl',
+        controller: 'TagDialogCtrl',
         controllerAs: 'ctrl',
         locals: {
           tag: null
         },
-        templateUrl: getHtmlBasePath() + 'dialogs/addtag.dialog.html',
+        templateUrl: getHtmlBasePath() + 'dialogs/tag.dialog.html',
         //parent: angular.element(document.body),
         targetEvent: event,
         clickOutsideToClose: true
       }).then(function onAdd(newTag) {
+        // FIXME: We shouldn't need to load all tags again, we should just fix
+        // the tag dialog to return the new tag and add it to the loaded tags.
+        // However, since I am planning to replace the tag dialog with a tags
+        // place, I am skipping this for now:
+        // https://github.com/hadithhouse/hadithhouse/issues/89
         ctrl.loadTags();
       }, function onCancel() {
       });
@@ -85,17 +91,16 @@
     ctrl.showEditTagDialog = function (event, tag) {
       $mdDialog.show({
         bindToController: true,
-        controller: 'AddTagDialogCtrl',
+        controller: 'TagDialogCtrl',
         controllerAs: 'ctrl',
         locals: {
           tag: tag
         },
-        templateUrl: getHtmlBasePath() + 'dialogs/addtag.dialog.html',
+        templateUrl: getHtmlBasePath() + 'dialogs/tag.dialog.html',
         //parent: angular.element(document.body),
         targetEvent: event,
         clickOutsideToClose: true
       }).then(function onSave(newTag) {
-        ctrl.loadTags();
       }, function onCancel() {
       });
     };

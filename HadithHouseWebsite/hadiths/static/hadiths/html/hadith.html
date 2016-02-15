@@ -22,8 +22,8 @@
   </h1>
 
   <label>Text</label>
-  <md-input-container ng-disabled="!ctrl.isEditing">
-    <input ng-model="ctrl.hadith.text"/>
+  <md-input-container>
+    <input ng-model="ctrl.hadith.text"  ng-disabled="!ctrl.isEditing"/>
   </md-input-container>
 
   <label>Person</label>
@@ -31,9 +31,10 @@
                       single-select="true"></hh-person-selector>
 
   <label>Book</label>
-  <hh-book-selector books-ids="ctrl.hadithBooksIds" read-only="!ctrl.isEditing"
-                    single-select="true"></hh-book-selector>
+  <hh-selector ids="ctrl.hadith.book" type="book" read-only="!ctrl.isEditing"
+               single-select="true"></hh-selector>
 
   <label>Tags</label>
-  <hh-tag-selector tag-names="ctrl.hadith.tags" read-only="!ctrl.isEditing" allow-adding-tags="true"></hh-tag-selector>
+  <hh-selector ids="ctrl.hadith.tags" type="hadithtag" read-only="!ctrl.isEditing"
+               allow-create-new-entities="true"></hh-selector>
 </div>

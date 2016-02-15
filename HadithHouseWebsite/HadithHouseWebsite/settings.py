@@ -54,6 +54,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'HadithHouseWebsite.urls'
 
+APPEND_SLASH = False
+
 WSGI_APPLICATION = 'HadithHouseWebsite.wsgi.application'
 
 ADMINS = (

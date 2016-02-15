@@ -1,15 +1,15 @@
 from rest_framework import generics
-from django.http.response import HttpResponse
+from rest_framework.response import Response
 
 
 def get_auth_error_response():
-  return HttpResponse("Couldn't authenticate user or user doesn't have permission for this action.", status=401)
+  return Response({
+    'detail': "Couldn't authenticate user or user doesn't have permission for this action."
+  }, status=401)
 
 
 class FBAuthListCreateAPIView(generics.ListCreateAPIView):
   def get(self, request, *args, **kwargs):
-    if self.get_perm_code is not None and not request.user.has_perm(self.get_perm_code):
-      return get_auth_error_response()
     return super(FBAuthListCreateAPIView, self).get(request, *args, **kwargs)
 
   def post(self, request, *args, **kwargs):
@@ -20,9 +20,10 @@ class FBAuthListCreateAPIView(generics.ListCreateAPIView):
 
 class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
   def get(self, request, *args, **kwargs):
-    if self.post_perm_code is not None and not request.user.has_perm(self.get_perm_code):
-      return get_auth_error_response()
     return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(request, *args, **kwargs)
+
+  def post(self, request, *args, **kwargs):
+    return self.put(request, *args, **kwargs)
 
   def put(self, request, *args, **kwargs):
     if self.put_perm_code is not None and not request.user.has_perm(self.put_perm_code):
