@@ -1,0 +1,27 @@
+<span>
+  <md-chips ng-model="entities" readonly="readOnly"
+            md-autocomplete-snap
+            md-require-match="true">
+    <md-autocomplete
+        md-selected-item="selectedTag"
+        md-selected-item-change=""
+        md-search-text="query"
+        md-search-text-change=""
+        md-items="entity in ctrl.findEntities(query)"
+        md-item-text="entity.toString()"
+        placeholder="Search for a {{ type }}">
+      <md-item-template>
+        <span md-highlight-text="query">{{ ctrl.entityToString(entity) }}</span>
+      </md-item-template>
+      <md-not-found>
+        No matches found for "{{ query }}".
+      </md-not-found>
+    </md-autocomplete>
+    <md-chip-template>
+      <span>
+        <strong>{{ ctrl.entityToString($chip) }}</strong>
+      </span>
+    </md-chip-template>
+  </md-chips>
+</span>
+

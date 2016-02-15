@@ -4,7 +4,7 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('BooksCtrl',
-    function ($scope, $rootScope, $mdDialog, BooksService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, Book, ToastService) {
       var ctrl = this;
 
       $scope.$watch(function () { return $rootScope.user; }, function () {
@@ -12,7 +12,7 @@
       });
 
       ctrl.loadBooks = function() {
-        BooksService.getBooks().then(function onSuccess(books) {
+        Book.query(function onSuccess(books) {
           ctrl.books = books;
         }, function onError() {
           // TODO: Show an alert.
@@ -28,7 +28,7 @@
           .cancel('No')
           .targetEvent(event);
         $mdDialog.show(confirm).then(function () {
-          BooksService.deleteBook(book.id).then(function onSuccess() {
+          Book.delete({id: book.id}, function onSuccess() {
             ToastService.show('Book deleted');
             ctrl.loadBooks();
           }, function onError(result) {

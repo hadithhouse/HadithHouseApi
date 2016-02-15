@@ -4,7 +4,7 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('BookCtrl',
-    function ($scope, $rootScope, $mdDialog, $location, $routeParams, BooksService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, $location, $routeParams, Book, ToastService) {
       var ctrl = this;
 
       ctrl.error = false;
@@ -17,20 +17,16 @@
       ctrl.bookId = $routeParams.bookId;
       if (ctrl.bookId === 'new') {
         // ...adding new book.
-        ctrl.book = {
+        ctrl.book = new Book({
           title: '',
           brief_desc: '',
           pub_year: null
-        };
+        });
         ctrl.addingNew = true;
         ctrl.isEditing = true;
       } else {
         // ...loading an existing hadith.
-        BooksService.getBook(ctrl.bookId).then(function onSuccess(book) {
-          ctrl.book = book;
-        }, function onError() {
-
-        });
+        ctrl.book = Book.get({id: ctrl.bookId});
         ctrl.addingNew = false;
         ctrl.isEditing = false;
       }
@@ -65,10 +61,12 @@
         ctrl.isEditing = true;
       };
 
-      function addNewBook() {
+      /**
+       * Called when the user clicks on the save icon to save the changes made.
+       */
+      ctrl.finishEditing = function() {
         // Send the changes to the server.
-        BooksService.postBook(ctrl.book).then(function onSuccess(result) {
-          ctrl.book = result.data;
+        ctrl.book.$save(function onSuccess(result) {
           $location.path('book/' + ctrl.book.id);
           // Successfully saved changes. Don't need to do anything.
           ctrl.isEditing = false;
@@ -81,34 +79,6 @@
             ToastService.show("Failed to add book. Please try again.");
           }
         });
-      }
-
-      function saveCurrentBook() {
-        // Send the changes to the server.
-        BooksService.putBook(ctrl.book).then(function onSuccess() {
-          // Successfully saved changes. Don't need to do anything.
-          ctrl.isEditing = false;
-          ToastService.show("Changes saved.");
-        }, function onFail(result) {
-          // Failed to save the changes. Restore the old data and show a toast.
-          ctrl.isEditing = false;
-          restoreCopyOfBook();
-          if (result.data) {
-            ToastService.showDjangoError("Failed to save book. Error was: ", result.data);
-          } else {
-            ToastService.show("Failed to save book. Please try again.");
-          }
-        });
-      }
-      /**
-       * Called when the user clicks on the save icon to save the changes made.
-       */
-      ctrl.finishEditing = function() {
-        if (ctrl.addingNew) {
-          addNewBook();
-        } else {
-          saveCurrentBook();
-        }
       };
 
       /**
