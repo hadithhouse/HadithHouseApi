@@ -1,15 +1,17 @@
-(function() {
+(function () {
   'use strict';
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('PersonCtrl',
-    function ($scope, $rootScope, $mdDialog, $location, $routeParams, PersonsService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, $location, $routeParams, Person, ToastService) {
       var ctrl = this;
 
       ctrl.error = false;
 
-      $scope.$watch(function () { return $rootScope.user; }, function () {
+      $scope.$watch(function () {
+        return $rootScope.user;
+      }, function () {
         ctrl.user = $rootScope.user;
       });
 
@@ -17,7 +19,7 @@
       ctrl.personId = $routeParams.personId;
       if (ctrl.personId === 'new') {
         // ...adding new person.
-        ctrl.person = {
+        ctrl.person = new Person({
           title: '',
           display_name: '',
           full_name: '',
@@ -28,16 +30,12 @@
           death_year: '',
           death_month: '',
           death_day: '',
-        };
+        });
         ctrl.addingNew = true;
         ctrl.isEditing = true;
       } else {
         // ...loading an existing hadith.
-        PersonsService.getPerson(ctrl.personId).then(function onSuccess(person) {
-          ctrl.person = person;
-        }, function onError() {
-
-        });
+        ctrl.person = Person.get({id: ctrl.personId});
         ctrl.addingNew = false;
         ctrl.isEditing = false;
       }
@@ -81,61 +79,36 @@
       /**
        * Called when the user clicks on the edit icon to start editing the person.
        */
-      ctrl.startEditing = function() {
+      ctrl.startEditing = function () {
         saveCopyOfPerson();
         ctrl.isEditing = true;
       };
 
-      function addNewPerson() {
-        // Send the changes to the server.
-        PersonsService.postPerson(ctrl.person).then(function onSuccess(result) {
-          ctrl.person = result.data;
-          $location.path('person/' + ctrl.person.id);
-          // Successfully saved changes. Don't need to do anything.
-          ctrl.isEditing = false;
-          ctrl.addingNew = false;
-          ToastService.show("Person added.");
-        }, function onFail(result) {
-          if (result.data) {
-            ToastService.showDjangoError("Failed to add person.", result.data);
-          } else {
-            ToastService.show("Failed to add person. Please try again.");
-          }
-        });
-      }
-
-      function saveCurrentPerson() {
-        // Send the changes to the server.
-        PersonsService.putPerson(ctrl.person).then(function onSuccess() {
-          // Successfully saved changes. Don't need to do anything.
-          ctrl.isEditing = false;
-          ToastService.show("Changes saved.");
-        }, function onFail(result) {
-          // Failed to save the changes. Restore the old data and show a toast.
-          ctrl.isEditing = false;
-          restoreCopyOfPerson();
-          if (result.data) {
-            ToastService.showDjangoError("Failed to save person.", result.data);
-          } else {
-            ToastService.show("Failed to save person. Please try again.");
-          }
-        });
-      }
       /**
        * Called when the user clicks on the save icon to save the changes made.
        */
-      ctrl.finishEditing = function() {
-        if (ctrl.addingNew) {
-          addNewPerson();
-        } else {
-          saveCurrentPerson();
-        }
+      ctrl.finishEditing = function () {
+        ctrl.person.$save(function onSuccess(result) {
+          if (ctrl.addingNew) {
+            $location.path('person/' + ctrl.person.id);
+          }
+          // Successfully saved changes. Don't need to do anything.
+          ctrl.isEditing = false;
+          ctrl.addingNew = false;
+          ToastService.show("Changes saved.");
+        }, function onFail(result) {
+          if (result.data) {
+            ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
+          } else {
+            ToastService.show("Failed to save changes. Please try again.");
+          }
+        });
       };
 
       /**
        * Called when the user clicks on the X icon to cancel the changes made.
        */
-      ctrl.cancelEditing = function() {
+      ctrl.cancelEditing = function () {
         ctrl.isEditing = false;
       };
     });

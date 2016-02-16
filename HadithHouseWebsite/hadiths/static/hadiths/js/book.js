@@ -67,16 +67,18 @@
       ctrl.finishEditing = function() {
         // Send the changes to the server.
         ctrl.book.$save(function onSuccess(result) {
-          $location.path('book/' + ctrl.book.id);
+          if (ctrl.addingNew) {
+            $location.path('book/' + ctrl.book.id);
+          }
           // Successfully saved changes. Don't need to do anything.
           ctrl.isEditing = false;
           ctrl.addingNew = false;
           ToastService.show("Book added.");
         }, function onFail(result) {
           if (result.data) {
-            ToastService.showDjangoError("Failed to add book. Error was: ", result.data);
+            ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
           } else {
-            ToastService.show("Failed to add book. Please try again.");
+            ToastService.show("Failed to save changes. Please try again.");
           }
         });
       };

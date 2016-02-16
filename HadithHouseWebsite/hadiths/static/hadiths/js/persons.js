@@ -4,7 +4,7 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('PersonsCtrl',
-    function ($scope, $rootScope, $mdDialog, PersonsService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, Person, ToastService) {
       var ctrl = this;
 
       $scope.$watch(function () { return $rootScope.user; }, function () {
@@ -12,8 +12,7 @@
       });
 
       ctrl.loadPersons = function() {
-        PersonsService.getPersons().then(function onSuccess(persons) {
-          ctrl.persons = persons;
+        ctrl.persons = Person.query(function onSuccess(persons) {
         }, function onError() {
           // TODO: Show an alert.
         });
@@ -28,7 +27,7 @@
           .cancel('No')
           .targetEvent(event);
         $mdDialog.show(confirm).then(function () {
-          PersonsService.deletePerson(person.id).then(function onSuccess() {
+          Person.delete({id: person.id}, function onSuccess() {
             ToastService.show('Person deleted');
             ctrl.loadPersons();
           }, function onError(result) {

@@ -29,6 +29,17 @@
 
   var HadithHouseApp = angular.module('HadithHouseApp');
 
+  HadithHouseApp.factory('Person', function ($resource) {
+    return $resource('/apis/persons/:id', {id: '@id'}, {
+      'query': {
+        method: 'GET',
+        isArray: true,
+        transformResponse: function(data) {
+          return JSON.parse(data).results;
+        }
+      }
+    });
+  });
   HadithHouseApp.factory('Book', function ($resource) {
     return $resource('/apis/books/:id', {id: '@id'}, {
       'query': {
