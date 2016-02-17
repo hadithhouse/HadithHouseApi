@@ -4,7 +4,7 @@
   var HadithHouseApp = angular.module('HadithHouseApp');
 
   HadithHouseApp.controller('HadithCtrl',
-    function ($scope, $rootScope, $mdDialog, $location, $routeParams, HadithsService, ToastService) {
+    function ($scope, $rootScope, $mdDialog, $location, $routeParams, Hadith, ToastService) {
       var ctrl = this;
 
       $scope.$watch(function () { return $rootScope.user; }, function () {
@@ -15,21 +15,17 @@
       ctrl.hadithId = $routeParams.hadithId;
       if (ctrl.hadithId === 'new') {
         // ...adding new hadith.
-        ctrl.hadith = {
+        ctrl.hadith = new Hadith({
           text: '',
           book: null,
           person: 1,
           tags: []
-        };
+        });
         ctrl.addingNew = true;
         ctrl.isEditing = true;
       } else {
         // ...loading an existing hadith.
-        HadithsService.getHadith(ctrl.hadithId).then(function onSuccess(hadith) {
-          ctrl.hadith = hadith;
-        }, function onError() {
-
-        });
+        ctrl.hadith = Hadith.get({id: ctrl.hadithId});
         ctrl.addingNew = false;
         ctrl.isEditing = false;
       }
@@ -69,58 +65,27 @@
       };
 
       /**
-       * Called by finishEditing() for the case of adding a new hadith.
-       */
-      function addNewHadith() {
-        // Send the changes to the server.
-        HadithsService.postHadith(ctrl.hadith).then(function onSuccess(result) {
-          ctrl.hadith = result.data;
-          $location.path('hadith/' + ctrl.hadith.id);
-          // Successfully saved changes. Don't need to do anything.
-          ctrl.isEditing = false;
-          ctrl.addingNew = false;
-          ToastService.show("Hadith added.");
-        }, function onFail(result) {
-          if (result.data) {
-            ToastService.showDjangoError("Failed to add hadith.", result.data);
-          } else {
-            ToastService.show("Failed to add hadith. Please try again.");
-          }
-        });
-      }
-
-      /**
-       * Called by finishEditing() for the case of saving an already existing hadith.
-       */
-      function saveCurrentHadith() {
-        // Send the changes to the server.
-        HadithsService.putHadith(ctrl.hadith).then(function onSuccess() {
-          // Successfully saved changes. Don't need to do anything.
-          ctrl.isEditing = false;
-          ToastService.show("Changes saved.");
-        }, function onFail(result) {
-          // Failed to save the changes. Restore the old data and show a toast.
-          ctrl.cancelEditing();
-          if (result.data) {
-            ToastService.showDjangoError("Failed to save hadith.", result.data);
-          } else {
-            ToastService.show("Failed to save hadith. Please try again.");
-          }
-        });
-      }
-
-      /**
        * Called when the user clicks on the save icon to save the changes made.
        */
       ctrl.finishEditing = function() {
         if (!ctrl.validateHadith()) {
           return;
         }
-        if (ctrl.addingNew) {
-          addNewHadith();
-        } else {
-          saveCurrentHadith();
-        }
+        ctrl.hadith.$save(function onSuccess(result) {
+          if (ctrl.addingNew) {
+            $location.path('hadith/' + ctrl.hadith.id);
+          }
+          // Successfully saved changes. Don't need to do anything.
+          ctrl.isEditing = false;
+          ctrl.addingNew = false;
+          ToastService.show("Changes saved.");
+        }, function onFail(result) {
+          if (result.data) {
+            ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
+          } else {
+            ToastService.show("Failed to save changes. Please try again.");
+          }
+        });
       };
 
       /**
