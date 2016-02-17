@@ -23,12 +23,12 @@
 
   <label>Text</label>
   <md-input-container>
-    <input ng-model="ctrl.hadith.text"  ng-disabled="!ctrl.isEditing"/>
+    <input ng-model="ctrl.hadith.text" ng-disabled="!ctrl.isEditing"/>
   </md-input-container>
 
   <label>Person</label>
-  <hh-person-selector persons-ids="ctrl.hadithPersonsIds" read-only="!ctrl.isEditing"
-                      single-select="true"></hh-person-selector>
+  <hh-selector ids="ctrl.hadith.person" type="person" read-only="!ctrl.isEditing"
+               single-select="true"></hh-selector>
 
   <label>Book</label>
   <hh-selector ids="ctrl.hadith.book" type="book" read-only="!ctrl.isEditing"

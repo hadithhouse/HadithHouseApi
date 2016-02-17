@@ -29,7 +29,7 @@ function waitForPromises(promises, callback) {
 (function () {
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.controller('SelectorCtrl', function ($q, $scope, Book, HadithTag) {
+  HadithHouseApp.controller('SelectorCtrl', function ($q, $scope, Person, Book, HadithTag) {
     var ctrl = this;
 
     $scope.availEntities = [];
@@ -52,6 +52,10 @@ function waitForPromises(promises, callback) {
     }
 
     switch ($scope.type.toLowerCase()) {
+      case 'person':
+        $scope.Entity = Person;
+        break;
+
       case 'book':
         $scope.Entity = Book;
         break;
@@ -107,14 +111,17 @@ function waitForPromises(promises, callback) {
             $scope.entities.splice(0, $scope.entities.length - 1);
           }
           if ($scope.entities.length == 1) {
-            if ($scope.entities[0].$resolved == true) {
+            // Ensure that the resource has been resolved before updating the scope's ID
+            if (typeof($scope.entities[0].id) === 'number') {
               $scope.ids = $scope.entities[0].id;
             }
           } else {
             $scope.ids = null;
           }
         } else {
-          if (_.every($scope.entities, function(e) { return e.$resolved === true; })) {
+          if (_.every($scope.entities, function (e) {
+              return typeof(e.id) === 'number';
+            })) {
             $scope.ids = $scope.entities.map(function (entity) {
               return entity.id;
             });
@@ -125,6 +132,15 @@ function waitForPromises(promises, callback) {
 
     $scope.$watch('entities', onEntitiesChanged);
     $scope.$watchCollection('entities', onEntitiesChanged);
+
+    function filterPersons(persons, query) {
+      return persons.filter(function (person) {
+        return (person.title.indexOf(query) > -1 ||
+        (person.display_name && person.display_name.indexOf(query) > -1) ||
+        (person.full_name && person.full_name.indexOf(query) > -1) ||
+        (person.brief_desc && person.brief_desc.indexOf(query) > -1));
+      });
+    }
 
     function filterBooks(books, query) {
       return books.filter(function (book) {
@@ -147,6 +163,9 @@ function waitForPromises(promises, callback) {
       }
 
       switch ($scope.type.toLowerCase()) {
+        case 'person':
+          return filterPersons($scope.availEntities, query);
+
         case 'book':
           return filterBooks($scope.availEntities, query);
 
@@ -160,6 +179,9 @@ function waitForPromises(promises, callback) {
 
     ctrl.entityToString = function (entity) {
       switch ($scope.type.toLowerCase()) {
+        case 'person':
+          return entity.display_name || entity.full_name;
+
         case 'book':
           return entity.title;
 

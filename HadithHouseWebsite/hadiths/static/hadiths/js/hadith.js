@@ -36,32 +36,6 @@
 
       ctrl.error = false;
 
-      // If the ID of the person changes in the person-selector directive,
-      // reflect the change to the hadith object.
-      $scope.$watch(function() { return ctrl.hadithPersonsIds; }, function(newValue, oldValue) {
-        if (newValue === oldValue || !ctrl.hadith) {
-          return;
-        }
-        if (ctrl.hadithPersonsIds && ctrl.hadithPersonsIds.length > 0) {
-          ctrl.hadith.person = ctrl.hadithPersonsIds[0];
-        } else {
-          ctrl.hadith.person = null;
-        }
-      });
-
-      // If the ID of the person in the hadith object changes, reflect the change
-      // to the person-selector directive.
-      $scope.$watch('ctrl.hadith.person', function(newValue, oldValue) {
-        if (newValue === oldValue) {
-          return;
-        }
-        if (ctrl.hadith.person !== null) {
-          ctrl.hadithPersonsIds = [ctrl.hadith.person];
-        } else {
-          ctrl.hadithPersonsIds = [];
-        }
-      });
-
       var oldHadith = {};
 
       /**
