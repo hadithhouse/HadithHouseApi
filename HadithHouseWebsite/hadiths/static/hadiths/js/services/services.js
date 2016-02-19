@@ -76,5 +76,17 @@
       }
     });
   });
+
+  HadithHouseApp.factory('User', function ($resource) {
+    return $resource('/apis/users/:id', {id: '@id'}, {
+      'query': {
+        method: 'GET',
+        isArray: true,
+        transformResponse: function(data) {
+          return JSON.parse(data).results;
+        }
+      }
+    });
+  });
 }());
 

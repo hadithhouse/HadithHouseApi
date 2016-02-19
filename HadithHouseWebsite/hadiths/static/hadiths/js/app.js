@@ -101,7 +101,7 @@
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UsersService) {
+    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, User) {
       var ctrl = this;
 
       $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
@@ -130,7 +130,7 @@
             profilePicUrl: user.picture.data.url
           }
         });
-        UsersService.getCurrentUser().then(function onSuccess(user) {
+        User.get({id: 'current'}, function onSuccess(user) {
           var perms = {};
           for (var i in user.permissions) {
             perms[user.permissions[i]] = true;
