@@ -110,6 +110,7 @@
        */
       ctrl.cancelEditing = function () {
         ctrl.isEditing = false;
+        restoreCopyOfPerson();
       };
     });
 }());
