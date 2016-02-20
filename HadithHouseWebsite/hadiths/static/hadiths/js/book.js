@@ -24,17 +24,18 @@
 /// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="app.ts" />
+/// <reference path="services/services.ts" />
 var HadithHouse;
 (function (HadithHouse) {
     var Controllers;
     (function (Controllers) {
         var EntityPageController = (function () {
-            function EntityPageController($scope, $rootScope, $location, $routeParams, Book, ToastService) {
+            function EntityPageController($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
                 this.$scope = $scope;
                 this.$rootScope = $rootScope;
                 this.$location = $location;
                 this.$routeParams = $routeParams;
-                this.Book = Book;
+                this.BookResource = BookResource;
                 this.ToastService = ToastService;
                 this.bookId = this.$routeParams.bookId;
                 if (this.bookId === 'new') {
@@ -64,7 +65,7 @@ var HadithHouse;
                 this.book.pub_year = this.oldBook.pub_year;
             };
             EntityPageController.prototype.setAddingNewBookMode = function () {
-                this.book = new this.Book({
+                this.book = new this.BookResource({
                     title: '',
                     brief_desc: '',
                     pub_year: null
@@ -73,7 +74,7 @@ var HadithHouse;
                 this.isEditing = true;
             };
             EntityPageController.prototype.setOpeningExitingBookMode = function () {
-                this.book = this.Book.get({ id: this.bookId });
+                this.book = this.BookResource.get({ id: this.bookId });
                 this.addingNew = false;
                 this.isEditing = false;
             };
@@ -88,21 +89,22 @@ var HadithHouse;
              * Called when the user clicks on the save icon to save the changes made.
              */
             EntityPageController.prototype.finishEditing = function () {
+                var _this = this;
                 // Send the changes to the server.
-                this.book.$save(function onSuccess(result) {
-                    if (this.addingNew) {
-                        this.$location.path('book/' + this.book.id);
+                this.book.$save(function (result) {
+                    if (_this.addingNew) {
+                        _this.$location.path('book/' + _this.book.id);
                     }
                     // Successfully saved changes. Don't need to do anything.
-                    this.isEditing = false;
-                    this.addingNew = false;
-                    this.ToastService.show("Book added.");
-                }, function onFail(result) {
+                    _this.isEditing = false;
+                    _this.addingNew = false;
+                    _this.ToastService.show("Book added.");
+                }, function (result) {
                     if (result.data) {
-                        this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
+                        _this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
                     }
                     else {
-                        this.ToastService.show("Failed to save changes. Please try again.");
+                        _this.ToastService.show("Failed to save changes. Please try again.");
                     }
                 });
             };
@@ -118,8 +120,8 @@ var HadithHouse;
             return EntityPageController;
         })();
         Controllers.EntityPageController = EntityPageController;
-        HadithHouse.HadithHouseApp.controller('BookCtrl', function ($scope, $rootScope, $mdDialog, $location, $routeParams, Book, ToastService) {
-            return new HadithHouse.Controllers.EntityPageController($scope, $rootScope, $location, $routeParams, Book, ToastService);
+        HadithHouse.HadithHouseApp.controller('BookCtrl', function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
+            return new HadithHouse.Controllers.EntityPageController($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

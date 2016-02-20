@@ -21,72 +21,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-// Work in Progress
-
-(function () {
-  'use strict';
-
-  var HadithHouseApp = angular.module('HadithHouseApp');
-
-  HadithHouseApp.factory('Hadith', function ($resource) {
-    return $resource('/apis/hadiths/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function(data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-
-  HadithHouseApp.factory('Person', function ($resource) {
-    return $resource('/apis/persons/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function(data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-
-  HadithHouseApp.factory('Book', function ($resource) {
-    return $resource('/apis/books/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function(data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-
-  HadithHouseApp.factory('HadithTag', function ($resource) {
-    return $resource('/apis/hadithtags/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function(data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-
-  HadithHouseApp.factory('User', function ($resource) {
-    return $resource('/apis/users/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function(data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-}());
-
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
+/// <reference path="../app.ts" />
+var HadithHouse;
+(function (HadithHouse) {
+    var Services;
+    (function (Services) {
+        HadithHouse.HadithHouseApp.factory('Hadith', function ($resource) {
+            return $resource('/apis/hadiths/:id', { id: '@id' }, {
+                'query': {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: function (data) {
+                        return JSON.parse(data).results;
+                    }
+                }
+            });
+        });
+        HadithHouse.HadithHouseApp.factory('Person', function ($resource) {
+            return $resource('/apis/persons/:id', { id: '@id' }, {
+                'query': {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: function (data) {
+                        return JSON.parse(data).results;
+                    }
+                }
+            });
+        });
+        HadithHouse.HadithHouseApp.factory('BookResource', function ($resource) {
+            return $resource('/apis/books/:id', { id: '@id' }, {
+                'query': {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: function (data) {
+                        return JSON.parse(data).results;
+                    }
+                }
+            });
+        });
+        HadithHouse.HadithHouseApp.factory('HadithTag', function ($resource) {
+            return $resource('/apis/hadithtags/:id', { id: '@id' }, {
+                'query': {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: function (data) {
+                        return JSON.parse(data).results;
+                    }
+                }
+            });
+        });
+        HadithHouse.HadithHouseApp.factory('User', function ($resource) {
+            return $resource('/apis/users/:id', { id: '@id' }, {
+                'query': {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: function (data) {
+                        return JSON.parse(data).results;
+                    }
+                }
+            });
+        });
+    })(Services = HadithHouse.Services || (HadithHouse.Services = {}));
+})(HadithHouse || (HadithHouse = {}));
+//# sourceMappingURL=services.js.map

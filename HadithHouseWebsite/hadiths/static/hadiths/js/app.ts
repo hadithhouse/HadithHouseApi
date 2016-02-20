@@ -148,7 +148,7 @@ module HadithHouse {
 
       // Load all registered items
       ctrl.menuItems = [
-        {name: "Hadiths", urlPath: 'hadiths'},
+        {name: 'Hadiths', urlPath: 'hadiths'},
         {name: 'Books', urlPath: 'books'},
         {name: 'Persons', urlPath: 'persons'},
         {name: 'Tags', urlPath: 'tags'}

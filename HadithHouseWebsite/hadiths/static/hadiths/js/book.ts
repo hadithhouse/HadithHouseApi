@@ -25,6 +25,7 @@
 /// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="app.ts" />
+/// <reference path="services/services.ts" />
 
 module HadithHouse.Controllers {
   export class EntityPageController {
@@ -38,7 +39,7 @@ module HadithHouse.Controllers {
                 private $rootScope:ng.IScope,
                 private $location:ng.ILocationService,
                 private $routeParams:any,
-                private Book:any,
+                private BookResource:Services.IBookResource,
                 private ToastService:any) {
       this.bookId = this.$routeParams.bookId;
       if (this.bookId === 'new') {
@@ -71,7 +72,7 @@ module HadithHouse.Controllers {
     }
 
     private setAddingNewBookMode() {
-      this.book = new this.Book({
+      this.book = new this.BookResource({
         title: '',
         brief_desc: '',
         pub_year: null
@@ -81,7 +82,7 @@ module HadithHouse.Controllers {
     }
 
     private setOpeningExitingBookMode() {
-      this.book = this.Book.get({id: this.bookId});
+      this.book = this.BookResource.get({id: this.bookId});
       this.addingNew = false;
       this.isEditing = false;
     }
@@ -99,7 +100,7 @@ module HadithHouse.Controllers {
      */
     private finishEditing() {
       // Send the changes to the server.
-      this.book.$save(function onSuccess(result) {
+      this.book.$save((result) => {
         if (this.addingNew) {
           this.$location.path('book/' + this.book.id);
         }
@@ -107,7 +108,7 @@ module HadithHouse.Controllers {
         this.isEditing = false;
         this.addingNew = false;
         this.ToastService.show("Book added.");
-      }, function onFail(result) {
+      }, (result) => {
         if (result.data) {
           this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
         } else {
@@ -126,7 +127,7 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('BookCtrl',
-    function ($scope, $rootScope, $mdDialog, $location, $routeParams, Book, ToastService) {
-      return new HadithHouse.Controllers.EntityPageController($scope, $rootScope, $location, $routeParams, Book, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
+      return new HadithHouse.Controllers.EntityPageController($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
     });
 }
