@@ -32,9 +32,6 @@ function waitForPromises(promises, callback) {
   HadithHouseApp.controller('SelectorCtrl', function ($q, $scope, Person, Book, HadithTag) {
     var ctrl = this;
 
-    $scope.availEntities = [];
-    $scope.availEntitiesLoaded = false;
-
     if (!$scope.ids) {
       if ($scope.singleSelect) {
         $scope.ids = null;
@@ -68,9 +65,6 @@ function waitForPromises(promises, callback) {
         throw 'Invalid type for selector.';
     }
 
-    $scope.availEntities = $scope.Entity.query(function onSuccess() {
-      $scope.availEntitiesLoaded = true;
-    });
 
     function onIdsChanged(newValue, oldValue) {
       if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
@@ -158,23 +152,7 @@ function waitForPromises(promises, callback) {
     }
 
     ctrl.findEntities = function (query) {
-      if (!$scope.availEntitiesLoaded) {
-        return [];
-      }
-
-      switch ($scope.type.toLowerCase()) {
-        case 'person':
-          return filterPersons($scope.availEntities, query);
-
-        case 'book':
-          return filterBooks($scope.availEntities, query);
-
-        case 'hadithtag':
-          return filterHadithTags($scope.availEntities, query);
-
-        default:
-          throw 'Unreachable code';
-      }
+      return $scope.queryResults = $scope.Entity.query({search: query});
     };
 
     ctrl.entityToString = function (entity) {
