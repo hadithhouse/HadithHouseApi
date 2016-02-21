@@ -3,7 +3,7 @@
 </div>
 <div ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>
-    {{ ctrl.entity.display_name }}
+    {{ ctrl.entity.display_name || ctrl.entity.full_name }}
     <md-icon class="material-icons"
              ng-click="ctrl.startEditing()"
              ng-hide="ctrl.isEditing"

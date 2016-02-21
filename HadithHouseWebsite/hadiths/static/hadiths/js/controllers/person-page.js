@@ -38,9 +38,11 @@ var HadithHouse;
         var PersonPageCtrl = (function (_super) {
             __extends(PersonPageCtrl, _super);
             function PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource, ToastService) {
-                _super.call(this, $scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+                // Setting PersonResource before calling super, because super might end up
+                // calling methods which requires PersonResource, e.g. newEntity().
                 this.PersonResource = PersonResource;
                 this.oldPerson = new this.PersonResource({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
             }
             /**
              * Makes a copy of the data of the person in case we have to restore them

@@ -5,10 +5,10 @@
       <div style="width: 100%;">
         <md-icon class="material-icons"
                  ng-click="ctrl.deleteEntity($event, entity)"
-                 ng-if="ctrl.$rootScope.user.permissions.delete_person">close
+                 ng-if="ctrl.$rootScope.user.permissions.delete_hadithtag">close
         </md-icon>
-        <a ng-href="#/person/{{ entity.id }}">
-          {{ entity.display_name || entity.full_name }}
+        <a ng-href="#/hadithtag/{{ entity.id }}">
+          {{ entity.name }}
         </a>
       </div>
       <md-divider ng-if="!$last"></md-divider>
@@ -17,8 +17,8 @@
 </div>
 
 <md-button class="md-fab md-mini"
-           ng-href="#/person/new"
-           ng-if="ctrl.$rootScope.user.permissions.add_person">
+           ng-href="#/hadithtag/new"
+           ng-if="ctrl.$rootScope.user.permissions.add_hadithtag">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 

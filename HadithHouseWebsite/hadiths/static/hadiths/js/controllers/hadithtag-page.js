@@ -35,44 +35,42 @@ var HadithHouse;
 (function (HadithHouse) {
     var Controllers;
     (function (Controllers) {
-        var HadithPageCtrl = (function (_super) {
-            __extends(HadithPageCtrl, _super);
-            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ToastService) {
-                // Setting HadithResource before calling super, because super might end up
-                // calling methods which requires HadithResource, e.g. newEntity().
-                this.HadithResource = HadithResource;
-                this.oldHadith = new this.HadithResource({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+        var HadithTagPageCtrl = (function (_super) {
+            __extends(HadithTagPageCtrl, _super);
+            function HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
+                // Setting HadithTagResource before calling super, because super might end up
+                // calling methods which requires HadithTagResource, e.g. newEntity().
+                this.HadithTagResource = HadithTagResource;
+                this.oldHadithTag = new this.HadithTagResource({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
             }
             /**
-             * Makes a copy of the data of the hadith in case we have to restore them
+             * Makes a copy of the data of the tag in case we have to restore them
              * if the user cancels editing or we fail to send changes to the server.
              */
-            HadithPageCtrl.prototype.copyEntity = function () {
-                this.oldHadith.text = this.entity.text;
-                this.oldHadith.person = this.entity.person;
-                this.oldHadith.book = this.entity.book;
-                this.oldHadith.tags = this.entity.tags.slice();
+            HadithTagPageCtrl.prototype.copyEntity = function () {
+                this.oldHadithTag.name = this.entity.name;
             };
             /**
-             * Restores the saved data of the hadith after the user cancels editing
+             * Restores the saved data of the tag after the user cancels editing
              * or we fail to send changes to the server.
              */
-            HadithPageCtrl.prototype.restoreEntity = function () {
-                this.entity.text = this.oldHadith.text;
-                this.entity.person = this.oldHadith.person;
-                this.entity.book = this.oldHadith.book;
-                this.entity.tags = this.oldHadith.tags.slice();
+            HadithTagPageCtrl.prototype.restoreEntity = function () {
+                this.entity.name = this.oldHadithTag.name;
             };
-            HadithPageCtrl.prototype.newEntity = function () {
-                return new this.HadithResource({});
+            HadithTagPageCtrl.prototype.newEntity = function () {
+                return new this.HadithTagResource({
+                    title: '',
+                    brief_desc: '',
+                    pub_year: null
+                });
             };
-            return HadithPageCtrl;
+            return HadithTagPageCtrl;
         })(Controllers.EntityPageCtrl);
-        Controllers.HadithPageCtrl = HadithPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithResource, ToastService) {
-            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+        Controllers.HadithTagPageCtrl = HadithTagPageCtrl;
+        HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
+            return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
-//# sourceMappingURL=hadith-page.js.map
+//# sourceMappingURL=hadithtag-page.js.map

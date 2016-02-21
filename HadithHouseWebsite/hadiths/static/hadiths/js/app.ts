@@ -35,7 +35,7 @@ module HadithHouse {
   HadithHouseApp.config(function ($httpProvider : ng.IHttpProvider, $routeProvider : ng.route.IRouteProvider) {
     $routeProvider.when('/hadiths', {
       templateUrl: getHtmlBasePath() + 'hadiths.html',
-      controller: 'HadithsCtrl',
+      controller: 'HadithListingPageCtrl',
       controllerAs: 'ctrl',
     }).when('/hadith/:id', {
       templateUrl: getHtmlBasePath() + 'hadith.html',
@@ -43,7 +43,7 @@ module HadithHouse {
       controllerAs: 'ctrl',
     }).when('/books', {
       templateUrl: getHtmlBasePath() + 'books.html',
-      controller: 'BooksCtrl',
+      controller: 'BookListingPageCtrl',
       controllerAs: 'ctrl',
     }).when('/book/:id', {
       templateUrl: getHtmlBasePath() + 'book.html',
@@ -51,15 +51,19 @@ module HadithHouse {
       controllerAs: 'ctrl',
     }).when('/persons', {
       templateUrl: getHtmlBasePath() + 'persons.html',
-      controller: 'PersonsCtrl',
+      controller: 'PersonListingPageCtrl',
       controllerAs: 'ctrl',
     }).when('/person/:id', {
       templateUrl: getHtmlBasePath() + 'person.html',
       controller: 'PersonPageCtrl',
       controllerAs: 'ctrl',
-    }).when('/tags', {
-      templateUrl: getHtmlBasePath() + 'tags.html',
-      controller: 'TagsCtrl',
+    }).when('/hadithtags', {
+      templateUrl: getHtmlBasePath() + 'hadithtags.html',
+      controller: 'HadithTagListingPageCtrl',
+      controllerAs: 'ctrl',
+    }).when('/hadithtag/:id', {
+      templateUrl: getHtmlBasePath() + 'hadithtag.html',
+      controller: 'HadithTagPageCtrl',
       controllerAs: 'ctrl',
     });
 
@@ -151,7 +155,7 @@ module HadithHouse {
         {name: 'Hadiths', urlPath: 'hadiths'},
         {name: 'Books', urlPath: 'books'},
         {name: 'Persons', urlPath: 'persons'},
-        {name: 'Tags', urlPath: 'tags'}
+        {name: 'Tags', urlPath: 'hadithtags'}
       ];
 
       let path = $location.path() ? $location.path().substr(1) : null;

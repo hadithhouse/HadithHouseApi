@@ -34,15 +34,19 @@ module HadithHouse.Controllers {
 
   export class BookPageCtrl extends EntityPageCtrl<IBook> {
     oldBook:IBook;
+    BookResource:Services.IBookResource;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                private BookResource:Services.IBookResource,
+                BookResource:Services.IBookResource,
                 ToastService:any) {
+      // Setting BookResource before calling super, because super might end up
+      // calling methods which requires BookResource, e.g. newEntity().
+      this.BookResource = BookResource;
+      this.oldBook = new this.BookResource({ });
       super($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
-      this.oldBook = new this.BookResource({});
     }
 
     /**

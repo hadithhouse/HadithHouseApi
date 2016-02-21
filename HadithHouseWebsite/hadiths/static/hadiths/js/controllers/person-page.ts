@@ -34,15 +34,19 @@ module HadithHouse.Controllers {
 
   export class PersonPageCtrl extends EntityPageCtrl<IPerson> {
     oldPerson:IPerson;
+    PersonResource:Services.IPersonResource;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                private PersonResource:Services.IPersonResource,
+                PersonResource:Services.IPersonResource,
                 ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+      // Setting PersonResource before calling super, because super might end up
+      // calling methods which requires PersonResource, e.g. newEntity().
+      this.PersonResource = PersonResource;
       this.oldPerson = new this.PersonResource({});
+      super($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
     }
 
     /**
