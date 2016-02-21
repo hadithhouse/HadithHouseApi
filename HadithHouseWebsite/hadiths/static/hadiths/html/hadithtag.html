@@ -1,0 +1,30 @@
+<div ng-if="ctrl.error">
+  Couldn't load tag or the tag is not found.
+</div>
+<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+  <h1>
+    {{ ctrl.entity.title }}
+    <md-icon class="material-icons"
+             ng-click="ctrl.startEditing()"
+             ng-hide="ctrl.isEditing"
+             ng-if="ctrl.$rootScope.user.permissions.change_hadithtag">edit
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-click="ctrl.cancelEditing()"
+             ng-hide="!ctrl.isEditing || ctrl.addingNew"
+             ng-if="ctrl.$rootScope.user.permissions.change_hadithtag">cancel
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-click="ctrl.finishEditing()"
+             ng-hide="!ctrl.isEditing"
+             ng-if="ctrl.$rootScope.user.permissions.change_hadithtag">save
+    </md-icon>
+  </h1>
+
+  <div layout layout-sm="column">
+    <md-input-container flex>
+      <label>Name</label>
+      <input ng-model="ctrl.entity.name" ng-disabled="!ctrl.isEditing"/>
+    </md-input-container>
+  </div>
+</div>

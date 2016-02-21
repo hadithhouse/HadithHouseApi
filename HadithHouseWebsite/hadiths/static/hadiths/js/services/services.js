@@ -62,7 +62,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('HadithTag', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('HadithTagResource', function ($resource) {
             return $resource('/apis/hadithtags/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',

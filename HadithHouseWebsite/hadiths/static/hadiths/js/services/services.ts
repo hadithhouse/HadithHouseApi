@@ -109,8 +109,16 @@ module HadithHouse.Services {
     });
   });
 
-  HadithHouse.HadithHouseApp.factory('HadithTag', function ($resource) {
-    return $resource('/apis/hadithtags/:id', {id: '@id'}, {
+  export interface IHadithTag extends IEntity, ng.resource.IResource<IHadithTag> {
+    name:string;
+  }
+
+  export interface IHadithTagResource extends ng.resource.IResourceClass<IHadithTag> {
+
+  }
+
+  HadithHouse.HadithHouseApp.factory('HadithTagResource', ($resource:ng.resource.IResourceService):IHadithTagResource => {
+    return <IHadithTagResource>$resource<IHadithTag, IHadithTagResource>('/apis/hadithtags/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -120,7 +128,6 @@ module HadithHouse.Services {
       }
     });
   });
-
   HadithHouse.HadithHouseApp.factory('User', function ($resource) {
     return $resource('/apis/users/:id', {id: '@id'}, {
       'query': {
