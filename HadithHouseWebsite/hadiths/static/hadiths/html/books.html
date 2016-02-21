@@ -5,7 +5,7 @@
       <div style="width: 100%;">
         <md-icon class="material-icons"
                  ng-click="ctrl.deleteBook($event, book)"
-                 ng-if="ctrl.user.permissions.delete_book">close
+                 ng-if="ctrl.$rootScope.user.permissions.delete_book">close
         </md-icon>
         <a ng-href="#/book/{{ book.id }}">
           {{ book.title }}
@@ -18,7 +18,7 @@
 
 <md-button class="md-fab md-mini"
            ng-href="#/book/new"
-           ng-if="ctrl.user.permissions.add_book">
+           ng-if="ctrl.$rootScope.user.permissions.add_book">
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 

@@ -43,7 +43,7 @@ module HadithHouse {
       controllerAs: 'ctrl',
     }).when('/books', {
       templateUrl: getHtmlBasePath() + 'books.html',
-      controller: 'BooksCtrl',
+      controller: 'BookListingPageCtrl',
       controllerAs: 'ctrl',
     }).when('/book/:id', {
       templateUrl: getHtmlBasePath() + 'book.html',
