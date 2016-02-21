@@ -34,15 +34,19 @@ module HadithHouse.Controllers {
 
   export class HadithPageCtrl extends EntityPageCtrl<IHadith> {
     oldHadith:IHadith;
+    HadithResource:Services.IHadithResource;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                private HadithResource:Services.IHadithResource,
+                HadithResource:Services.IHadithResource,
                 ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+      // Setting HadithResource before calling super, because super might end up
+      // calling methods which requires HadithResource, e.g. newEntity().
+      this.HadithResource = HadithResource;
       this.oldHadith = new this.HadithResource({});
+      super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
     }
 
     /**

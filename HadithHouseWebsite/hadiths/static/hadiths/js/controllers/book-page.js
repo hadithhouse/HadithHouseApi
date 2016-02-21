@@ -38,9 +38,11 @@ var HadithHouse;
         var BookPageCtrl = (function (_super) {
             __extends(BookPageCtrl, _super);
             function BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-                _super.call(this, $scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+                // Setting BookResource before calling super, because super might end up
+                // calling methods which requires BookResource, e.g. newEntity().
                 this.BookResource = BookResource;
                 this.oldBook = new this.BookResource({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, BookResource, ToastService);
             }
             /**
              * Makes a copy of the data of the book in case we have to restore them

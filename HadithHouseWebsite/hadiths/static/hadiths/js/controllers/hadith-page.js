@@ -38,9 +38,11 @@ var HadithHouse;
         var HadithPageCtrl = (function (_super) {
             __extends(HadithPageCtrl, _super);
             function HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ToastService) {
-                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+                // Setting HadithResource before calling super, because super might end up
+                // calling methods which requires HadithResource, e.g. newEntity().
                 this.HadithResource = HadithResource;
                 this.oldHadith = new this.HadithResource({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
             }
             /**
              * Makes a copy of the data of the hadith in case we have to restore them
