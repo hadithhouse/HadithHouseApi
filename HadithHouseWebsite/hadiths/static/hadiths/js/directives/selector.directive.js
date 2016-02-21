@@ -29,7 +29,7 @@ function waitForPromises(promises, callback) {
 (function () {
   var HadithHouseApp = angular.module('HadithHouseApp');
 
-  HadithHouseApp.controller('SelectorCtrl', function ($q, $scope, Person, Book, HadithTag) {
+  HadithHouseApp.controller('SelectorCtrl', function ($q, $scope, PersonResource, BookResource, HadithTag) {
     var ctrl = this;
 
     if (!$scope.ids) {
@@ -50,11 +50,11 @@ function waitForPromises(promises, callback) {
 
     switch ($scope.type.toLowerCase()) {
       case 'person':
-        $scope.Entity = Person;
+        $scope.Entity = PersonResource;
         break;
 
       case 'book':
-        $scope.Entity = Book;
+        $scope.Entity = BookResource;
         break;
 
       case 'hadithtag':

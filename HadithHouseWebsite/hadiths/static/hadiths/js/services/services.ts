@@ -27,34 +27,65 @@
 /// <reference path="../app.ts" />
 
 
+// TODO: Split this files into multiple files?
+
 module HadithHouse.Services {
-  HadithHouse.HadithHouseApp.factory('Hadith', function ($resource) {
-    return $resource('/apis/hadiths/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function (data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-
-  HadithHouse.HadithHouseApp.factory('Person', function ($resource) {
-    return $resource('/apis/persons/:id', {id: '@id'}, {
-      'query': {
-        method: 'GET',
-        isArray: true,
-        transformResponse: function (data) {
-          return JSON.parse(data).results;
-        }
-      }
-    });
-  });
-
+  // TODO: Add tracking fields: added_by, added_on, etc.
   export interface IEntity {
     id:number;
   }
+
+  export interface IHadith extends IEntity, ng.resource.IResource<IHadith> {
+    text:string;
+    person:number;
+    book:number;
+    tags:number[];
+  }
+
+  export interface IHadithResource extends ng.resource.IResourceClass<IHadith> {
+
+  }
+
+  HadithHouse.HadithHouseApp.factory('HadithResource', ($resource:ng.resource.IResourceService):IHadithResource => {
+    return <IHadithResource>$resource<IHadith, IHadithResource>('/apis/hadiths/:id', {id: '@id'}, {
+      'query': {
+        method: 'GET',
+        isArray: true,
+        transformResponse: function (data) {
+          return JSON.parse(data).results;
+        }
+      }
+    });
+  });
+
+  export interface IPerson extends IEntity, ng.resource.IResource<IPerson> {
+    title:string;
+    display_name:string;
+    full_name:string;
+    brief_desc:string;
+    birth_year:number;
+    birth_month:number;
+    birth_day:number;
+    death_year:number;
+    death_month:number;
+    death_day:number;
+  }
+
+  export interface IPersonResource extends ng.resource.IResourceClass<IPerson> {
+
+  }
+
+  HadithHouse.HadithHouseApp.factory('PersonResource', ($resource:ng.resource.IResourceService):IPersonResource => {
+    return <IPersonResource>$resource<IPerson, IPersonResource>('/apis/persons/:id', {id: '@id'}, {
+      'query': {
+        method: 'GET',
+        isArray: true,
+        transformResponse: function (data) {
+          return JSON.parse(data).results;
+        }
+      }
+    });
+  });
 
   export interface IBook extends IEntity, ng.resource.IResource<IBook> {
     title:string;

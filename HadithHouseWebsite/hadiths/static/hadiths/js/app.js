@@ -31,9 +31,9 @@ var HadithHouse;
             templateUrl: getHtmlBasePath() + 'hadiths.html',
             controller: 'HadithsCtrl',
             controllerAs: 'ctrl'
-        }).when('/hadith/:hadithId', {
+        }).when('/hadith/:id', {
             templateUrl: getHtmlBasePath() + 'hadith.html',
-            controller: 'HadithCtrl',
+            controller: 'HadithPageCtrl',
             controllerAs: 'ctrl'
         }).when('/books', {
             templateUrl: getHtmlBasePath() + 'books.html',
@@ -47,9 +47,9 @@ var HadithHouse;
             templateUrl: getHtmlBasePath() + 'persons.html',
             controller: 'PersonsCtrl',
             controllerAs: 'ctrl'
-        }).when('/person/:personId', {
+        }).when('/person/:id', {
             templateUrl: getHtmlBasePath() + 'person.html',
-            controller: 'PersonCtrl',
+            controller: 'PersonPageCtrl',
             controllerAs: 'ctrl'
         }).when('/tags', {
             templateUrl: getHtmlBasePath() + 'tags.html',
