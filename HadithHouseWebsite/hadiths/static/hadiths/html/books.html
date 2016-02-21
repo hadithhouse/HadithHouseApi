@@ -1,14 +1,14 @@
 <div class="md-whiteframe-z1">
 
   <md-list>
-    <md-list-item ng-repeat="book in ctrl.books">
+    <md-list-item ng-repeat="entity in ctrl.entities">
       <div style="width: 100%;">
         <md-icon class="material-icons"
-                 ng-click="ctrl.deleteBook($event, book)"
+                 ng-click="ctrl.deleteEntity($event, entity)"
                  ng-if="ctrl.$rootScope.user.permissions.delete_book">close
         </md-icon>
-        <a ng-href="#/book/{{ book.id }}">
-          {{ book.title }}
+        <a ng-href="#/book/{{ entity.id }}">
+          {{ entity.title }}
         </a>
       </div>
       <md-divider ng-if="!$last"></md-divider>
