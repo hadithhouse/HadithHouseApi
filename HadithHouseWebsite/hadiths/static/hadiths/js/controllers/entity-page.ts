@@ -22,16 +22,15 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="app.ts" />
-/// <reference path="services/services.ts" />
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../app.ts" />
+/// <reference path="../services/services.ts" />
 
 module HadithHouse.Controllers {
-  export class EntityPageController {
-    book:any;
-    oldBook:any;
-    bookId:any;
+  import IEntity = HadithHouse.Services.IEntity;
+  export abstract class EntityPageCtrl<T extends ng.resource.IResource<IEntity>> {
+    entity:T;
     addingNew:boolean;
     isEditing:boolean;
 
@@ -39,59 +38,46 @@ module HadithHouse.Controllers {
                 private $rootScope:ng.IScope,
                 private $location:ng.ILocationService,
                 private $routeParams:any,
-                private BookResource:Services.IBookResource,
+                private EntityResource:ng.resource.IResourceClass<T>,
                 private ToastService:any) {
-      this.bookId = this.$routeParams.bookId;
-      if (this.bookId === 'new') {
+      if (this.$routeParams.id === 'new') {
         this.setAddingNewBookMode();
       } else {
-        this.setOpeningExitingBookMode();
+        this.setOpeningExitingBookMode(this.$routeParams.id );
       }
-
-      this.oldBook = {};
     }
 
     /**
-     * Makes a copy of the data of the book in case we have to restore them
+     * Makes a copy of the data of the entity in case we have to restore them
      * if the user cancels editing or we fail to send changes to the server.
      */
-    private saveCopyOfBook() {
-      this.oldBook.title = this.book.title;
-      this.oldBook.brief_desc = this.book.brief_desc;
-      this.oldBook.pub_year = this.book.pub_year;
-    }
+    protected abstract copyEntity();
 
     /**
-     * Restores the saved data of the book after the user cancels editing
+     * Restores the saved data of the entity after the user cancels editing
      * or we fail to send changes to the server.
      */
-    private restoreCopyOfBook() {
-      this.book.title = this.oldBook.title;
-      this.book.brief_desc = this.oldBook.brief_desc;
-      this.book.pub_year = this.oldBook.pub_year;
-    }
+    protected abstract restoreEntity();
+
+    protected abstract newEntity() : T;
 
     private setAddingNewBookMode() {
-      this.book = new this.BookResource({
-        title: '',
-        brief_desc: '',
-        pub_year: null
-      });
+      this.entity = this.newEntity();
       this.addingNew = true;
       this.isEditing = true;
     }
 
-    private setOpeningExitingBookMode() {
-      this.book = this.BookResource.get({id: this.bookId});
+    private setOpeningExitingBookMode(id: string) {
+      this.entity = this.EntityResource.get({id: id});
       this.addingNew = false;
       this.isEditing = false;
     }
 
     /**
-     * Called when the user clicks on the edit icon to start editing the book.
+     * Called when the user clicks on the edit icon to start editing the entity.
      */
     private startEditing() {
-      this.saveCopyOfBook();
+      this.copyEntity();
       this.isEditing = true;
     }
 
@@ -100,14 +86,14 @@ module HadithHouse.Controllers {
      */
     private finishEditing() {
       // Send the changes to the server.
-      this.book.$save((result) => {
+      this.entity.$save((result) => {
         if (this.addingNew) {
-          this.$location.path('book/' + this.book.id);
+          this.$location.path('book/' + this.entity.id);
         }
         // Successfully saved changes. Don't need to do anything.
         this.isEditing = false;
         this.addingNew = false;
-        this.ToastService.show("Book added.");
+        this.ToastService.show("Successful.");
       }, (result) => {
         if (result.data) {
           this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
@@ -122,12 +108,7 @@ module HadithHouse.Controllers {
      */
     private cancelEditing() {
       this.isEditing = false;
-      this.restoreCopyOfBook();
+      this.restoreEntity();
     };
   }
-
-  HadithHouse.HadithHouseApp.controller('BookCtrl',
-    function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-      return new HadithHouse.Controllers.EntityPageController($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
-    });
 }

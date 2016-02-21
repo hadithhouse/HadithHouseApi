@@ -21,84 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="app.ts" />
-/// <reference path="services/services.ts" />
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../app.ts" />
+/// <reference path="../services/services.ts" />
 var HadithHouse;
 (function (HadithHouse) {
     var Controllers;
     (function (Controllers) {
-        var EntityPageController = (function () {
-            function EntityPageController($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
+        var EntityPageCtrl = (function () {
+            function EntityPageCtrl($scope, $rootScope, $location, $routeParams, EntityResource, ToastService) {
                 this.$scope = $scope;
                 this.$rootScope = $rootScope;
                 this.$location = $location;
                 this.$routeParams = $routeParams;
-                this.BookResource = BookResource;
+                this.EntityResource = EntityResource;
                 this.ToastService = ToastService;
-                this.bookId = this.$routeParams.bookId;
-                if (this.bookId === 'new') {
+                if (this.$routeParams.id === 'new') {
                     this.setAddingNewBookMode();
                 }
                 else {
-                    this.setOpeningExitingBookMode();
+                    this.setOpeningExitingBookMode(this.$routeParams.id);
                 }
-                this.oldBook = {};
             }
-            /**
-             * Makes a copy of the data of the book in case we have to restore them
-             * if the user cancels editing or we fail to send changes to the server.
-             */
-            EntityPageController.prototype.saveCopyOfBook = function () {
-                this.oldBook.title = this.book.title;
-                this.oldBook.brief_desc = this.book.brief_desc;
-                this.oldBook.pub_year = this.book.pub_year;
-            };
-            /**
-             * Restores the saved data of the book after the user cancels editing
-             * or we fail to send changes to the server.
-             */
-            EntityPageController.prototype.restoreCopyOfBook = function () {
-                this.book.title = this.oldBook.title;
-                this.book.brief_desc = this.oldBook.brief_desc;
-                this.book.pub_year = this.oldBook.pub_year;
-            };
-            EntityPageController.prototype.setAddingNewBookMode = function () {
-                this.book = new this.BookResource({
-                    title: '',
-                    brief_desc: '',
-                    pub_year: null
-                });
+            EntityPageCtrl.prototype.setAddingNewBookMode = function () {
+                this.entity = this.newEntity();
                 this.addingNew = true;
                 this.isEditing = true;
             };
-            EntityPageController.prototype.setOpeningExitingBookMode = function () {
-                this.book = this.BookResource.get({ id: this.bookId });
+            EntityPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
+                this.entity = this.EntityResource.get({ id: id });
                 this.addingNew = false;
                 this.isEditing = false;
             };
             /**
-             * Called when the user clicks on the edit icon to start editing the book.
+             * Called when the user clicks on the edit icon to start editing the entity.
              */
-            EntityPageController.prototype.startEditing = function () {
-                this.saveCopyOfBook();
+            EntityPageCtrl.prototype.startEditing = function () {
+                this.copyEntity();
                 this.isEditing = true;
             };
             /**
              * Called when the user clicks on the save icon to save the changes made.
              */
-            EntityPageController.prototype.finishEditing = function () {
+            EntityPageCtrl.prototype.finishEditing = function () {
                 var _this = this;
                 // Send the changes to the server.
-                this.book.$save(function (result) {
+                this.entity.$save(function (result) {
                     if (_this.addingNew) {
-                        _this.$location.path('book/' + _this.book.id);
+                        _this.$location.path('book/' + _this.entity.id);
                     }
                     // Successfully saved changes. Don't need to do anything.
                     _this.isEditing = false;
                     _this.addingNew = false;
-                    _this.ToastService.show("Book added.");
+                    _this.ToastService.show("Successful.");
                 }, function (result) {
                     if (result.data) {
                         _this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
@@ -112,17 +88,14 @@ var HadithHouse;
             /**
              * Called when the user clicks on the X icon to cancel the changes made.
              */
-            EntityPageController.prototype.cancelEditing = function () {
+            EntityPageCtrl.prototype.cancelEditing = function () {
                 this.isEditing = false;
-                this.restoreCopyOfBook();
+                this.restoreEntity();
             };
             ;
-            return EntityPageController;
+            return EntityPageCtrl;
         })();
-        Controllers.EntityPageController = EntityPageController;
-        HadithHouse.HadithHouseApp.controller('BookCtrl', function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-            return new HadithHouse.Controllers.EntityPageController($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
-        });
+        Controllers.EntityPageCtrl = EntityPageCtrl;
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
-//# sourceMappingURL=book.js.map
+//# sourceMappingURL=entity-page.js.map

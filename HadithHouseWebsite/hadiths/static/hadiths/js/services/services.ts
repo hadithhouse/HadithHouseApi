@@ -52,8 +52,11 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IBook extends ng.resource.IResource<IBook> {
+  export interface IEntity {
     id:number;
+  }
+
+  export interface IBook extends IEntity, ng.resource.IResource<IBook> {
     title:string;
     brief_desc:string;
     pub_year:number;

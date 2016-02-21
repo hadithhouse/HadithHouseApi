@@ -3,7 +3,7 @@
 </div>
 <div ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>
-    {{ ctrl.book.title }}
+    {{ ctrl.entity.title }}
     <md-icon class="material-icons"
              ng-click="ctrl.startEditing()"
              ng-hide="ctrl.isEditing"
@@ -24,21 +24,21 @@
   <div layout layout-sm="column">
     <md-input-container flex>
       <label>Title</label>
-      <input ng-model="ctrl.book.title" ng-disabled="!ctrl.isEditing"/>
+      <input ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
     </md-input-container>
   </div>
 
   <div layout layout-sm="column">
     <md-input-container flex>
       <label>Brief Description</label>
-      <textarea ng-model="ctrl.book.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
+      <textarea ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
     </md-input-container>
   </div>
 
   <div layout layout-sm="column">
     <md-input-container flex>
       <label>Publication Year</label>
-      <input ng-model="ctrl.book.pub_year" ng-disabled="!ctrl.isEditing"/>
+      <input ng-model="ctrl.entity.pub_year" ng-disabled="!ctrl.isEditing"/>
     </md-input-container>
   </div>
 </div>

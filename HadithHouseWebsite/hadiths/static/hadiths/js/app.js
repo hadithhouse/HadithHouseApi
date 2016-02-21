@@ -39,9 +39,9 @@ var HadithHouse;
             templateUrl: getHtmlBasePath() + 'books.html',
             controller: 'BooksCtrl',
             controllerAs: 'ctrl'
-        }).when('/book/:bookId', {
+        }).when('/book/:id', {
             templateUrl: getHtmlBasePath() + 'book.html',
-            controller: 'BookCtrl',
+            controller: 'BookPageCtrl',
             controllerAs: 'ctrl'
         }).when('/persons', {
             templateUrl: getHtmlBasePath() + 'persons.html',
