@@ -24,11 +24,12 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
 /// <reference path="../app.ts" />
+// TODO: Split this files into multiple files?
 var HadithHouse;
 (function (HadithHouse) {
     var Services;
     (function (Services) {
-        HadithHouse.HadithHouseApp.factory('Hadith', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('HadithResource', function ($resource) {
             return $resource('/apis/hadiths/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',
@@ -39,7 +40,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('Person', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('PersonResource', function ($resource) {
             return $resource('/apis/persons/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',

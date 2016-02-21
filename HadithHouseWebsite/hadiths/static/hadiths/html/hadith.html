@@ -3,38 +3,38 @@
 </div>
 <div ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>
-    Hadith {{ ctrl.hadith.id }}
+    Hadith {{ ctrl.entity.id }}
     <md-icon class="material-icons"
              ng-click="ctrl.startEditing()"
              ng-hide="ctrl.isEditing"
-             ng-if="ctrl.user.permissions.change_hadith">edit
+             ng-if="ctrl.$rootScope.user.permissions.change_hadith">edit
     </md-icon>
     <md-icon class="material-icons"
              ng-click="ctrl.cancelEditing()"
              ng-hide="!ctrl.isEditing || ctrl.addingNew"
-             ng-if="ctrl.user.permissions.change_hadith">cancel
+             ng-if="ctrl.$rootScope.user.permissions.change_hadith">cancel
     </md-icon>
     <md-icon class="material-icons"
              ng-click="ctrl.finishEditing()"
              ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.user.permissions.change_hadith">save
+             ng-if="ctrl.$rootScope.user.permissions.change_hadith">save
     </md-icon>
   </h1>
 
   <label>Text</label>
   <md-input-container>
-    <input ng-model="ctrl.hadith.text" ng-disabled="!ctrl.isEditing"/>
+    <input ng-model="ctrl.entity.text" ng-disabled="!ctrl.isEditing"/>
   </md-input-container>
 
   <label>Person</label>
-  <hh-selector ids="ctrl.hadith.person" type="person" read-only="!ctrl.isEditing"
+  <hh-selector ids="ctrl.entity.person" type="person" read-only="!ctrl.isEditing"
                single-select="true"></hh-selector>
 
   <label>Book</label>
-  <hh-selector ids="ctrl.hadith.book" type="book" read-only="!ctrl.isEditing"
+  <hh-selector ids="ctrl.entity.book" type="book" read-only="!ctrl.isEditing"
                single-select="true"></hh-selector>
 
   <label>Tags</label>
-  <hh-selector ids="ctrl.hadith.tags" type="hadithtag" read-only="!ctrl.isEditing"
+  <hh-selector ids="ctrl.entity.tags" type="hadithtag" read-only="!ctrl.isEditing"
                allow-create-new-entities="true"></hh-selector>
 </div>
