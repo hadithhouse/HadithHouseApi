@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Rafid K. Abdullah
+ * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,172 +21,168 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-function waitForPromises(promises, callback) {
-
-}
-
-(function () {
-  var HadithHouseApp = angular.module('HadithHouseApp');
-
-  HadithHouseApp.controller('SelectorCtrl', function ($q, $scope, PersonResource, BookResource, HadithTagResource) {
-    var ctrl = this;
-
-    if (!$scope.ids) {
-      if ($scope.singleSelect) {
-        $scope.ids = null;
-      } else {
-        $scope.ids = [];
-      }
-    }
-
-    if (!$scope.entities) {
-      $scope.entities = [];
-    }
-
-    if (!$scope.type || typeof($scope.type) !== 'string') {
-      throw 'Selector must have its type attribute set to a string.';
-    }
-
-    switch ($scope.type.toLowerCase()) {
-      case 'person':
-        $scope.Entity = PersonResource;
-        break;
-
-      case 'book':
-        $scope.Entity = BookResource;
-        break;
-
-      case 'hadithtag':
-        $scope.Entity = HadithTagResource;
-        break;
-
-      default:
-        throw 'Invalid type for selector.';
-    }
-
-
-    function onIdsChanged(newValue, oldValue) {
-      if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
-        return;
-      }
-      if ($scope.singleSelect) {
-        if ($scope.ids !== null) {
-          $scope.entities = [$scope.ids].map(function (id) {
-            // See if we already have the entity loaded, otherwise make a request to load it.
-            return _.find($scope.entities, function (e) {
-                return e.id == id;
-              }) || $scope.Entity.get({id: id}, function (e) {
-              });
-          });
-        } else {
-          $scope.entities = [];
-        }
-      } else {
-        $scope.entities = $scope.ids.map(function (id) {
-          // See if we already have the entity loaded, otherwise make a request to load it.
-          return _.find($scope.entities, function (e) {
-              return e.id == id;
-            }) || $scope.Entity.get({id: id});
-        });
-      }
-    }
-
-    $scope.$watch('ids', onIdsChanged);
-    $scope.$watchCollection('ids', onIdsChanged);
-
-    function onEntitiesChanged(newValue, oldValue) {
-      if ($scope.entities) {
-        // If the control only allows single select, we remove every elements
-        // before the last.
-        if ($scope.singleSelect === true) {
-          // Single select mode, so only allow one entity to be selected and delete previous ones.
-          if ($scope.entities.length > 1) {
-            $scope.entities.splice(0, $scope.entities.length - 1);
-          }
-          if ($scope.entities.length == 1) {
-            // Ensure that the resource has been resolved before updating the scope's ID
-            if (typeof($scope.entities[0].id) === 'number') {
-              $scope.ids = $scope.entities[0].id;
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
+/// <reference path="../services/services.ts" />
+var HadithHouse;
+(function (HadithHouse) {
+    var Directives;
+    (function (Directives) {
+        var SelectorCtrl = (function () {
+            function SelectorCtrl($scope, PersonResource, BookResource, HadithTagResource) {
+                var _this = this;
+                this.$scope = $scope;
+                this.PersonResource = PersonResource;
+                this.BookResource = BookResource;
+                this.HadithTagResource = HadithTagResource;
+                this.onIdsChanged = function (newValue, oldValue) {
+                    if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
+                        return;
+                    }
+                    if (_this.singleSelect) {
+                        if (_this.ids !== null) {
+                            _this.entities = [_this.ids].map(function (id) {
+                                // See if we already have the entity loaded, otherwise make a request to load it.
+                                return _.find(_this.entities, function (e) {
+                                    return e.id == id;
+                                }) || _this.EntityResource.get({ id: id }, function (e) {
+                                });
+                            });
+                        }
+                        else {
+                            _this.entities = [];
+                        }
+                    }
+                    else {
+                        _this.entities = _this.ids.map(function (id) {
+                            // See if we already have the entity loaded, otherwise make a request to load it.
+                            return _.find(_this.entities, function (e) {
+                                return e.id == id;
+                            }) || _this.EntityResource.get({ id: id });
+                        });
+                    }
+                };
+                this.onEntitiesChanged = function (newValue, oldValue) {
+                    if (_this.entities) {
+                        // If the control only allows single select, we remove every elements
+                        // before the last.
+                        if (_this.singleSelect === true) {
+                            // Single select mode, so only allow one entity to be selected and delete previous ones.
+                            if (_this.entities.length > 1) {
+                                _this.entities.splice(0, _this.entities.length - 1);
+                            }
+                            if (_this.entities.length == 1) {
+                                // Ensure that the resource has been resolved before updating the scope's ID
+                                if (typeof (_this.entities[0].id) === 'number') {
+                                    _this.ids = _this.entities[0].id;
+                                }
+                            }
+                            else {
+                                _this.ids = null;
+                            }
+                        }
+                        else {
+                            if (_.every(_this.entities, function (e) {
+                                return typeof (e.id) === 'number';
+                            })) {
+                                _this.ids = _this.entities.map(function (entity) {
+                                    return entity.id;
+                                });
+                            }
+                        }
+                    }
+                };
+                this.entityToString = function (entity) {
+                    switch (_this.type.toLowerCase()) {
+                        case 'person':
+                            return entity.display_name || entity.full_name;
+                        case 'book':
+                            return entity.title;
+                        case 'hadithtag':
+                            return entity.name;
+                        default:
+                            throw 'Unreachable code';
+                    }
+                };
+                if (!this.ids) {
+                    if (this.singleSelect) {
+                        this.ids = null;
+                    }
+                    else {
+                        this.ids = [];
+                    }
+                }
+                if (!this.entities) {
+                    this.entities = [];
+                }
+                if (!this.type || typeof (this.type) !== 'string') {
+                    throw 'Selector must have its type attribute set to a string.';
+                }
+                switch (this.type.toLowerCase()) {
+                    case 'person':
+                        this.EntityResource = PersonResource;
+                        break;
+                    case 'book':
+                        this.EntityResource = BookResource;
+                        break;
+                    case 'hadithtag':
+                        this.EntityResource = HadithTagResource;
+                        break;
+                    default:
+                        throw 'Invalid type for selector.';
+                }
+                $scope.$watch('ctrl.ids', this.onIdsChanged);
+                $scope.$watchCollection('ctrl.ids', this.onIdsChanged);
+                $scope.$watch('ctrl.entities', this.onEntitiesChanged);
+                $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
             }
-          } else {
-            $scope.ids = null;
-          }
-        } else {
-          if (_.every($scope.entities, function (e) {
-              return typeof(e.id) === 'number';
-            })) {
-            $scope.ids = $scope.entities.map(function (entity) {
-              return entity.id;
-            });
-          }
-        }
-      }
-    }
-
-    $scope.$watch('entities', onEntitiesChanged);
-    $scope.$watchCollection('entities', onEntitiesChanged);
-
-    function filterPersons(persons, query) {
-      return persons.filter(function (person) {
-        return (person.title.indexOf(query) > -1 ||
-        (person.display_name && person.display_name.indexOf(query) > -1) ||
-        (person.full_name && person.full_name.indexOf(query) > -1) ||
-        (person.brief_desc && person.brief_desc.indexOf(query) > -1));
-      });
-    }
-
-    function filterBooks(books, query) {
-      return books.filter(function (book) {
-        return (book.title.indexOf(query) > -1);
-      });
-    }
-
-    function filterHadithTags(hadithTags, query) {
-      return hadithTags.filter(function (tag) {
-        return tag.name.indexOf(query) > -1 &&
-          $scope.entities.map(function (t) {
-            return t.name;
-          }).indexOf(query) == -1;
-      });
-    }
-
-    ctrl.findEntities = function (query) {
-      return $scope.queryResults = $scope.Entity.query({search: query});
-    };
-
-    ctrl.entityToString = function (entity) {
-      switch ($scope.type.toLowerCase()) {
-        case 'person':
-          return entity.display_name || entity.full_name;
-
-        case 'book':
-          return entity.title;
-
-        case 'hadithtag':
-          return entity.name;
-
-        default:
-          throw 'Unreachable code';
-      }
-    }
-  });
-
-  HadithHouseApp.directive('hhSelector', function () {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: getHtmlBasePath() + 'directives/selector.directive.html',
-      controller: 'SelectorCtrl',
-      controllerAs: 'ctrl',
-      //bindToController: true,
-      scope: {
-        ids: '=',
-        type: '@',
-        readOnly: '=',
-        singleSelect: '='
-      }
-    };
-
-  });
-}());
+            SelectorCtrl.prototype.filterPersons = function (persons, query) {
+                return persons.filter(function (person) {
+                    return (person.title.indexOf(query) > -1 ||
+                        (person.display_name && person.display_name.indexOf(query) > -1) ||
+                        (person.full_name && person.full_name.indexOf(query) > -1) ||
+                        (person.brief_desc && person.brief_desc.indexOf(query) > -1));
+                });
+            };
+            SelectorCtrl.prototype.filterBooks = function (books, query) {
+                return books.filter(function (book) {
+                    return (book.title.indexOf(query) > -1);
+                });
+            };
+            SelectorCtrl.prototype.filterHadithTags = function (hadithTags, query) {
+                return hadithTags.filter(function (tag) {
+                    return tag.name.indexOf(query) > -1 &&
+                        _.map(hadithTags, function (t) {
+                            return t.name;
+                        }).indexOf(query) == -1;
+                });
+            };
+            SelectorCtrl.prototype.findEntities = function (query) {
+                return this.EntityResource.query({ search: query });
+            };
+            ;
+            return SelectorCtrl;
+        })();
+        Directives.SelectorCtrl = SelectorCtrl;
+        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', SelectorCtrl]);
+        // TODO: Consider creating a class for this.
+        HadithHouse.HadithHouseApp.directive('hhSelector', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: getHtmlBasePath() + 'directives/selector.directive.html',
+                controller: 'SelectorCtrl',
+                controllerAs: 'ctrl',
+                bindToController: true,
+                scope: {
+                    ids: '=',
+                    type: '@',
+                    readOnly: '=',
+                    singleSelect: '='
+                }
+            };
+        });
+    })(Directives = HadithHouse.Directives || (HadithHouse.Directives = {}));
+})(HadithHouse || (HadithHouse = {}));
+//# sourceMappingURL=selector.directive.js.map

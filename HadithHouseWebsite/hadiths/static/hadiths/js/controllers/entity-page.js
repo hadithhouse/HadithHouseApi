@@ -31,12 +31,35 @@ var HadithHouse;
     (function (Controllers) {
         var EntityPageCtrl = (function () {
             function EntityPageCtrl($scope, $rootScope, $location, $routeParams, EntityResource, ToastService) {
+                var _this = this;
                 this.$scope = $scope;
                 this.$rootScope = $rootScope;
                 this.$location = $location;
                 this.$routeParams = $routeParams;
                 this.EntityResource = EntityResource;
                 this.ToastService = ToastService;
+                /**
+                 * Called when the user clicks on the save icon to save the changes made.
+                 */
+                this.finishEditing = function () {
+                    // Send the changes to the server.
+                    _this.entity.$save(function (result) {
+                        if (_this.addingNew) {
+                            _this.$location.path('book/' + _this.entity.id);
+                        }
+                        // Successfully saved changes. Don't need to do anything.
+                        _this.isEditing = false;
+                        _this.addingNew = false;
+                        _this.ToastService.show("Successful.");
+                    }, function (result) {
+                        if (result.data) {
+                            _this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
+                        }
+                        else {
+                            _this.ToastService.show("Failed to save changes. Please try again.");
+                        }
+                    });
+                };
                 if (this.$routeParams.id === 'new') {
                     this.setAddingNewBookMode();
                 }
@@ -61,30 +84,6 @@ var HadithHouse;
                 this.copyEntity();
                 this.isEditing = true;
             };
-            /**
-             * Called when the user clicks on the save icon to save the changes made.
-             */
-            EntityPageCtrl.prototype.finishEditing = function () {
-                var _this = this;
-                // Send the changes to the server.
-                this.entity.$save(function (result) {
-                    if (_this.addingNew) {
-                        _this.$location.path('book/' + _this.entity.id);
-                    }
-                    // Successfully saved changes. Don't need to do anything.
-                    _this.isEditing = false;
-                    _this.addingNew = false;
-                    _this.ToastService.show("Successful.");
-                }, function (result) {
-                    if (result.data) {
-                        _this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
-                    }
-                    else {
-                        _this.ToastService.show("Failed to save changes. Please try again.");
-                    }
-                });
-            };
-            ;
             /**
              * Called when the user clicks on the X icon to cancel the changes made.
              */

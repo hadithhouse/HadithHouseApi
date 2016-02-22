@@ -84,7 +84,7 @@ module HadithHouse.Controllers {
     /**
      * Called when the user clicks on the save icon to save the changes made.
      */
-    private finishEditing() {
+    private finishEditing = () => {
       // Send the changes to the server.
       this.entity.$save((result) => {
         if (this.addingNew) {
