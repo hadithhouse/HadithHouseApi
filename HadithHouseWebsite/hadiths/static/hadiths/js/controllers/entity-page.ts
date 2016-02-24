@@ -29,8 +29,10 @@
 
 module HadithHouse.Controllers {
   import IEntity = HadithHouse.Services.IEntity;
-  export abstract class EntityPageCtrl<T extends ng.resource.IResource<IEntity>> {
-    entity:T;
+  import IResource = angular.resource.IResource;
+
+  export abstract class EntityPageCtrl<T extends IEntity> {
+    entity:T & IResource<T>;
     addingNew:boolean;
     isEditing:boolean;
 
@@ -38,7 +40,7 @@ module HadithHouse.Controllers {
                 private $rootScope:ng.IScope,
                 private $location:ng.ILocationService,
                 private $routeParams:any,
-                private EntityResource:ng.resource.IResourceClass<T>,
+                private EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
                 private ToastService:any) {
       if (this.$routeParams.id === 'new') {
         this.setAddingNewBookMode();
@@ -59,7 +61,7 @@ module HadithHouse.Controllers {
      */
     protected abstract restoreEntity();
 
-    protected abstract newEntity() : T;
+    protected abstract newEntity() : T & IResource<T>;
 
     private setAddingNewBookMode() {
       this.entity = this.newEntity();
