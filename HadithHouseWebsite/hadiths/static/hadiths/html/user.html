@@ -1,0 +1,8 @@
+<div ng-if="ctrl.error">
+  Couldn't load person or the person is not found.
+</div>
+<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+  <h1>
+    {{ ctrl.entity.first_name }} {{ ctrl.entity.last_name }}
+  </h1>
+</div>

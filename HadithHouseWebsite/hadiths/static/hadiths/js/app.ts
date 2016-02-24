@@ -65,6 +65,14 @@ module HadithHouse {
       templateUrl: getHtmlBasePath() + 'hadithtag.html',
       controller: 'HadithTagPageCtrl',
       controllerAs: 'ctrl',
+    }).when('/users', {
+      templateUrl: getHtmlBasePath() + 'users.html',
+      controller: 'UserListingPageCtrl',
+      controllerAs: 'ctrl',
+    }).when('/user/:id', {
+      templateUrl: getHtmlBasePath() + 'user.html',
+      controller: 'UserPageCtrl',
+      controllerAs: 'ctrl',
     });
 
     $httpProvider.interceptors.push([
@@ -109,7 +117,7 @@ module HadithHouse {
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, User) {
+    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResource) {
       let ctrl = this;
 
       $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
@@ -138,7 +146,7 @@ module HadithHouse {
             profilePicUrl: user.picture.data.url
           };
         });
-        User.get({id: 'current'}, function onSuccess(user) {
+        UserResource.get({id: 'current'}, function onSuccess(user) {
           let perms = {};
           for (let i in user.permissions) {
             perms[user.permissions[i]] = true;
@@ -155,7 +163,8 @@ module HadithHouse {
         {name: 'Hadiths', urlPath: 'hadiths'},
         {name: 'Books', urlPath: 'books'},
         {name: 'Persons', urlPath: 'persons'},
-        {name: 'Tags', urlPath: 'hadithtags'}
+        {name: 'Tags', urlPath: 'hadithtags'},
+        {name: 'Users', urlPath: 'users'}
       ];
 
       let path = $location.path() ? $location.path().substr(1) : null;

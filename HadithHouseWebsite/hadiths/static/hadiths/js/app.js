@@ -59,6 +59,14 @@ var HadithHouse;
             templateUrl: getHtmlBasePath() + 'hadithtag.html',
             controller: 'HadithTagPageCtrl',
             controllerAs: 'ctrl'
+        }).when('/users', {
+            templateUrl: getHtmlBasePath() + 'users.html',
+            controller: 'UserListingPageCtrl',
+            controllerAs: 'ctrl'
+        }).when('/user/:id', {
+            templateUrl: getHtmlBasePath() + 'user.html',
+            controller: 'UserPageCtrl',
+            controllerAs: 'ctrl'
         });
         $httpProvider.interceptors.push([
             "$q", "$rootScope", function ($q, $rootScope) {
@@ -99,7 +107,7 @@ var HadithHouse;
     }).run(['$rootScope', '$mdDialog', function ($rootScope) {
             $rootScope['pendingRequests'] = 0;
         }]);
-    HadithHouse.HadithHouseApp.controller('HadithHouseCtrl', function ($scope, $rootScope, $location, $mdSidenav, FacebookService, User) {
+    HadithHouse.HadithHouseApp.controller('HadithHouseCtrl', function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResource) {
         var ctrl = this;
         $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
         $rootScope.fbUser = null;
@@ -124,7 +132,7 @@ var HadithHouse;
                     profilePicUrl: user.picture.data.url
                 };
             });
-            User.get({ id: 'current' }, function onSuccess(user) {
+            UserResource.get({ id: 'current' }, function onSuccess(user) {
                 var perms = {};
                 for (var i in user.permissions) {
                     perms[user.permissions[i]] = true;
@@ -139,7 +147,8 @@ var HadithHouse;
             { name: 'Hadiths', urlPath: 'hadiths' },
             { name: 'Books', urlPath: 'books' },
             { name: 'Persons', urlPath: 'persons' },
-            { name: 'Tags', urlPath: 'hadithtags' }
+            { name: 'Tags', urlPath: 'hadithtags' },
+            { name: 'Users', urlPath: 'users' }
         ];
         var path = $location.path() ? $location.path().substr(1) : null;
         if (path) {
