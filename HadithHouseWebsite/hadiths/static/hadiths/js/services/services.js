@@ -73,7 +73,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('User', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('UserResource', function ($resource) {
             return $resource('/apis/users/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',

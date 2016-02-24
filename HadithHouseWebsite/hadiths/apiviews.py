@@ -125,14 +125,13 @@ class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
   delete_perm_code = 'delete_hadith'
 
 
-# class UserSetView(FBAuthListCreateAPIView):
-#   lookup_field = 'id'
-#   queryset = User.objects.all()
-#   serializer_class = UserSerializer
-#   get_perm_code = None
-#   post_perm_code = None #Permission.get_code_by_name('Can Control Permissions')
-#
-#
+class UserSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = User.objects.all()
+  serializer_class = UserSerializer
+  get_perm_code = None
+
+
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
   lookup_field = 'id'
   queryset = User.objects.all()

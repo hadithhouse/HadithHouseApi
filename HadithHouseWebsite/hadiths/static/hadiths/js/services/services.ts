@@ -128,8 +128,22 @@ module HadithHouse.Services {
       }
     });
   });
-  HadithHouse.HadithHouseApp.factory('User', function ($resource) {
-    return $resource('/apis/users/:id', {id: '@id'}, {
+
+  export interface IUser extends IEntity, ng.resource.IResource<IUser> {
+    first_name:string;
+    last_name:string;
+    is_superuser:boolean;
+    is_staff:boolean;
+    username:string;
+    date_joined:string;
+    permissions:Array<string>;
+  }
+
+  export interface IUserResource extends ng.resource.IResourceClass<IUser> {
+  }
+
+  HadithHouse.HadithHouseApp.factory('UserResource', ($resource:ng.resource.IResourceService):IUserResource => {
+    return <IUserResource>$resource<IUser, IUserResource>('/apis/users/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -139,4 +153,5 @@ module HadithHouse.Services {
       }
     });
   });
+
 }
