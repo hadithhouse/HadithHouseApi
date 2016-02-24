@@ -23,6 +23,7 @@
  */
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
 /// <reference path="entity-page.ts" />
@@ -48,7 +49,7 @@ var HadithHouse;
                     _this.$mdDialog.show(confirm).then(function () {
                         _this.EntityResource.delete({ id: entity.id }, function () {
                             _this.ToastService.show('Successfully deleted');
-                            _this.loadEntities();
+                            _this.entities = _this.entities.filter(function (e) { return e.id != entity.id; });
                         }, function (result) {
                             if (result.data && result.data.detail) {
                                 _this.ToastService.show("Failed to delete entity. Error was: " + result.data.detail);

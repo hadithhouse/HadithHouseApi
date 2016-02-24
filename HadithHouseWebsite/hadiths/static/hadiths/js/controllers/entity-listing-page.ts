@@ -24,6 +24,7 @@
 
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
 /// <reference path="entity-page.ts" />
@@ -31,14 +32,16 @@
 module HadithHouse.Controllers {
   import IEntity = HadithHouse.Services.IEntity;
   import IResourceArray = angular.resource.IResourceArray;
+  import List = _.List;
+  import IResource = angular.resource.IResource;
 
-  export class EntityListingPageCtrl<T extends ng.resource.IResource<IEntity>> {
-    entities:IResourceArray<T>;
+  export class EntityListingPageCtrl<T extends IEntity> {
+    entities:IResourceArray<T & IResource<T>>;
 
     constructor(private $scope:ng.IScope,
                 private $rootScope:ng.IScope,
                 private $mdDialog:ng.material.IDialogService,
-                private EntityResource:ng.resource.IResourceClass<T>,
+                private EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
                 private ToastService:any) {
 
       this.loadEntities();
@@ -49,7 +52,7 @@ module HadithHouse.Controllers {
       this.entities = this.EntityResource.query();
     }
 
-    private deleteEntity = (event:any, entity:IEntity) => {
+    private deleteEntity = (event:any, entity:T) => {
       var confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the entity?')
@@ -59,7 +62,7 @@ module HadithHouse.Controllers {
       this.$mdDialog.show(confirm).then(() => {
         this.EntityResource.delete({id: entity.id}, () => {
           this.ToastService.show('Successfully deleted');
-          this.loadEntities();
+          this.entities = this.entities.filter((e) => { return e.id != entity.id; });
         }, (result) => {
           if (result.data && result.data.detail) {
             this.ToastService.show("Failed to delete entity. Error was: " + result.data.detail);
