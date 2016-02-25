@@ -1,8 +1,33 @@
 <div ng-if="ctrl.error">
-  Couldn't load person or the person is not found.
+  Couldn't load user or the user is not found.
 </div>
 <div ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>
     {{ ctrl.entity.first_name }} {{ ctrl.entity.last_name }}
   </h1>
+
+  <md-input-container>
+    <label>Username</label>
+    <input ng-model="ctrl.entity.username" readonly="!ctrl.isEditing"/>
+  </md-input-container>
+
+  <md-input-container>
+    <label>Date joined</label>
+    <input ng-model="ctrl.entity.date_joined" ng-readonly="true"/>
+  </md-input-container>
+
+  <md-input-container flex>
+    <md-checkbox ng-model="ctrl.entity.is_superuser" ng-disabled="true"/>
+    Super user
+  </md-input-container>
+
+  <md-input-container flex>
+    <md-checkbox ng-model="ctrl.entity.is_staff" ng-disabled="true"/>
+    Staff user
+  </md-input-container>
+
+  <label>Permissions</label>
+  <span>
+    <md-chips ng-model="ctrl.entity.permissions | orderBy" readonly="true"></md-chips>
+  </span>
 </div>
