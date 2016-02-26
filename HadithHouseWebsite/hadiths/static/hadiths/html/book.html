@@ -42,17 +42,4 @@
   </md-input-container>
   </div>
 </div>
-<div ng-if="ctrl.entity.id">
-  Added on {{ ctrl.entity.added_on }}
-  <span ng-if="ctrl.entity.added_by">
-    by <hh-selector ids="ctrl.entity.added_by" type="user" read-only="true" single-select="true"
-                    ng-if="ctrl.entity.added_by" text-only="true" clickable="true"></hh-selector>
-   </span>
-</div>
-<div ng-if="ctrl.entity.id && ctrl.entity.updated_on !== ctrl.entity.added_on">
-  Last updated on {{ ctrl.entity.updated_on }}
-  <span ng-if="ctrl.entity.updated_by">
-    by <hh-selector ids="ctrl.entity.updated_by" type="user" read-only="true" single-select="true"
-                    ng-if="ctrl.entity.updated_by" text-only="true" clickable="true"></hh-selector>
-  </span>
-</div>
+<div ng-include="'/static/hadiths/html/entity-footer.html'"></div>

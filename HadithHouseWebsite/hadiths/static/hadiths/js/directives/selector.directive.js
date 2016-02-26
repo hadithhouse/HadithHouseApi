@@ -135,7 +135,6 @@ var HadithHouse;
                 if (!this.type || typeof (this.type) !== 'string') {
                     throw 'Selector must have its type attribute set to a string.';
                 }
-                debugger;
                 if (!this.textOnly) {
                     this.textOnly = false;
                 }
