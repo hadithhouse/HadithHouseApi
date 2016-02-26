@@ -44,7 +44,9 @@ module HadithHouse.Directives {
     ids:any;
     entities:any;
     type:any;
-    singleSelect:any;
+    singleSelect:boolean;
+    textOnly:boolean;
+    clickable:boolean;
     firstLoad = true;
 
     constructor(private $scope:IScope,
@@ -67,6 +69,14 @@ module HadithHouse.Directives {
 
       if (!this.type || typeof(this.type) !== 'string') {
         throw 'Selector must have its type attribute set to a string.';
+      }
+
+      if (!this.textOnly) {
+        this.textOnly = false;
+      }
+
+      if (!this.clickable) {
+        this.clickable = false;
       }
 
       switch (this.type.toLowerCase()) {
@@ -205,7 +215,9 @@ module HadithHouse.Directives {
         ids: '=',
         type: '@',
         readOnly: '=',
-        singleSelect: '='
+        singleSelect: '=',
+        textOnly: '=',
+        clickable: '='
       }
     };
   });

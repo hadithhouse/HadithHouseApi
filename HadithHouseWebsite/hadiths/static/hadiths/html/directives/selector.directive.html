@@ -1,27 +1,34 @@
 <span>
-  <md-chips ng-model="ctrl.entities" readonly="ctrl.readOnly"
-            md-autocomplete-snap
-            md-require-match="true">
-    <md-autocomplete
-        md-selected-item="ctrl.selectedTag"
-        md-selected-item-change=""
-        md-search-text="ctrl.query"
-        md-search-text-change=""
-        md-items="entity in ctrl.findEntities(ctrl.query)"
-        md-item-text="ctrl.entityToString(entity)"
-        placeholder="Search for a {{ ctrl.type }}">
-      <md-item-template>
-        <span md-highlight-text="ctrl.query">{{ ctrl.entityToString(entity) }}</span>
-      </md-item-template>
-      <md-not-found>
-        No matches found for "{{ ctrl.query }}".
-      </md-not-found>
-    </md-autocomplete>
-    <md-chip-template>
-      <span>
-        <strong>{{ ctrl.entityToString($chip) }}</strong>
-      </span>
-    </md-chip-template>
-  </md-chips>
+  <span ng-if="!ctrl.textOnly">
+    <md-chips ng-model="ctrl.entities" readonly="ctrl.readOnly"
+              md-autocomplete-snap
+              md-require-match="true">
+      <md-autocomplete
+          md-selected-item="ctrl.selectedTag"
+          md-selected-item-change=""
+          md-search-text="ctrl.query"
+          md-search-text-change=""
+          md-items="entity in ctrl.findEntities(ctrl.query)"
+          md-item-text="ctrl.entityToString(entity)"
+          placeholder="Search for a {{ ctrl.type }}">
+        <md-item-template>
+          <span md-highlight-text="ctrl.query">{{ ctrl.entityToString(entity) }}</span>
+        </md-item-template>
+        <md-not-found>
+          No matches found for "{{ ctrl.query }}".
+        </md-not-found>
+      </md-autocomplete>
+      <md-chip-template>
+        <span ng-if="!ctrl.clickable || !ctrl.readOnly">
+          <strong>{{ ctrl.entityToString($chip) }}</strong>
+        </span>
+        <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.clickable && ctrl.readOnly">
+          {{ ctrl.entityToString(ctrl.entities[0]) }}
+        </a>
+      </md-chip-template>
+    </md-chips>
+  </span>
+  <span ng-if="ctrl.textOnly && !ctrl.clickable">{{ ctrl.entityToString(ctrl.entities[0]) }}</span>
+  <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.textOnly && ctrl.clickable">
+    {{ ctrl.entityToString(ctrl.entities[0]) }}</a>
 </span>
-

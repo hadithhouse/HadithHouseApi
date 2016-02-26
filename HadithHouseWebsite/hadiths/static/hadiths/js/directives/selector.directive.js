@@ -135,6 +135,13 @@ var HadithHouse;
                 if (!this.type || typeof (this.type) !== 'string') {
                     throw 'Selector must have its type attribute set to a string.';
                 }
+                debugger;
+                if (!this.textOnly) {
+                    this.textOnly = false;
+                }
+                if (!this.clickable) {
+                    this.clickable = false;
+                }
                 switch (this.type.toLowerCase()) {
                     case 'person':
                         this.EntityResource = PersonResource;
@@ -177,7 +184,9 @@ var HadithHouse;
                     ids: '=',
                     type: '@',
                     readOnly: '=',
-                    singleSelect: '='
+                    singleSelect: '=',
+                    textOnly: '=',
+                    clickable: '='
                 }
             };
         });
