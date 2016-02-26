@@ -33,6 +33,10 @@ module HadithHouse.Services {
   // TODO: Add tracking fields: added_by, added_on, etc.
   export interface IEntity {
     id:number;
+    added_by:number;
+    updated_by:number;
+    added_on:string;
+    updated_on:string;
   }
 
   export interface IHadith extends IEntity, ng.resource.IResource<IHadith> {
