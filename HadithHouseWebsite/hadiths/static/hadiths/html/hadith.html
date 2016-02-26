@@ -28,13 +28,14 @@
 
   <label>Person</label>
   <hh-selector ids="ctrl.entity.person" type="person" read-only="!ctrl.isEditing"
-               single-select="true"></hh-selector>
+               single-select="true" clickable="true"></hh-selector>
 
   <label>Book</label>
   <hh-selector ids="ctrl.entity.book" type="book" read-only="!ctrl.isEditing"
-               single-select="true"></hh-selector>
+               single-select="true" clickable="true"></hh-selector>
 
   <label>Tags</label>
   <hh-selector ids="ctrl.entity.tags" type="hadithtag" read-only="!ctrl.isEditing"
-               allow-create-new-entities="true"></hh-selector>
+               allow-create-new-entities="true" clickable="true"></hh-selector>
 </div>
+<div ng-include="'/static/hadiths/html/entity-footer.html'"></div>

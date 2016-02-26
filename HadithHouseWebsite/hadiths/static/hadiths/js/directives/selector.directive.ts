@@ -37,18 +37,23 @@ module HadithHouse.Directives {
   import IHadithTagResource = HadithHouse.Services.IHadithTagResource;
   import IEntity = HadithHouse.Services.IEntity;
   import IResourceArray = angular.resource.IResourceArray;
+  import IUserResource = HadithHouse.Services.IUserResource;
 
   export class SelectorCtrl {
     EntityResource:ng.resource.IResourceClass<IEntity>;
     ids:any;
     entities:any;
     type:any;
-    singleSelect:any;
+    singleSelect:boolean;
+    textOnly:boolean;
+    clickable:boolean;
+    firstLoad = true;
 
     constructor(private $scope:IScope,
                 private PersonResource:IPersonResource,
                 private BookResource:IBookResource,
-                private HadithTagResource:IHadithTagResource) {
+                private HadithTagResource:IHadithTagResource,
+                private UserResource:IUserResource) {
 
       if (!this.ids) {
         if (this.singleSelect) {
@@ -66,6 +71,14 @@ module HadithHouse.Directives {
         throw 'Selector must have its type attribute set to a string.';
       }
 
+      if (!this.textOnly) {
+        this.textOnly = false;
+      }
+
+      if (!this.clickable) {
+        this.clickable = false;
+      }
+
       switch (this.type.toLowerCase()) {
         case 'person':
           this.EntityResource = PersonResource;
@@ -79,23 +92,34 @@ module HadithHouse.Directives {
           this.EntityResource = HadithTagResource;
           break;
 
+        case 'user':
+          this.EntityResource = UserResource;
+          break;
+
         default:
           throw 'Invalid type for selector.';
       }
 
-
-      $scope.$watch('ctrl.ids', this.onIdsChanged);
+      //$scope.$watch('ctrl.ids', this.onIdsChanged);
       $scope.$watchCollection('ctrl.ids', this.onIdsChanged);
 
-
-      $scope.$watch('ctrl.entities', this.onEntitiesChanged);
+      //$scope.$watch('ctrl.entities', this.onEntitiesChanged);
       $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
-
     }
 
+
+
     private onIdsChanged = (newValue, oldValue) => {
-      if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
-        return;
+      if (newValue && this.firstLoad) {
+        // An ID(s) was(were) passed to the selector and this.entities have not
+        // been set yet, so we set it.
+        this.firstLoad = false;
+      } else {
+        // The selector has already been loaded, so we just check whether we have
+        // changes in the ID that we need to refresh
+        if (angular.equals(newValue, oldValue)) {
+          return;
+        }
       }
       if (this.singleSelect) {
         if (this.ids !== null) {
@@ -120,6 +144,9 @@ module HadithHouse.Directives {
     }
 
     private onEntitiesChanged = (newValue, oldValue) => {
+      if (newValue && oldValue && angular.equals(newValue, oldValue)) {
+        return;
+      }
       if (this.entities) {
         // If the control only allows single select, we remove every elements
         // before the last.
@@ -148,30 +175,6 @@ module HadithHouse.Directives {
       }
     }
 
-    filterPersons(persons, query) {
-      return persons.filter((person) => {
-        return (person.title.indexOf(query) > -1 ||
-        (person.display_name && person.display_name.indexOf(query) > -1) ||
-        (person.full_name && person.full_name.indexOf(query) > -1) ||
-        (person.brief_desc && person.brief_desc.indexOf(query) > -1));
-      });
-    }
-
-    filterBooks(books, query) {
-      return books.filter((book) => {
-        return (book.title.indexOf(query) > -1);
-      });
-    }
-
-    filterHadithTags(hadithTags:any, query) {
-      return hadithTags.filter((tag) => {
-        return tag.name.indexOf(query) > -1 &&
-          _.map(hadithTags, (t:any) => {
-            return t.name;
-          }).indexOf(query) == -1;
-      });
-    }
-
     public findEntities(query) {
       return this.EntityResource.query({search: query});
     };
@@ -187,6 +190,9 @@ module HadithHouse.Directives {
         case 'hadithtag':
           return entity.name;
 
+        case 'user':
+          return `${entity.first_name} ${entity.last_name}`;
+
         default:
           throw 'Unreachable code';
       }
@@ -194,7 +200,7 @@ module HadithHouse.Directives {
   }
 
   HadithHouseApp.controller('SelectorCtrl',
-    ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', SelectorCtrl]);
+    ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhSelector', function () {
@@ -209,9 +215,10 @@ module HadithHouse.Directives {
         ids: '=',
         type: '@',
         readOnly: '=',
-        singleSelect: '='
+        singleSelect: '=',
+        textOnly: '=',
+        clickable: '='
       }
     };
-
   });
 }

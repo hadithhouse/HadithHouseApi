@@ -30,15 +30,26 @@ var HadithHouse;
     var Directives;
     (function (Directives) {
         var SelectorCtrl = (function () {
-            function SelectorCtrl($scope, PersonResource, BookResource, HadithTagResource) {
+            function SelectorCtrl($scope, PersonResource, BookResource, HadithTagResource, UserResource) {
                 var _this = this;
                 this.$scope = $scope;
                 this.PersonResource = PersonResource;
                 this.BookResource = BookResource;
                 this.HadithTagResource = HadithTagResource;
+                this.UserResource = UserResource;
+                this.firstLoad = true;
                 this.onIdsChanged = function (newValue, oldValue) {
-                    if (newValue && oldValue && newValue.toString() === oldValue.toString()) {
-                        return;
+                    if (newValue && _this.firstLoad) {
+                        // An ID(s) was(were) passed to the selector and this.entities have not
+                        // been set yet, so we set it.
+                        _this.firstLoad = false;
+                    }
+                    else {
+                        // The selector has already been loaded, so we just check whether we have
+                        // changes in the ID that we need to refresh
+                        if (angular.equals(newValue, oldValue)) {
+                            return;
+                        }
                     }
                     if (_this.singleSelect) {
                         if (_this.ids !== null) {
@@ -64,6 +75,9 @@ var HadithHouse;
                     }
                 };
                 this.onEntitiesChanged = function (newValue, oldValue) {
+                    if (newValue && oldValue && angular.equals(newValue, oldValue)) {
+                        return;
+                    }
                     if (_this.entities) {
                         // If the control only allows single select, we remove every elements
                         // before the last.
@@ -101,6 +115,8 @@ var HadithHouse;
                             return entity.title;
                         case 'hadithtag':
                             return entity.name;
+                        case 'user':
+                            return entity.first_name + " " + entity.last_name;
                         default:
                             throw 'Unreachable code';
                     }
@@ -119,6 +135,12 @@ var HadithHouse;
                 if (!this.type || typeof (this.type) !== 'string') {
                     throw 'Selector must have its type attribute set to a string.';
                 }
+                if (!this.textOnly) {
+                    this.textOnly = false;
+                }
+                if (!this.clickable) {
+                    this.clickable = false;
+                }
                 switch (this.type.toLowerCase()) {
                     case 'person':
                         this.EntityResource = PersonResource;
@@ -129,35 +151,17 @@ var HadithHouse;
                     case 'hadithtag':
                         this.EntityResource = HadithTagResource;
                         break;
+                    case 'user':
+                        this.EntityResource = UserResource;
+                        break;
                     default:
                         throw 'Invalid type for selector.';
                 }
-                $scope.$watch('ctrl.ids', this.onIdsChanged);
+                //$scope.$watch('ctrl.ids', this.onIdsChanged);
                 $scope.$watchCollection('ctrl.ids', this.onIdsChanged);
-                $scope.$watch('ctrl.entities', this.onEntitiesChanged);
+                //$scope.$watch('ctrl.entities', this.onEntitiesChanged);
                 $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
             }
-            SelectorCtrl.prototype.filterPersons = function (persons, query) {
-                return persons.filter(function (person) {
-                    return (person.title.indexOf(query) > -1 ||
-                        (person.display_name && person.display_name.indexOf(query) > -1) ||
-                        (person.full_name && person.full_name.indexOf(query) > -1) ||
-                        (person.brief_desc && person.brief_desc.indexOf(query) > -1));
-                });
-            };
-            SelectorCtrl.prototype.filterBooks = function (books, query) {
-                return books.filter(function (book) {
-                    return (book.title.indexOf(query) > -1);
-                });
-            };
-            SelectorCtrl.prototype.filterHadithTags = function (hadithTags, query) {
-                return hadithTags.filter(function (tag) {
-                    return tag.name.indexOf(query) > -1 &&
-                        _.map(hadithTags, function (t) {
-                            return t.name;
-                        }).indexOf(query) == -1;
-                });
-            };
             SelectorCtrl.prototype.findEntities = function (query) {
                 return this.EntityResource.query({ search: query });
             };
@@ -165,7 +169,7 @@ var HadithHouse;
             return SelectorCtrl;
         })();
         Directives.SelectorCtrl = SelectorCtrl;
-        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', SelectorCtrl]);
+        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
         // TODO: Consider creating a class for this.
         HadithHouse.HadithHouseApp.directive('hhSelector', function () {
             return {
@@ -179,7 +183,9 @@ var HadithHouse;
                     ids: '=',
                     type: '@',
                     readOnly: '=',
-                    singleSelect: '='
+                    singleSelect: '=',
+                    textOnly: '=',
+                    clickable: '='
                 }
             };
         });
