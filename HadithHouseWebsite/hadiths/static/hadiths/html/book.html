@@ -22,23 +22,37 @@
   </h1>
 
   <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Title</label>
-      <input ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
+  <md-input-container flex>
+    <label>Title</label>
+    <input ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
+  </md-input-container>
   </div>
 
   <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Brief Description</label>
-      <textarea ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
-    </md-input-container>
+  <md-input-container flex>
+    <label>Brief Description</label>
+    <textarea ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
+  </md-input-container>
   </div>
 
   <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Publication Year</label>
-      <input ng-model="ctrl.entity.pub_year" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
+  <md-input-container flex>
+    <label>Publication Year</label>
+    <input ng-model="ctrl.entity.pub_year" ng-disabled="!ctrl.isEditing"/>
+  </md-input-container>
   </div>
+</div>
+<div ng-if="ctrl.entity.id">
+  Added on {{ ctrl.entity.added_on }}
+  <span ng-if="ctrl.entity.added_by">
+    by <hh-selector ids="ctrl.entity.added_by" type="user" read-only="true" single-select="true"
+                    ng-if="ctrl.entity.added_by" text-only="true" clickable="true"></hh-selector>
+   </span>
+</div>
+<div ng-if="ctrl.entity.id && ctrl.entity.updated_on !== ctrl.entity.added_on">
+  Last updated on {{ ctrl.entity.updated_on }}
+  <span ng-if="ctrl.entity.updated_by">
+    by <hh-selector ids="ctrl.entity.updated_by" type="user" read-only="true" single-select="true"
+                    ng-if="ctrl.entity.updated_by" text-only="true" clickable="true"></hh-selector>
+  </span>
 </div>
