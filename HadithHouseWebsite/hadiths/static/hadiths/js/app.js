@@ -30,43 +30,53 @@ var HadithHouse;
         $routeProvider.when('/hadiths', {
             templateUrl: getHtmlBasePath() + 'hadiths.html',
             controller: 'HadithListingPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/hadith/:id', {
             templateUrl: getHtmlBasePath() + 'hadith.html',
             controller: 'HadithPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/books', {
             templateUrl: getHtmlBasePath() + 'books.html',
             controller: 'BookListingPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/book/:id', {
             templateUrl: getHtmlBasePath() + 'book.html',
             controller: 'BookPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/persons', {
             templateUrl: getHtmlBasePath() + 'persons.html',
             controller: 'PersonListingPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/person/:id', {
             templateUrl: getHtmlBasePath() + 'person.html',
             controller: 'PersonPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/hadithtags', {
             templateUrl: getHtmlBasePath() + 'hadithtags.html',
             controller: 'HadithTagListingPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/hadithtag/:id', {
             templateUrl: getHtmlBasePath() + 'hadithtag.html',
             controller: 'HadithTagPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/users', {
             templateUrl: getHtmlBasePath() + 'users.html',
             controller: 'UserListingPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         }).when('/user/:id', {
             templateUrl: getHtmlBasePath() + 'user.html',
             controller: 'UserPageCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
         });
         $httpProvider.interceptors.push([
             "$q", "$rootScope", function ($q, $rootScope) {
@@ -170,7 +180,7 @@ var HadithHouse;
         }
         ctrl.selectMenuItem = function (item) {
             ctrl.selected = angular.isNumber(item) ? ctrl.menuItems[item] : item;
-            $location.path(ctrl.selected.urlPath);
+            $location.url(ctrl.selected.urlPath);
             toggleItemsList();
         };
         ctrl.toggleSideNav = function () {

@@ -37,15 +37,15 @@ var HadithHouse;
     (function (Controllers) {
         var BookListingPageCtrl = (function (_super) {
             __extends(BookListingPageCtrl, _super);
-            function BookListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService) {
-                _super.call(this, $scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService);
+            function BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
                 this.BookResource = BookResource;
             }
             return BookListingPageCtrl;
         })(Controllers.EntityListingPageCtrl);
         Controllers.BookListingPageCtrl = BookListingPageCtrl;
-        HadithHouse.HadithHouseApp.controller('BookListingPageCtrl', function ($scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService) {
-            return new BookListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('BookListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService) {
+            return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

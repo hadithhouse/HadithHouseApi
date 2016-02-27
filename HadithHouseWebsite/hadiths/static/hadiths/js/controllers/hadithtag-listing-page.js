@@ -37,15 +37,15 @@ var HadithHouse;
     (function (Controllers) {
         var HadithTagListingPageCtrl = (function (_super) {
             __extends(HadithTagListingPageCtrl, _super);
-            function HadithTagListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, HadithTagResource, ToastService) {
-                _super.call(this, $scope, $rootScope, $timeout, $mdDialog, HadithTagResource, ToastService);
+            function HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
                 this.HadithTagResource = HadithTagResource;
             }
             return HadithTagListingPageCtrl;
         })(Controllers.EntityListingPageCtrl);
         Controllers.HadithTagListingPageCtrl = HadithTagListingPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl', function ($scope, $rootScope, $timeout, $mdDialog, HadithTagResource, ToastService) {
-            return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, HadithTagResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService) {
+            return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

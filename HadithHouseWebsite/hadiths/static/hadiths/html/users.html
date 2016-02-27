@@ -2,7 +2,7 @@
 <div class="md-whiteframe-z1">
 
   <md-list>
-    <md-list-item ng-repeat="entity in ctrl.entities">
+    <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
         <a ng-href="#/user/{{ entity.id }}">
           {{ entity.first_name }} {{ entity.last_name }}
@@ -12,3 +12,5 @@
     </md-list-item>
   </md-list>
 </div>
+
+<div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>
