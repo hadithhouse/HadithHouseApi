@@ -36,15 +36,16 @@ module HadithHouse.Controllers {
   export class UserListingPageCtrl extends EntityListingPageCtrl<IUser> {
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
+                $timeout:ng.ITimeoutService,
                 $mdDialog:ng.material.IDialogService,
                 private UserResource:Services.IUserResource,
                 ToastService:any) {
-      super($scope, $rootScope, $mdDialog, UserResource, ToastService);
+      super($scope, $rootScope, $timeout, $mdDialog, UserResource, ToastService);
     }
   }
 
   HadithHouse.HadithHouseApp.controller('UserListingPageCtrl',
-    function ($scope, $rootScope, $mdDialog, UserResource, ToastService) {
-      return new UserListingPageCtrl($scope, $rootScope, $mdDialog, UserResource, ToastService);
+    function ($scope, $rootScope, $timeout, $mdDialog, UserResource, ToastService) {
+      return new UserListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, UserResource, ToastService);
     });
 }

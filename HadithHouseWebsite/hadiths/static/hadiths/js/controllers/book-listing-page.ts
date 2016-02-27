@@ -36,15 +36,16 @@ module HadithHouse.Controllers {
   export class BookListingPageCtrl extends EntityListingPageCtrl<IBook> {
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
+                $timeout:ng.ITimeoutService,
                 $mdDialog:ng.material.IDialogService,
                 private BookResource:Services.IBookResource,
                 ToastService:any) {
-      super($scope, $rootScope, $mdDialog, BookResource, ToastService);
+      super($scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService);
     }
   }
 
   HadithHouse.HadithHouseApp.controller('BookListingPageCtrl',
-    function ($scope, $rootScope, $mdDialog, BookResource, ToastService) {
-      return new BookListingPageCtrl($scope, $rootScope, $mdDialog, BookResource, ToastService);
+    function ($scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService) {
+      return new BookListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, BookResource, ToastService);
     });
 }

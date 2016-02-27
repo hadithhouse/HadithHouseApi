@@ -31,6 +31,10 @@
 
 module HadithHouse.Services {
   // TODO: Add tracking fields: added_by, added_on, etc.
+  import IResource = angular.resource.IResource;
+  import IResourceArray = angular.resource.IResourceArray;
+  import IResourceClass = angular.resource.IResourceClass;
+
   export interface IEntity {
     id:number;
     added_by:number;
@@ -39,14 +43,18 @@ module HadithHouse.Services {
     updated_on:string;
   }
 
-  export interface IHadith extends IEntity, ng.resource.IResource<IHadith> {
+  export interface IEntityResource<T> {
+    search(params:Object): IResourceArray<IEntity & T>;
+  }
+
+  export interface IHadith extends IEntity, IResource<IHadith> {
     text:string;
     person:number;
     book:number;
     tags:number[];
   }
 
-  export interface IHadithResource extends ng.resource.IResourceClass<IHadith> {
+  export interface IHadithResource extends IEntityResource<IHadith>, IResourceClass<IHadith> {
 
   }
 
@@ -62,7 +70,7 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IPerson extends IEntity, ng.resource.IResource<IPerson> {
+  export interface IPerson extends IEntity, IResource<IPerson> {
     title:string;
     display_name:string;
     full_name:string;
@@ -75,7 +83,7 @@ module HadithHouse.Services {
     death_day:number;
   }
 
-  export interface IPersonResource extends ng.resource.IResourceClass<IPerson> {
+  export interface IPersonResource extends IEntityResource<IPerson>, IResourceClass<IPerson> {
 
   }
 
@@ -91,13 +99,13 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IBook extends IEntity, ng.resource.IResource<IBook> {
+  export interface IBook extends IEntity, IResource<IBook> {
     title:string;
     brief_desc:string;
     pub_year:number;
   }
 
-  export interface IBookResource extends ng.resource.IResourceClass<IBook> {
+  export interface IBookResource extends IEntityResource<IBook>, IResourceClass<IBook> {
 
   }
 
@@ -109,15 +117,15 @@ module HadithHouse.Services {
         transformResponse: function (data) {
           return JSON.parse(data).results;
         }
-      }
+        }
     });
   });
 
-  export interface IHadithTag extends IEntity, ng.resource.IResource<IHadithTag> {
+  export interface IHadithTag extends IEntity, IResource<IHadithTag> {
     name:string;
   }
 
-  export interface IHadithTagResource extends ng.resource.IResourceClass<IHadithTag> {
+  export interface IHadithTagResource extends IEntityResource<IHadithTag>, IResourceClass<IHadithTag> {
 
   }
 
@@ -133,7 +141,7 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IUser extends IEntity, ng.resource.IResource<IUser> {
+  export interface IUser extends IEntity, IResource<IUser> {
     first_name:string;
     last_name:string;
     is_superuser:boolean;
@@ -143,7 +151,7 @@ module HadithHouse.Services {
     permissions:Array<string>;
   }
 
-  export interface IUserResource extends ng.resource.IResourceClass<IUser> {
+  export interface IUserResource extends IEntityResource<IUser>, IResourceClass<IUser> {
   }
 
   HadithHouse.HadithHouseApp.factory('UserResource', ($resource:ng.resource.IResourceService):IUserResource => {

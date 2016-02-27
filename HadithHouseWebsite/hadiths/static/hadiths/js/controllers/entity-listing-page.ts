@@ -31,25 +31,43 @@
 
 module HadithHouse.Controllers {
   import IEntity = HadithHouse.Services.IEntity;
-  import IResourceArray = angular.resource.IResourceArray;
-  import List = _.List;
   import IResource = angular.resource.IResource;
+  import IResourceArray = angular.resource.IResourceArray;
+  import IEntityResource = HadithHouse.Services.IEntityResource;
+  import IPromise = angular.IPromise;
 
   export class EntityListingPageCtrl<T extends IEntity> {
     entities:IResourceArray<T & IResource<T>>;
+    searchQuery:string;
+    searchPromise:IPromise<void> = null;
 
     constructor(private $scope:ng.IScope,
                 private $rootScope:ng.IScope,
+                private $timeout:ng.ITimeoutService,
                 private $mdDialog:ng.material.IDialogService,
-                private EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
+                private EntityResource:IEntityResource<T> & ng.resource.IResourceClass<T & IResource<T>>,
                 private ToastService:any) {
-
       this.loadEntities();
+
+      $scope.$watch(() => {
+        return this.searchQuery;
+      }, () => {
+        if (this.searchPromise != null) {
+          $timeout.cancel(this.searchPromise);
+        }
+        this.searchPromise = $timeout(() => {
+          this.loadEntities(this.searchQuery);
+        }, 250);
+      });
     }
 
-    private loadEntities() {
-      // TODO: Show an alert if an error happens.
-      this.entities = this.EntityResource.query();
+    private loadEntities(searchQuery:string = null) {
+      if (!searchQuery) {
+        // TODO: Show an alert if an error happens.
+        this.entities = this.EntityResource.query();
+      } else {
+        this.entities = this.EntityResource.query({search: searchQuery});
+      }
     }
 
     private deleteEntity = (event:any, entity:T) => {
@@ -62,7 +80,9 @@ module HadithHouse.Controllers {
       this.$mdDialog.show(confirm).then(() => {
         this.EntityResource.delete({id: entity.id}, () => {
           this.ToastService.show('Successfully deleted');
-          this.entities = this.entities.filter((e) => { return e.id != entity.id; });
+          this.entities = this.entities.filter((e) => {
+            return e.id != entity.id;
+          });
         }, (result) => {
           if (result.data && result.data.detail) {
             this.ToastService.show("Failed to delete entity. Error was: " + result.data.detail);
