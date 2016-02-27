@@ -1,0 +1,6 @@
+<md-input-container ng-if="ctrl.getPageCount() > 1">
+  <label>Page</label>
+  <md-select ng-model="ctrl.page">
+    <md-option ng-value="i" ng-repeat="i in ctrl.range(ctrl.getPageCount())">{{i}}/{{ctrl.getPageCount()}}</md-option>
+  </md-select>
+</md-input-container>

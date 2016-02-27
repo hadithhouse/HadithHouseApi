@@ -32,15 +32,18 @@ var HadithHouse;
     var Controllers;
     (function (Controllers) {
         var EntityListingPageCtrl = (function () {
-            function EntityListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, EntityResource, ToastService) {
+            function EntityListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, EntityResource, ToastService) {
                 var _this = this;
                 this.$scope = $scope;
                 this.$rootScope = $rootScope;
                 this.$timeout = $timeout;
+                this.$location = $location;
                 this.$mdDialog = $mdDialog;
                 this.EntityResource = EntityResource;
                 this.ToastService = ToastService;
                 this.searchPromise = null;
+                this.page = 1;
+                this.pageSize = 10;
                 this.deleteEntity = function (event, entity) {
                     var confirm = _this.$mdDialog.confirm()
                         .title('Confirm')
@@ -51,7 +54,7 @@ var HadithHouse;
                     _this.$mdDialog.show(confirm).then(function () {
                         _this.EntityResource.delete({ id: entity.id }, function () {
                             _this.ToastService.show('Successfully deleted');
-                            _this.entities = _this.entities.filter(function (e) {
+                            _this.pagedEntities.results = _this.pagedEntities.results.filter(function (e) {
                                 return e.id != entity.id;
                             });
                         }, function (result) {
@@ -67,27 +70,72 @@ var HadithHouse;
                         });
                     });
                 };
+                var urlParams = $location.search();
+                this.page = parseInt(urlParams['page']) || 1;
+                this.searchQuery = urlParams['search'] || '';
                 this.loadEntities();
-                $scope.$watch(function () {
-                    return _this.searchQuery;
-                }, function () {
+                $scope.$watch(function () { return _this.searchQuery; }, function (newValue, oldValue) {
+                    if (newValue == oldValue) {
+                        return;
+                    }
                     if (_this.searchPromise != null) {
                         $timeout.cancel(_this.searchPromise);
                     }
+                    _this.page = 1;
                     _this.searchPromise = $timeout(function () {
-                        _this.loadEntities(_this.searchQuery);
+                        _this.loadEntities();
                     }, 250);
                 });
+                $scope.$watch(function () { return _this.page; }, function (newValue, oldValue) {
+                    if (newValue == oldValue) {
+                        return;
+                    }
+                    _this.loadEntities();
+                });
             }
-            EntityListingPageCtrl.prototype.loadEntities = function (searchQuery) {
-                if (searchQuery === void 0) { searchQuery = null; }
-                if (!searchQuery) {
-                    // TODO: Show an alert if an error happens.
-                    this.entities = this.EntityResource.query();
+            EntityListingPageCtrl.prototype.loadEntities = function () {
+                // TODO: Show an alert if an error happens.
+                if (!this.searchQuery) {
+                    this.pagedEntities = this.EntityResource.pagedQuery({
+                        limit: this.pageSize,
+                        offset: (this.page - 1) * this.pageSize
+                    });
                 }
                 else {
-                    this.entities = this.EntityResource.query({ search: searchQuery });
+                    this.pagedEntities = this.EntityResource.pagedQuery({
+                        search: this.searchQuery,
+                        limit: this.pageSize,
+                        offset: (this.page - 1) * this.pageSize
+                    });
                 }
+                if (typeof (this.page) === 'number' && this.page > 1) {
+                    this.$location.search('page', this.page);
+                }
+                else {
+                    this.$location.search('page', null);
+                }
+                if (this.searchQuery) {
+                    this.$location.search('search', this.searchQuery);
+                }
+                else {
+                    this.$location.search('search', null);
+                }
+            };
+            EntityListingPageCtrl.prototype.range = function (n) {
+                var res = [];
+                for (var i = 0; i < n; i++) {
+                    res.push(i + 1);
+                }
+                return res;
+            };
+            EntityListingPageCtrl.prototype.getPageCount = function () {
+                if (this.pagedEntities) {
+                    return Math.ceil(this.pagedEntities.count / this.pageSize);
+                }
+                return 0;
+            };
+            EntityListingPageCtrl.prototype.setPage = function (index) {
+                this.page = index;
             };
             return EntityListingPageCtrl;
         })();

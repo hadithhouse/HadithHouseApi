@@ -37,6 +37,10 @@ var HadithHouse;
                     transformResponse: function (data) {
                         return JSON.parse(data).results;
                     }
+                },
+                'pagedQuery': {
+                    method: 'GET',
+                    isArray: false
                 }
             });
         });
@@ -48,6 +52,10 @@ var HadithHouse;
                     transformResponse: function (data) {
                         return JSON.parse(data).results;
                     }
+                },
+                'pagedQuery': {
+                    method: 'GET',
+                    isArray: false
                 }
             });
         });
@@ -59,6 +67,10 @@ var HadithHouse;
                     transformResponse: function (data) {
                         return JSON.parse(data).results;
                     }
+                },
+                'pagedQuery': {
+                    method: 'GET',
+                    isArray: false
                 }
             });
         });
@@ -70,6 +82,10 @@ var HadithHouse;
                     transformResponse: function (data) {
                         return JSON.parse(data).results;
                     }
+                },
+                'pagedQuery': {
+                    method: 'GET',
+                    isArray: false
                 }
             });
         });
@@ -81,6 +97,10 @@ var HadithHouse;
                     transformResponse: function (data) {
                         return JSON.parse(data).results;
                     }
+                },
+                'pagedQuery': {
+                    method: 'GET',
+                    isArray: false
                 }
             });
         });

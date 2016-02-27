@@ -35,42 +35,76 @@ module HadithHouse.Controllers {
   import IResourceArray = angular.resource.IResourceArray;
   import IEntityResource = HadithHouse.Services.IEntityResource;
   import IPromise = angular.IPromise;
+  import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
 
   export class EntityListingPageCtrl<T extends IEntity> {
-    entities:IResourceArray<T & IResource<T>>;
+    pagedEntities:IEntityQueryResult<T & IResource<T>>;
     searchQuery:string;
     searchPromise:IPromise<void> = null;
+    page:number = 1;
+    pageSize:number = 10;
 
     constructor(private $scope:ng.IScope,
                 private $rootScope:ng.IScope,
                 private $timeout:ng.ITimeoutService,
+                private $location:ng.ILocationService,
                 private $mdDialog:ng.material.IDialogService,
                 private EntityResource:IEntityResource<T> & ng.resource.IResourceClass<T & IResource<T>>,
                 private ToastService:any) {
+      let urlParams = $location.search();
+      this.page = parseInt(urlParams['page']) || 1;
+      this.searchQuery = urlParams['search'] || '';
+
       this.loadEntities();
 
-      $scope.$watch(() => {
-        return this.searchQuery;
-      }, () => {
+      $scope.$watch(() => this.searchQuery, (newValue, oldValue) => {
+        if (newValue == oldValue) {
+          return;
+        }
         if (this.searchPromise != null) {
           $timeout.cancel(this.searchPromise);
         }
+        this.page = 1;
         this.searchPromise = $timeout(() => {
-          this.loadEntities(this.searchQuery);
+          this.loadEntities();
         }, 250);
+      });
+
+      $scope.$watch(() => this.page, (newValue, oldValue) => {
+        if (newValue == oldValue) {
+          return;
+        }
+        this.loadEntities();
       });
     }
 
-    private loadEntities(searchQuery:string = null) {
-      if (!searchQuery) {
-        // TODO: Show an alert if an error happens.
-        this.entities = this.EntityResource.query();
+    private loadEntities() {
+      // TODO: Show an alert if an error happens.
+      if (!this.searchQuery) {
+        this.pagedEntities = this.EntityResource.pagedQuery({
+          limit: this.pageSize,
+          offset: (this.page - 1) * this.pageSize
+        });
       } else {
-        this.entities = this.EntityResource.query({search: searchQuery});
+        this.pagedEntities = this.EntityResource.pagedQuery({
+          search: this.searchQuery,
+          limit: this.pageSize,
+          offset: (this.page - 1) * this.pageSize
+        });
+      }
+      if (typeof(this.page) === 'number' && this.page > 1) {
+        this.$location.search('page', this.page);
+      } else {
+        this.$location.search('page', null);
+      }
+      if (this.searchQuery) {
+        this.$location.search('search', this.searchQuery);
+      } else {
+        this.$location.search('search', null);
       }
     }
 
-    private deleteEntity = (event:any, entity:T) => {
+    public deleteEntity = (event:any, entity:T) => {
       var confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the entity?')
@@ -80,7 +114,7 @@ module HadithHouse.Controllers {
       this.$mdDialog.show(confirm).then(() => {
         this.EntityResource.delete({id: entity.id}, () => {
           this.ToastService.show('Successfully deleted');
-          this.entities = this.entities.filter((e) => {
+          this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
             return e.id != entity.id;
           });
         }, (result) => {
@@ -93,6 +127,25 @@ module HadithHouse.Controllers {
           }
         });
       });
+    }
+
+    public range(n:number):number[] {
+      let res:number[] = [];
+      for (var i = 0; i < n; i++) {
+        res.push(i + 1);
+      }
+      return res;
+    }
+
+    public getPageCount() {
+      if (this.pagedEntities) {
+        return Math.ceil(this.pagedEntities.count / this.pageSize);
+      }
+      return 0;
+    }
+
+    public setPage(index:number) {
+      this.page = index;
     }
   }
 }

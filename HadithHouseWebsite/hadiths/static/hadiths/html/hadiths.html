@@ -2,7 +2,7 @@
 <div class="md-whiteframe-z1">
 
   <md-list>
-    <md-list-item ng-repeat="entity in ctrl.entities">
+    <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
         <md-icon class="material-icons"
                  ng-click="ctrl.deleteEntity($event, entity)"
@@ -22,3 +22,4 @@
   <md-icon class="material-icons">add</md-icon>
 </md-button>
 
+<div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>

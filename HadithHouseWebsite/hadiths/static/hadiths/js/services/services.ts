@@ -43,8 +43,19 @@ module HadithHouse.Services {
     updated_on:string;
   }
 
+  export interface IEntityQueryResult<T> {
+    count: number;
+    next: string;
+    previous: string;
+    results:IResourceArray<T>
+  }
+
   export interface IEntityResource<T> {
-    search(params:Object): IResourceArray<IEntity & T>;
+    pagedQuery(): IEntityQueryResult<T>;
+    pagedQuery(params:Object): IEntityQueryResult<T>;
+    pagedQuery(success:Function, error?:Function): IEntityQueryResult<T>;
+    pagedQuery(params:Object, success:Function, error?:Function): IEntityQueryResult<T>;
+    pagedQuery(params:Object, data:Object, success?:Function, error?:Function): IEntityQueryResult<T>;
   }
 
   export interface IHadith extends IEntity, IResource<IHadith> {
@@ -66,6 +77,10 @@ module HadithHouse.Services {
         transformResponse: function (data) {
           return JSON.parse(data).results;
         }
+      },
+      'pagedQuery': {
+        method: 'GET',
+        isArray: false,
       }
     });
   });
@@ -95,6 +110,10 @@ module HadithHouse.Services {
         transformResponse: function (data) {
           return JSON.parse(data).results;
         }
+      },
+      'pagedQuery': {
+        method: 'GET',
+        isArray: false,
       }
     });
   });
@@ -117,7 +136,11 @@ module HadithHouse.Services {
         transformResponse: function (data) {
           return JSON.parse(data).results;
         }
-        }
+      },
+      'pagedQuery': {
+        method: 'GET',
+        isArray: false,
+      }
     });
   });
 
@@ -137,6 +160,10 @@ module HadithHouse.Services {
         transformResponse: function (data) {
           return JSON.parse(data).results;
         }
+      },
+      'pagedQuery': {
+        method: 'GET',
+        isArray: false,
       }
     });
   });
@@ -162,8 +189,11 @@ module HadithHouse.Services {
         transformResponse: function (data) {
           return JSON.parse(data).results;
         }
+      },
+      'pagedQuery': {
+        method: 'GET',
+        isArray: false,
       }
     });
   });
-
 }

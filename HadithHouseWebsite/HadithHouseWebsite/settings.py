@@ -177,7 +177,7 @@ LOGGING = {
 REST_FRAMEWORK = {
   'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
   'DEFAULT_PAGINATION_CLASS': 'hadiths.pagination.DefaultPagination',
-  'PAGE_SIZE': 50,
+  'PAGE_SIZE': 10,
   'DEFAULT_AUTHENTICATION_CLASSES': (
     'hadiths.auth.FacebookAuthentication',
   )
