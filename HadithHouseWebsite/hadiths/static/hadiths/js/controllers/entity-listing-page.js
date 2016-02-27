@@ -32,13 +32,15 @@ var HadithHouse;
     var Controllers;
     (function (Controllers) {
         var EntityListingPageCtrl = (function () {
-            function EntityListingPageCtrl($scope, $rootScope, $mdDialog, EntityResource, ToastService) {
+            function EntityListingPageCtrl($scope, $rootScope, $timeout, $mdDialog, EntityResource, ToastService) {
                 var _this = this;
                 this.$scope = $scope;
                 this.$rootScope = $rootScope;
+                this.$timeout = $timeout;
                 this.$mdDialog = $mdDialog;
                 this.EntityResource = EntityResource;
                 this.ToastService = ToastService;
+                this.searchPromise = null;
                 this.deleteEntity = function (event, entity) {
                     var confirm = _this.$mdDialog.confirm()
                         .title('Confirm')
@@ -49,7 +51,9 @@ var HadithHouse;
                     _this.$mdDialog.show(confirm).then(function () {
                         _this.EntityResource.delete({ id: entity.id }, function () {
                             _this.ToastService.show('Successfully deleted');
-                            _this.entities = _this.entities.filter(function (e) { return e.id != entity.id; });
+                            _this.entities = _this.entities.filter(function (e) {
+                                return e.id != entity.id;
+                            });
                         }, function (result) {
                             if (result.data && result.data.detail) {
                                 _this.ToastService.show("Failed to delete entity. Error was: " + result.data.detail);
@@ -64,10 +68,26 @@ var HadithHouse;
                     });
                 };
                 this.loadEntities();
+                $scope.$watch(function () {
+                    return _this.searchQuery;
+                }, function () {
+                    if (_this.searchPromise != null) {
+                        $timeout.cancel(_this.searchPromise);
+                    }
+                    _this.searchPromise = $timeout(function () {
+                        _this.loadEntities(_this.searchQuery);
+                    }, 250);
+                });
             }
-            EntityListingPageCtrl.prototype.loadEntities = function () {
-                // TODO: Show an alert if an error happens.
-                this.entities = this.EntityResource.query();
+            EntityListingPageCtrl.prototype.loadEntities = function (searchQuery) {
+                if (searchQuery === void 0) { searchQuery = null; }
+                if (!searchQuery) {
+                    // TODO: Show an alert if an error happens.
+                    this.entities = this.EntityResource.query();
+                }
+                else {
+                    this.entities = this.EntityResource.query({ search: searchQuery });
+                }
             };
             return EntityListingPageCtrl;
         })();
