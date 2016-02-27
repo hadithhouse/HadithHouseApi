@@ -130,6 +130,10 @@ class UserSetView(FBAuthListCreateAPIView):
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_perm_code = None
+  filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
+  filter_fields = ('first_name', 'last_name', 'username')
+  search_fields = ('first_name', 'last_name', 'username')
+  ordering_fields = ('first_name', 'last_name', 'username', 'is_supervisor', 'is_staff', 'date_joined')
 
 
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
