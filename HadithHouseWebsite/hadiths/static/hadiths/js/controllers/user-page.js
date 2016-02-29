@@ -73,6 +73,9 @@ var HadithHouse;
             UserPageCtrl.prototype.newEntity = function () {
                 return new this.UserResource({});
             };
+            UserPageCtrl.prototype.getEntityPath = function (id) {
+                return 'user/' + id;
+            };
             return UserPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.UserPageCtrl = UserPageCtrl;

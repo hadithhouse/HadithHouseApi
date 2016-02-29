@@ -72,6 +72,10 @@ module HadithHouse.Controllers {
         pub_year: null
       });
     }
+
+    protected getEntityPath(id: number) {
+      return 'hadithtag/' + id;
+    }
   }
 
   HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',

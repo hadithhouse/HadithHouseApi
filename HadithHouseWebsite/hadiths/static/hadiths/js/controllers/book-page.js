@@ -69,6 +69,9 @@ var HadithHouse;
                     pub_year: null
                 });
             };
+            BookPageCtrl.prototype.getEntityPath = function (id) {
+                return 'book/' + id;
+            };
             return BookPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.BookPageCtrl = BookPageCtrl;

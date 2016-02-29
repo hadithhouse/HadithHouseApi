@@ -76,6 +76,10 @@ module HadithHouse.Controllers {
         pub_year: null
       });
     }
+
+    protected getEntityPath(id: number) {
+      return 'book/' + id;
+    }
   }
 
   HadithHouse.HadithHouseApp.controller('BookPageCtrl',

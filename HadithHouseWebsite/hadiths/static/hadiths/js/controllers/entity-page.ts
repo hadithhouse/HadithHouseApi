@@ -63,6 +63,8 @@ module HadithHouse.Controllers {
 
     protected abstract newEntity() : T & IResource<T>;
 
+    protected abstract getEntityPath(id: number);
+
     private setAddingNewBookMode() {
       this.entity = this.newEntity();
       this.addingNew = true;
@@ -90,7 +92,7 @@ module HadithHouse.Controllers {
       // Send the changes to the server.
       this.entity.$save((result) => {
         if (this.addingNew) {
-          this.$location.path('book/' + this.entity.id);
+          this.$location.path(this.getEntityPath(this.entity.id));
         }
         // Successfully saved changes. Don't need to do anything.
         this.isEditing = false;
