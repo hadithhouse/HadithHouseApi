@@ -86,6 +86,10 @@ module HadithHouse.Controllers {
     protected newEntity():IPerson {
       return new this.PersonResource({});
     }
+
+    protected getEntityPath(id: number) {
+      return 'person/' + id;
+    }
   }
 
   HadithHouse.HadithHouseApp.controller('PersonPageCtrl',

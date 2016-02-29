@@ -67,6 +67,9 @@ var HadithHouse;
             HadithPageCtrl.prototype.newEntity = function () {
                 return new this.HadithResource({});
             };
+            HadithPageCtrl.prototype.getEntityPath = function (id) {
+                return 'hadith/' + id;
+            };
             return HadithPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.HadithPageCtrl = HadithPageCtrl;

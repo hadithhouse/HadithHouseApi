@@ -80,6 +80,10 @@ module HadithHouse.Controllers {
     protected newEntity():IUser {
       return new this.UserResource({});
     }
+
+    protected getEntityPath(id: number) {
+      return 'user/' + id;
+    }
   }
 
   HadithHouse.HadithHouseApp.controller('UserPageCtrl',

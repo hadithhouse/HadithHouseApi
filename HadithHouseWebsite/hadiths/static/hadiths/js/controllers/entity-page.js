@@ -45,7 +45,7 @@ var HadithHouse;
                     // Send the changes to the server.
                     _this.entity.$save(function (result) {
                         if (_this.addingNew) {
-                            _this.$location.path('book/' + _this.entity.id);
+                            _this.$location.path(_this.getEntityPath(_this.entity.id));
                         }
                         // Successfully saved changes. Don't need to do anything.
                         _this.isEditing = false;
