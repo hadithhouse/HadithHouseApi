@@ -86,6 +86,7 @@ class Hadith(models.Model):
 
   """A model describing a hadith."""
   text = models.TextField(db_index=True)
+  simple_text = models.TextField(db_index=True, default='')
   person = models.ForeignKey(Person, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
   book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
   tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths')
