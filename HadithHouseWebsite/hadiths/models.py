@@ -23,7 +23,7 @@ class Person(models.Model):
     db_table = 'persons'
     default_permissions = ('add', 'change', 'delete')
 
-  title = models.CharField(max_length=16)
+  title = models.CharField(max_length=16, null=True, blank=True)
   display_name = models.CharField(max_length=128, unique=True, null=True, blank=True)
   full_name = models.CharField(max_length=255, unique=True)
   brief_desc = models.CharField(max_length=512, null=True, blank=True)
@@ -36,9 +36,9 @@ class Person(models.Model):
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
   added_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                               null=True, related_name='persons_added')
+                               null=True, blank=True, related_name='persons_added')
   updated_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                                 null=True, related_name='+')
+                                 null=True, blank=True, related_name='+')
 
   def __unicode__(self):
     return self.display_name or self.full_name
@@ -56,9 +56,9 @@ class Book(models.Model):
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
   added_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                               null=True, related_name='books_added')
+                               null=True, blank=True, related_name='books_added')
   updated_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                                 null=True, related_name='+')
+                                 null=True, blank=True, related_name='+')
 
   def __unicode__(self):
     return self.title[:50] + '...' if len(self.title) > 50 else self.title
@@ -75,9 +75,9 @@ class HadithTag(models.Model):
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
   added_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                               null=True, related_name='hadithtags_added')
+                               null=True, blank=True, related_name='hadithtags_added')
   updated_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                                 null=True, related_name='+')
+                                 null=True, blank=True, related_name='+')
 
   def __unicode__(self):
     return self.name
@@ -92,15 +92,15 @@ class Hadith(models.Model):
   text = models.TextField(db_index=True)
   simple_text = models.TextField(db_index=True, default='')
   person = models.ForeignKey(Person, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
-  book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
-  tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths')
+  book = models.ForeignKey(Book, null=True, blank=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
+  tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths', blank=True)
   # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
   added_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                               null=True, related_name='hadiths_added')
+                               null=True, blank=True, related_name='hadiths_added')
   updated_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
-                                 null=True, related_name='+')
+                                 null=True, blank=True, related_name='+')
 
   def __unicode__(self):
     return self.text[:100] + '...' if len(self.text) > 100 else self.text
