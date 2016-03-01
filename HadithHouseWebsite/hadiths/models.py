@@ -139,7 +139,9 @@ class FbUser(models.Model):
 def remove_arabic_diactrictics(input):
   return re.sub(u'[\u064B-\u0652]', '', input, flags=re.MULTILINE)
 
+def unify_alif_letters(input):
+  return re.sub(u'[\u0622\u0623\u0625]', u'\u0627', input, flags=re.MULTILINE)
 
 @receiver(pre_save, sender=Hadith)
 def hadith_pre_save(sender, instance, *args, **kwargs):
-  instance.simple_text = remove_arabic_diactrictics(instance.text)
+  instance.simple_text = unify_alif_letters(remove_arabic_diactrictics(instance.text))
