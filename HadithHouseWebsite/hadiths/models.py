@@ -1,5 +1,8 @@
+import re
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 # NOTE: Django automatically index foreign keys, but we still add db_index=True
@@ -13,6 +16,7 @@ from django.db import models
 # because I don't think they will be frequently used for filtering.
 
 # TODO: Do we need to index added_on and updated_on?
+
 
 class Person(models.Model):
   class Meta:
@@ -86,6 +90,7 @@ class Hadith(models.Model):
 
   """A model describing a hadith."""
   text = models.TextField(db_index=True)
+  simple_text = models.TextField(db_index=True, default='')
   person = models.ForeignKey(Person, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
   book = models.ForeignKey(Book, null=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
   tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths')
@@ -129,3 +134,14 @@ class FbUser(models.Model):
 
   fb_id = models.BigIntegerField(unique=True)
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='fb_user')
+
+
+def remove_arabic_diactrictics(input):
+  return re.sub(u'[\u064B-\u0652]', '', input, flags=re.MULTILINE)
+
+def unify_alif_letters(input):
+  return re.sub(u'[\u0622\u0623\u0625]', u'\u0627', input, flags=re.MULTILINE)
+
+@receiver(pre_save, sender=Hadith)
+def hadith_pre_save(sender, instance, *args, **kwargs):
+  instance.simple_text = unify_alif_letters(remove_arabic_diactrictics(instance.text))

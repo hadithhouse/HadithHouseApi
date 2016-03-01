@@ -110,7 +110,7 @@ class HadithSetView(FBAuthListCreateAPIView):
   post_perm_code = 'add_hadith'
   filter_backends = (DjangoFilterBackend, TagsFilter, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('person', 'book')
-  search_fields = ('text',)
+  search_fields = ('text', 'simple_text')
   ordering_fields = common_ordering_fields + ('text', 'person', 'book')
 
 
