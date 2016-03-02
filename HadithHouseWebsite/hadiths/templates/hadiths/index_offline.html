@@ -13,76 +13,36 @@
   <title>Hadith House</title>
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="{% static 'hadiths/3rdparty-cache/googleapis-fonts-materialicons.css' %}">
 
   <!-- jQuery-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/jquery.min.js' %}"></script>
 
   <!-- Angular -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-animate.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-aria.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-resource.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.js"></script>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.4/angular-material.min.css">
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.6.0/angular-material-icons.min.js"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/angular.min.js' %}"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/angular-route.min.js' %}"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/angular-animate.min.js' %}"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/angular-aria.min.js' %}"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/angular-resource.min.js' %}"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/angular-material.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'hadiths/3rdparty-cache/angular-material.min.css' %}">
+  <script src="{% static 'hadiths/3rdparty-cache/angular-material-icons.min.js' %}"></script>
 
   <!-- Bootstrap -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+  <script src="{% static 'hadiths/3rdparty-cache/bootstrap.min.js' %}"></script>
+  <link href="{% static 'hadiths/3rdparty-cache/bootstrap.min.css' %}" rel="stylesheet">
 
   <!-- Lo-Dash -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.5.0/lodash.min.js"></script>
+  <script src="{% static 'hadiths/3rdparty-cache/lodash.min.js' %}"></script>
 
 </head>
-<body layout="column" ng-controller="HadithHouseCtrl as ctrl">
+<body layout="column" ng-app="HadithHouseApp" ng-controller="HadithHouseCtrl as ctrl">
 
 <!-- Facebook Authentication -->
 <script>
-  var fbApiInit = false;
-  var fbAccessToken = null;
-  var fbFetchedLoginStatus = false;
-
-  window.fbAsyncInit = function () {
-    FB.init({
-      appId: '{{ appId }}',
-      xfbml: true,
-      version: 'v2.4'
-    });
-
-    fbApiInit = true;
-
-    FB.getLoginStatus(function (response) {
-      fbFetchedLoginStatus = true;
-      if (response.status === 'connected') {
-        // The user is logged in to Facebook and has authenticated
-        // the application.
-        fbAccessToken = response.authResponse.accessToken;
-      } else if (response.status === 'not_authorized') {
-        // The user is logged in to Facebook, but has not authenticated
-        // the application.
-        fbAccessToken = null;
-      } else {
-        // The user isn't logged in to Facebook.
-        fbAccessToken = null;
-      }
-
-      angular.bootstrap(document.body, ['HadithHouseApp']);
-    });
-  };
-
-  (function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) {
-      return;
-    }
-    js = d.createElement(s);
-    js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
+  var fbApiInit = true;
+  var fbAccessToken = 'any';
+  var fbFetchedLoginStatus = true;
 </script>
 
 <md-toolbar layout="row">
@@ -174,7 +134,7 @@
 <script src="{% static 'hadiths/js/app.js' %}"></script>
 
 <!-- Services -->
-<script src="{% static 'hadiths/js/services/facebook.service.js' %}"></script>
+<script src="{% static 'hadiths/js/services/facebook.offline.service.js' %}"></script>
 <script src="{% static 'hadiths/js/services/services.js' %}"></script>
 <script src="{% static 'hadiths/js/services/toast.service.js' %}"></script>
 

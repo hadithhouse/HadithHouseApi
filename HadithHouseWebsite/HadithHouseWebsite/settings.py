@@ -182,3 +182,8 @@ REST_FRAMEWORK = {
     'hadiths.auth.FacebookAuthentication',
   )
 }
+
+OFFLINE_MODE = False
+
+if OFFLINE_MODE:
+  REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = ('hadiths.auth.FacebookOfflineAuthentication',)
