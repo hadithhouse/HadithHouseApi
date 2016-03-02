@@ -25,8 +25,11 @@ class Person(models.Model):
 
   title = models.CharField(max_length=16, null=True, blank=True)
   display_name = models.CharField(max_length=128, unique=True, null=True, blank=True)
+  simple_display_name = models.CharField(max_length=128, unique=True, null=True, blank=True)
   full_name = models.CharField(max_length=255, unique=True)
+  simple_full_name = models.CharField(max_length=255, default='')
   brief_desc = models.CharField(max_length=512, null=True, blank=True)
+  simple_brief_desc = models.CharField(max_length=512, null=True, blank=True)
   birth_year = models.SmallIntegerField(null=True, blank=True)
   birth_month = models.SmallIntegerField(null=True, blank=True)
   birth_day = models.SmallIntegerField(null=True, blank=True)
@@ -50,7 +53,9 @@ class Book(models.Model):
     default_permissions = ('add', 'change', 'delete')
 
   title = models.CharField(max_length=128, unique=True)
+  simple_title = models.CharField(max_length=128, default='')
   brief_desc = models.CharField(max_length=256, null=True, blank=True)
+  simple_brief_desc = models.CharField(max_length=256, null=True, blank=True)
   pub_year = models.SmallIntegerField(null=True, blank=True, db_index=True)
   # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
@@ -71,6 +76,8 @@ class HadithTag(models.Model):
 
   """A model describing a tag for hadiths."""
   name = models.CharField(max_length=32, unique=True)
+  simple_name = models.CharField(max_length=32, default='')
+
   # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
@@ -142,6 +149,22 @@ def remove_arabic_diactrictics(input):
 def unify_alif_letters(input):
   return re.sub(u'[\u0622\u0623\u0625]', u'\u0627', input, flags=re.MULTILINE)
 
+@receiver(pre_save, sender=Person)
+def person_pre_save(sender, instance, *args, **kwargs):
+  instance.simple_display_name = unify_alif_letters(remove_arabic_diactrictics(instance.display_name))
+  instance.simple_full_name = unify_alif_letters(remove_arabic_diactrictics(instance.full_name))
+  instance.simple_brief_desc = unify_alif_letters(remove_arabic_diactrictics(instance.brief_desc))
+
+@receiver(pre_save, sender=Book)
+def book_pre_save(sender, instance, *args, **kwargs):
+  instance.simple_title = unify_alif_letters(remove_arabic_diactrictics(instance.title))
+  instance.simple_brief_desc = unify_alif_letters(remove_arabic_diactrictics(instance.brief_desc))
+
+@receiver(pre_save, sender=HadithTag)
+def hadithtag_pre_save(sender, instance, *args, **kwargs):
+  instance.simple_name = unify_alif_letters(remove_arabic_diactrictics(instance.name))
+
 @receiver(pre_save, sender=Hadith)
 def hadith_pre_save(sender, instance, *args, **kwargs):
   instance.simple_text = unify_alif_letters(remove_arabic_diactrictics(instance.text))
+
