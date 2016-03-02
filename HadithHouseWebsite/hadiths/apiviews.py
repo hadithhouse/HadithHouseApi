@@ -25,7 +25,8 @@ class PersonSetView(FBAuthListCreateAPIView):
   filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('birth_day', 'birth_month', 'birth_year',
                                           'death_day', 'death_month', 'death_year')
-  search_fields = ('display_name', 'full_name')
+  search_fields = ('display_name', 'simple_display_name', 'full_name', 'simple_full_name',
+                   'brief_desc', 'simple_brief_desc')
   ordering_fields = common_ordering_fields + ('display_name', 'full_name', 'birth_year', 'death_year')
 
 
@@ -56,7 +57,7 @@ class BookSetView(FBAuthListCreateAPIView):
   post_perm_code = 'add_book'
   filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('pub_year',)
-  search_fields = ('title',)
+  search_fields = ('title', 'simple_title', 'brief_desc', 'simple_brief_desc')
   ordering_fields = common_ordering_fields + ('title',)
 
 
@@ -87,7 +88,7 @@ class HadithTagSetView(FBAuthListCreateAPIView):
   post_perm_code = 'add_hadithtag'
   filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields
-  search_fields = ('name',)
+  search_fields = ('name', 'simple_name')
   ordering_fields = common_ordering_fields + ('title',)
 
 
