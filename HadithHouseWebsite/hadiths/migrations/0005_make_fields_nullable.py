@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hadiths', '0004_add_simple_text_field'),
+        ('hadiths', '0004_add_simple_fields'),
     ]
 
     operations = [

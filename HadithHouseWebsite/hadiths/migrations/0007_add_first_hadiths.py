@@ -113,7 +113,7 @@ def add_first_hadiths(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0002_create_admin_user'),
+    ('hadiths', '0006_make_hadithperson_nullable'),
   ]
 
   operations = [
