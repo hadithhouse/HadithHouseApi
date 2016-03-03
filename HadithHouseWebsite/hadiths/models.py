@@ -1,4 +1,6 @@
 import re
+
+import sys
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_save
@@ -98,7 +100,8 @@ class Hadith(models.Model):
   """A model describing a hadith."""
   text = models.TextField(db_index=True)
   simple_text = models.TextField(db_index=True, default='')
-  person = models.ForeignKey(Person, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
+  person = models.ForeignKey(Person, null=True, blank=True, related_name='hadiths', db_index=True,
+                             on_delete=models.PROTECT)
   book = models.ForeignKey(Book, null=True, blank=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
   tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths', blank=True)
   # TODO: Do we need to index added_on and updated_on?
@@ -144,27 +147,38 @@ class FbUser(models.Model):
 
 
 def remove_arabic_diactrictics(input):
+  if input is None:
+    return None
   return re.sub(u'[\u064B-\u0652]', '', input, flags=re.MULTILINE)
 
+
 def unify_alif_letters(input):
+  if input is None:
+    return None
   return re.sub(u'[\u0622\u0623\u0625]', u'\u0627', input, flags=re.MULTILINE)
+
+
+def simplify_arabic_text(input):
+  if input is None:
+    return None
+  return unify_alif_letters(remove_arabic_diactrictics(input))
+
 
 @receiver(pre_save, sender=Person)
 def person_pre_save(sender, instance, *args, **kwargs):
-  instance.simple_display_name = unify_alif_letters(remove_arabic_diactrictics(instance.display_name))
-  instance.simple_full_name = unify_alif_letters(remove_arabic_diactrictics(instance.full_name))
-  instance.simple_brief_desc = unify_alif_letters(remove_arabic_diactrictics(instance.brief_desc))
+  instance.simple_display_name = simplify_arabic_text(instance.display_name)
+  instance.simple_full_name = simplify_arabic_text(instance.full_name)
+  instance.simple_brief_desc = simplify_arabic_text(instance.brief_desc)
 
 @receiver(pre_save, sender=Book)
 def book_pre_save(sender, instance, *args, **kwargs):
-  instance.simple_title = unify_alif_letters(remove_arabic_diactrictics(instance.title))
-  instance.simple_brief_desc = unify_alif_letters(remove_arabic_diactrictics(instance.brief_desc))
+  instance.simple_title = simplify_arabic_text(instance.title)
+  instance.simple_brief_desc = simplify_arabic_text(instance.brief_desc)
 
 @receiver(pre_save, sender=HadithTag)
 def hadithtag_pre_save(sender, instance, *args, **kwargs):
-  instance.simple_name = unify_alif_letters(remove_arabic_diactrictics(instance.name))
+  instance.simple_name = simplify_arabic_text(instance.name)
 
 @receiver(pre_save, sender=Hadith)
 def hadith_pre_save(sender, instance, *args, **kwargs):
-  instance.simple_text = unify_alif_letters(remove_arabic_diactrictics(instance.text))
-
+  instance.simple_text = simplify_arabic_text(instance.text)

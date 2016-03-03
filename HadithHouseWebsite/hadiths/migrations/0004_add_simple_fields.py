@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hadiths', '0005_make_fields_nullable'),
+        ('hadiths', '0003_add_simple_text_field'),
     ]
 
     operations = [
