@@ -67,13 +67,18 @@ var HadithHouse;
                     this.setOpeningExitingBookMode(this.$routeParams.id);
                 }
             }
+            EntityPageCtrl.prototype.onEntityLoaded = function () {
+            };
             EntityPageCtrl.prototype.setAddingNewBookMode = function () {
                 this.entity = this.newEntity();
                 this.addingNew = true;
                 this.isEditing = true;
             };
             EntityPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
-                this.entity = this.EntityResource.get({ id: id });
+                var _this = this;
+                this.entity = this.EntityResource.get({ id: id }, function () {
+                    _this.onEntityLoaded();
+                });
                 this.addingNew = false;
                 this.isEditing = false;
             };

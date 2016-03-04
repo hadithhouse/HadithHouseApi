@@ -1,5 +1,5 @@
 <span>
-  <span ng-if="!ctrl.textOnly">
+  <span ng-if="ctrl.textOnly !== 'true'">
     <md-chips ng-model="ctrl.entities" readonly="ctrl.readOnly"
               md-autocomplete-snap
               md-require-match="true">
@@ -19,16 +19,16 @@
         </md-not-found>
       </md-autocomplete>
       <md-chip-template>
-        <span ng-if="!ctrl.clickable || !ctrl.readOnly">
+        <span ng-if="ctrl.clickable !== 'true' || !ctrl.readOnly">
           <strong>{{ ctrl.entityToString($chip) }}</strong>
         </span>
-        <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.clickable && ctrl.readOnly">
+        <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
           {{ ctrl.entityToString(ctrl.entities[0]) }}
         </a>
       </md-chip-template>
     </md-chips>
   </span>
-  <span ng-if="ctrl.textOnly && !ctrl.clickable">{{ ctrl.entityToString(ctrl.entities[0]) }}</span>
-  <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.textOnly && ctrl.clickable">
+  <span ng-if="ctrl.textOnly === 'true' && ctrl.clickable !== 'true'">{{ ctrl.entityToString(ctrl.entities[0]) }}</span>
+  <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.textOnly === 'true' && ctrl.clickable ==='true'">
     {{ ctrl.entityToString(ctrl.entities[0]) }}</a>
 </span>

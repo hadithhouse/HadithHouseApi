@@ -43,10 +43,10 @@ module HadithHouse.Directives {
     EntityResource:ng.resource.IResourceClass<IEntity>;
     ids:any;
     entities:any;
-    type:any;
-    singleSelect:boolean;
-    textOnly:boolean;
-    clickable:boolean;
+    type:string;
+    singleSelect:string;
+    textOnly:string;
+    clickable:string;
     firstLoad = true;
 
     constructor(private $scope:IScope,
@@ -67,16 +67,16 @@ module HadithHouse.Directives {
         this.entities = [];
       }
 
-      if (!this.type || typeof(this.type) !== 'string') {
-        throw 'Selector must have its type attribute set to a string.';
-      }
-
       if (!this.textOnly) {
-        this.textOnly = false;
+        this.textOnly = 'false';
       }
 
       if (!this.clickable) {
-        this.clickable = false;
+        this.clickable = 'false';
+      }
+
+      if (!this.type || typeof(this.type) !== 'string') {
+        throw 'Selector must have its type attribute set to a string.';
       }
 
       switch (this.type.toLowerCase()) {
@@ -215,9 +215,9 @@ module HadithHouse.Directives {
         ids: '=',
         type: '@',
         readOnly: '=',
-        singleSelect: '=',
-        textOnly: '=',
-        clickable: '='
+        singleSelect: '@',
+        textOnly: '@',
+        clickable: '@'
       }
     };
   });

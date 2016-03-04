@@ -26,6 +26,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
@@ -75,6 +76,12 @@ var HadithHouse;
             };
             UserPageCtrl.prototype.getEntityPath = function (id) {
                 return 'user/' + id;
+            };
+            UserPageCtrl.prototype.onEntityLoaded = function () {
+                this.entity.permissionsOrdered = _.sortBy(this.entity.permissions, function (a) {
+                    var parts = a.split('_');
+                    return parts[1] + "_" + parts[0];
+                });
             };
             return UserPageCtrl;
         })(Controllers.EntityPageCtrl);
