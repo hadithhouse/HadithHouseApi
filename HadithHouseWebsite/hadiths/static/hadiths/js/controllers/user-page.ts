@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
@@ -83,6 +84,13 @@ module HadithHouse.Controllers {
 
     protected getEntityPath(id: number) {
       return 'user/' + id;
+    }
+
+    protected onEntityLoaded() {
+      this.entity.permissionsOrdered = _.sortBy<string>(this.entity.permissions, (a) => {
+        let parts = a.split('_');
+        return `${parts[1]}_${parts[0]}`
+      });
     }
   }
 

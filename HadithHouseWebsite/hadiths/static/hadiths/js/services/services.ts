@@ -176,6 +176,7 @@ module HadithHouse.Services {
     username:string;
     date_joined:string;
     permissions:Array<string>;
+    permissionsOrdered:Array<string>;
   }
 
   export interface IUserResource extends IEntityResource<IUser>, IResourceClass<IUser> {

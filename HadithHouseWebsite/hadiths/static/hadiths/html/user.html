@@ -17,17 +17,17 @@
   </md-input-container>
 
   <md-input-container flex>
-    <md-checkbox ng-model="ctrl.entity.is_superuser" ng-disabled="true"/>
+    <md-checkbox aria-label="Super user" ng-model="ctrl.entity.is_superuser" ng-disabled="true"/>
     Super user
   </md-input-container>
 
   <md-input-container flex>
-    <md-checkbox ng-model="ctrl.entity.is_staff" ng-disabled="true"/>
+    <md-checkbox aria-label="Staff user" ng-model="ctrl.entity.is_staff" ng-disabled="true"/>
     Staff user
   </md-input-container>
 
   <label>Permissions</label>
   <span>
-    <md-chips ng-model="ctrl.entity.permissions | orderBy" readonly="true"></md-chips>
+    <md-chips ng-model="ctrl.entity.permissionsOrdered" readonly="true"></md-chips>
   </span>
 </div>

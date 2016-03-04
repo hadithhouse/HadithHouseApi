@@ -45,7 +45,7 @@ module HadithHouse.Controllers {
       if (this.$routeParams.id === 'new') {
         this.setAddingNewBookMode();
       } else {
-        this.setOpeningExitingBookMode(this.$routeParams.id );
+        this.setOpeningExitingBookMode(this.$routeParams.id);
       }
     }
 
@@ -61,9 +61,13 @@ module HadithHouse.Controllers {
      */
     protected abstract restoreEntity();
 
-    protected abstract newEntity() : T & IResource<T>;
+    protected abstract newEntity():T & IResource<T>;
 
-    protected abstract getEntityPath(id: number);
+    protected abstract getEntityPath(id:number);
+
+    protected onEntityLoaded() {
+
+    }
 
     private setAddingNewBookMode() {
       this.entity = this.newEntity();
@@ -71,8 +75,10 @@ module HadithHouse.Controllers {
       this.isEditing = true;
     }
 
-    private setOpeningExitingBookMode(id: string) {
-      this.entity = this.EntityResource.get({id: id});
+    private setOpeningExitingBookMode(id:string) {
+      this.entity = this.EntityResource.get({id: id}, () => {
+        this.onEntityLoaded();
+      });
       this.addingNew = false;
       this.isEditing = false;
     }
