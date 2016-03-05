@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/// <reference path="../../../../../TypeScriptDefs/jquery/jquery.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
@@ -38,6 +39,13 @@ var HadithHouse;
                 this.$routeParams = $routeParams;
                 this.EntityResource = EntityResource;
                 this.ToastService = ToastService;
+                this.onKeyUp = function (e) {
+                    if (e.keyCode === 27) {
+                        console.log('test');
+                        _this.cancelEditing();
+                        _this.$scope.$apply();
+                    }
+                };
                 /**
                  * Called when the user clicks on the save icon to save the changes made.
                  */
@@ -66,6 +74,10 @@ var HadithHouse;
                 else {
                     this.setOpeningExitingBookMode(this.$routeParams.id);
                 }
+                $(document).on('keyup', this.onKeyUp);
+                $scope.$on('$destroy', function () {
+                    $(document).off('keyup', _this.onKeyUp);
+                });
             }
             EntityPageCtrl.prototype.onEntityLoaded = function () {
             };
@@ -93,8 +105,10 @@ var HadithHouse;
              * Called when the user clicks on the X icon to cancel the changes made.
              */
             EntityPageCtrl.prototype.cancelEditing = function () {
-                this.isEditing = false;
-                this.restoreEntity();
+                if (this.isEditing) {
+                    this.isEditing = false;
+                    this.restoreEntity();
+                }
             };
             ;
             return EntityPageCtrl;
