@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+/// <reference path="../../../../../TypeScriptDefs/jquery/jquery.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
@@ -46,6 +47,18 @@ module HadithHouse.Controllers {
         this.setAddingNewBookMode();
       } else {
         this.setOpeningExitingBookMode(this.$routeParams.id);
+      }
+      $(document).on('keyup', this.onKeyUp);
+      $scope.$on('$destroy', () => {
+        $(document).off('keyup', this.onKeyUp);
+      });
+    }
+
+    protected onKeyUp = (e:any) => {
+      if (e.keyCode === 27) {
+        console.log('test');
+        this.cancelEditing();
+        this.$scope.$apply();
       }
     }
 
@@ -117,8 +130,10 @@ module HadithHouse.Controllers {
      * Called when the user clicks on the X icon to cancel the changes made.
      */
     private cancelEditing() {
-      this.isEditing = false;
-      this.restoreEntity();
+      if (this.isEditing) {
+        this.isEditing = false;
+        this.restoreEntity();
+      }
     };
   }
 }
