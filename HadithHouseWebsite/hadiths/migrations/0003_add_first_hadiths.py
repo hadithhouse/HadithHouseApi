@@ -50,12 +50,12 @@ def add_first_shia_hadith(apps, schema_editor):
   # Adds the first chain of the first shia hadith to the database.
   c = Chain(hadith=h)
   c.save()
-  c.chainlinks.add(ChainLink.objects.using(db_alias).get_or_create(
+  c.links.add(ChainLink.objects.using(db_alias).get_or_create(
     chain=c,
     person=Person.objects.using(db_alias).get(full_name=imam_alsadiq['full_name']),
     order=1)[0])
   for i in range(len(shia_first_hadith_persons)):
-    c.chainlinks.add(ChainLink.objects.using(db_alias).get_or_create(
+    c.links.add(ChainLink.objects.using(db_alias).get_or_create(
       chain=c,
       person=Person.objects.using(db_alias).get(full_name=shia_first_hadith_persons[i]),
       order=i + 2)[0])
@@ -76,7 +76,7 @@ def add_first_sunni_hadith(apps, schema_editor):
   c = Chain(hadith=h)
   c.save()
   for i in range(len(sunni_first_hadith_persons)):
-    c.chainlinks.add(ChainLink.objects.using(db_alias).get_or_create(
+    c.links.add(ChainLink.objects.using(db_alias).get_or_create(
       chain=c,
       person=Person.objects.using(db_alias).get(full_name=sunni_first_hadith_persons[i]),
       order=i + 2)[0])
@@ -113,7 +113,7 @@ def add_first_hadiths(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0006_make_hadithperson_nullable'),
+    ('hadiths', '0002_create_admin_user'),
   ]
 
   operations = [

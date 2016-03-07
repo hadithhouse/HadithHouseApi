@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
 
-from hadiths.models import Hadith, Book, Person, HadithTag  # , User, Permission
+from hadiths.models import Hadith, Book, Person, HadithTag, ChainLink, Chain  # , User, Permission
 
 class AutoTrackSerializer(serializers.ModelSerializer):
   def create(self, validated_data):
@@ -77,6 +77,21 @@ class HadithSerializer(AutoTrackSerializer):
 
   added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+
+
+class ChainSerializer(AutoTrackSerializer):
+  class Meta:
+    model = Chain
+    fields = ['id', 'hadith', 'links', 'added_on', 'updated_on', 'added_by', 'updated_by']
+
+  added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+  updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+
+
+class ChainLinkSerializer(AutoTrackSerializer):
+  class Meta:
+    model = ChainLink
+    fields = ['id', 'person', 'order']
 
 
 class UserSerializer(serializers.ModelSerializer):
