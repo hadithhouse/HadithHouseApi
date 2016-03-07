@@ -8,9 +8,9 @@ from rest_framework.status import HTTP_403_FORBIDDEN
 from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 from hadiths.filters import TagsFilter
-from hadiths.models import Hadith, Person, Book, HadithTag, User
+from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain
 from hadiths.serializers import HadithSerializer, PersonSerializer, BookSerializer, HadithTagSerializer, \
-  UserSerializer
+  UserSerializer, ChainSerializer
 
 common_filter_fields = ('added_by', 'updated_by')
 common_ordering_fields = ('added_on', 'updated_on')
@@ -124,6 +124,29 @@ class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
   put_perm_code = 'change_hadith'
   patch_perm_code = 'change_hadith'
   delete_perm_code = 'delete_hadith'
+
+
+class ChainSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = Chain.objects.all()
+  serializer_class = ChainSerializer
+  get_perm_code = None
+  post_perm_code = 'add_chain'
+  filter_backends = (DjangoFilterBackend, TagsFilter, OrderingFilter, SearchFilter)
+  filter_fields = common_filter_fields + ('hadith',)
+  search_fields = ('text', 'simple_text')
+  ordering_fields = common_ordering_fields + ('hadith',)
+
+
+class ChainView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
+  queryset = Chain.objects.all()
+  serializer_class = ChainSerializer
+  get_perm_code = None
+  post_perm_code = 'add_chain'
+  put_perm_code = 'change_chain'
+  patch_perm_code = 'change_chain'
+  delete_perm_code = 'delete_chain'
 
 
 class UserSetView(FBAuthListCreateAPIView):

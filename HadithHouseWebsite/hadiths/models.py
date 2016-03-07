@@ -18,6 +18,7 @@ from django.dispatch import receiver
 # because I don't think they will be frequently used for filtering.
 
 # TODO: Do we need to index added_on and updated_on?
+from django.utils.datetime_safe import datetime
 
 
 class Person(models.Model):
@@ -123,7 +124,13 @@ class Chain(models.Model):
 
   # Django automatically index foreign keys, but adding Index=True to make it clear.
   hadith = models.ForeignKey(Hadith, related_name='chains', db_index=True, on_delete=models.CASCADE)
-  # TODO: Add change tracking fields.
+  # TODO: Do we need to index added_on and updated_on?
+  added_on = models.DateTimeField(auto_now_add=True)
+  updated_on = models.DateTimeField(auto_now=True)
+  added_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
+                               null=True, blank=True, related_name='chains_added')
+  updated_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
+                                 null=True, blank=True, related_name='+')
 
 
 class ChainLink(models.Model):
@@ -131,8 +138,8 @@ class ChainLink(models.Model):
     db_table = 'chainlinks'
     default_permissions = ('add', 'change', 'delete')
 
-  chain = models.ForeignKey(Chain, related_name='chainlinks', db_index=True, on_delete=models.CASCADE)
-  person = models.ForeignKey(Person, related_name='chainlinks', db_index=True, on_delete=models.PROTECT)
+  chain = models.ForeignKey(Chain, related_name='links', db_index=True, on_delete=models.CASCADE)
+  person = models.ForeignKey(Person, related_name='links', db_index=True, on_delete=models.PROTECT)
   # TODO: Do we need an index here?
   order = models.SmallIntegerField(null=False, blank=False)
 
