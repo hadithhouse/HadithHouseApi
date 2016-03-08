@@ -82,13 +82,13 @@ module HadithHouse.Controllers {
 
     }
 
-    private setAddingNewBookMode() {
+    protected setAddingNewBookMode() {
       this.entity = this.newEntity();
       this.addingNew = true;
       this.isEditing = true;
     }
 
-    private setOpeningExitingBookMode(id:string) {
+    protected setOpeningExitingBookMode(id:string) {
       this.entity = this.EntityResource.get({id: id}, () => {
         this.onEntityLoaded();
       });

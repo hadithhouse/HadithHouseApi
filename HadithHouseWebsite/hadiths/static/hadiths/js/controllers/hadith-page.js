@@ -37,10 +37,11 @@ var HadithHouse;
     (function (Controllers) {
         var HadithPageCtrl = (function (_super) {
             __extends(HadithPageCtrl, _super);
-            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ToastService) {
+            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService) {
                 // Setting HadithResource before calling super, because super might end up
                 // calling methods which requires HadithResource, e.g. newEntity().
                 this.HadithResource = HadithResource;
+                this.ChainResource = ChainResource;
                 this.oldHadith = new this.HadithResource({});
                 _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
             }
@@ -70,11 +71,20 @@ var HadithHouse;
             HadithPageCtrl.prototype.getEntityPath = function (id) {
                 return 'hadith/' + id;
             };
+            HadithPageCtrl.prototype.setAddingNewBookMode = function () {
+                _super.prototype.setAddingNewBookMode.call(this);
+            };
+            HadithPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
+                _super.prototype.setOpeningExitingBookMode.call(this, id);
+                // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
+                // I don't think there is going to be a very large number of chains for hadiths.
+                this.chains = this.ChainResource.pagedQuery({ hadith: id });
+            };
             return HadithPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.HadithPageCtrl = HadithPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithResource, ToastService) {
-            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService) {
+            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
