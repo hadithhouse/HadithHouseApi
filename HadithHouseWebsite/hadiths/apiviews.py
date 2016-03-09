@@ -7,7 +7,7 @@ from rest_framework.status import HTTP_403_FORBIDDEN
 
 from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
-from hadiths.filters import TagsFilter
+from hadiths.filters import TagsFilter, IdsFilter
 from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain
 from hadiths.serializers import HadithSerializer, PersonSerializer, BookSerializer, HadithTagSerializer, \
   UserSerializer, ChainSerializer
@@ -22,7 +22,7 @@ class PersonSetView(FBAuthListCreateAPIView):
   serializer_class = PersonSerializer
   get_perm_code = None
   post_perm_code = 'add_person'
-  filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('birth_day', 'birth_month', 'birth_year',
                                           'death_day', 'death_month', 'death_year')
   search_fields = ('display_name', 'simple_display_name', 'full_name', 'simple_full_name',
@@ -55,7 +55,7 @@ class BookSetView(FBAuthListCreateAPIView):
   serializer_class = BookSerializer
   get_perm_code = None
   post_perm_code = 'add_book'
-  filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('pub_year',)
   search_fields = ('title', 'simple_title', 'brief_desc', 'simple_brief_desc')
   ordering_fields = common_ordering_fields + ('title',)
@@ -86,7 +86,7 @@ class HadithTagSetView(FBAuthListCreateAPIView):
   serializer_class = HadithTagSerializer
   get_perm_code = None
   post_perm_code = 'add_hadithtag'
-  filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields
   search_fields = ('name', 'simple_name')
   ordering_fields = common_ordering_fields + ('title',)
@@ -109,7 +109,7 @@ class HadithSetView(FBAuthListCreateAPIView):
   serializer_class = HadithSerializer
   get_perm_code = None
   post_perm_code = 'add_hadith'
-  filter_backends = (DjangoFilterBackend, TagsFilter, OrderingFilter, SearchFilter)
+  filter_backends = (DjangoFilterBackend, IdsFilter, TagsFilter, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('person', 'book')
   search_fields = ('text', 'simple_text')
   ordering_fields = common_ordering_fields + ('text', 'person', 'book')
@@ -132,7 +132,7 @@ class ChainSetView(FBAuthListCreateAPIView):
   serializer_class = ChainSerializer
   get_perm_code = None
   post_perm_code = 'add_chain'
-  filter_backends = (DjangoFilterBackend, TagsFilter, OrderingFilter, SearchFilter)
+  filter_backends = (DjangoFilterBackend, TagsFilter, IdsFilter, OrderingFilter, SearchFilter)
   filter_fields = common_filter_fields + ('hadith',)
   search_fields = ('text', 'simple_text')
   ordering_fields = common_ordering_fields + ('hadith',)
@@ -154,7 +154,7 @@ class UserSetView(FBAuthListCreateAPIView):
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_perm_code = None
-  filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
   filter_fields = ('first_name', 'last_name', 'username')
   search_fields = ('first_name', 'last_name', 'username')
   ordering_fields = ('first_name', 'last_name', 'username', 'is_supervisor', 'is_staff', 'date_joined')
