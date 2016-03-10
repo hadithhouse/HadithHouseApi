@@ -29,8 +29,8 @@
 /// <reference path="entity-listing-page.ts" />
 
 module HadithHouse.Controllers {
-  import IHadithTag = HadithHouse.Services.IHadithTag;
-  import IHadithTagResource = HadithHouse.Services.IHadithTagResource;
+  import IHadithTag = HadithHouse.Services.IHadithTagResource;
+  import IHadithTagResource = HadithHouse.Services.IHadithTagResourceClass;
   import IResourceArray = angular.resource.IResourceArray;
 
   export class HadithTagListingPageCtrl extends EntityListingPageCtrl<IHadithTag> {
@@ -39,7 +39,7 @@ module HadithHouse.Controllers {
                 $timeout:ng.ITimeoutService,
                 $location:ng.ILocationService,
                 $mdDialog:ng.material.IDialogService,
-                private HadithTagResource:Services.IHadithTagResource,
+                private HadithTagResource:Services.IHadithTagResourceClass,
                 ToastService:any) {
       super($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
     }

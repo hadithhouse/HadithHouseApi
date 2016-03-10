@@ -33,7 +33,7 @@ module HadithHouse.Controllers {
   import IEntity = HadithHouse.Services.IEntity;
   import IResource = angular.resource.IResource;
   import IResourceArray = angular.resource.IResourceArray;
-  import IEntityResource = HadithHouse.Services.IEntityResource;
+  import IEntityResource = HadithHouse.Services.IEntityResourceClass;
   import IPromise = angular.IPromise;
   import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
 

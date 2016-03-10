@@ -29,8 +29,8 @@
 /// <reference path="entity-listing-page.ts" />
 
 module HadithHouse.Controllers {
-  import IBook = HadithHouse.Services.IBook;
-  import IBookResource = HadithHouse.Services.IBookResource;
+  import IBook = HadithHouse.Services.IBookResource;
+  import IBookResource = HadithHouse.Services.IBookResourceClass;
   import IResourceArray = angular.resource.IResourceArray;
 
   export class BookListingPageCtrl extends EntityListingPageCtrl<IBook> {
@@ -39,7 +39,7 @@ module HadithHouse.Controllers {
                 $timeout:ng.ITimeoutService,
                 $location:ng.ILocationService,
                 $mdDialog:ng.material.IDialogService,
-                private BookResource:Services.IBookResource,
+                private BookResource:Services.IBookResourceClass,
                 ToastService:any) {
       super($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
     }
