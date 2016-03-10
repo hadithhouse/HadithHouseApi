@@ -29,18 +29,18 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IHadith = HadithHouse.Services.IHadith;
-  import IHadithResource = HadithHouse.Services.IHadithResource;
+  import IHadith = HadithHouse.Services.IHadithResource;
+  import IHadithResource = HadithHouse.Services.IHadithResourceClass;
 
   export class HadithPageCtrl extends EntityPageCtrl<IHadith> {
     oldHadith:IHadith;
-    HadithResource:Services.IHadithResource;
+    HadithResource:Services.IHadithResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                HadithResource:Services.IHadithResource,
+                HadithResource:Services.IHadithResourceClass,
                 ToastService:any) {
       // Setting HadithResource before calling super, because super might end up
       // calling methods which requires HadithResource, e.g. newEntity().

@@ -29,8 +29,8 @@
 /// <reference path="entity-listing-page.ts" />
 
 module HadithHouse.Controllers {
-  import IUser = HadithHouse.Services.IUser;
-  import IUserResource = HadithHouse.Services.IUserResource;
+  import IUser = HadithHouse.Services.IUserResource;
+  import IUserResource = HadithHouse.Services.IUserResourceClass;
   import IResourceArray = angular.resource.IResourceArray;
 
   export class UserListingPageCtrl extends EntityListingPageCtrl<IUser> {
@@ -39,7 +39,7 @@ module HadithHouse.Controllers {
                 $timeout:ng.ITimeoutService,
                 $location:ng.ILocationService,
                 $mdDialog:ng.material.IDialogService,
-                private UserResource:Services.IUserResource,
+                private UserResource:Services.IUserResourceClass,
                 ToastService:any) {
       super($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
     }

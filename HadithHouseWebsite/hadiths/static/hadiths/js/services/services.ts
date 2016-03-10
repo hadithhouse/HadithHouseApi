@@ -50,7 +50,7 @@ module HadithHouse.Services {
     results:IResourceArray<T>
   }
 
-  export interface IEntityResource<T> {
+  export interface IEntityResourceClass<T> {
     pagedQuery(): IEntityQueryResult<T>;
     pagedQuery(params:Object): IEntityQueryResult<T>;
     pagedQuery(success:Function, error?:Function): IEntityQueryResult<T>;
@@ -58,19 +58,19 @@ module HadithHouse.Services {
     pagedQuery(params:Object, data:Object, success?:Function, error?:Function): IEntityQueryResult<T>;
   }
 
-  export interface IHadith extends IEntity, IResource<IHadith> {
+  export interface IHadithResource extends IEntity, IResource<IHadithResource> {
     text:string;
     person:number;
     book:number;
     tags:number[];
   }
 
-  export interface IHadithResource extends IEntityResource<IHadith>, IResourceClass<IHadith> {
+  export interface IHadithResourceClass extends IEntityResourceClass<IHadithResource>, IResourceClass<IHadithResource> {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('HadithResource', ($resource:ng.resource.IResourceService):IHadithResource => {
-    return <IHadithResource>$resource<IHadith, IHadithResource>('/apis/hadiths/:id', {id: '@id'}, {
+  HadithHouse.HadithHouseApp.factory('HadithResource', ($resource:ng.resource.IResourceService):IHadithResourceClass => {
+    return <IHadithResourceClass>$resource<IHadithResource, IHadithResourceClass>('/apis/hadiths/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -85,7 +85,7 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IPerson extends IEntity, IResource<IPerson> {
+  export interface IPersonResource extends IEntity, IResource<IPersonResource> {
     title:string;
     display_name:string;
     full_name:string;
@@ -98,12 +98,12 @@ module HadithHouse.Services {
     death_day:number;
   }
 
-  export interface IPersonResource extends IEntityResource<IPerson>, IResourceClass<IPerson> {
+  export interface IPersonResourceClass extends IEntityResourceClass<IPersonResource>, IResourceClass<IPersonResource> {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('PersonResource', ($resource:ng.resource.IResourceService):IPersonResource => {
-    return <IPersonResource>$resource<IPerson, IPersonResource>('/apis/persons/:id', {id: '@id'}, {
+  HadithHouse.HadithHouseApp.factory('PersonResource', ($resource:ng.resource.IResourceService):IPersonResourceClass => {
+    return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -118,18 +118,18 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IBook extends IEntity, IResource<IBook> {
+  export interface IBookResource extends IEntity, IResource<IBookResource> {
     title:string;
     brief_desc:string;
     pub_year:number;
   }
 
-  export interface IBookResource extends IEntityResource<IBook>, IResourceClass<IBook> {
+  export interface IBookResourceClass extends IEntityResourceClass<IBookResource>, IResourceClass<IBookResource> {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('BookResource', ($resource:ng.resource.IResourceService):IBookResource => {
-    return <IBookResource>$resource<IBook, IBookResource>('/apis/books/:id', {id: '@id'}, {
+  HadithHouse.HadithHouseApp.factory('BookResource', ($resource:ng.resource.IResourceService):IBookResourceClass => {
+    return <IBookResourceClass>$resource<IBookResource, IBookResourceClass>('/apis/books/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -144,16 +144,16 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IHadithTag extends IEntity, IResource<IHadithTag> {
+  export interface IHadithTagResource extends IEntity, IResource<IHadithTagResource> {
     name:string;
   }
 
-  export interface IHadithTagResource extends IEntityResource<IHadithTag>, IResourceClass<IHadithTag> {
+  export interface IHadithTagResourceClass extends IEntityResourceClass<IHadithTagResource>, IResourceClass<IHadithTagResource> {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('HadithTagResource', ($resource:ng.resource.IResourceService):IHadithTagResource => {
-    return <IHadithTagResource>$resource<IHadithTag, IHadithTagResource>('/apis/hadithtags/:id', {id: '@id'}, {
+  HadithHouse.HadithHouseApp.factory('HadithTagResource', ($resource:ng.resource.IResourceService):IHadithTagResourceClass => {
+    return <IHadithTagResourceClass>$resource<IHadithTagResource, IHadithTagResourceClass>('/apis/hadithtags/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -168,7 +168,7 @@ module HadithHouse.Services {
     });
   });
 
-  export interface IUser extends IEntity, IResource<IUser> {
+  export interface IUserResource extends IEntity, IResource<IUserResource> {
     first_name:string;
     last_name:string;
     is_superuser:boolean;
@@ -179,11 +179,11 @@ module HadithHouse.Services {
     permissionsOrdered:Array<string>;
   }
 
-  export interface IUserResource extends IEntityResource<IUser>, IResourceClass<IUser> {
+  export interface IUserResourceClass extends IEntityResourceClass<IUserResource>, IResourceClass<IUserResource> {
   }
 
-  HadithHouse.HadithHouseApp.factory('UserResource', ($resource:ng.resource.IResourceService):IUserResource => {
-    return <IUserResource>$resource<IUser, IUserResource>('/apis/users/:id', {id: '@id'}, {
+  HadithHouse.HadithHouseApp.factory('UserResource', ($resource:ng.resource.IResourceService):IUserResourceClass => {
+    return <IUserResourceClass>$resource<IUserResource, IUserResourceClass>('/apis/users/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,

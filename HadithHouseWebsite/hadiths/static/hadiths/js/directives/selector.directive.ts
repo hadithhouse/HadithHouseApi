@@ -32,12 +32,12 @@ module HadithHouse.Directives {
 
   import IQService = angular.IQService;
   import IScope = angular.IScope;
-  import IPersonResource = HadithHouse.Services.IPersonResource;
-  import IBookResource = HadithHouse.Services.IBookResource;
-  import IHadithTagResource = HadithHouse.Services.IHadithTagResource;
+  import IPersonResource = HadithHouse.Services.IPersonResourceClass;
+  import IBookResource = HadithHouse.Services.IBookResourceClass;
+  import IHadithTagResource = HadithHouse.Services.IHadithTagResourceClass;
   import IEntity = HadithHouse.Services.IEntity;
   import IResourceArray = angular.resource.IResourceArray;
-  import IUserResource = HadithHouse.Services.IUserResource;
+  import IUserResource = HadithHouse.Services.IUserResourceClass;
 
   export class SelectorCtrl {
     EntityResource:ng.resource.IResourceClass<IEntity>;
