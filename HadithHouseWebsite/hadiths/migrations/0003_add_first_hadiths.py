@@ -2,7 +2,7 @@ from django.db import migrations
 from django.db.transaction import atomic
 
 from hadiths.first_hadith_data import *
-from hadiths.models import Person, Hadith, HadithTag, Chain, ChainLink, Book
+from hadiths.models import Person, Hadith, HadithTag, Chain, ChainPersonRel, Book
 
 
 def add_prophet_muhammad_pbuh(apps, schema_editor):
@@ -50,12 +50,12 @@ def add_first_shia_hadith(apps, schema_editor):
   # Adds the first chain of the first shia hadith to the database.
   c = Chain(hadith=h)
   c.save()
-  c.links.add(ChainLink.objects.using(db_alias).get_or_create(
+  c.person_rels.add(ChainPersonRel.objects.using(db_alias).get_or_create(
     chain=c,
     person=Person.objects.using(db_alias).get(full_name=imam_alsadiq['full_name']),
     order=1)[0])
   for i in range(len(shia_first_hadith_persons)):
-    c.links.add(ChainLink.objects.using(db_alias).get_or_create(
+    c.person_rels.add(ChainPersonRel.objects.using(db_alias).get_or_create(
       chain=c,
       person=Person.objects.using(db_alias).get(full_name=shia_first_hadith_persons[i]),
       order=i + 2)[0])
@@ -76,7 +76,7 @@ def add_first_sunni_hadith(apps, schema_editor):
   c = Chain(hadith=h)
   c.save()
   for i in range(len(sunni_first_hadith_persons)):
-    c.links.add(ChainLink.objects.using(db_alias).get_or_create(
+    c.person_rels.add(ChainPersonRel.objects.using(db_alias).get_or_create(
       chain=c,
       person=Person.objects.using(db_alias).get(full_name=sunni_first_hadith_persons[i]),
       order=i + 2)[0])

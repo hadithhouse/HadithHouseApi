@@ -133,14 +133,14 @@ class Chain(models.Model):
                                  null=True, blank=True, related_name='+')
 
 
-class ChainLink(models.Model):
+class ChainPersonRel(models.Model):
   class Meta:
-    db_table = 'chainlinks'
+    db_table = 'chains_persons'
     default_permissions = ('add', 'change', 'delete')
+    unique_together = ('chain', 'person')
 
-  chain = models.ForeignKey(Chain, related_name='links', db_index=True, on_delete=models.CASCADE)
-  person = models.ForeignKey(Person, related_name='links', db_index=True, on_delete=models.PROTECT)
-  # TODO: Do we need an index here?
+  chain = models.ForeignKey(Chain, related_name='person_rels', db_index=True, on_delete=models.CASCADE)
+  person = models.ForeignKey(Person, related_name='chain_rels', db_index=True, on_delete=models.PROTECT)
   order = models.SmallIntegerField(null=False, blank=False)
 
 
