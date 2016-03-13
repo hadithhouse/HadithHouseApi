@@ -6,7 +6,6 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-
 # NOTE: Django automatically index foreign keys, but we still add db_index=True
 # to make it clear to the reader.
 
@@ -104,7 +103,6 @@ class Hadith(models.Model):
   person = models.ForeignKey(Person, null=True, blank=True, related_name='hadiths', db_index=True,
                              on_delete=models.PROTECT)
   book = models.ForeignKey(Book, null=True, blank=True, related_name='hadiths', db_index=True, on_delete=models.PROTECT)
-  tags = models.ManyToManyField(HadithTag, db_table='hadiths_hadithtags', related_name='hadiths', blank=True)
   # TODO: Do we need to index added_on and updated_on?
   added_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
@@ -115,6 +113,19 @@ class Hadith(models.Model):
 
   def __unicode__(self):
     return self.text[:100] + '...' if len(self.text) > 100 else self.text
+
+
+class HadithTagRel(models.Model):
+  class Meta:
+    db_table = 'hadiths_hadithtags'
+    default_permissions = ('add', 'change', 'delete')
+    unique_together = ('hadith', 'tag')
+
+  hadith = models.ForeignKey(Hadith, related_name='tag_rels', db_index=True, on_delete=models.CASCADE)
+  tag = models.ForeignKey(HadithTag, related_name='hadith_rels', db_index=True, on_delete=models.PROTECT)
+  added_on = models.DateTimeField(auto_now_add=True)
+  added_by = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL,
+                               null=True, blank=True, related_name='+')
 
 
 class Chain(models.Model):
@@ -177,14 +188,17 @@ def person_pre_save(sender, instance, *args, **kwargs):
   instance.simple_full_name = simplify_arabic_text(instance.full_name)
   instance.simple_brief_desc = simplify_arabic_text(instance.brief_desc)
 
+
 @receiver(pre_save, sender=Book)
 def book_pre_save(sender, instance, *args, **kwargs):
   instance.simple_title = simplify_arabic_text(instance.title)
   instance.simple_brief_desc = simplify_arabic_text(instance.brief_desc)
 
+
 @receiver(pre_save, sender=HadithTag)
 def hadithtag_pre_save(sender, instance, *args, **kwargs):
   instance.simple_name = simplify_arabic_text(instance.name)
+
 
 @receiver(pre_save, sender=Hadith)
 def hadith_pre_save(sender, instance, *args, **kwargs):
