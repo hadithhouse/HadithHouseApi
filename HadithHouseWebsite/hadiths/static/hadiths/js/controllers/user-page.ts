@@ -35,19 +35,19 @@ module HadithHouse.Controllers {
 
   export class UserPageCtrl extends EntityPageCtrl<IUser> {
     oldUser:IUser;
-    UserResource:Services.IUserResourceClass;
+    UserResourceClass:Services.IUserResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                UserResource:Services.IUserResourceClass,
+                UserResourceClass:Services.IUserResourceClass,
                 ToastService:any) {
-      // Setting UserResource before calling super, because super might end up
-      // calling methods which requires UserResource, e.g. newEntity().
-      this.UserResource = UserResource;
-      this.oldUser = new this.UserResource({});
-      super($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+      // Setting UserResourceClass before calling super, because super might end up
+      // calling methods which requires UserResourceClass, e.g. newEntity().
+      this.UserResourceClass = UserResourceClass;
+      this.oldUser = new this.UserResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
     }
 
     /**
@@ -79,7 +79,7 @@ module HadithHouse.Controllers {
     }
 
     protected newEntity():IUser {
-      return new this.UserResource({});
+      return new this.UserResourceClass({});
     }
 
     protected getEntityPath(id: number) {
@@ -95,7 +95,7 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('UserPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
-      return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
+      return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
     });
 }

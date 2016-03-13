@@ -37,22 +37,22 @@ module HadithHouse.Controllers {
   export class HadithPageCtrl extends EntityPageCtrl<IHadithResource> {
     oldHadith:IHadithResource;
     pagedChains:IEntityQueryResult<IChainResource & IResource<IChainResource>>;
-    HadithResource:Services.IHadithResourceClass;
-    ChainResource:Services.IChainResourceClass;
+    HadithResourceClass:Services.IHadithResourceClass;
+    ChainResourceClass:Services.IChainResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                HadithResource:Services.IHadithResourceClass,
-                ChainResource:Services.IChainResourceClass,
+                HadithResourceClass:Services.IHadithResourceClass,
+                ChainResourceClass:Services.IChainResourceClass,
                 ToastService:any) {
-      // Setting HadithResource before calling super, because super might end up
-      // calling methods which requires HadithResource, e.g. newEntity().
-      this.HadithResource = HadithResource;
-      this.ChainResource = ChainResource;
-      this.oldHadith = new this.HadithResource({});
-      super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+      // Setting HadithResourceClass before calling super, because super might end up
+      // calling methods which requires HadithResourceClass, e.g. newEntity().
+      this.HadithResourceClass = HadithResourceClass;
+      this.ChainResourceClass = ChainResourceClass;
+      this.oldHadith = new this.HadithResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
     }
 
     /**
@@ -78,7 +78,7 @@ module HadithHouse.Controllers {
     }
 
     protected newEntity() : IHadithResource {
-      return new this.HadithResource({});
+      return new this.HadithResourceClass({});
     }
 
     protected getEntityPath(id: number) {
@@ -89,12 +89,12 @@ module HadithHouse.Controllers {
       super.setOpeningExitingBookMode(id);
       // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
       // I don't think there is going to be a very large number of chains for hadiths.
-      this.pagedChains = this.ChainResource.pagedQuery({hadith: id});
+      this.pagedChains = this.ChainResourceClass.pagedQuery({hadith: id});
     }
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService) {
-      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService) {
+      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService);
     });
 }

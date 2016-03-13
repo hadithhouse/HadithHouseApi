@@ -37,15 +37,15 @@ var HadithHouse;
     (function (Controllers) {
         var UserListingPageCtrl = (function (_super) {
             __extends(UserListingPageCtrl, _super);
-            function UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService) {
-                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
-                this.UserResource = UserResource;
+            function UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService) {
+                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService);
+                this.UserResourceClass = UserResourceClass;
             }
             return UserListingPageCtrl;
         })(Controllers.EntityListingPageCtrl);
         Controllers.UserListingPageCtrl = UserListingPageCtrl;
-        HadithHouse.HadithHouseApp.controller('UserListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService) {
-            return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('UserListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService) {
+            return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

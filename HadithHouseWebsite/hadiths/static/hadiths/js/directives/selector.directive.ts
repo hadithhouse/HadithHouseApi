@@ -32,15 +32,15 @@ module HadithHouse.Directives {
 
   import IQService = angular.IQService;
   import IScope = angular.IScope;
-  import IPersonResource = HadithHouse.Services.IPersonResourceClass;
-  import IBookResource = HadithHouse.Services.IBookResourceClass;
-  import IHadithTagResource = HadithHouse.Services.IHadithTagResourceClass;
+  import IPersonResourceClass = HadithHouse.Services.IPersonResourceClass;
+  import IBookResourceClass = HadithHouse.Services.IBookResourceClass;
+  import IHadithTagResourceClass = HadithHouse.Services.IHadithTagResourceClass;
   import IEntity = HadithHouse.Services.IEntity;
   import IResourceArray = angular.resource.IResourceArray;
-  import IUserResource = HadithHouse.Services.IUserResourceClass;
+  import IUserResourceClass = HadithHouse.Services.IUserResourceClass;
 
   export class SelectorCtrl {
-    EntityResource:ng.resource.IResourceClass<IEntity>;
+    EntityResourceClass:ng.resource.IResourceClass<IEntity>;
     ids:any;
     entities:any;
     type:string;
@@ -50,10 +50,10 @@ module HadithHouse.Directives {
     firstLoad = true;
 
     constructor(private $scope:IScope,
-                private PersonResource:IPersonResource,
-                private BookResource:IBookResource,
-                private HadithTagResource:IHadithTagResource,
-                private UserResource:IUserResource) {
+                private PersonResourceClass:IPersonResourceClass,
+                private BookResourceClass:IBookResourceClass,
+                private HadithTagResourceClass:IHadithTagResourceClass,
+                private UserResourceClass:IUserResourceClass) {
 
       if (!this.ids) {
         if (this.singleSelect) {
@@ -81,19 +81,19 @@ module HadithHouse.Directives {
 
       switch (this.type.toLowerCase()) {
         case 'person':
-          this.EntityResource = PersonResource;
+          this.EntityResourceClass = PersonResourceClass;
           break;
 
         case 'book':
-          this.EntityResource = BookResource;
+          this.EntityResourceClass = BookResourceClass;
           break;
 
         case 'hadithtag':
-          this.EntityResource = HadithTagResource;
+          this.EntityResourceClass = HadithTagResourceClass;
           break;
 
         case 'user':
-          this.EntityResource = UserResource;
+          this.EntityResourceClass = UserResourceClass;
           break;
 
         default:
@@ -127,7 +127,7 @@ module HadithHouse.Directives {
             // See if we already have the entity loaded, otherwise make a request to load it.
             return _.find<IEntity>(this.entities, (e) => {
                 return e.id == id;
-              }) || this.EntityResource.get({id: id}, (e) => {
+              }) || this.EntityResourceClass.get({id: id}, (e) => {
               });
           });
         } else {
@@ -138,7 +138,7 @@ module HadithHouse.Directives {
           // See if we already have the entity loaded, otherwise make a request to load it.
           return _.find<IEntity>(this.entities, (e) => {
               return e.id == id;
-            }) || this.EntityResource.get({id: id});
+            }) || this.EntityResourceClass.get({id: id});
         });
       }
     }
@@ -150,7 +150,7 @@ module HadithHouse.Directives {
       if (this.entities) {
         // If the control only allows single select, we remove every elements
         // before the last.
-        if (this.singleSelect === true) {
+        if (this.singleSelect === 'true') {
           // Single select mode, so only allow one entity to be selected and delete previous ones.
           if (this.entities.length > 1) {
             this.entities.splice(0, this.entities.length - 1);
@@ -176,7 +176,7 @@ module HadithHouse.Directives {
     }
 
     public findEntities(query) {
-      return this.EntityResource.query({search: query});
+      return this.EntityResourceClass.query({search: query});
     };
 
     public entityToString = (entity) => {
@@ -200,7 +200,7 @@ module HadithHouse.Directives {
   }
 
   HadithHouseApp.controller('SelectorCtrl',
-    ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
+    ['$scope', 'PersonResourceClass', 'BookResourceClass', 'HadithTagResourceClass', 'UserResourceClass', SelectorCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhSelector', function () {

@@ -37,12 +37,12 @@ var HadithHouse;
     (function (Controllers) {
         var HadithTagPageCtrl = (function (_super) {
             __extends(HadithTagPageCtrl, _super);
-            function HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
-                // Setting HadithTagResource before calling super, because super might end up
-                // calling methods which requires HadithTagResource, e.g. newEntity().
-                this.HadithTagResource = HadithTagResource;
-                this.oldHadithTag = new this.HadithTagResource({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+            function HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService) {
+                // Setting HadithTagResourceClass before calling super, because super might end up
+                // calling methods which requires HadithTagResourceClass, e.g. newEntity().
+                this.HadithTagResourceClass = HadithTagResourceClass;
+                this.oldHadithTag = new this.HadithTagResourceClass({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
             }
             /**
              * Makes a copy of the data of the tag in case we have to restore them
@@ -59,7 +59,7 @@ var HadithHouse;
                 this.entity.name = this.oldHadithTag.name;
             };
             HadithTagPageCtrl.prototype.newEntity = function () {
-                return new this.HadithTagResource({
+                return new this.HadithTagResourceClass({
                     title: '',
                     brief_desc: '',
                     pub_year: null
@@ -71,8 +71,8 @@ var HadithHouse;
             return HadithTagPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.HadithTagPageCtrl = HadithTagPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
-            return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService) {
+            return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

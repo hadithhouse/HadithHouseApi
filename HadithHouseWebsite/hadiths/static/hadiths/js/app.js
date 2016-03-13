@@ -117,7 +117,7 @@ var HadithHouse;
     }).run(['$rootScope', '$mdDialog', function ($rootScope) {
             $rootScope['pendingRequests'] = 0;
         }]);
-    HadithHouse.HadithHouseApp.controller('HadithHouseCtrl', function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResource) {
+    HadithHouse.HadithHouseApp.controller('HadithHouseCtrl', function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResourceClass) {
         var ctrl = this;
         $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
         $rootScope.fbUser = null;
@@ -142,7 +142,7 @@ var HadithHouse;
                     profilePicUrl: user.picture.data.url
                 };
             });
-            UserResource.get({ id: 'current' }, function onSuccess(user) {
+            UserResourceClass.get({ id: 'current' }, function onSuccess(user) {
                 var perms = {};
                 for (var i in user.permissions) {
                     perms[user.permissions[i]] = true;

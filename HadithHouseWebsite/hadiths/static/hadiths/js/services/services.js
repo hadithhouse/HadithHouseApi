@@ -29,7 +29,7 @@ var HadithHouse;
 (function (HadithHouse) {
     var Services;
     (function (Services) {
-        HadithHouse.HadithHouseApp.factory('HadithResource', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('HadithResourceClass', function ($resource) {
             return $resource('/apis/hadiths/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',
@@ -44,7 +44,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('PersonResource', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('PersonResourceClass', function ($resource) {
             return $resource('/apis/persons/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',
@@ -59,7 +59,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('BookResource', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('BookResourceClass', function ($resource) {
             return $resource('/apis/books/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',
@@ -74,7 +74,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('HadithTagResource', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('HadithTagResourceClass', function ($resource) {
             return $resource('/apis/hadithtags/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',
@@ -89,7 +89,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('ChainResource', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('ChainResourceClass', function ($resource) {
             return $resource('/apis/chains/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',
@@ -104,7 +104,7 @@ var HadithHouse;
                 }
             });
         });
-        HadithHouse.HadithHouseApp.factory('UserResource', function ($resource) {
+        HadithHouse.HadithHouseApp.factory('UserResourceClass', function ($resource) {
             return $resource('/apis/users/:id', { id: '@id' }, {
                 'query': {
                     method: 'GET',

@@ -29,24 +29,23 @@
 /// <reference path="entity-listing-page.ts" />
 
 module HadithHouse.Controllers {
-  import IHadithTag = HadithHouse.Services.IHadithTagResource;
-  import IHadithTagResource = HadithHouse.Services.IHadithTagResourceClass;
-  import IResourceArray = angular.resource.IResourceArray;
+  import IHadithTagResource = HadithHouse.Services.IHadithTagResource;
+  import IHadithTagResourceClass = HadithHouse.Services.IHadithTagResourceClass;
 
-  export class HadithTagListingPageCtrl extends EntityListingPageCtrl<IHadithTag> {
+  export class HadithTagListingPageCtrl extends EntityListingPageCtrl<IHadithTagResource> {
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $timeout:ng.ITimeoutService,
                 $location:ng.ILocationService,
                 $mdDialog:ng.material.IDialogService,
-                private HadithTagResource:Services.IHadithTagResourceClass,
+                private HadithTagResourceClass:Services.IHadithTagResourceClass,
                 ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
+      super($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService);
     }
   }
 
   HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService) {
-      return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
+    function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService) {
+      return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService);
     });
 }

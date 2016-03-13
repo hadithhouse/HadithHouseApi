@@ -30,13 +30,13 @@ var HadithHouse;
     var Directives;
     (function (Directives) {
         var SelectorCtrl = (function () {
-            function SelectorCtrl($scope, PersonResource, BookResource, HadithTagResource, UserResource) {
+            function SelectorCtrl($scope, PersonResourceClass, BookResourceClass, HadithTagResourceClass, UserResourceClass) {
                 var _this = this;
                 this.$scope = $scope;
-                this.PersonResource = PersonResource;
-                this.BookResource = BookResource;
-                this.HadithTagResource = HadithTagResource;
-                this.UserResource = UserResource;
+                this.PersonResourceClass = PersonResourceClass;
+                this.BookResourceClass = BookResourceClass;
+                this.HadithTagResourceClass = HadithTagResourceClass;
+                this.UserResourceClass = UserResourceClass;
                 this.firstLoad = true;
                 this.onIdsChanged = function (newValue, oldValue) {
                     if (newValue && _this.firstLoad) {
@@ -57,7 +57,7 @@ var HadithHouse;
                                 // See if we already have the entity loaded, otherwise make a request to load it.
                                 return _.find(_this.entities, function (e) {
                                     return e.id == id;
-                                }) || _this.EntityResource.get({ id: id }, function (e) {
+                                }) || _this.EntityResourceClass.get({ id: id }, function (e) {
                                 });
                             });
                         }
@@ -70,7 +70,7 @@ var HadithHouse;
                             // See if we already have the entity loaded, otherwise make a request to load it.
                             return _.find(_this.entities, function (e) {
                                 return e.id == id;
-                            }) || _this.EntityResource.get({ id: id });
+                            }) || _this.EntityResourceClass.get({ id: id });
                         });
                     }
                 };
@@ -81,7 +81,7 @@ var HadithHouse;
                     if (_this.entities) {
                         // If the control only allows single select, we remove every elements
                         // before the last.
-                        if (_this.singleSelect === true) {
+                        if (_this.singleSelect === 'true') {
                             // Single select mode, so only allow one entity to be selected and delete previous ones.
                             if (_this.entities.length > 1) {
                                 _this.entities.splice(0, _this.entities.length - 1);
@@ -143,16 +143,16 @@ var HadithHouse;
                 }
                 switch (this.type.toLowerCase()) {
                     case 'person':
-                        this.EntityResource = PersonResource;
+                        this.EntityResourceClass = PersonResourceClass;
                         break;
                     case 'book':
-                        this.EntityResource = BookResource;
+                        this.EntityResourceClass = BookResourceClass;
                         break;
                     case 'hadithtag':
-                        this.EntityResource = HadithTagResource;
+                        this.EntityResourceClass = HadithTagResourceClass;
                         break;
                     case 'user':
-                        this.EntityResource = UserResource;
+                        this.EntityResourceClass = UserResourceClass;
                         break;
                     default:
                         throw 'Invalid type for selector.';
@@ -163,13 +163,13 @@ var HadithHouse;
                 $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
             }
             SelectorCtrl.prototype.findEntities = function (query) {
-                return this.EntityResource.query({ search: query });
+                return this.EntityResourceClass.query({ search: query });
             };
             ;
             return SelectorCtrl;
         })();
         Directives.SelectorCtrl = SelectorCtrl;
-        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
+        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResourceClass', 'BookResourceClass', 'HadithTagResourceClass', 'UserResourceClass', SelectorCtrl]);
         // TODO: Consider creating a class for this.
         HadithHouse.HadithHouseApp.directive('hhSelector', function () {
             return {

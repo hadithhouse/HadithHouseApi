@@ -127,7 +127,7 @@ module HadithHouse {
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResource) {
+    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResourceClass) {
       let ctrl = this;
 
       $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
@@ -156,7 +156,7 @@ module HadithHouse {
             profilePicUrl: user.picture.data.url
           };
         });
-        UserResource.get({id: 'current'}, function onSuccess(user) {
+        UserResourceClass.get({id: 'current'}, function onSuccess(user) {
           let perms = {};
           for (let i in user.permissions) {
             perms[user.permissions[i]] = true;
