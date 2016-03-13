@@ -1,10 +1,13 @@
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
+from rest_framework.serializers import Serializer
 
-from hadiths.models import Hadith, Book, Person, HadithTag, ChainLink, Chain  # , User, Permission
+from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain  # , User, Permission
+
 
 class AutoTrackSerializer(serializers.ModelSerializer):
   def create(self, validated_data):
@@ -14,6 +17,7 @@ class AutoTrackSerializer(serializers.ModelSerializer):
   def update(self, instance, validated_data):
     validated_data['updated_by'] = self.context['request'].user
     return super(AutoTrackSerializer, self).update(instance, validated_data)
+
 
 # NOTE: We manually specify the format of added_on and updated_on because otherwise for some
 # reason the format returned by POST requests is different to the one retrieved
@@ -44,7 +48,7 @@ class BookSerializer(AutoTrackSerializer):
 # TODO: Consider changing this class to allow the user to either send tag names
 # or tag IDs by checking whether tag_id_or_name is an integer or a string. Then
 # use it in the HadithTagSerializer class.
-#class TagListingField(serializers.RelatedField):
+# class TagListingField(serializers.RelatedField):
 #  def to_representation(self, tag):
 #    return {'id': tag.id,
 #            'name': tag.name}
@@ -69,7 +73,7 @@ class HadithTagSerializer(AutoTrackSerializer):
 
 
 class HadithSerializer(AutoTrackSerializer):
-  #tags = TagListingField(many=True, queryset=HadithTag.objects.all(), required=False)
+  # tags = TagListingField(many=True, queryset=HadithTag.objects.all(), required=False)
 
   class Meta:
     model = Hadith
@@ -79,19 +83,75 @@ class HadithSerializer(AutoTrackSerializer):
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
 
-class ChainSerializer(AutoTrackSerializer):
+class ChainSerializer(serializers.ModelSerializer):
+  """
+  A serializer for chains which makes it easy to retrieve or update the
+  persons in the chain as if they were an array inside the chains table.
+  The serializer takes the persons array and creates the necessary
+  relations between chains and persons. In case of updating an existing chain,
+  it will find the changes that need to be made to the existing links and make
+  the necessary creations and deletion for the end result to match what the
+  user sends.
+  """
   class Meta:
     model = Chain
-    fields = ['id', 'hadith', 'links', 'added_on', 'updated_on', 'added_by', 'updated_by']
+    fields = ['id', 'hadith', 'persons', 'added_on', 'updated_on', 'added_by', 'updated_by']
+    read_only_fields = ['added_on', 'updated_on', 'added_by', 'updated_by']
 
+  persons = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=Person.objects.all()))
   added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
+  def create(self, validated_data):
+    with transaction.atomic():
+      instance = Chain()
+      instance.hadith = validated_data['hadith']
+      instance.added_by = self.context['request'].user
+      instance.save()
+      for i, person in enumerate(validated_data['persons']):
+        rel = ChainPersonRel(chain=instance, person=person, order=i + 1)
+        rel.save()
+    return instance
 
-class ChainLinkSerializer(AutoTrackSerializer):
-  class Meta:
-    model = ChainLink
-    fields = ['id', 'person', 'order']
+  def update(self, instance, validated_data):
+    with transaction.atomic():
+      # TODO: Do we want to enable changing the hadith a certain chain is
+      # attached to? Does this have a valid use case?
+      instance.hadith = validated_data['hadith']
+      instance.updated_by = self.context['request'].user
+      # Delete relations for those persons who are not in the updated person list.
+      updated_person_ids = list(p.id for p in validated_data['persons'])
+      instance.person_rels.exclude(person_id__in=updated_person_ids).delete()
+      # Make the necessary changes to the existing relations.
+      for i, person in enumerate(validated_data['persons']):
+        rel = ChainPersonRel.objects.filter(chain=instance, person=person).first()
+        if rel is None:
+          ChainPersonRel.objects.create(chain=instance, person=person, order=i + 1)
+        elif rel.order != i + 1:
+          rel.order = i + 1
+          rel.save()
+      instance.save()
+    return instance
+
+  def validate_persons(self, persons):
+    person_ids = [p.id for p in persons]
+    rep_ids = [id for id, cnt in Counter(person_ids).items() if cnt > 1]
+    if rep_ids:
+      raise serializers.ValidationError(
+        'The same person cannot appear twice in a chain. The following ID(s) '
+        'appeared more than once in the chain: ' + ', '.join(map(str, rep_ids)))
+    return persons
+
+  def to_representation(self, instance):
+    ret = OrderedDict()
+    ret['id'] = instance.id
+    ret['hadith'] = instance.hadith_id
+    ret['persons'] = instance.person_rels.values_list('person_id', flat=True).order_by('order')
+    ret['added_on'] = instance.added_on
+    ret['updated_on'] = instance.updated_on
+    ret['added_by'] = instance.added_by_id
+    ret['updated_by'] = instance.updated_by_id
+    return ret
 
 
 class UserSerializer(serializers.ModelSerializer):
