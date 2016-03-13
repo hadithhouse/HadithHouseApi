@@ -6,7 +6,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import APIException
 from rest_framework.serializers import Serializer
 
-from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain  # , User, Permission
+from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain, HadithTagRel  # , User, Permission
 
 
 class AutoTrackSerializer(serializers.ModelSerializer):
@@ -73,15 +73,56 @@ class HadithTagSerializer(AutoTrackSerializer):
 
 
 class HadithSerializer(AutoTrackSerializer):
-  # tags = TagListingField(many=True, queryset=HadithTag.objects.all(), required=False)
-
   class Meta:
     model = Hadith
     fields = ['id', 'text', 'person', 'book', 'tags', 'added_on', 'updated_on', 'added_by', 'updated_by']
+    read_only_fields = ['added_on', 'updated_on', 'added_by', 'updated_by']
 
+  tags = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=HadithTag.objects.all()))
   added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
 
+  def create(self, validated_data):
+    with transaction.atomic():
+      instance = Hadith()
+      instance.text = validated_data['text']
+      instance.person = validated_data['person']
+      instance.book = validated_data['book']
+      instance.added_by = self.context['request'].user
+      instance.save()
+      for tag in validated_data['tags']:
+        HadithTagRel.objects.create(hadith=instance, tag=tag, added_by=self.context['request'].user)
+    return instance
+
+  def update(self, instance, validated_data):
+    with transaction.atomic():
+      instance.text = validated_data['text']
+      instance.person = validated_data['person']
+      instance.book = validated_data['book']
+      instance.updated_by = self.context['request'].user
+      # Delete relations for those persons who are not in the updated person list.
+      updated_tag_ids = list(t.id for t in validated_data['tags'])
+      instance.tag_rels.exclude(tag_id__in=updated_tag_ids).delete()
+      tag_ids_to_keep = instance.tag_rels.values_list('tag_id', flat=True)
+      # Make the necessary changes to the existing relations.
+      for tag in [t for t in validated_data['tags'] if t.id not in tag_ids_to_keep]:
+        HadithTagRel.objects.create(hadith=instance, tag=tag, added_by=self.context['request'].user)
+      instance.save()
+    return instance
+
+  def to_representation(self, instance):
+    ret = OrderedDict()
+    ret['id'] = instance.id
+    ret['text'] = instance.text
+    ret['book'] = instance.book_id
+    ret['person'] = instance.person_id
+    ret['book'] = instance.book_id
+    ret['tags'] = instance.tag_rels.values_list('tag_id', flat=True)
+    ret['added_on'] = instance.added_on
+    ret['updated_on'] = instance.updated_on
+    ret['added_by'] = instance.added_by_id
+    ret['updated_by'] = instance.updated_by_id
+    return ret
 
 class ChainSerializer(serializers.ModelSerializer):
   """

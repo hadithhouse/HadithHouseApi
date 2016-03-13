@@ -2,7 +2,7 @@ from django.db import migrations
 from django.db.transaction import atomic
 
 from hadiths.first_hadith_data import *
-from hadiths.models import Person, Hadith, HadithTag, Chain, ChainPersonRel, Book
+from hadiths.models import Person, Hadith, HadithTag, Chain, ChainPersonRel, Book, HadithTagRel
 
 
 def add_prophet_muhammad_pbuh(apps, schema_editor):
@@ -44,8 +44,9 @@ def add_first_shia_hadith(apps, schema_editor):
   h = Hadith.objects.using(db_alias).get_or_create(
     text=first_shia_hadith_text,
     person=Person.objects.get(full_name=prophet_muhammad['full_name']))[0]
-  h.tags.add(HadithTag.objects.get_or_create(name=first_hadith_tag)[0])
   h.save()
+  t = HadithTag.objects.get_or_create(name=first_hadith_tag)[0]
+  HadithTagRel.objects.using(db_alias).create(hadith=h, tag=t)
 
   # Adds the first chain of the first shia hadith to the database.
   c = Chain(hadith=h)
@@ -69,8 +70,9 @@ def add_first_sunni_hadith(apps, schema_editor):
   h = Hadith.objects.using(db_alias).get_or_create(
     text=first_sunni_hadith_text,
     person=Person.objects.get(full_name=prophet_muhammad['full_name']))[0]
-  h.tags.add(HadithTag.objects.get_or_create(name=first_hadith_tag)[0])
   h.save()
+  t = HadithTag.objects.get_or_create(name=first_hadith_tag)[0]
+  HadithTagRel.objects.using(db_alias).create(hadith=h, tag=t)
 
   # Adds the first chain of the first sunni hadith to the database.
   c = Chain(hadith=h)
