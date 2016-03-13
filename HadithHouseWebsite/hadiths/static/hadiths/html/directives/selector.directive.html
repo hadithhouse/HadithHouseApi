@@ -22,12 +22,13 @@
         <span ng-if="ctrl.clickable !== 'true' || !ctrl.readOnly">
           <strong>{{ ctrl.entityToString($chip) }}</strong>
         </span>
-        <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
-          {{ ctrl.entityToString(ctrl.entities[0]) }}
+        <a ng-href="#/{{ ctrl.type }}/{{ $chip.id }}" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
+          {{ ctrl.entityToString($chip) }}
         </a>
       </md-chip-template>
     </md-chips>
   </span>
+  <!-- TODO: text-only mode supports only one element at the moment. -->
   <span ng-if="ctrl.textOnly === 'true' && ctrl.clickable !== 'true'">{{ ctrl.entityToString(ctrl.entities[0]) }}</span>
   <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.textOnly === 'true' && ctrl.clickable ==='true'">
     {{ ctrl.entityToString(ctrl.entities[0]) }}</a>

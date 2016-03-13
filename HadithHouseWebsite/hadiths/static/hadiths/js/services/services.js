@@ -89,6 +89,21 @@ var HadithHouse;
                 }
             });
         });
+        HadithHouse.HadithHouseApp.factory('ChainResource', function ($resource) {
+            return $resource('/apis/chains/:id', { id: '@id' }, {
+                'query': {
+                    method: 'GET',
+                    isArray: true,
+                    transformResponse: function (data) {
+                        return JSON.parse(data).results;
+                    }
+                },
+                'pagedQuery': {
+                    method: 'GET',
+                    isArray: false
+                }
+            });
+        });
         HadithHouse.HadithHouseApp.factory('UserResource', function ($resource) {
             return $resource('/apis/users/:id', { id: '@id' }, {
                 'query': {

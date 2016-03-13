@@ -37,5 +37,12 @@
   <label>Tags</label>
   <hh-selector ids="ctrl.entity.tags" type="hadithtag" read-only="!ctrl.isEditing"
                allow-create-new-entities="true" clickable="true"></hh-selector>
+
+  <label>Chains</label>
+  <div>
+    <div ng-repeat="chain in ctrl.pagedChains.results">
+      <hh-selector ids="chain.persons" type="person" read-only="true" clickable="true"></hh-selector>
+    </div>
+  </div>
 </div>
 <div ng-include="'/static/hadiths/html/entity-footer.html'"></div>
