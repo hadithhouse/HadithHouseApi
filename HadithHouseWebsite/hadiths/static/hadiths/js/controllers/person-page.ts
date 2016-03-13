@@ -29,24 +29,23 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IPerson = HadithHouse.Services.IPersonResource;
-  import IPersonResource = HadithHouse.Services.IPersonResourceClass;
+  import IPersonResource = HadithHouse.Services.IPersonResource;
 
-  export class PersonPageCtrl extends EntityPageCtrl<IPerson> {
-    oldPerson:IPerson;
-    PersonResource:Services.IPersonResourceClass;
+  export class PersonPageCtrl extends EntityPageCtrl<IPersonResource> {
+    oldPerson:IPersonResource;
+    PersonResourceClass:Services.IPersonResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                PersonResource:Services.IPersonResourceClass,
+                PersonResourceClass:Services.IPersonResourceClass,
                 ToastService:any) {
-      // Setting PersonResource before calling super, because super might end up
-      // calling methods which requires PersonResource, e.g. newEntity().
-      this.PersonResource = PersonResource;
-      this.oldPerson = new this.PersonResource({});
-      super($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+      // Setting PersonResourceClass before calling super, because super might end up
+      // calling methods which requires PersonResourceClass, e.g. newEntity().
+      this.PersonResourceClass = PersonResourceClass;
+      this.oldPerson = new this.PersonResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService);
     }
 
     /**
@@ -83,8 +82,8 @@ module HadithHouse.Controllers {
       this.entity.death_day = this.oldPerson.death_day;
     }
 
-    protected newEntity():IPerson {
-      return new this.PersonResource({});
+    protected newEntity():IPersonResource {
+      return new this.PersonResourceClass({});
     }
 
     protected getEntityPath(id: number) {
@@ -93,7 +92,7 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('PersonPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, PersonResource, ToastService) {
-      return new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService) {
+      return new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService);
     });
 }

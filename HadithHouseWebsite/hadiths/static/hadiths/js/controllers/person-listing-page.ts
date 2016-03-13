@@ -39,14 +39,14 @@ module HadithHouse.Controllers {
                 $timeout:ng.ITimeoutService,
                 $location:ng.ILocationService,
                 $mdDialog:ng.material.IDialogService,
-                private PersonResource:Services.IPersonResourceClass,
+                private PersonResourceClass:Services.IPersonResourceClass,
                 ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, PersonResource, ToastService);
+      super($scope, $rootScope, $timeout, $location, $mdDialog, PersonResourceClass, ToastService);
     }
   }
 
   HadithHouse.HadithHouseApp.controller('PersonListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, PersonResource, ToastService) {
-      return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, PersonResource, ToastService);
+    function ($scope, $rootScope, $timeout, $location, $mdDialog, PersonResourceClass, ToastService) {
+      return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, PersonResourceClass, ToastService);
     });
 }

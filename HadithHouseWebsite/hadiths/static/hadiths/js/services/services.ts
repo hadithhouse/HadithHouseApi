@@ -69,7 +69,7 @@ module HadithHouse.Services {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('HadithResource', ($resource:ng.resource.IResourceService):IHadithResourceClass => {
+  HadithHouse.HadithHouseApp.factory('HadithResourceClass', ($resource:ng.resource.IResourceService):IHadithResourceClass => {
     return <IHadithResourceClass>$resource<IHadithResource, IHadithResourceClass>('/apis/hadiths/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
@@ -102,7 +102,7 @@ module HadithHouse.Services {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('PersonResource', ($resource:ng.resource.IResourceService):IPersonResourceClass => {
+  HadithHouse.HadithHouseApp.factory('PersonResourceClass', ($resource:ng.resource.IResourceService):IPersonResourceClass => {
     return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
@@ -128,7 +128,7 @@ module HadithHouse.Services {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('BookResource', ($resource:ng.resource.IResourceService):IBookResourceClass => {
+  HadithHouse.HadithHouseApp.factory('BookResourceClass', ($resource:ng.resource.IResourceService):IBookResourceClass => {
     return <IBookResourceClass>$resource<IBookResource, IBookResourceClass>('/apis/books/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
@@ -152,7 +152,7 @@ module HadithHouse.Services {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('HadithTagResource', ($resource:ng.resource.IResourceService):IHadithTagResourceClass => {
+  HadithHouse.HadithHouseApp.factory('HadithTagResourceClass', ($resource:ng.resource.IResourceService):IHadithTagResourceClass => {
     return <IHadithTagResourceClass>$resource<IHadithTagResource, IHadithTagResourceClass>('/apis/hadithtags/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
@@ -177,7 +177,7 @@ module HadithHouse.Services {
 
   }
 
-  HadithHouse.HadithHouseApp.factory('ChainResource', ($resource:ng.resource.IResourceService):IChainResourceClass => {
+  HadithHouse.HadithHouseApp.factory('ChainResourceClass', ($resource:ng.resource.IResourceService):IChainResourceClass => {
     return <IChainResourceClass>$resource<IChainResource, IChainResourceClass>('/apis/chains/:id', {id: '@id'}, {
       'query': {
         method: 'GET',
@@ -207,7 +207,7 @@ module HadithHouse.Services {
   export interface IUserResourceClass extends IEntityResourceClass<IUserResource>, IResourceClass<IUserResource> {
   }
 
-  HadithHouse.HadithHouseApp.factory('UserResource', ($resource:ng.resource.IResourceService):IUserResourceClass => {
+  HadithHouse.HadithHouseApp.factory('UserResourceClass', ($resource:ng.resource.IResourceService):IUserResourceClass => {
     return <IUserResourceClass>$resource<IUserResource, IUserResourceClass>('/apis/users/:id', {id: '@id'}, {
       'query': {
         method: 'GET',

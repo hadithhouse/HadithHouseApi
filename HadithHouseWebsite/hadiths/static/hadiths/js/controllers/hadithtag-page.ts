@@ -34,19 +34,19 @@ module HadithHouse.Controllers {
 
   export class HadithTagPageCtrl extends EntityPageCtrl<IHadithTag> {
     oldHadithTag:IHadithTag;
-    HadithTagResource:Services.IHadithTagResourceClass;
+    HadithTagResourceClass:Services.IHadithTagResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                HadithTagResource:Services.IHadithTagResourceClass,
+                HadithTagResourceClass:Services.IHadithTagResourceClass,
                 ToastService:any) {
-      // Setting HadithTagResource before calling super, because super might end up
-      // calling methods which requires HadithTagResource, e.g. newEntity().
-      this.HadithTagResource = HadithTagResource;
-      this.oldHadithTag = new this.HadithTagResource({});
-      super($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+      // Setting HadithTagResourceClass before calling super, because super might end up
+      // calling methods which requires HadithTagResourceClass, e.g. newEntity().
+      this.HadithTagResourceClass = HadithTagResourceClass;
+      this.oldHadithTag = new this.HadithTagResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
     }
 
     /**
@@ -66,7 +66,7 @@ module HadithHouse.Controllers {
     }
 
     protected newEntity():IHadithTag {
-      return new this.HadithTagResource({
+      return new this.HadithTagResourceClass({
         title: '',
         brief_desc: '',
         pub_year: null
@@ -79,7 +79,7 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
-      return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService) {
+      return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
     });
 }

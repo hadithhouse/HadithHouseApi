@@ -29,24 +29,23 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IBook = HadithHouse.Services.IBookResource;
-  import IBookResource = HadithHouse.Services.IBookResourceClass;
+  import IBookResource = HadithHouse.Services.IBookResource;
 
-  export class BookPageCtrl extends EntityPageCtrl<IBook> {
-    oldBook:IBook;
-    BookResource:Services.IBookResourceClass;
+  export class BookPageCtrl extends EntityPageCtrl<IBookResource> {
+    oldBook:IBookResource;
+    BookResourceClass:Services.IBookResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                BookResource:Services.IBookResourceClass,
+                BookResourceClass:Services.IBookResourceClass,
                 ToastService:any) {
-      // Setting BookResource before calling super, because super might end up
-      // calling methods which requires BookResource, e.g. newEntity().
-      this.BookResource = BookResource;
-      this.oldBook = new this.BookResource({ });
-      super($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+      // Setting BookResourceClass before calling super, because super might end up
+      // calling methods which requires BookResourceClass, e.g. newEntity().
+      this.BookResourceClass = BookResourceClass;
+      this.oldBook = new this.BookResourceClass({ });
+      super($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
     }
 
     /**
@@ -69,8 +68,8 @@ module HadithHouse.Controllers {
       this.entity.pub_year = this.oldBook.pub_year;
     }
 
-    protected newEntity() : IBook {
-      return new this.BookResource({
+    protected newEntity() : IBookResource {
+      return new this.BookResourceClass({
         title: '',
         brief_desc: '',
         pub_year: null
@@ -83,7 +82,7 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('BookPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-      return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
+      return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
     });
 }

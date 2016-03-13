@@ -38,12 +38,12 @@ var HadithHouse;
     (function (Controllers) {
         var UserPageCtrl = (function (_super) {
             __extends(UserPageCtrl, _super);
-            function UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
-                // Setting UserResource before calling super, because super might end up
-                // calling methods which requires UserResource, e.g. newEntity().
-                this.UserResource = UserResource;
-                this.oldUser = new this.UserResource({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+            function UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
+                // Setting UserResourceClass before calling super, because super might end up
+                // calling methods which requires UserResourceClass, e.g. newEntity().
+                this.UserResourceClass = UserResourceClass;
+                this.oldUser = new this.UserResourceClass({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
             }
             /**
              * Makes a copy of the data of the person in case we have to restore them
@@ -72,7 +72,7 @@ var HadithHouse;
                 this.entity.permissions = this.oldUser.permissions.slice();
             };
             UserPageCtrl.prototype.newEntity = function () {
-                return new this.UserResource({});
+                return new this.UserResourceClass({});
             };
             UserPageCtrl.prototype.getEntityPath = function (id) {
                 return 'user/' + id;
@@ -86,8 +86,8 @@ var HadithHouse;
             return UserPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.UserPageCtrl = UserPageCtrl;
-        HadithHouse.HadithHouseApp.controller('UserPageCtrl', function ($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
-            return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('UserPageCtrl', function ($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
+            return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

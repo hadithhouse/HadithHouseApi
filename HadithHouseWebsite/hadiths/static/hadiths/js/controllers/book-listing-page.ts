@@ -29,24 +29,23 @@
 /// <reference path="entity-listing-page.ts" />
 
 module HadithHouse.Controllers {
-  import IBook = HadithHouse.Services.IBookResource;
-  import IBookResource = HadithHouse.Services.IBookResourceClass;
+  import IBookResource = HadithHouse.Services.IBookResource;
   import IResourceArray = angular.resource.IResourceArray;
 
-  export class BookListingPageCtrl extends EntityListingPageCtrl<IBook> {
+  export class BookListingPageCtrl extends EntityListingPageCtrl<IBookResource> {
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $timeout:ng.ITimeoutService,
                 $location:ng.ILocationService,
                 $mdDialog:ng.material.IDialogService,
-                private BookResource:Services.IBookResourceClass,
+                private BookResourceClass:Services.IBookResourceClass,
                 ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
+      super($scope, $rootScope, $timeout, $location, $mdDialog, BookResourceClass, ToastService);
     }
   }
 
   HadithHouse.HadithHouseApp.controller('BookListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService) {
-      return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
+    function ($scope, $rootScope, $timeout, $location, $mdDialog, BookResourceClass, ToastService) {
+      return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResourceClass, ToastService);
     });
 }

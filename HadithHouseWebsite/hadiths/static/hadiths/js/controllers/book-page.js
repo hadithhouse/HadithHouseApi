@@ -37,12 +37,12 @@ var HadithHouse;
     (function (Controllers) {
         var BookPageCtrl = (function (_super) {
             __extends(BookPageCtrl, _super);
-            function BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-                // Setting BookResource before calling super, because super might end up
-                // calling methods which requires BookResource, e.g. newEntity().
-                this.BookResource = BookResource;
-                this.oldBook = new this.BookResource({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+            function BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
+                // Setting BookResourceClass before calling super, because super might end up
+                // calling methods which requires BookResourceClass, e.g. newEntity().
+                this.BookResourceClass = BookResourceClass;
+                this.oldBook = new this.BookResourceClass({});
+                _super.call(this, $scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
             }
             /**
              * Makes a copy of the data of the book in case we have to restore them
@@ -63,7 +63,7 @@ var HadithHouse;
                 this.entity.pub_year = this.oldBook.pub_year;
             };
             BookPageCtrl.prototype.newEntity = function () {
-                return new this.BookResource({
+                return new this.BookResourceClass({
                     title: '',
                     brief_desc: '',
                     pub_year: null
@@ -75,8 +75,8 @@ var HadithHouse;
             return BookPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.BookPageCtrl = BookPageCtrl;
-        HadithHouse.HadithHouseApp.controller('BookPageCtrl', function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-            return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+        HadithHouse.HadithHouseApp.controller('BookPageCtrl', function ($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
+            return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
