@@ -29,22 +29,28 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IHadith = HadithHouse.Services.IHadithResource;
-  import IHadithResource = HadithHouse.Services.IHadithResourceClass;
+  import IResource = angular.resource.IResource;
+  import IHadithResource = HadithHouse.Services.IHadithResource;
+  import IChainResource = HadithHouse.Services.IChainResource;
+  import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
 
-  export class HadithPageCtrl extends EntityPageCtrl<IHadith> {
-    oldHadith:IHadith;
+  export class HadithPageCtrl extends EntityPageCtrl<IHadithResource> {
+    oldHadith:IHadithResource;
+    pagedChains:IEntityQueryResult<IChainResource & IResource<IChainResource>>;
     HadithResource:Services.IHadithResourceClass;
+    ChainResource:Services.IChainResourceClass;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
                 HadithResource:Services.IHadithResourceClass,
+                ChainResource:Services.IChainResourceClass,
                 ToastService:any) {
       // Setting HadithResource before calling super, because super might end up
       // calling methods which requires HadithResource, e.g. newEntity().
       this.HadithResource = HadithResource;
+      this.ChainResource = ChainResource;
       this.oldHadith = new this.HadithResource({});
       super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
     }
@@ -71,17 +77,24 @@ module HadithHouse.Controllers {
       this.entity.tags = this.oldHadith.tags.slice();
     }
 
-    protected newEntity() : IHadith {
+    protected newEntity() : IHadithResource {
       return new this.HadithResource({});
     }
 
     protected getEntityPath(id: number) {
       return 'hadith/' + id;
     }
+
+    protected setOpeningExitingBookMode(id:string) {
+      super.setOpeningExitingBookMode(id);
+      // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
+      // I don't think there is going to be a very large number of chains for hadiths.
+      this.pagedChains = this.ChainResource.pagedQuery({hadith: id});
+    }
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithResource, ToastService) {
-      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService) {
+      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResource, ChainResource, ToastService);
     });
 }

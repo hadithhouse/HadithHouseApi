@@ -40,8 +40,8 @@
 
   <label>Chains</label>
   <div>
-    <div ng-repeat="chain in ctrl.chains.results">
-      <hh-selector ids="chain.links" type="person" read-only="true" clickable="true"></hh-selector>
+    <div ng-repeat="chain in ctrl.pagedChains.results">
+      <hh-selector ids="chain.persons" type="person" read-only="true" clickable="true"></hh-selector>
     </div>
   </div>
 </div>

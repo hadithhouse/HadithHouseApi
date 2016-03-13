@@ -168,6 +168,31 @@ module HadithHouse.Services {
     });
   });
 
+  export interface IChainResource extends IEntity, IResource<IChainResource> {
+    hadith:number;
+    persons:Array<number>;
+  }
+
+  export interface IChainResourceClass extends IEntityResourceClass<IChainResource>, IResourceClass<IChainResource> {
+
+  }
+
+  HadithHouse.HadithHouseApp.factory('ChainResource', ($resource:ng.resource.IResourceService):IChainResourceClass => {
+    return <IChainResourceClass>$resource<IChainResource, IChainResourceClass>('/apis/chains/:id', {id: '@id'}, {
+      'query': {
+        method: 'GET',
+        isArray: true,
+        transformResponse: function (data) {
+          return JSON.parse(data).results;
+        }
+      },
+      'pagedQuery': {
+        method: 'GET',
+        isArray: false,
+      }
+    });
+  });
+
   export interface IUserResource extends IEntity, IResource<IUserResource> {
     first_name:string;
     last_name:string;

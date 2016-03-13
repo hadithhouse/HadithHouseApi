@@ -71,14 +71,11 @@ var HadithHouse;
             HadithPageCtrl.prototype.getEntityPath = function (id) {
                 return 'hadith/' + id;
             };
-            HadithPageCtrl.prototype.setAddingNewBookMode = function () {
-                _super.prototype.setAddingNewBookMode.call(this);
-            };
             HadithPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
                 _super.prototype.setOpeningExitingBookMode.call(this, id);
                 // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
                 // I don't think there is going to be a very large number of chains for hadiths.
-                this.chains = this.ChainResource.pagedQuery({ hadith: id });
+                this.pagedChains = this.ChainResource.pagedQuery({ hadith: id });
             };
             return HadithPageCtrl;
         })(Controllers.EntityPageCtrl);
