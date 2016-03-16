@@ -37,12 +37,12 @@ module HadithHouse.Controllers {
     addingNew:boolean;
     isEditing:boolean;
 
-    constructor(private $scope:ng.IScope,
-                private $rootScope:ng.IScope,
-                private $location:ng.ILocationService,
-                private $routeParams:any,
-                private EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
-                private ToastService:any) {
+    constructor(protected $scope:ng.IScope,
+                protected $rootScope:ng.IScope,
+                protected $location:ng.ILocationService,
+                protected $routeParams:any,
+                protected EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
+                protected ToastService:any) {
       if (this.$routeParams.id === 'new') {
         this.setAddingNewBookMode();
       } else {

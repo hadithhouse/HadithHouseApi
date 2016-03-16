@@ -33,10 +33,13 @@ module HadithHouse.Controllers {
   import IHadithResource = HadithHouse.Services.IHadithResource;
   import IChainResource = HadithHouse.Services.IChainResource;
   import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
+  import IDialogService = angular.material.IDialogService;
 
   export class HadithPageCtrl extends EntityPageCtrl<IHadithResource> {
     oldHadith:IHadithResource;
     pagedChains:IEntityQueryResult<IChainResource & IResource<IChainResource>>;
+    chainCopies:any;
+    $mdDialog:IDialogService
     HadithResourceClass:Services.IHadithResourceClass;
     ChainResourceClass:Services.IChainResourceClass;
 
@@ -44,6 +47,7 @@ module HadithHouse.Controllers {
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
+                $mdDialog:IDialogService,
                 HadithResourceClass:Services.IHadithResourceClass,
                 ChainResourceClass:Services.IChainResourceClass,
                 ToastService:any) {
@@ -52,6 +56,8 @@ module HadithHouse.Controllers {
       this.HadithResourceClass = HadithResourceClass;
       this.ChainResourceClass = ChainResourceClass;
       this.oldHadith = new this.HadithResourceClass({});
+      this.$mdDialog = $mdDialog;
+      this.chainCopies = {};
       super($scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
     }
 
@@ -89,12 +95,93 @@ module HadithHouse.Controllers {
       super.setOpeningExitingBookMode(id);
       // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
       // I don't think there is going to be a very large number of chains for hadiths.
-      this.pagedChains = this.ChainResourceClass.pagedQuery({hadith: id});
+      this.pagedChains = this.ChainResourceClass.pagedQuery({hadith: id}, function(c) {
+        c.isEditing = false;
+        c.addingNew = false;
+      });
+    }
+
+    /**
+     * Makes a copy of the data of the hadith in case we have to restore them
+     * if the user cancels editing or we fail to send changes to the server.
+     */
+    protected copyChain(chain: IChainResource & IResource<IChainResource>) {
+      this.chainCopies[chain.id] = {
+        persons: chain.persons.slice()
+      }
+    }
+
+    /**
+     * Restores the saved data of the hadith after the user cancels editing
+     * or we fail to send changes to the server.
+     */
+    protected restoreChain(chain: IChainResource & IResource<IChainResource>) {
+      chain.persons = this.chainCopies[chain.id].persons.slice();
+    }
+
+    public startChainEditing(chain:any) {
+      chain.isEditing = true;
+      this.copyChain(chain);
+    }
+
+    public saveChain(chain:any) {
+      this.ChainResourceClass.save(chain, (result) => {
+        chain.isEditing = false;
+        chain.isNew = false;
+      }, (result) => {
+
+      });
+    }
+
+    public cancelChainEditing(chain:any) {
+      if (chain.addingNew) {
+        // Item is not yet saved, just remove it.
+        this.pagedChains.results = this.pagedChains.results.filter((c) => {
+          return c != chain;
+        });
+      } else {
+        chain.isEditing = false;
+        this.restoreChain(chain);
+      }
+    }
+
+    public addNewChain() {
+      var chain = new this.ChainResourceClass();
+      chain.hadith = this.entity.id;
+      chain.isEditing = true;
+      chain.addingNew = true;
+      this.pagedChains.results.push(chain);
+    }
+
+    public deleteChain(event:any, chain:IChainResource) {
+
+      var confirm = this.$mdDialog.confirm()
+        .title('Confirm')
+        .textContent('Are you sure you want to delete the chain?')
+        .ok('Yes')
+        .cancel('No')
+        .targetEvent(event);
+      this.$mdDialog.show(confirm).then(() => {
+        this.ChainResourceClass.delete({id: chain.id}, () => {
+          this.ToastService.show('Successfully deleted');
+          this.pagedChains.results = this.pagedChains.results.filter((e) => {
+            return e.id != chain.id;
+          });
+        }, (result) => {
+          if (result.data && result.data.detail) {
+            this.ToastService.show("Failed to delete chain. Error was: " + result.data.detail);
+          } else if (result.data) {
+            this.ToastService.show("Failed to delete chain. Error was: " + result.data);
+          } else {
+            this.ToastService.show("Failed to delete chain. Please try again!");
+          }
+        });
+      });
     }
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService) {
-      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService) {
+      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService);
     });
 }
