@@ -38,11 +38,44 @@
   <hh-selector ids="ctrl.entity.tags" type="hadithtag" read-only="!ctrl.isEditing"
                allow-create-new-entities="true" clickable="true"></hh-selector>
 
-  <label>Chains</label>
+  <label>
+    Chains
+    <md-icon class="material-icons"
+             ng-click="ctrl.addNewChain()"
+             ng-if="ctrl.$rootScope.user.permissions.add_chain">add
+    </md-icon>
+  </label>
   <div>
-    <div ng-repeat="chain in ctrl.pagedChains.results">
-      <hh-selector ids="chain.persons" type="person" read-only="true" clickable="true"></hh-selector>
-    </div>
+    <table>
+      <tr ng-repeat="chain in ctrl.pagedChains.results">
+        <td>
+          <hh-selector ids="chain.persons" type="person" read-only="!chain.isEditing" clickable="true"></hh-selector>
+        </td>
+        <td style="width: 70px;">
+          <md-icon class="material-icons"
+                   ng-click="ctrl.startChainEditing(chain)"
+                   ng-hide="chain.isEditing"
+                   ng-if="ctrl.$rootScope.user.permissions.change_chain">edit
+          </md-icon>
+          <md-icon class="material-icons"
+                   ng-click="ctrl.deleteChain($event, chain)"
+                   ng-hide="chain.isEditing"
+                   ng-if="ctrl.$rootScope.user.permissions.delete_chain">close
+          </md-icon>
+          <md-icon class="material-icons"
+                   ng-click="ctrl.cancelChainEditing(chain)"
+                   ng-hide="!chain.isEditing || ctrl.addingNew"
+                   ng-if="ctrl.$rootScope.user.permissions.change_chain">cancel
+          </md-icon>
+          <md-icon class="material-icons"
+                   ng-click="ctrl.saveChain(chain)"
+                   ng-hide="!chain.isEditing"
+                   ng-if="ctrl.$rootScope.user.permissions.change_hadith">save
+          </md-icon>
+        </td>
+      </tr>
+    </table>
+
   </div>
 </div>
 <div ng-include="'/static/hadiths/html/entity-footer.html'"></div>

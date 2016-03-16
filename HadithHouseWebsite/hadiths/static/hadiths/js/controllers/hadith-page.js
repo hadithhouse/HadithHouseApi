@@ -37,12 +37,14 @@ var HadithHouse;
     (function (Controllers) {
         var HadithPageCtrl = (function (_super) {
             __extends(HadithPageCtrl, _super);
-            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService) {
+            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService) {
                 // Setting HadithResourceClass before calling super, because super might end up
                 // calling methods which requires HadithResourceClass, e.g. newEntity().
                 this.HadithResourceClass = HadithResourceClass;
                 this.ChainResourceClass = ChainResourceClass;
                 this.oldHadith = new this.HadithResourceClass({});
+                this.$mdDialog = $mdDialog;
+                this.chainCopies = {};
                 _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
             }
             /**
@@ -75,13 +77,89 @@ var HadithHouse;
                 _super.prototype.setOpeningExitingBookMode.call(this, id);
                 // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
                 // I don't think there is going to be a very large number of chains for hadiths.
-                this.pagedChains = this.ChainResourceClass.pagedQuery({ hadith: id });
+                this.pagedChains = this.ChainResourceClass.pagedQuery({ hadith: id }, function (c) {
+                    c.isEditing = false;
+                    c.addingNew = false;
+                });
+            };
+            /**
+             * Makes a copy of the data of the hadith in case we have to restore them
+             * if the user cancels editing or we fail to send changes to the server.
+             */
+            HadithPageCtrl.prototype.copyChain = function (chain) {
+                this.chainCopies[chain.id] = {
+                    persons: chain.persons.slice()
+                };
+            };
+            /**
+             * Restores the saved data of the hadith after the user cancels editing
+             * or we fail to send changes to the server.
+             */
+            HadithPageCtrl.prototype.restoreChain = function (chain) {
+                chain.persons = this.chainCopies[chain.id].persons.slice();
+            };
+            HadithPageCtrl.prototype.startChainEditing = function (chain) {
+                chain.isEditing = true;
+                this.copyChain(chain);
+            };
+            HadithPageCtrl.prototype.saveChain = function (chain) {
+                this.ChainResourceClass.save(chain, function (result) {
+                    chain.isEditing = false;
+                    chain.isNew = false;
+                }, function (result) {
+                });
+            };
+            HadithPageCtrl.prototype.cancelChainEditing = function (chain) {
+                if (chain.addingNew) {
+                    // Item is not yet saved, just remove it.
+                    this.pagedChains.results = this.pagedChains.results.filter(function (c) {
+                        return c != chain;
+                    });
+                }
+                else {
+                    chain.isEditing = false;
+                    this.restoreChain(chain);
+                }
+            };
+            HadithPageCtrl.prototype.addNewChain = function () {
+                var chain = new this.ChainResourceClass();
+                chain.hadith = this.entity.id;
+                chain.isEditing = true;
+                chain.addingNew = true;
+                this.pagedChains.results.push(chain);
+            };
+            HadithPageCtrl.prototype.deleteChain = function (event, chain) {
+                var _this = this;
+                var confirm = this.$mdDialog.confirm()
+                    .title('Confirm')
+                    .textContent('Are you sure you want to delete the chain?')
+                    .ok('Yes')
+                    .cancel('No')
+                    .targetEvent(event);
+                this.$mdDialog.show(confirm).then(function () {
+                    _this.ChainResourceClass.delete({ id: chain.id }, function () {
+                        _this.ToastService.show('Successfully deleted');
+                        _this.pagedChains.results = _this.pagedChains.results.filter(function (e) {
+                            return e.id != chain.id;
+                        });
+                    }, function (result) {
+                        if (result.data && result.data.detail) {
+                            _this.ToastService.show("Failed to delete chain. Error was: " + result.data.detail);
+                        }
+                        else if (result.data) {
+                            _this.ToastService.show("Failed to delete chain. Error was: " + result.data);
+                        }
+                        else {
+                            _this.ToastService.show("Failed to delete chain. Please try again!");
+                        }
+                    });
+                });
             };
             return HadithPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.HadithPageCtrl = HadithPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService) {
-            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, HadithResourceClass, ChainResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService) {
+            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
