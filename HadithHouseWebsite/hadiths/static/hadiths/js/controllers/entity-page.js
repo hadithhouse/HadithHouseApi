@@ -52,12 +52,12 @@ var HadithHouse;
                 this.finishEditing = function () {
                     // Send the changes to the server.
                     _this.entity.$save(function (result) {
-                        if (_this.addingNew) {
+                        if (_this.isAddingNew) {
                             _this.$location.path(_this.getEntityPath(_this.entity.id));
                         }
                         // Successfully saved changes. Don't need to do anything.
                         _this.isEditing = false;
-                        _this.addingNew = false;
+                        _this.isAddingNew = false;
                         _this.ToastService.show("Successful.");
                     }, function (result) {
                         if (result.data) {
@@ -83,7 +83,7 @@ var HadithHouse;
             };
             EntityPageCtrl.prototype.setAddingNewBookMode = function () {
                 this.entity = this.newEntity();
-                this.addingNew = true;
+                this.isAddingNew = true;
                 this.isEditing = true;
             };
             EntityPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
@@ -91,7 +91,7 @@ var HadithHouse;
                 this.entity = this.EntityResource.get({ id: id }, function () {
                     _this.onEntityLoaded();
                 });
-                this.addingNew = false;
+                this.isAddingNew = false;
                 this.isEditing = false;
             };
             /**

@@ -171,6 +171,8 @@ module HadithHouse.Services {
   export interface IChainResource extends IEntity, IResource<IChainResource> {
     hadith:number;
     persons:Array<number>;
+    isEditing:boolean;
+
   }
 
   export interface IChainResourceClass extends IEntityResourceClass<IChainResource>, IResourceClass<IChainResource> {

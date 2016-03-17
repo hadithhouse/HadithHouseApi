@@ -79,7 +79,7 @@ var HadithHouse;
                 // I don't think there is going to be a very large number of chains for hadiths.
                 this.pagedChains = this.ChainResourceClass.pagedQuery({ hadith: id }, function (c) {
                     c.isEditing = false;
-                    c.addingNew = false;
+                    c.isAddingNew = false;
                 });
             };
             /**
@@ -110,7 +110,7 @@ var HadithHouse;
                 });
             };
             HadithPageCtrl.prototype.cancelChainEditing = function (chain) {
-                if (chain.addingNew) {
+                if (chain.isAddingNew) {
                     // Item is not yet saved, just remove it.
                     this.pagedChains.results = this.pagedChains.results.filter(function (c) {
                         return c != chain;
@@ -125,7 +125,7 @@ var HadithHouse;
                 var chain = new this.ChainResourceClass();
                 chain.hadith = this.entity.id;
                 chain.isEditing = true;
-                chain.addingNew = true;
+                chain.isAddingNew = true;
                 this.pagedChains.results.push(chain);
             };
             HadithPageCtrl.prototype.deleteChain = function (event, chain) {

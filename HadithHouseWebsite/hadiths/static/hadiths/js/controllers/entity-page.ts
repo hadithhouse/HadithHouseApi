@@ -34,7 +34,7 @@ module HadithHouse.Controllers {
 
   export abstract class EntityPageCtrl<T extends IEntity> {
     entity:T & IResource<T>;
-    addingNew:boolean;
+    isAddingNew:boolean;
     isEditing:boolean;
 
     constructor(protected $scope:ng.IScope,
@@ -84,7 +84,7 @@ module HadithHouse.Controllers {
 
     protected setAddingNewBookMode() {
       this.entity = this.newEntity();
-      this.addingNew = true;
+      this.isAddingNew = true;
       this.isEditing = true;
     }
 
@@ -92,7 +92,7 @@ module HadithHouse.Controllers {
       this.entity = this.EntityResource.get({id: id}, () => {
         this.onEntityLoaded();
       });
-      this.addingNew = false;
+      this.isAddingNew = false;
       this.isEditing = false;
     }
 
@@ -110,12 +110,12 @@ module HadithHouse.Controllers {
     private finishEditing = () => {
       // Send the changes to the server.
       this.entity.$save((result) => {
-        if (this.addingNew) {
+        if (this.isAddingNew) {
           this.$location.path(this.getEntityPath(this.entity.id));
         }
         // Successfully saved changes. Don't need to do anything.
         this.isEditing = false;
-        this.addingNew = false;
+        this.isAddingNew = false;
         this.ToastService.show("Successful.");
       }, (result) => {
         if (result.data) {
