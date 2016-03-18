@@ -28,19 +28,95 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../directives/tree.directive.ts" />
 /// <reference path="entity-page.ts" />
 var HadithHouse;
 (function (HadithHouse) {
     var Controllers;
     (function (Controllers) {
+        var ChainTreeNodeArray = (function () {
+            function ChainTreeNodeArray() {
+                this.nodeDict = {};
+                this.nodes = [];
+            }
+            ChainTreeNodeArray.prototype.add = function (node) {
+                if (this.nodeDict[node.id]) {
+                    // It is already added.
+                    return;
+                }
+                this.nodes.push(node);
+                this.nodeDict[node.id] = node;
+            };
+            ChainTreeNodeArray.prototype.get = function (id) {
+                return this.nodeDict[id] || null;
+            };
+            return ChainTreeNodeArray;
+        })();
+        var ChainTreeNode = (function () {
+            function ChainTreeNode() {
+            }
+            ChainTreeNode.create = function (rootPersonId, chains, personsDict) {
+                var previousLevel = new ChainTreeNodeArray();
+                var rootNode = {
+                    id: rootPersonId.toString(),
+                    name: personsDict[rootPersonId].full_name,
+                    _children: [],
+                    children: []
+                };
+                previousLevel.add(rootNode);
+                var finished = false;
+                for (var i = 0; !finished; i++) {
+                    var currentLevel = new ChainTreeNodeArray();
+                    finished = true;
+                    for (var j = 0; j < chains.length; j++) {
+                        // Does this chain have any person at and beyond this level?
+                        if (chains[j].persons.length <= i) {
+                            continue;
+                        }
+                        finished = false;
+                        var personId = chains[j].persons[i];
+                        var parentPersonId;
+                        if (i == 0) {
+                            parentPersonId = rootPersonId;
+                        }
+                        else {
+                            parentPersonId = chains[j].persons[i - 1];
+                        }
+                        var node = {
+                            id: personId.toString(),
+                            name: personsDict[personId].full_name,
+                            _children: [],
+                            children: []
+                        };
+                        previousLevel.get(parentPersonId.toString()).children.push(node);
+                        currentLevel.add(node);
+                    }
+                    previousLevel = currentLevel;
+                }
+                var stack = [rootNode];
+                while (stack.length > 0) {
+                    var n = stack.pop();
+                    delete n.id;
+                    if (n.children) {
+                        n.children.forEach(function (c) {
+                            stack.push(c);
+                        });
+                    }
+                }
+                return rootNode;
+            };
+            return ChainTreeNode;
+        })();
         var HadithPageCtrl = (function (_super) {
             __extends(HadithPageCtrl, _super);
-            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService) {
+            function HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService) {
                 // Setting HadithResourceClass before calling super, because super might end up
                 // calling methods which requires HadithResourceClass, e.g. newEntity().
                 this.HadithResourceClass = HadithResourceClass;
+                this.PersonResourceClass = PersonResourceClass;
                 this.ChainResourceClass = ChainResourceClass;
                 this.oldHadith = new this.HadithResourceClass({});
                 this.$mdDialog = $mdDialog;
@@ -73,13 +149,17 @@ var HadithHouse;
             HadithPageCtrl.prototype.getEntityPath = function (id) {
                 return 'hadith/' + id;
             };
-            HadithPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
-                _super.prototype.setOpeningExitingBookMode.call(this, id);
+            HadithPageCtrl.prototype.setOpeningExistingEntityMode = function (id) {
+                var _this = this;
+                _super.prototype.setOpeningExistingEntityMode.call(this, id);
                 // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
                 // I don't think there is going to be a very large number of chains for hadiths.
-                this.pagedChains = this.ChainResourceClass.pagedQuery({ hadith: id }, function (c) {
-                    c.isEditing = false;
-                    c.isAddingNew = false;
+                this.pagedChains = this.ChainResourceClass.pagedQuery({ hadith: id }, function () {
+                    _this.pagedChains.results.forEach(function (c) {
+                        c.isEditing = false;
+                        c.isAddingNew = false;
+                    });
+                    _this.buildChainTree();
                 });
             };
             /**
@@ -103,10 +183,10 @@ var HadithHouse;
                 this.copyChain(chain);
             };
             HadithPageCtrl.prototype.saveChain = function (chain) {
-                this.ChainResourceClass.save(chain, function (result) {
+                this.ChainResourceClass.save(chain, function () {
                     chain.isEditing = false;
                     chain.isNew = false;
-                }, function (result) {
+                }, function () {
                 });
             };
             HadithPageCtrl.prototype.cancelChainEditing = function (chain) {
@@ -155,11 +235,31 @@ var HadithHouse;
                     });
                 });
             };
+            HadithPageCtrl.prototype.buildChainTree = function () {
+                var _this = this;
+                // Find the IDs of all persons in all chains to make a single request to
+                // fetch their names.
+                var allPersons = [this.entity.person];
+                this.pagedChains.results.forEach(function (chain) {
+                    allPersons = allPersons.concat(chain.persons);
+                });
+                allPersons = _.uniq(allPersons);
+                // Fetch details
+                // TODO: We should do this request early and cache it so that selector
+                // directives won't need to fetch them again.
+                this.PersonResourceClass.query({ ids: allPersons.join(',') }, function (persons) {
+                    var personDict = {};
+                    persons.forEach(function (p) {
+                        personDict[p.id] = p;
+                    });
+                    _this.rootNode = ChainTreeNode.create(_this.entity.person, _this.pagedChains.results, personDict);
+                });
+            };
             return HadithPageCtrl;
         })(Controllers.EntityPageCtrl);
         Controllers.HadithPageCtrl = HadithPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService) {
-            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, ChainResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService) {
+            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

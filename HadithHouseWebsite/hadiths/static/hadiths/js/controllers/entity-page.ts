@@ -44,9 +44,9 @@ module HadithHouse.Controllers {
                 protected EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
                 protected ToastService:any) {
       if (this.$routeParams.id === 'new') {
-        this.setAddingNewBookMode();
+        this.setAddingNewEntityMode();
       } else {
-        this.setOpeningExitingBookMode(this.$routeParams.id);
+        this.setOpeningExistingEntityMode(this.$routeParams.id);
       }
       $(document).on('keyup', this.onKeyUp);
       $scope.$on('$destroy', () => {
@@ -82,13 +82,13 @@ module HadithHouse.Controllers {
 
     }
 
-    protected setAddingNewBookMode() {
+    protected setAddingNewEntityMode() {
       this.entity = this.newEntity();
       this.isAddingNew = true;
       this.isEditing = true;
     }
 
-    protected setOpeningExitingBookMode(id:string) {
+    protected setOpeningExistingEntityMode(id:string) {
       this.entity = this.EntityResource.get({id: id}, () => {
         this.onEntityLoaded();
       });

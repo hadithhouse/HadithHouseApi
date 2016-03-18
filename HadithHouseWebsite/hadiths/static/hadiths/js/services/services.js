@@ -45,7 +45,7 @@ var HadithHouse;
             });
         });
         HadithHouse.HadithHouseApp.factory('PersonResourceClass', function ($resource) {
-            return $resource('/apis/persons/:id', { id: '@id' }, {
+            return $resource('/apis/persons/:id?id=:ids', { id: '@id' }, {
                 'query': {
                     method: 'GET',
                     isArray: true,

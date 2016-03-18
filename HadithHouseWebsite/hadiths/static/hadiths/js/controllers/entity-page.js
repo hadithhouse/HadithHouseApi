@@ -69,10 +69,10 @@ var HadithHouse;
                     });
                 };
                 if (this.$routeParams.id === 'new') {
-                    this.setAddingNewBookMode();
+                    this.setAddingNewEntityMode();
                 }
                 else {
-                    this.setOpeningExitingBookMode(this.$routeParams.id);
+                    this.setOpeningExistingEntityMode(this.$routeParams.id);
                 }
                 $(document).on('keyup', this.onKeyUp);
                 $scope.$on('$destroy', function () {
@@ -81,12 +81,12 @@ var HadithHouse;
             }
             EntityPageCtrl.prototype.onEntityLoaded = function () {
             };
-            EntityPageCtrl.prototype.setAddingNewBookMode = function () {
+            EntityPageCtrl.prototype.setAddingNewEntityMode = function () {
                 this.entity = this.newEntity();
                 this.isAddingNew = true;
                 this.isEditing = true;
             };
-            EntityPageCtrl.prototype.setOpeningExitingBookMode = function (id) {
+            EntityPageCtrl.prototype.setOpeningExistingEntityMode = function (id) {
                 var _this = this;
                 this.entity = this.EntityResource.get({ id: id }, function () {
                     _this.onEntityLoaded();

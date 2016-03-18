@@ -103,7 +103,7 @@ module HadithHouse.Services {
   }
 
   HadithHouse.HadithHouseApp.factory('PersonResourceClass', ($resource:ng.resource.IResourceService):IPersonResourceClass => {
-    return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id', {id: '@id'}, {
+    return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id?id=:ids', {id: '@id'}, {
       'query': {
         method: 'GET',
         isArray: true,
@@ -172,7 +172,7 @@ module HadithHouse.Services {
     hadith:number;
     persons:Array<number>;
     isEditing:boolean;
-
+    isAddingNew:boolean;
   }
 
   export interface IChainResourceClass extends IEntityResourceClass<IChainResource>, IResourceClass<IChainResource> {
