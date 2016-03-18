@@ -5,11 +5,11 @@ var HadithHouse;
     var Directives;
     (function (Directives) {
         var Tree = (function () {
-            function Tree(elem) {
+            function Tree(elem, width, height) {
                 this._currentId = 0;
-                this.margin = { top: 20, right: 120, bottom: 20, left: 120 };
-                this.width = 960 - this.margin.right - this.margin.left;
-                this.height = 800 - this.margin.top - this.margin.bottom;
+                this.margin = { top: 50, right: 50, bottom: 50, left: 150 };
+                this.width = width - this.margin.right - this.margin.left;
+                this.height = height - this.margin.top - this.margin.bottom;
                 this.duration = 750;
                 this.tree = d3.layout.tree().size([this.height, this.width]);
                 this.diagonal = d3.svg.diagonal().projection(function (node) {
@@ -169,10 +169,20 @@ var HadithHouse;
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    root: '='
+                    root: '=',
+                    width: '@?',
+                    height: '@?'
                 },
                 link: function (scope, elem, attrs) {
-                    var tree = new Tree(elem[0]);
+                    var width = 800;
+                    var height = 600;
+                    if (attrs['width']) {
+                        width = parseInt(attrs['width']);
+                    }
+                    if (attrs['height']) {
+                        height = parseInt(attrs['height']);
+                    }
+                    var tree = new Tree(elem[0], width, height);
                     scope.$watch('root', function (newValue) {
                         if (newValue) {
                             tree.setRoot(newValue);

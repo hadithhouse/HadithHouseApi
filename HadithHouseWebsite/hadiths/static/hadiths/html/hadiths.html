@@ -1,12 +1,13 @@
 <div ng-include="'/static/hadiths/html/entity-listing-header.html'"></div>
-<div class="md-whiteframe-z1">
+<md-content class="md-whiteframe-z1" layout="column" flex layout-fill>
 
   <md-list>
     <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
         <md-icon class="material-icons"
                  ng-click="ctrl.deleteEntity($event, entity)"
-            ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close</md-icon>
+                 ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
+        </md-icon>
         <a ng-href="#/hadith/{{ entity.id }}">
           {{ entity.text | limitTo:50 }}
         </a>
@@ -14,12 +15,15 @@
       <md-divider ng-if="!$last"></md-divider>
     </md-list-item>
   </md-list>
-</div>
+</md-content>
 
-<md-button class="md-fab md-mini"
-           ng-href="#/hadith/new"
-           ng-if="ctrl.$rootScope.user.permissions.add_hadith">
-  <md-icon class="material-icons">add</md-icon>
-</md-button>
+<div layout="row">
+  <span flex></span>
+  <md-button class="md-fab md-mini"
+             ng-href="#/hadith/new"
+             ng-if="ctrl.$rootScope.user.permissions.add_hadith">
+    <md-icon class="material-icons">add</md-icon>
+  </md-button>
+</div>
 
 <div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>

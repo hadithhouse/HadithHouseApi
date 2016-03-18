@@ -103,7 +103,7 @@
       <input type="hidden" name="cmd" value="_s-xclick">
       <input type="hidden" name="hosted_button_id" value="US33JTX5B3478">
       <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0"
-             name="submit" alt="PayPal â€“ The safer, easier way to pay online.">
+             name="submit" alt="PayPal – The safer, easier way to pay online.">
       <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
     </form>
 
@@ -123,7 +123,7 @@
 
         <md-menu-content width="4">
           <md-menu-item>
-            <md-button ng-href="{{ fbUser.link }}">Profile</md-button>
+            <md-button ng-href="{{ fbUser.link }}">Facebook Profile</md-button>
           </md-menu-item>
           <md-menu-item>
             <md-button ng-click="ctrl.fbLogout()">Logout</md-button>
@@ -153,11 +153,11 @@
 
 
   <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
-    <md-content flex id="content">
-      <div style="height: 10px;">
+    <md-content flex layout="column" id="content">
+      <div layout="column" style="height: 10px;">
         <md-progress-linear md-mode="indeterminate" ng-show="pendingRequests > 0"></md-progress-linear>
       </div>
-      <div ng-view></div>
+      <md-content flex layout="column" ng-view></md-content>
     </md-content>
   </div>
 </div>

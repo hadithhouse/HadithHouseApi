@@ -1,7 +1,7 @@
 <div ng-if="ctrl.error">
   Couldn't load book or the book is not found.
 </div>
-<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>
     {{ ctrl.entity.title }}
     <md-icon class="material-icons"
@@ -41,5 +41,5 @@
     <input ng-model="ctrl.entity.pub_year" ng-disabled="!ctrl.isEditing"/>
   </md-input-container>
   </div>
-</div>
-<div ng-include="'/static/hadiths/html/entity-footer.html'"></div>
+</md-content>
+<div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>
