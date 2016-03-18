@@ -10,6 +10,8 @@ class IdsFilter(BaseFilterBackend):
     if ids_str is None:
       return queryset
     ids = [int(id.strip()) for id in ids_str.split(',') if id.strip()]
+    if len(ids) == 0:
+      return queryset
     filtered_queryset = queryset.filter(id__in=ids)
     return filtered_queryset
 
@@ -23,6 +25,8 @@ class TagsFilter(BaseFilterBackend):
     if tags_str is None:
       return queryset
     tags = [tag.strip() for tag in tags_str.split(',') if tag.strip()]
+    if len(tags) == 0:
+      return queryset
     filtered_queryset = queryset
     for tag in tags:
       filtered_queryset = filtered_queryset.filter(tags__name=tag)

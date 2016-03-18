@@ -20,7 +20,7 @@
       </md-autocomplete>
       <md-chip-template>
         <span ng-if="ctrl.clickable !== 'true' || !ctrl.readOnly">
-          <strong>{{ ctrl.entityToString($chip) }}</strong>
+          {{ ctrl.entityToString($chip) }}
         </span>
         <a ng-href="#/{{ ctrl.type }}/{{ $chip.id }}" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
           {{ ctrl.entityToString($chip) }}
