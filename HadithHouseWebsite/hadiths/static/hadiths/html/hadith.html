@@ -1,7 +1,7 @@
 <div ng-if="ctrl.error">
   Couldn't load hadith or the hadith is not found.
 </div>
-<div ng-if="!ctrl.error" layout="column" flex layout-fill>
+<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>
     Hadith {{ ctrl.entity.id }}
     <md-icon class="material-icons"
@@ -76,8 +76,9 @@
       </tr>
     </table>
   </div>
-  <hh-tree root="ctrl.rootNode">
+  <hh-tree root="ctrl.rootNode" width="1500" height="600"
+           style="background-color: rgb(240, 240, 240); width: 800px; height: 600px; margin-top: 10px; overflow-x: auto;">
 
   </hh-tree>
-</div>
-<div ng-include="'/static/hadiths/html/entity-footer.html'"></div>
+</md-content>
+<div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>
