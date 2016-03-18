@@ -62,7 +62,7 @@ var HadithHouse;
                 var previousLevel = new ChainTreeNodeArray();
                 var rootNode = {
                     id: rootPersonId.toString(),
-                    name: personsDict[rootPersonId].full_name,
+                    name: personsDict[rootPersonId].display_name || personsDict[rootPersonId].full_name,
                     _children: [],
                     children: []
                 };
