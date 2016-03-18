@@ -25,10 +25,10 @@ module HadithHouse.Directives {
     svg:d3.Selection<any>;
     duration:number;
 
-    constructor(elem:any) {
-      this.margin = {top: 20, right: 120, bottom: 20, left: 120};
-      this.width = 960 - this.margin.right - this.margin.left;
-      this.height = 800 - this.margin.top - this.margin.bottom;
+    constructor(elem:any, width:number, height:number) {
+      this.margin = {top: 50, right: 50, bottom: 50, left: 150};
+      this.width = width - this.margin.right - this.margin.left;
+      this.height = height - this.margin.top - this.margin.bottom;
       this.duration = 750;
 
       this.tree = d3.layout.tree<ITreeNode>().size([this.height, this.width]);
@@ -218,10 +218,20 @@ module HadithHouse.Directives {
       restrict: 'E',
       replace: true,
       scope: {
-        root: '='
+        root: '=',
+        width: '@?',
+        height: '@?',
       },
       link: function (scope:IScope, elem:IAugmentedJQuery, attrs:IAttributes) {
-        var tree = new Tree(elem[0]);
+        var width = 800;
+        var height = 600;
+        if (attrs['width']) {
+          width = parseInt(attrs['width']);
+        }
+        if (attrs['height']) {
+          height = parseInt(attrs['height']);
+        }
+        var tree = new Tree(elem[0], width, height);
 
         scope.$watch('root', function (newValue) {
           if (newValue) {
