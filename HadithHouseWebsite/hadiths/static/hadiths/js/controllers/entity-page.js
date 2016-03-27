@@ -68,6 +68,9 @@ var HadithHouse;
                         }
                     });
                 };
+            }
+            EntityPageCtrl.prototype.initialize = function () {
+                var _this = this;
                 if (this.$routeParams.id === 'new') {
                     this.setAddingNewEntityMode();
                 }
@@ -75,10 +78,10 @@ var HadithHouse;
                     this.setOpeningExistingEntityMode(this.$routeParams.id);
                 }
                 $(document).on('keyup', this.onKeyUp);
-                $scope.$on('$destroy', function () {
+                this.$scope.$on('$destroy', function () {
                     $(document).off('keyup', _this.onKeyUp);
                 });
-            }
+            };
             EntityPageCtrl.prototype.onEntityLoaded = function () {
             };
             EntityPageCtrl.prototype.setAddingNewEntityMode = function () {
@@ -112,7 +115,7 @@ var HadithHouse;
             };
             ;
             return EntityPageCtrl;
-        })();
+        }());
         Controllers.EntityPageCtrl = EntityPageCtrl;
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

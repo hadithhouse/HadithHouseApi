@@ -134,6 +134,7 @@ module HadithHouse.Controllers {
                 PersonResourceClass:Services.IPersonResourceClass,
                 ChainResourceClass:Services.IChainResourceClass,
                 ToastService:any) {
+      super($scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
       // Setting HadithResourceClass before calling super, because super might end up
       // calling methods which requires HadithResourceClass, e.g. newEntity().
       this.HadithResourceClass = HadithResourceClass;
@@ -142,7 +143,6 @@ module HadithHouse.Controllers {
       this.oldHadith = new this.HadithResourceClass({});
       this.$mdDialog = $mdDialog;
       this.chainCopies = {};
-      super($scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
     }
 
     /**
@@ -290,7 +290,9 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService) {
-      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService, PersonResource) {
+      var ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService);
+      ctrl.initialize();
+      return ctrl;
     });
 }

@@ -43,13 +43,16 @@ module HadithHouse.Controllers {
                 protected $routeParams:any,
                 protected EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
                 protected ToastService:any) {
+    }
+    
+    public initialize() {
       if (this.$routeParams.id === 'new') {
         this.setAddingNewEntityMode();
       } else {
         this.setOpeningExistingEntityMode(this.$routeParams.id);
       }
       $(document).on('keyup', this.onKeyUp);
-      $scope.$on('$destroy', () => {
+      this.$scope.$on('$destroy', () => {
         $(document).off('keyup', this.onKeyUp);
       });
     }

@@ -84,7 +84,7 @@ var HadithHouse;
                 });
             };
             return UserPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.UserPageCtrl = UserPageCtrl;
         HadithHouse.HadithHouseApp.controller('UserPageCtrl', function ($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
             return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);

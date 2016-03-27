@@ -54,7 +54,7 @@ var HadithHouse;
                 return this.nodeDict[id] || null;
             };
             return ChainTreeNodeArray;
-        })();
+        }());
         var ChainTreeNode = (function () {
             function ChainTreeNode() {
             }
@@ -109,10 +109,11 @@ var HadithHouse;
                 return rootNode;
             };
             return ChainTreeNode;
-        })();
+        }());
         var HadithPageCtrl = (function (_super) {
             __extends(HadithPageCtrl, _super);
             function HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService) {
+                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
                 // Setting HadithResourceClass before calling super, because super might end up
                 // calling methods which requires HadithResourceClass, e.g. newEntity().
                 this.HadithResourceClass = HadithResourceClass;
@@ -121,7 +122,6 @@ var HadithHouse;
                 this.oldHadith = new this.HadithResourceClass({});
                 this.$mdDialog = $mdDialog;
                 this.chainCopies = {};
-                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
             }
             /**
              * Makes a copy of the data of the hadith in case we have to restore them
@@ -256,10 +256,12 @@ var HadithHouse;
                 });
             };
             return HadithPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.HadithPageCtrl = HadithPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService) {
-            return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithPageCtrl', function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService, PersonResource) {
+            var ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService);
+            ctrl.initialize();
+            return ctrl;
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
