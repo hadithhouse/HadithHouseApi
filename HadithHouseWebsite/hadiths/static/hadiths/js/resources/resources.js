@@ -44,7 +44,7 @@ var HadithHouse;
             Entity.prototype.load = function (id) {
                 var _this = this;
                 this.$http.get(getRestfulUrl(this.baseUrl, id)).then(function (result) {
-                    _this.set(result);
+                    _this.set(result.data);
                 });
             };
             /**
@@ -57,9 +57,14 @@ var HadithHouse;
                 }
             };
             Entity.prototype.save = function () {
+                var _this = this;
                 var url = getRestfulUrl(this.baseUrl, this.id);
                 if (this.id) {
-                    return this.$http.post(url, this);
+                    var promise = this.$http.post(url, this);
+                    promise.then(function (response) {
+                        _this.id = response.data.id;
+                    });
+                    return promise;
                 }
                 else {
                     return this.$http.put(url, this);
@@ -75,14 +80,12 @@ var HadithHouse;
             return Entity;
         }());
         Resources.Entity = Entity;
-        var EntityArray = (function (_super) {
-            __extends(EntityArray, _super);
-            function EntityArray() {
-                _super.apply(this, arguments);
+        var PagedResults = (function () {
+            function PagedResults() {
             }
-            return EntityArray;
-        }(Array));
-        Resources.EntityArray = EntityArray;
+            return PagedResults;
+        }());
+        Resources.PagedResults = PagedResults;
         var CacheableResource = (function () {
             function CacheableResource(TEntityClass, baseUrl, $http, $q) {
                 this.TEntityClass = TEntityClass;
@@ -91,27 +94,59 @@ var HadithHouse;
                 this.$q = $q;
                 this.cache = new Cache();
             }
-            CacheableResource.prototype.get = function (idOrIds) {
-                if (typeof (idOrIds) === 'number') {
-                    return this.getBySingleId(idOrIds);
-                }
-                else {
-                    return this.getByMultipleIds(idOrIds);
-                }
+            CacheableResource.prototype.create = function () {
+                return new this.TEntityClass(this.$http, this.baseUrl);
             };
             CacheableResource.prototype.query = function (query) {
                 var _this = this;
+                var queryParams = $.param(query);
                 var entities = [];
-                this.$http.get(getRestfulUrl(this.baseUrl) + '?search=' + query)
-                    .then(function (response) {
+                var httpPromise = this.$http.get(getRestfulUrl(this.baseUrl) + '?' + queryParams);
+                var queryDeferred = this.$q.defer();
+                httpPromise.then(function (response) {
                     for (var _i = 0, _a = response.data.results; _i < _a.length; _i++) {
                         var entity = _a[_i];
                         entities.push(entity);
                         // Since we already get some entities back, we might as well cache them.
                         _this.cache.put(entity.id, entity);
                     }
+                    queryDeferred.resolve(entities);
+                }, function (reason) {
+                    queryDeferred.reject(reason);
                 });
+                entities.promise = queryDeferred.promise;
                 return entities;
+            };
+            CacheableResource.prototype.pagedQuery = function (query) {
+                var _this = this;
+                var queryParams = $.param(query);
+                var pagedEntities = new PagedResults();
+                var promise = this.$http.get(getRestfulUrl(this.baseUrl) + '?' + queryParams);
+                promise.then(function (response) {
+                    pagedEntities.count = response.data.count;
+                    pagedEntities.next = response.data.next;
+                    pagedEntities.previous = response.data.previous;
+                    pagedEntities.results = [];
+                    for (var _i = 0, _a = response.data.results; _i < _a.length; _i++) {
+                        var entity = _a[_i];
+                        pagedEntities.results.push(entity);
+                        // Since we already get some entities back, we might as well cache them.
+                        _this.cache.put(entity.id, entity);
+                    }
+                });
+                pagedEntities.promise = promise;
+                return pagedEntities;
+            };
+            CacheableResource.prototype.get = function (idOrIds) {
+                if (Array.isArray(idOrIds) && typeof (idOrIds[0]) === 'number') {
+                    return this.getByMultipleIds(idOrIds);
+                }
+                else if (typeof (idOrIds) === 'number') {
+                    return this.getBySingleId(idOrIds);
+                }
+                else {
+                    throw 'Invalid argument passed to get(). Arugment should be a number or an array of numbers.';
+                }
             };
             CacheableResource.prototype.getBySingleId = function (id) {
                 return this.getByMultipleIds([id])[0];
@@ -119,36 +154,70 @@ var HadithHouse;
             CacheableResource.prototype.getByMultipleIds = function (ids) {
                 var _this = this;
                 // Which objects do we already have in the cache?
-                var objects = [];
-                var toFetch = [];
+                var entities = [];
+                var entitiesToFetch = [];
+                // Check the cache to see which entities we already have and which ones
+                // we need to fetch from the cache.
+                var deferredsToResolve = {};
                 for (var _i = 0, ids_1 = ids; _i < ids_1.length; _i++) {
                     var id = ids_1[_i];
-                    var obj = this.cache.get(id);
-                    if (obj != null) {
-                        console.log('Found this object in cache, no need to retrieve it:');
-                        console.dir(obj);
-                        objects.push(obj);
+                    var entity = this.cache.get(id);
+                    if (entity != null) {
+                        entities.push(entity);
+                        // Create a promise object in the entity in case the user wants to
+                        // get notified when the object is loaded or an error happens. Here,
+                        // though, we resolve it immediately because we already have it in
+                        // the cache.
+                        var deferred = this.$q.defer();
+                        entity.promise = deferred.promise;
+                        deferred.resolve(entity);
                     }
                     else {
-                        console.log("Couldn't find this object in cache, need to fetch it:");
-                        console.dir(id);
-                        obj = new this.TEntityClass(this.$http, this.baseUrl);
-                        this.cache.put(id, obj);
-                        toFetch.push(id);
-                        objects.push(obj);
+                        // Create a stub for the entity to fill in later when we receives
+                        // the response from the RESTful API. Also cache it so next requests
+                        // for the same object won't have to go to the RESTful API again.
+                        entity = this.create();
+                        this.cache.put(id, entity);
+                        entitiesToFetch.push(id);
+                        entities.push(entity);
+                        // Create a promise object in the entity in case the user wants to
+                        // get notified when the object is loaded or an error happens.
+                        var deferred = this.$q.defer();
+                        entity.promise = deferred.promise;
+                        // Save an instance of the deferred so we could resolve it later
+                        // when we get the response.
+                        deferredsToResolve[id] = deferred;
                     }
                 }
-                // Create cache objects
-                if (toFetch.length > 0) {
-                    this.$http.get(getRestfulUrl(this.baseUrl, toFetch))
-                        .then(function (response) {
+                // Requests the entities we don't have from the RESTful API.
+                if (entitiesToFetch.length > 0) {
+                    var httpPromise = this.$http.get(getRestfulUrl(this.baseUrl, entitiesToFetch));
+                    var entitiesDeferred = this.$q.defer();
+                    httpPromise.then(function (response) {
                         for (var _i = 0, _a = response.data.results; _i < _a.length; _i++) {
                             var entity = _a[_i];
                             _this.cache.get(entity.id).set(entity);
+                            // Resolve the promise object of the entity.
+                            deferredsToResolve[entity.id].resolve(entity);
                         }
+                        entitiesDeferred.resolve(entities);
+                    }, function (reason) {
+                        for (var _i = 0, entities_1 = entities; _i < entities_1.length; _i++) {
+                            var entity = entities_1[_i];
+                            // Rejects the promise object of the entity.
+                            deferredsToResolve[entity.id].reject(reason);
+                        }
+                        entitiesDeferred.reject(reason);
                     });
+                    entities.promise = entitiesDeferred.promise;
                 }
-                return objects;
+                else {
+                    // Nothing to fetch, so create promise object that resolves immediately.
+                    var deferred = this.$q.defer();
+                    entities.promise = deferred.promise;
+                    deferred.resolve(entities);
+                }
+                return entities;
             };
             return CacheableResource;
         }());

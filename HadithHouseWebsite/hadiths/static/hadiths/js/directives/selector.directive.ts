@@ -175,7 +175,7 @@ module HadithHouse.Directives {
     }
 
     public findEntities(query) {
-      return this.EntityResource.query(query);
+      return this.EntityResource.query({search: query});
     };
 
     public entityToString = (entity) => {

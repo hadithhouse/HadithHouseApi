@@ -163,7 +163,7 @@ var HadithHouse;
                 $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
             }
             SelectorCtrl.prototype.findEntities = function (query) {
-                return this.EntityResource.query(query);
+                return this.EntityResource.query({ search: query });
             };
             ;
             return SelectorCtrl;

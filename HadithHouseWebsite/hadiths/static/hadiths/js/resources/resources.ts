@@ -7,6 +7,7 @@ module HadithHouse.Resources {
   import Cache = HadithHouse.Caching.Cache;
   import IQService = angular.IQService;
   import IHttpPromise = angular.IHttpPromise;
+  import IPromise = angular.IPromise;
 
   function getRestfulUrl(baseUrl:string, idOrIds?:number|number[]):string {
     if (!idOrIds) {
@@ -26,6 +27,7 @@ module HadithHouse.Resources {
     updated_by:number;
     added_on:string;
     updated_on:string;
+    promise:IHttpPromise<Entity>;
 
     /**
      * Loads the entity having the given URL, or set it from an existing object.
@@ -50,8 +52,8 @@ module HadithHouse.Resources {
      * @param id The ID of the entity to load.
      */
     private load(id:number) {
-      this.$http.get(getRestfulUrl(this.baseUrl, id)).then((result) => {
-        this.set(<Entity>result);
+      this.$http.get<Entity>(getRestfulUrl(this.baseUrl, id)).then((result) => {
+        this.set(result.data);
       });
     }
 
@@ -68,9 +70,14 @@ module HadithHouse.Resources {
     public save() {
       let url = getRestfulUrl(this.baseUrl, this.id);
       if (this.id) {
-        return this.$http.post(url, this);
+        let promise = this.$http.post<Entity>(url, this);
+        promise.then((response) => {
+          // TODO: We should copy all the object to save other auto-generated TODO.
+          this.id = response.data.id;
+        });
+        return promise;
       } else {
-        return this.$http.put(url, this);
+        return this.$http.put<Entity>(url, this);
       }
     }
 
@@ -83,9 +90,14 @@ module HadithHouse.Resources {
     }
   }
 
-  export class EntityArray<T extends Entity> extends Array<T> {
-
+  export class PagedResults<TEntity> {
+    count:number;
+    next:string;
+    previous:string;
+    results:TEntity[]
   }
+
+  export type ObjectWithPromise<TObject> = TObject & { promise?:IPromise<TObject> };
 
   export class CacheableResource<TEntity extends Entity> {
     cache:Cache<TEntity, number>;
@@ -97,66 +109,133 @@ module HadithHouse.Resources {
       this.cache = new Cache<TEntity, number>();
     }
 
-    public get(id:number):TEntity;
-    public get(ids:number[]):TEntity[];
-    public get(idOrIds:number|number[]):TEntity|TEntity[] {
-      if (typeof(idOrIds) === 'number') {
-        return this.getBySingleId(<number>idOrIds);
-      } else {
-        return this.getByMultipleIds(<number[]>idOrIds);
-      }
+    public create():TEntity {
+      return new this.TEntityClass(this.$http, this.baseUrl)
     }
 
-    public query(query:string):TEntity[] {
-      let entities:TEntity[] = [];
-      this.$http.get<{results:TEntity[]}>(getRestfulUrl(this.baseUrl) + '?search=' + query)
-        .then((response) => {
-          for (let entity of response.data.results) {
-            entities.push(entity);
-            // Since we already get some entities back, we might as well cache them.
-            this.cache.put(entity.id, entity);
-          }
-        });
+    public query(query:any):ObjectWithPromise<TEntity[]> {
+      var queryParams = $.param(query);
+      let entities:ObjectWithPromise<TEntity[]> = [];
+      var httpPromise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
+      var queryDeferred = this.$q.defer<TEntity[]>();
+      httpPromise.then((response) => {
+        for (let entity of response.data.results) {
+          entities.push(entity);
+          // Since we already get some entities back, we might as well cache them.
+          this.cache.put(entity.id, entity);
+        }
+        queryDeferred.resolve(entities);
+      }, (reason) => {
+        queryDeferred.reject(reason);
+      });
+      entities.promise = queryDeferred.promise;
       return entities;
+    }
+
+    public pagedQuery(query:any):ObjectWithPromise<PagedResults<TEntity>> {
+      var queryParams = $.param(query);
+      let pagedEntities:ObjectWithPromise<PagedResults<TEntity>> = new PagedResults<TEntity>();
+      var promise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
+      promise.then((response) => {
+        pagedEntities.count = response.data.count;
+        pagedEntities.next = response.data.next;
+        pagedEntities.previous = response.data.previous;
+        pagedEntities.results = [];
+        for (let entity of response.data.results) {
+          pagedEntities.results.push(entity);
+          // Since we already get some entities back, we might as well cache them.
+          this.cache.put(entity.id, entity);
+        }
+      });
+      pagedEntities.promise = promise;
+      return pagedEntities;
+    }
+
+    public get(id:number):TEntity;
+    public get(ids:number[]):ObjectWithPromise<TEntity[]>;
+    public get(idOrIds:number|number[]):TEntity|ObjectWithPromise<TEntity[]> {
+      if (Array.isArray(idOrIds) && typeof(idOrIds[0]) === 'number') {
+        return this.getByMultipleIds(<number[]>idOrIds);
+      } else if (typeof(idOrIds) === 'number') {
+        return this.getBySingleId(<number>idOrIds);
+      } else {
+        throw 'Invalid argument passed to get(). Arugment should be a number or an array of numbers.'
+      }
     }
 
     private getBySingleId(id:number):TEntity {
       return this.getByMultipleIds([id])[0];
     }
 
-    private getByMultipleIds(ids:number[]):TEntity[] {
+    private getByMultipleIds(ids:number[]):ObjectWithPromise<TEntity[]> {
       // Which objects do we already have in the cache?
-      let objects:TEntity[] = [];
-      let toFetch:number[] = [];
+      let entities:ObjectWithPromise<TEntity[]> = [];
+      let entitiesToFetch:number[] = [];
+
+      // Check the cache to see which entities we already have and which ones
+      // we need to fetch from the cache.
+      var deferredsToResolve = {};
       for (let id of ids) {
-        let obj = this.cache.get(id);
-        if (obj != null) {
-          console.log('Found this object in cache, no need to retrieve it:');
-          console.dir(obj);
+        let entity = this.cache.get(id);
+        if (entity != null) {
+          entities.push(entity);
 
-          objects.push(obj);
+          // Create a promise object in the entity in case the user wants to
+          // get notified when the object is loaded or an error happens. Here,
+          // though, we resolve it immediately because we already have it in
+          // the cache.
+          let deferred = this.$q.defer();
+          entity.promise = deferred.promise;
+
+          deferred.resolve(entity);
         } else {
-          console.log("Couldn't find this object in cache, need to fetch it:");
-          console.dir(id);
+          // Create a stub for the entity to fill in later when we receives
+          // the response from the RESTful API. Also cache it so next requests
+          // for the same object won't have to go to the RESTful API again.
+          entity = this.create();
+          this.cache.put(id, entity);
+          entitiesToFetch.push(id);
+          entities.push(entity);
 
-          obj = new this.TEntityClass(this.$http, this.baseUrl);
-          this.cache.put(id, obj);
-          toFetch.push(id);
-          objects.push(obj);
+          // Create a promise object in the entity in case the user wants to
+          // get notified when the object is loaded or an error happens.
+          let deferred = this.$q.defer();
+          entity.promise = deferred.promise;
+
+          // Save an instance of the deferred so we could resolve it later
+          // when we get the response.
+          deferredsToResolve[id] = deferred;
         }
       }
 
-      // Create cache objects
-      if (toFetch.length > 0) {
-        this.$http.get<{results:TEntity[]}>(getRestfulUrl(this.baseUrl, toFetch))
-          .then((response) => {
-            for (let entity of response.data.results) {
-              this.cache.get(entity.id).set(entity);
-            }
-          });
+      // Requests the entities we don't have from the RESTful API.
+      if (entitiesToFetch.length > 0) {
+        var httpPromise = this.$http.get<{results:TEntity[]}>(getRestfulUrl(this.baseUrl, entitiesToFetch));
+        var entitiesDeferred = this.$q.defer<TEntity[]>();
+        httpPromise.then((response) => {
+          for (let entity of response.data.results) {
+            this.cache.get(entity.id).set(entity);
+
+            // Resolve the promise object of the entity.
+            deferredsToResolve[entity.id].resolve(entity);
+          }
+          entitiesDeferred.resolve(entities);
+        }, (reason) => {
+          for (let entity of entities) {
+            // Rejects the promise object of the entity.
+            deferredsToResolve[entity.id].reject(reason);
+          }
+          entitiesDeferred.reject(reason);
+        });
+        entities.promise = entitiesDeferred.promise;
+      } else {
+        // Nothing to fetch, so create promise object that resolves immediately.
+        let deferred = this.$q.defer();
+        entities.promise = deferred.promise;
+        deferred.resolve(entities);
       }
 
-      return objects;
+      return entities;
     }
   }
 
