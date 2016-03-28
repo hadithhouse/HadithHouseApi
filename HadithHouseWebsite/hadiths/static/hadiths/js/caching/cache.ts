@@ -44,16 +44,17 @@ module HadithHouse.Caching {
       entry.object = object;
       this.objectDict[key.toString()] = entry;
     }
-
+    
     /**
      * Retrieves an object from the cache.
      * @param key The key of the object.
+     * @param returnsExpired Set to true if you want to retrieve expired entries as well.
      * @returns The cached object or null if no object with the given key is
      * cached or it has expired.
      */
-    public get(key:TKey):TObject {
+    public get(key:TKey, returnsExpired:boolean = true):TObject {
       let entry = this.objectDict[key.toString()];
-      if (!entry || entry.isExpired()) {
+      if (!entry || (entry.isExpired() && !returnsExpired)) {
         return null;
       }
       return entry.object;

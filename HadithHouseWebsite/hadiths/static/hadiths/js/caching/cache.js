@@ -46,12 +46,14 @@ var HadithHouse;
             /**
              * Retrieves an object from the cache.
              * @param key The key of the object.
+             * @param returnsExpired Set to true if you want to retrieve expired entries as well.
              * @returns The cached object or null if no object with the given key is
              * cached or it has expired.
              */
-            Cache.prototype.get = function (key) {
+            Cache.prototype.get = function (key, returnsExpired) {
+                if (returnsExpired === void 0) { returnsExpired = true; }
                 var entry = this.objectDict[key.toString()];
-                if (!entry || entry.isExpired()) {
+                if (!entry || (entry.isExpired() && !returnsExpired)) {
                     return null;
                 }
                 return entry.object;

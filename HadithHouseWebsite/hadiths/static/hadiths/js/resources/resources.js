@@ -48,18 +48,20 @@ var HadithHouse;
                 });
             };
             /**
-             * Sets the entity from the the given object.
-             * @param object The object.
+             * Sets the values of this entity to the values of the given entity.
+             * @param object The entity to copy values from.
              */
-            Entity.prototype.set = function (object) {
-                for (var key in object) {
-                    this[key] = object[key];
-                }
+            Entity.prototype.set = function (entity) {
+                this.id = entity.id;
+                this.added_by = entity.added_by;
+                this.updated_by = entity.updated_by;
+                this.added_on = entity.added_on;
+                this.updated_on = entity.updated_on;
             };
             Entity.prototype.save = function () {
                 var _this = this;
                 var url = getRestfulUrl(this.baseUrl, this.id);
-                if (this.id) {
+                if (!this.id) {
                     var promise = this.$http.post(url, this);
                     promise.then(function (response) {
                         // TODO: We should copy all the object to save other auto-generated TODO.
@@ -109,7 +111,15 @@ var HadithHouse;
                         var entity = _a[_i];
                         entities.push(entity);
                         // Since we already get some entities back, we might as well cache them.
-                        _this.cache.put(entity.id, entity);
+                        // NOTE: If there is an object in the cache already, don't overwrite it,
+                        // update it. This way other code parts which reference it will
+                        // automatically get the updated values.
+                        var entityInCache = _this.cache.get(entity.id, true /* Returns expired */);
+                        if (!entityInCache) {
+                            entityInCache = _this.create();
+                        }
+                        entityInCache.set(entity);
+                        _this.cache.put(entity.id, entityInCache);
                     }
                     queryDeferred.resolve(entities);
                 }, function (reason) {
@@ -132,7 +142,15 @@ var HadithHouse;
                         var entity = _a[_i];
                         pagedEntities.results.push(entity);
                         // Since we already get some entities back, we might as well cache them.
-                        _this.cache.put(entity.id, entity);
+                        // NOTE: If there is an object in the cache already, don't overwrite it,
+                        // update it. This way other code parts which reference it will
+                        // automatically get the updated values.
+                        var entityInCache = _this.cache.get(entity.id, true /* Returns expired */);
+                        if (!entityInCache) {
+                            entityInCache = _this.create();
+                        }
+                        entityInCache.set(entity);
+                        _this.cache.put(entity.id, entityInCache);
                     }
                 });
                 pagedEntities.promise = promise;
@@ -259,6 +277,12 @@ var HadithHouse;
             function Book() {
                 _super.apply(this, arguments);
             }
+            Book.prototype.set = function (entity) {
+                _super.prototype.set.call(this, entity);
+                this.title = entity.title;
+                this.brief_desc = entity.brief_desc;
+                this.pub_year = entity.pub_year;
+            };
             return Book;
         }(Entity));
         Resources.Book = Book;

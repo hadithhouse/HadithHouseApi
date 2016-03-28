@@ -29,51 +29,19 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IBookResource = HadithHouse.Services.IBookResource;
+  import Book = HadithHouse.Resources.Book;
 
-  export class BookPageCtrl extends EntityPageCtrl<IBookResource> {
-    oldBook:IBookResource;
-    BookResourceClass:Services.IBookResourceClass;
+  export class BookPageCtrl extends EntityPageCtrl<Book> {
+    BookResource:Resources.CacheableResource<Book>;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                BookResourceClass:Services.IBookResourceClass,
+                BookResource:Resources.CacheableResource<Book>,
                 ToastService:any) {
-      // Setting BookResourceClass before calling super, because super might end up
-      // calling methods which requires BookResourceClass, e.g. newEntity().
-      this.BookResourceClass = BookResourceClass;
-      this.oldBook = new this.BookResourceClass({ });
-      super($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
-    }
-
-    /**
-     * Makes a copy of the data of the book in case we have to restore them
-     * if the user cancels editing or we fail to send changes to the server.
-     */
-    protected copyEntity() {
-      this.oldBook.title = this.entity.title;
-      this.oldBook.brief_desc = this.entity.brief_desc;
-      this.oldBook.pub_year = this.entity.pub_year;
-    }
-
-    /**
-     * Restores the saved data of the book after the user cancels editing
-     * or we fail to send changes to the server.
-     */
-    protected restoreEntity() {
-      this.entity.title = this.oldBook.title;
-      this.entity.brief_desc = this.oldBook.brief_desc;
-      this.entity.pub_year = this.oldBook.pub_year;
-    }
-
-    protected newEntity() : IBookResource {
-      return new this.BookResourceClass({
-        title: '',
-        brief_desc: '',
-        pub_year: null
-      });
+      super($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+      this.BookResource = BookResource;
     }
 
     protected getEntityPath(id: number) {
@@ -82,7 +50,9 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('BookPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
-      return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
+      let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+      ctrl.initialize();
+      return ctrl;
     });
 }

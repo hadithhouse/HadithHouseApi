@@ -58,18 +58,20 @@ module HadithHouse.Resources {
     }
 
     /**
-     * Sets the entity from the the given object.
-     * @param object The object.
+     * Sets the values of this entity to the values of the given entity.
+     * @param object The entity to copy values from.
      */
-    public set(object:Entity) {
-      for (let key in object) {
-        this[key] = object[key];
-      }
+    public set(entity:Entity) {
+      this.id = entity.id;
+      this.added_by = entity.added_by;
+      this.updated_by = entity.updated_by;
+      this.added_on = entity.added_on;
+      this.updated_on = entity.updated_on;
     }
 
     public save() {
       let url = getRestfulUrl(this.baseUrl, this.id);
-      if (this.id) {
+      if (!this.id) {
         let promise = this.$http.post<Entity>(url, this);
         promise.then((response) => {
           // TODO: We should copy all the object to save other auto-generated TODO.
@@ -122,7 +124,15 @@ module HadithHouse.Resources {
         for (let entity of response.data.results) {
           entities.push(entity);
           // Since we already get some entities back, we might as well cache them.
-          this.cache.put(entity.id, entity);
+          // NOTE: If there is an object in the cache already, don't overwrite it,
+          // update it. This way other code parts which reference it will
+          // automatically get the updated values.
+          var entityInCache = this.cache.get(entity.id, true /* Returns expired */);
+          if (!entityInCache) {
+            entityInCache = this.create();
+          }
+          entityInCache.set(entity);
+          this.cache.put(entity.id, entityInCache);
         }
         queryDeferred.resolve(entities);
       }, (reason) => {
@@ -144,7 +154,15 @@ module HadithHouse.Resources {
         for (let entity of response.data.results) {
           pagedEntities.results.push(entity);
           // Since we already get some entities back, we might as well cache them.
-          this.cache.put(entity.id, entity);
+          // NOTE: If there is an object in the cache already, don't overwrite it,
+          // update it. This way other code parts which reference it will
+          // automatically get the updated values.
+          var entityInCache = this.cache.get(entity.id, true /* Returns expired */);
+          if (!entityInCache) {
+            entityInCache = this.create();
+          }
+          entityInCache.set(entity);
+          this.cache.put(entity.id, entityInCache);
         }
       });
       pagedEntities.promise = promise;
@@ -285,6 +303,13 @@ module HadithHouse.Resources {
     title:string;
     brief_desc:string;
     pub_year:number;
+
+    public set(entity:Entity) {
+      super.set(entity);
+      this.title = entity.title;
+      this.brief_desc = entity.brief_desc;
+      this.pub_year = entity.pub_year;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('BookResource',
