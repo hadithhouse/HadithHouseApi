@@ -73,7 +73,7 @@ var HadithHouse;
                 return 'book/' + id;
             };
             return BookPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.BookPageCtrl = BookPageCtrl;
         HadithHouse.HadithHouseApp.controller('BookPageCtrl', function ($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
             return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);

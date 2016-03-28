@@ -25,28 +25,25 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
 /// <reference path="entity-listing-page.ts" />
 
-module HadithHouse.Controllers {
-  import IPerson = HadithHouse.Services.IPersonResource;
-  import IPersonResource = HadithHouse.Services.IPersonResourceClass;
-  import IResourceArray = angular.resource.IResourceArray;
+  module HadithHouse.Controllers {
+    import Person = HadithHouse.Resources.Person;
 
-  export class PersonListingPageCtrl extends EntityListingPageCtrl<IPerson> {
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $timeout:ng.ITimeoutService,
-                $location:ng.ILocationService,
-                $mdDialog:ng.material.IDialogService,
-                private PersonResourceClass:Services.IPersonResourceClass,
-                ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, PersonResourceClass, ToastService);
+    export class PersonListingPageCtrl extends EntityListingPageCtrl<Person> {
+      constructor($scope:ng.IScope,
+                  $rootScope:ng.IScope,
+                  $timeout:ng.ITimeoutService,
+                  $location:ng.ILocationService,
+                  $mdDialog:ng.material.IDialogService,
+                  private PersonResource:Resources.CacheableResource<Person>,
+                  ToastService:any) {
+        super($scope, $rootScope, $timeout, $location, $mdDialog, PersonResource, ToastService);
+      }
     }
-  }
 
-  HadithHouse.HadithHouseApp.controller('PersonListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, PersonResourceClass, ToastService) {
-      return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, PersonResourceClass, ToastService);
-    });
-}
+    HadithHouse.HadithHouseApp.controller('PersonListingPageCtrl',
+      function ($scope, $rootScope, $timeout, $location, $mdDialog, PersonResource, ToastService) {
+        return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, PersonResource, ToastService);
+      });
+  }

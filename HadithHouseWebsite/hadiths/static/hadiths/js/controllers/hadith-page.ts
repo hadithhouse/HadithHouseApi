@@ -36,7 +36,6 @@ module HadithHouse.Controllers {
   import IDialogService = angular.material.IDialogService;
   import ITreeNode = HadithHouse.Directives.ITreeNode;
   import Hadith = HadithHouse.Resources.Hadith;
-  import IChainResource = HadithHouse.Services.IChainResource;
   import PagedResults = HadithHouse.Resources.PagedResults;
   import Chain = HadithHouse.Resources.Chain;
   import Person = HadithHouse.Resources.Person;
@@ -166,7 +165,7 @@ module HadithHouse.Controllers {
      * Makes a copy of the data of the hadith in case we have to restore them
      * if the user cancels editing or we fail to send changes to the server.
      */
-    protected copyChain(chain:IChainResource & IResource<IChainResource>) {
+    protected copyChain(chain:Chain) {
       this.chainCopies[chain.id] = {
         persons: chain.persons.slice()
       }

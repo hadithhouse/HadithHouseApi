@@ -25,28 +25,25 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
 /// <reference path="entity-listing-page.ts" />
 
-module HadithHouse.Controllers {
-  import IHadith = HadithHouse.Services.IHadithResource;
-  import IHadithResource = HadithHouse.Services.IHadithResourceClass;
-  import IResourceArray = angular.resource.IResourceArray;
+  module HadithHouse.Controllers {
+    import Hadith = HadithHouse.Resources.Hadith;
 
-  export class HadithListingPageCtrl extends EntityListingPageCtrl<IHadith> {
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $timeout:ng.ITimeoutService,
-                $location:ng.ILocationService,
-                $mdDialog:ng.material.IDialogService,
-                private HadithResourceClass:Services.IHadithResourceClass,
-                ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, HadithResourceClass, ToastService);
+    export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
+      constructor($scope:ng.IScope,
+                  $rootScope:ng.IScope,
+                  $timeout:ng.ITimeoutService,
+                  $location:ng.ILocationService,
+                  $mdDialog:ng.material.IDialogService,
+                  private HadithResource:Resources.CacheableResource<Hadith>,
+                  ToastService:any) {
+        super($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
+      }
     }
-  }
 
-  HadithHouse.HadithHouseApp.controller('HadithListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithResourceClass, ToastService) {
-      return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithResourceClass, ToastService);
-    });
-}
+    HadithHouse.HadithHouseApp.controller('HadithListingPageCtrl',
+      function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService) {
+        return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
+      });
+  }

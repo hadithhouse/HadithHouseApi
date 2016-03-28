@@ -26,19 +26,20 @@
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IEntity = HadithHouse.Services.IEntity;
-  import IResource = angular.resource.IResource;
-  import IResourceArray = angular.resource.IResourceArray;
-  import IEntityResource = HadithHouse.Services.IEntityResourceClass;
   import IPromise = angular.IPromise;
   import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
+  import Entity = HadithHouse.Resources.Entity;
+  import PagedResults = HadithHouse.Resources.PagedResults;
+  import Chain = HadithHouse.Resources.Chain;
+  import Person = HadithHouse.Resources.Person;
+  import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
-  export class EntityListingPageCtrl<T extends IEntity> {
-    pagedEntities:IEntityQueryResult<T & IResource<T>>;
+  export class EntityListingPageCtrl<TEntity extends Entity> {
+    pagedEntities:ObjectWithPromise<PagedResults<TEntity>>;
     searchQuery:string;
     searchPromise:IPromise<void> = null;
     page:number = 1;
@@ -49,7 +50,7 @@ module HadithHouse.Controllers {
                 private $timeout:ng.ITimeoutService,
                 private $location:ng.ILocationService,
                 private $mdDialog:ng.material.IDialogService,
-                private EntityResource:IEntityResource<T> & ng.resource.IResourceClass<T & IResource<T>>,
+                private EntityResource:Resources.CacheableResource<TEntity>,
                 private ToastService:any) {
       let urlParams = $location.search();
       this.page = parseInt(urlParams['page']) || 1;
@@ -104,7 +105,7 @@ module HadithHouse.Controllers {
       }
     }
 
-    public deleteEntity = (event:any, entity:T) => {
+    public deleteEntity = (event:any, entity:TEntity) => {
       var confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the entity?')
@@ -112,7 +113,7 @@ module HadithHouse.Controllers {
         .cancel('No')
         .targetEvent(event);
       this.$mdDialog.show(confirm).then(() => {
-        this.EntityResource.delete({id: entity.id}, () => {
+        entity.delete().then(() => {
           this.ToastService.show('Successfully deleted');
           this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
             return e.id != entity.id;

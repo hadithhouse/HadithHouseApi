@@ -62,6 +62,7 @@ var HadithHouse;
                 if (this.id) {
                     var promise = this.$http.post(url, this);
                     promise.then(function (response) {
+                        // TODO: We should copy all the object to save other auto-generated TODO.
                         _this.id = response.data.id;
                     });
                     return promise;

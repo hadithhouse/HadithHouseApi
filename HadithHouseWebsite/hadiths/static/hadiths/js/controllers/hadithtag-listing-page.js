@@ -29,7 +29,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
 /// <reference path="entity-listing-page.ts" />
 var HadithHouse;
 (function (HadithHouse) {
@@ -37,15 +36,15 @@ var HadithHouse;
     (function (Controllers) {
         var HadithTagListingPageCtrl = (function (_super) {
             __extends(HadithTagListingPageCtrl, _super);
-            function HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService) {
-                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService);
-                this.HadithTagResourceClass = HadithTagResourceClass;
+            function HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
+                this.HadithTagResource = HadithTagResource;
             }
             return HadithTagListingPageCtrl;
-        })(Controllers.EntityListingPageCtrl);
+        }(Controllers.EntityListingPageCtrl));
         Controllers.HadithTagListingPageCtrl = HadithTagListingPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService) {
-            return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService) {
+            return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
