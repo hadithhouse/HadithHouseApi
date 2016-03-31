@@ -33,7 +33,12 @@ module HadithHouse {
   export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute', 'ngMaterial', 'ngMdIcons']);
 
   HadithHouseApp.config(function ($httpProvider : ng.IHttpProvider, $routeProvider : ng.route.IRouteProvider) {
-    $routeProvider.when('/hadiths', {
+    $routeProvider.when('/', {
+      templateUrl: getHtmlBasePath() + 'home-page.html',
+      controller: 'HomePageCtrl',
+      controllerAs: 'ctrl',
+      reloadOnSearch: false
+    }).when('/hadiths', {
       templateUrl: getHtmlBasePath() + 'hadiths.html',
       controller: 'HadithListingPageCtrl',
       controllerAs: 'ctrl',
@@ -83,7 +88,7 @@ module HadithHouse {
       controller: 'UserPageCtrl',
       controllerAs: 'ctrl',
       reloadOnSearch: false
-    });
+    }).otherwise({redirectTo:'/'});
 
     $httpProvider.interceptors.push([
       "$q", "$rootScope", function ($q : ng.IQService, $rootScope : ng.IScope) {

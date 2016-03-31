@@ -27,7 +27,12 @@ var HadithHouse;
 (function (HadithHouse) {
     HadithHouse.HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute', 'ngMaterial', 'ngMdIcons']);
     HadithHouse.HadithHouseApp.config(function ($httpProvider, $routeProvider) {
-        $routeProvider.when('/hadiths', {
+        $routeProvider.when('/', {
+            templateUrl: getHtmlBasePath() + 'home-page.html',
+            controller: 'HomePageCtrl',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false
+        }).when('/hadiths', {
             templateUrl: getHtmlBasePath() + 'hadiths.html',
             controller: 'HadithListingPageCtrl',
             controllerAs: 'ctrl',
@@ -77,7 +82,7 @@ var HadithHouse;
             controller: 'UserPageCtrl',
             controllerAs: 'ctrl',
             reloadOnSearch: false
-        });
+        }).otherwise({ redirectTo: '/' });
         $httpProvider.interceptors.push([
             "$q", "$rootScope", function ($q, $rootScope) {
                 return {
