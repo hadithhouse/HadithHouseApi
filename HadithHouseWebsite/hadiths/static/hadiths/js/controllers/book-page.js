@@ -37,46 +37,20 @@ var HadithHouse;
     (function (Controllers) {
         var BookPageCtrl = (function (_super) {
             __extends(BookPageCtrl, _super);
-            function BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
-                // Setting BookResourceClass before calling super, because super might end up
-                // calling methods which requires BookResourceClass, e.g. newEntity().
-                this.BookResourceClass = BookResourceClass;
-                this.oldBook = new this.BookResourceClass({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
+            function BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+                this.BookResource = BookResource;
             }
-            /**
-             * Makes a copy of the data of the book in case we have to restore them
-             * if the user cancels editing or we fail to send changes to the server.
-             */
-            BookPageCtrl.prototype.copyEntity = function () {
-                this.oldBook.title = this.entity.title;
-                this.oldBook.brief_desc = this.entity.brief_desc;
-                this.oldBook.pub_year = this.entity.pub_year;
-            };
-            /**
-             * Restores the saved data of the book after the user cancels editing
-             * or we fail to send changes to the server.
-             */
-            BookPageCtrl.prototype.restoreEntity = function () {
-                this.entity.title = this.oldBook.title;
-                this.entity.brief_desc = this.oldBook.brief_desc;
-                this.entity.pub_year = this.oldBook.pub_year;
-            };
-            BookPageCtrl.prototype.newEntity = function () {
-                return new this.BookResourceClass({
-                    title: '',
-                    brief_desc: '',
-                    pub_year: null
-                });
-            };
             BookPageCtrl.prototype.getEntityPath = function (id) {
                 return 'book/' + id;
             };
             return BookPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.BookPageCtrl = BookPageCtrl;
-        HadithHouse.HadithHouseApp.controller('BookPageCtrl', function ($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService) {
-            return new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('BookPageCtrl', function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
+            var ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+            ctrl.initialize();
+            return ctrl;
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

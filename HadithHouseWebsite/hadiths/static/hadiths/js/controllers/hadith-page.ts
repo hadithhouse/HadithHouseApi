@@ -27,17 +27,19 @@
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 /// <reference path="../directives/tree.directive.ts" />
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
   import IResource = angular.resource.IResource;
-  import IResourceArray = angular.resource.IResourceArray;
-  import IHadithResource = HadithHouse.Services.IHadithResource;
-  import IChainResource = HadithHouse.Services.IChainResource;
-  import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
   import IDialogService = angular.material.IDialogService;
   import ITreeNode = HadithHouse.Directives.ITreeNode;
+  import Hadith = HadithHouse.Resources.Hadith;
+  import PagedResults = HadithHouse.Resources.PagedResults;
+  import Chain = HadithHouse.Resources.Chain;
+  import Person = HadithHouse.Resources.Person;
+  import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
   class ChainTreeNodeArray {
     nodeDict:any = {};
@@ -59,7 +61,7 @@ module HadithHouse.Controllers {
 
   class ChainTreeNode {
     public static create(rootPersonId:number,
-                         chains:IResourceArray<IChainResource & IResource<IChainResource>>,
+                         chains:Chain[],
                          personsDict:any):ITreeNode {
       var previousLevel = new ChainTreeNodeArray();
       var rootNode = {
@@ -115,14 +117,13 @@ module HadithHouse.Controllers {
     }
   }
 
-  export class HadithPageCtrl extends EntityPageCtrl<IHadithResource> {
-    oldHadith:IHadithResource;
-    pagedChains:IEntityQueryResult<IChainResource & IResource<IChainResource>>;
+  export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
+    pagedChains:ObjectWithPromise<PagedResults<Chain>>;
     chainCopies:any;
     $mdDialog:IDialogService;
-    HadithResourceClass:Services.IHadithResourceClass;
-    PersonResourceClass:Services.IPersonResourceClass;
-    ChainResourceClass:Services.IChainResourceClass;
+    HadithResource:Resources.CacheableResource<Hadith>;
+    PersonResource:Resources.CacheableResource<Person>;
+    ChainResource:Resources.CacheableResource<Chain>;
     rootNode:any;
 
     constructor($scope:ng.IScope,
@@ -130,56 +131,28 @@ module HadithHouse.Controllers {
                 $location:ng.ILocationService,
                 $routeParams:any,
                 $mdDialog:IDialogService,
-                HadithResourceClass:Services.IHadithResourceClass,
-                PersonResourceClass:Services.IPersonResourceClass,
-                ChainResourceClass:Services.IChainResourceClass,
+                HadithResource:Resources.CacheableResource<Hadith>,
+                PersonResource:Resources.CacheableResource<Person>,
+                ChainResource:Resources.CacheableResource<Chain>,
                 ToastService:any) {
-      // Setting HadithResourceClass before calling super, because super might end up
-      // calling methods which requires HadithResourceClass, e.g. newEntity().
-      this.HadithResourceClass = HadithResourceClass;
-      this.PersonResourceClass = PersonResourceClass;
-      this.ChainResourceClass = ChainResourceClass;
-      this.oldHadith = new this.HadithResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+      this.HadithResource = HadithResource;
+      this.PersonResource = PersonResource;
+      this.ChainResource = ChainResource;
       this.$mdDialog = $mdDialog;
       this.chainCopies = {};
-      super($scope, $rootScope, $location, $routeParams, HadithResourceClass, ToastService);
-    }
-
-    /**
-     * Makes a copy of the data of the hadith in case we have to restore them
-     * if the user cancels editing or we fail to send changes to the server.
-     */
-    protected copyEntity() {
-      this.oldHadith.text = this.entity.text;
-      this.oldHadith.person = this.entity.person;
-      this.oldHadith.book = this.entity.book;
-      this.oldHadith.tags = this.entity.tags.slice();
-    }
-
-    /**
-     * Restores the saved data of the hadith after the user cancels editing
-     * or we fail to send changes to the server.
-     */
-    protected restoreEntity() {
-      this.entity.text = this.oldHadith.text;
-      this.entity.person = this.oldHadith.person;
-      this.entity.book = this.oldHadith.book;
-      this.entity.tags = this.oldHadith.tags.slice();
-    }
-
-    protected newEntity():IHadithResource {
-      return new this.HadithResourceClass({});
     }
 
     protected getEntityPath(id:number) {
       return 'hadith/' + id;
     }
 
-    protected setOpeningExistingEntityMode(id:string) {
+    protected setOpeningExistingEntityMode(id:number) {
       super.setOpeningExistingEntityMode(id);
       // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
       // I don't think there is going to be a very large number of chains for hadiths.
-      this.pagedChains = this.ChainResourceClass.pagedQuery({hadith: id}, () => {
+      this.pagedChains = this.ChainResource.pagedQuery({hadith: id});
+      this.pagedChains.promise.then(() => {
         this.pagedChains.results.forEach((c) => {
           c.isEditing = false;
           c.isAddingNew = false;
@@ -192,7 +165,7 @@ module HadithHouse.Controllers {
      * Makes a copy of the data of the hadith in case we have to restore them
      * if the user cancels editing or we fail to send changes to the server.
      */
-    protected copyChain(chain:IChainResource & IResource<IChainResource>) {
+    protected copyChain(chain:Chain) {
       this.chainCopies[chain.id] = {
         persons: chain.persons.slice()
       }
@@ -202,7 +175,7 @@ module HadithHouse.Controllers {
      * Restores the saved data of the hadith after the user cancels editing
      * or we fail to send changes to the server.
      */
-    protected restoreChain(chain:IChainResource & IResource<IChainResource>) {
+    protected restoreChain(chain:Chain) {
       chain.persons = this.chainCopies[chain.id].persons.slice();
     }
 
@@ -211,16 +184,14 @@ module HadithHouse.Controllers {
       this.copyChain(chain);
     }
 
-    public saveChain(chain:any) {
-      this.ChainResourceClass.save(chain, () => {
+    public saveChain(chain:Chain) {
+      chain.save().then(() => {
         chain.isEditing = false;
-        chain.isNew = false;
-      }, () => {
-
+        chain.isAddingNew = false;
       });
     }
 
-    public cancelChainEditing(chain:any) {
+    public cancelChainEditing(chain:Chain) {
       if (chain.isAddingNew) {
         // Item is not yet saved, just remove it.
         this.pagedChains.results = this.pagedChains.results.filter((c) => {
@@ -233,15 +204,14 @@ module HadithHouse.Controllers {
     }
 
     public addNewChain() {
-      var chain = new this.ChainResourceClass();
+      var chain = this.ChainResource.create();
       chain.hadith = this.entity.id;
       chain.isEditing = true;
       chain.isAddingNew = true;
       this.pagedChains.results.push(chain);
     }
 
-    public deleteChain(event:any, chain:IChainResource) {
-
+    public deleteChain(event:any, chain:Chain) {
       var confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the chain?')
@@ -249,7 +219,7 @@ module HadithHouse.Controllers {
         .cancel('No')
         .targetEvent(event);
       this.$mdDialog.show(confirm).then(() => {
-        this.ChainResourceClass.delete({id: chain.id}, () => {
+        chain.delete().then(() => {
           this.ToastService.show('Successfully deleted');
           this.pagedChains.results = this.pagedChains.results.filter((e) => {
             return e.id != chain.id;
@@ -278,7 +248,7 @@ module HadithHouse.Controllers {
       // Fetch details
       // TODO: We should do this request early and cache it so that selector
       // directives won't need to fetch them again.
-      this.PersonResourceClass.query({ids: allPersons.join(',')}, (persons) => {
+      this.PersonResource.get(allPersons).promise.then((persons) => {
         var personDict = {};
         persons.forEach((p) => {
           personDict[p.id] = p;
@@ -290,7 +260,9 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService) {
-      return new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResourceClass, PersonResourceClass, ChainResourceClass, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService) {
+      var ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService);
+      ctrl.initialize();
+      return ctrl;
     });
 }

@@ -26,7 +26,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
@@ -38,42 +37,10 @@ var HadithHouse;
     (function (Controllers) {
         var UserPageCtrl = (function (_super) {
             __extends(UserPageCtrl, _super);
-            function UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
-                // Setting UserResourceClass before calling super, because super might end up
-                // calling methods which requires UserResourceClass, e.g. newEntity().
-                this.UserResourceClass = UserResourceClass;
-                this.oldUser = new this.UserResourceClass({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
+            function UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+                this.UserResource = UserResource;
             }
-            /**
-             * Makes a copy of the data of the person in case we have to restore them
-             * if the user cancels editing or we fail to send changes to the server.
-             */
-            UserPageCtrl.prototype.copyEntity = function () {
-                this.oldUser.first_name = this.entity.first_name;
-                this.oldUser.last_name = this.entity.last_name;
-                this.oldUser.is_superuser = this.entity.is_superuser;
-                this.oldUser.is_staff = this.entity.is_staff;
-                this.oldUser.username = this.entity.username;
-                this.oldUser.date_joined = this.entity.date_joined;
-                this.oldUser.permissions = this.entity.permissions.slice();
-            };
-            /**
-             * Restores the saved data of the person after the user cancels editing
-             * or we fail to send changes to the server.
-             */
-            UserPageCtrl.prototype.restoreEntity = function () {
-                this.entity.first_name = this.oldUser.first_name;
-                this.entity.last_name = this.oldUser.last_name;
-                this.entity.is_superuser = this.oldUser.is_superuser;
-                this.entity.is_staff = this.oldUser.is_staff;
-                this.entity.username = this.oldUser.username;
-                this.entity.date_joined = this.oldUser.date_joined;
-                this.entity.permissions = this.oldUser.permissions.slice();
-            };
-            UserPageCtrl.prototype.newEntity = function () {
-                return new this.UserResourceClass({});
-            };
             UserPageCtrl.prototype.getEntityPath = function (id) {
                 return 'user/' + id;
             };
@@ -84,10 +51,12 @@ var HadithHouse;
                 });
             };
             return UserPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.UserPageCtrl = UserPageCtrl;
-        HadithHouse.HadithHouseApp.controller('UserPageCtrl', function ($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
-            return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('UserPageCtrl', function ($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
+            var ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+            ctrl.initialize();
+            return ctrl;
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

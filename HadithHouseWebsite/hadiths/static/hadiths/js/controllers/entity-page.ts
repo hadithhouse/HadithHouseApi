@@ -27,29 +27,44 @@
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 
 module HadithHouse.Controllers {
   import IEntity = HadithHouse.Services.IEntity;
   import IResource = angular.resource.IResource;
+  import CacheableResource = HadithHouse.Resources.CacheableResource;
+  import Entity = HadithHouse.Resources.Entity;
 
-  export abstract class EntityPageCtrl<T extends IEntity> {
-    entity:T & IResource<T>;
+  export abstract class EntityPageCtrl<TEntity extends Entity> {
+    entity:TEntity;
+    entityCopy:TEntity;
     isAddingNew:boolean;
     isEditing:boolean;
+    error:string;
 
     constructor(protected $scope:ng.IScope,
                 protected $rootScope:ng.IScope,
                 protected $location:ng.ILocationService,
                 protected $routeParams:any,
-                protected EntityResource:ng.resource.IResourceClass<T & IResource<T>>,
+                protected EntityResource:CacheableResource<TEntity>,
                 protected ToastService:any) {
+      this.error = null;
+      this.entityCopy = EntityResource.create();
+    }
+    
+    public initialize() {
       if (this.$routeParams.id === 'new') {
         this.setAddingNewEntityMode();
       } else {
-        this.setOpeningExistingEntityMode(this.$routeParams.id);
+        var id = parseInt(this.$routeParams.id);
+        if (isNaN(id)) {
+          this.error = `'${this.$routeParams.id}' is not a valid ID!`;
+          return;
+        }
+        this.setOpeningExistingEntityMode(id);
       }
       $(document).on('keyup', this.onKeyUp);
-      $scope.$on('$destroy', () => {
+      this.$scope.$on('$destroy', () => {
         $(document).off('keyup', this.onKeyUp);
       });
     }
@@ -66,15 +81,21 @@ module HadithHouse.Controllers {
      * Makes a copy of the data of the entity in case we have to restore them
      * if the user cancels editing or we fail to send changes to the server.
      */
-    protected abstract copyEntity();
+    protected copyEntity() {
+      this.entityCopy.set(this.entity);
+    }
 
     /**
      * Restores the saved data of the entity after the user cancels editing
      * or we fail to send changes to the server.
      */
-    protected abstract restoreEntity();
+    protected restoreEntity() {
+      this.entity.set(this.entityCopy);
+    }
 
-    protected abstract newEntity():T & IResource<T>;
+    protected newEntity():TEntity {
+      return this.EntityResource.create();
+    }
 
     protected abstract getEntityPath(id:number);
 
@@ -88,8 +109,9 @@ module HadithHouse.Controllers {
       this.isEditing = true;
     }
 
-    protected setOpeningExistingEntityMode(id:string) {
-      this.entity = this.EntityResource.get({id: id}, () => {
+    protected setOpeningExistingEntityMode(id:number) {
+      this.entity = this.EntityResource.get(id);
+      this.entity.promise.then(() => {
         this.onEntityLoaded();
       });
       this.isAddingNew = false;
@@ -109,7 +131,7 @@ module HadithHouse.Controllers {
      */
     private finishEditing = () => {
       // Send the changes to the server.
-      this.entity.$save((result) => {
+      this.entity.save().then((result) => {
         if (this.isAddingNew) {
           this.$location.path(this.getEntityPath(this.entity.id));
         }

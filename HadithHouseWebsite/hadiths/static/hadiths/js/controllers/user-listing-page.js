@@ -29,7 +29,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
 /// <reference path="entity-listing-page.ts" />
 var HadithHouse;
 (function (HadithHouse) {
@@ -37,15 +36,15 @@ var HadithHouse;
     (function (Controllers) {
         var UserListingPageCtrl = (function (_super) {
             __extends(UserListingPageCtrl, _super);
-            function UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService) {
-                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService);
-                this.UserResourceClass = UserResourceClass;
+            function UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
+                this.UserResource = UserResource;
             }
             return UserListingPageCtrl;
-        })(Controllers.EntityListingPageCtrl);
+        }(Controllers.EntityListingPageCtrl));
         Controllers.UserListingPageCtrl = UserListingPageCtrl;
-        HadithHouse.HadithHouseApp.controller('UserListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService) {
-            return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('UserListingPageCtrl', function ($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService) {
+            return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

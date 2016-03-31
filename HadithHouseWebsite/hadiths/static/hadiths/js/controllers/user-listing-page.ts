@@ -25,28 +25,26 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
 /// <reference path="entity-listing-page.ts" />
 
-module HadithHouse.Controllers {
-  import IUser = HadithHouse.Services.IUserResource;
-  import IUserResource = HadithHouse.Services.IUserResourceClass;
-  import IResourceArray = angular.resource.IResourceArray;
+  module HadithHouse.Controllers {
+    import User = HadithHouse.Resources.User;
 
-  export class UserListingPageCtrl extends EntityListingPageCtrl<IUser> {
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $timeout:ng.ITimeoutService,
-                $location:ng.ILocationService,
-                $mdDialog:ng.material.IDialogService,
-                private UserResourceClass:Services.IUserResourceClass,
-                ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService);
+    export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
+      constructor($scope:ng.IScope,
+                  $rootScope:ng.IScope,
+                  $timeout:ng.ITimeoutService,
+                  $location:ng.ILocationService,
+                  $mdDialog:ng.material.IDialogService,
+                  private UserResource:Resources.CacheableResource<User>,
+                  ToastService:any) {
+        super($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
+      }
     }
+
+    HadithHouse.HadithHouseApp.controller('UserListingPageCtrl',
+      function ($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService) {
+        return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
+      });
   }
 
-  HadithHouse.HadithHouseApp.controller('UserListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService) {
-      return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, UserResourceClass, ToastService);
-    });
-}

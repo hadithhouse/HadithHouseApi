@@ -26,6 +26,7 @@
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 var HadithHouse;
 (function (HadithHouse) {
     var Controllers;
@@ -51,7 +52,7 @@ var HadithHouse;
                  */
                 this.finishEditing = function () {
                     // Send the changes to the server.
-                    _this.entity.$save(function (result) {
+                    _this.entity.save().then(function (result) {
                         if (_this.isAddingNew) {
                             _this.$location.path(_this.getEntityPath(_this.entity.id));
                         }
@@ -68,17 +69,44 @@ var HadithHouse;
                         }
                     });
                 };
+                this.error = null;
+                this.entityCopy = EntityResource.create();
+            }
+            EntityPageCtrl.prototype.initialize = function () {
+                var _this = this;
                 if (this.$routeParams.id === 'new') {
                     this.setAddingNewEntityMode();
                 }
                 else {
-                    this.setOpeningExistingEntityMode(this.$routeParams.id);
+                    var id = parseInt(this.$routeParams.id);
+                    if (isNaN(id)) {
+                        this.error = "'" + this.$routeParams.id + "' is not a valid ID!";
+                        return;
+                    }
+                    this.setOpeningExistingEntityMode(id);
                 }
                 $(document).on('keyup', this.onKeyUp);
-                $scope.$on('$destroy', function () {
+                this.$scope.$on('$destroy', function () {
                     $(document).off('keyup', _this.onKeyUp);
                 });
-            }
+            };
+            /**
+             * Makes a copy of the data of the entity in case we have to restore them
+             * if the user cancels editing or we fail to send changes to the server.
+             */
+            EntityPageCtrl.prototype.copyEntity = function () {
+                this.entityCopy.set(this.entity);
+            };
+            /**
+             * Restores the saved data of the entity after the user cancels editing
+             * or we fail to send changes to the server.
+             */
+            EntityPageCtrl.prototype.restoreEntity = function () {
+                this.entity.set(this.entityCopy);
+            };
+            EntityPageCtrl.prototype.newEntity = function () {
+                return this.EntityResource.create();
+            };
             EntityPageCtrl.prototype.onEntityLoaded = function () {
             };
             EntityPageCtrl.prototype.setAddingNewEntityMode = function () {
@@ -88,7 +116,8 @@ var HadithHouse;
             };
             EntityPageCtrl.prototype.setOpeningExistingEntityMode = function (id) {
                 var _this = this;
-                this.entity = this.EntityResource.get({ id: id }, function () {
+                this.entity = this.EntityResource.get(id);
+                this.entity.promise.then(function () {
                     _this.onEntityLoaded();
                 });
                 this.isAddingNew = false;
@@ -112,7 +141,7 @@ var HadithHouse;
             };
             ;
             return EntityPageCtrl;
-        })();
+        }());
         Controllers.EntityPageCtrl = EntityPageCtrl;
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

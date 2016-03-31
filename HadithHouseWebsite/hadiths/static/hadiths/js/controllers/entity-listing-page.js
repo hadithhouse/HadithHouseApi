@@ -25,7 +25,7 @@
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 /// <reference path="entity-page.ts" />
 var HadithHouse;
 (function (HadithHouse) {
@@ -52,7 +52,7 @@ var HadithHouse;
                         .cancel('No')
                         .targetEvent(event);
                     _this.$mdDialog.show(confirm).then(function () {
-                        _this.EntityResource.delete({ id: entity.id }, function () {
+                        entity.delete().then(function () {
                             _this.ToastService.show('Successfully deleted');
                             _this.pagedEntities.results = _this.pagedEntities.results.filter(function (e) {
                                 return e.id != entity.id;
@@ -138,7 +138,7 @@ var HadithHouse;
                 this.page = index;
             };
             return EntityListingPageCtrl;
-        })();
+        }());
         Controllers.EntityListingPageCtrl = EntityListingPageCtrl;
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

@@ -25,18 +25,19 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 var HadithHouse;
 (function (HadithHouse) {
     var Directives;
     (function (Directives) {
         var SelectorCtrl = (function () {
-            function SelectorCtrl($scope, PersonResourceClass, BookResourceClass, HadithTagResourceClass, UserResourceClass) {
+            function SelectorCtrl($scope, PersonResource, BookResource, HadithTagResource, UserResource) {
                 var _this = this;
                 this.$scope = $scope;
-                this.PersonResourceClass = PersonResourceClass;
-                this.BookResourceClass = BookResourceClass;
-                this.HadithTagResourceClass = HadithTagResourceClass;
-                this.UserResourceClass = UserResourceClass;
+                this.PersonResource = PersonResource;
+                this.BookResource = BookResource;
+                this.HadithTagResource = HadithTagResource;
+                this.UserResource = UserResource;
                 this.firstLoad = true;
                 this.onIdsChanged = function (newValue, oldValue) {
                     if (newValue && _this.firstLoad) {
@@ -57,8 +58,7 @@ var HadithHouse;
                                 // See if we already have the entity loaded, otherwise make a request to load it.
                                 return _.find(_this.entities, function (e) {
                                     return e.id == id;
-                                }) || _this.EntityResourceClass.get({ id: id }, function (e) {
-                                });
+                                }) || _this.EntityResource.get(id);
                             });
                         }
                         else {
@@ -70,7 +70,7 @@ var HadithHouse;
                             // See if we already have the entity loaded, otherwise make a request to load it.
                             return _.find(_this.entities, function (e) {
                                 return e.id == id;
-                            }) || _this.EntityResourceClass.get({ id: id });
+                            }) || _this.EntityResource.get(id);
                         });
                     }
                 };
@@ -143,16 +143,16 @@ var HadithHouse;
                 }
                 switch (this.type.toLowerCase()) {
                     case 'person':
-                        this.EntityResourceClass = PersonResourceClass;
+                        this.EntityResource = PersonResource;
                         break;
                     case 'book':
-                        this.EntityResourceClass = BookResourceClass;
+                        this.EntityResource = BookResource;
                         break;
                     case 'hadithtag':
-                        this.EntityResourceClass = HadithTagResourceClass;
+                        this.EntityResource = HadithTagResource;
                         break;
                     case 'user':
-                        this.EntityResourceClass = UserResourceClass;
+                        this.EntityResource = UserResource;
                         break;
                     default:
                         throw 'Invalid type for selector.';
@@ -163,13 +163,13 @@ var HadithHouse;
                 $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
             }
             SelectorCtrl.prototype.findEntities = function (query) {
-                return this.EntityResourceClass.query({ search: query });
+                return this.EntityResource.query({ search: query });
             };
             ;
             return SelectorCtrl;
-        })();
+        }());
         Directives.SelectorCtrl = SelectorCtrl;
-        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResourceClass', 'BookResourceClass', 'HadithTagResourceClass', 'UserResourceClass', SelectorCtrl]);
+        HadithHouse.HadithHouseApp.controller('SelectorCtrl', ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
         // TODO: Consider creating a class for this.
         HadithHouse.HadithHouseApp.directive('hhSelector', function () {
             return {

@@ -29,61 +29,19 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IPersonResource = HadithHouse.Services.IPersonResource;
+  import Person = HadithHouse.Resources.Person;
 
-  export class PersonPageCtrl extends EntityPageCtrl<IPersonResource> {
-    oldPerson:IPersonResource;
-    PersonResourceClass:Services.IPersonResourceClass;
+  export class PersonPageCtrl extends EntityPageCtrl<Person> {
+    PersonResource:Resources.CacheableResource<Person>;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                PersonResourceClass:Services.IPersonResourceClass,
+                PersonResource:Resources.CacheableResource<Person>,
                 ToastService:any) {
-      // Setting PersonResourceClass before calling super, because super might end up
-      // calling methods which requires PersonResourceClass, e.g. newEntity().
-      this.PersonResourceClass = PersonResourceClass;
-      this.oldPerson = new this.PersonResourceClass({});
-      super($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService);
-    }
-
-    /**
-     * Makes a copy of the data of the person in case we have to restore them
-     * if the user cancels editing or we fail to send changes to the server.
-     */
-    protected copyEntity() {
-      this.oldPerson.title = this.entity.title;
-      this.oldPerson.display_name = this.entity.display_name;
-      this.oldPerson.full_name = this.entity.full_name;
-      this.oldPerson.brief_desc = this.entity.brief_desc;
-      this.oldPerson.birth_year = this.entity.birth_year;
-      this.oldPerson.birth_month = this.entity.birth_month;
-      this.oldPerson.birth_day = this.entity.birth_day;
-      this.oldPerson.death_year = this.entity.death_year;
-      this.oldPerson.death_month = this.entity.death_month;
-      this.oldPerson.death_day = this.entity.death_day;
-    }
-
-    /**
-     * Restores the saved data of the person after the user cancels editing
-     * or we fail to send changes to the server.
-     */
-    protected restoreEntity() {
-      this.entity.title = this.oldPerson.title;
-      this.entity.display_name = this.oldPerson.display_name;
-      this.entity.full_name = this.oldPerson.full_name;
-      this.entity.brief_desc = this.oldPerson.brief_desc;
-      this.entity.birth_year = this.oldPerson.birth_year;
-      this.entity.birth_month = this.oldPerson.birth_month;
-      this.entity.birth_day = this.oldPerson.birth_day;
-      this.entity.death_year = this.oldPerson.death_year;
-      this.entity.death_month = this.oldPerson.death_month;
-      this.entity.death_day = this.oldPerson.death_day;
-    }
-
-    protected newEntity():IPersonResource {
-      return new this.PersonResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+      this.PersonResource = PersonResource;
     }
 
     protected getEntityPath(id: number) {
@@ -92,7 +50,9 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('PersonPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService) {
-      return new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, PersonResource, ToastService) {
+      let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+      ctrl.initialize();
+      return ctrl;
     });
 }

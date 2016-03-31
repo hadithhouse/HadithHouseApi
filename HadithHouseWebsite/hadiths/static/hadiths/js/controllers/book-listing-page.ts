@@ -25,27 +25,26 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
 /// <reference path="entity-listing-page.ts" />
 
-module HadithHouse.Controllers {
-  import IBookResource = HadithHouse.Services.IBookResource;
-  import IResourceArray = angular.resource.IResourceArray;
+  module HadithHouse.Controllers {
+    import Book = HadithHouse.Resources.Book;
 
-  export class BookListingPageCtrl extends EntityListingPageCtrl<IBookResource> {
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $timeout:ng.ITimeoutService,
-                $location:ng.ILocationService,
-                $mdDialog:ng.material.IDialogService,
-                private BookResourceClass:Services.IBookResourceClass,
-                ToastService:any) {
-      super($scope, $rootScope, $timeout, $location, $mdDialog, BookResourceClass, ToastService);
+    export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
+      constructor($scope:ng.IScope,
+                  $rootScope:ng.IScope,
+                  $timeout:ng.ITimeoutService,
+                  $location:ng.ILocationService,
+                  $mdDialog:ng.material.IDialogService,
+                  private BookResource:Resources.CacheableResource<Book>,
+                  ToastService:any) {
+        super($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
+      }
     }
+
+    HadithHouse.HadithHouseApp.controller('BookListingPageCtrl',
+      function ($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService) {
+        return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
+      });
   }
 
-  HadithHouse.HadithHouseApp.controller('BookListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, $mdDialog, BookResourceClass, ToastService) {
-      return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResourceClass, ToastService);
-    });
-}

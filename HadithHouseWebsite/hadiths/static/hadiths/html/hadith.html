@@ -1,5 +1,5 @@
 <div ng-if="ctrl.error">
-  Couldn't load hadith or the hadith is not found.
+  Couldn't load hadith or the hadith is not found. Error was: {{ ctrl.error }}
 </div>
 <md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
   <h1>

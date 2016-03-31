@@ -163,7 +163,7 @@ var HadithHouse;
                 });
             };
             return Tree;
-        })();
+        }());
         HadithHouse.HadithHouseApp.directive('hhTree', function () {
             return {
                 restrict: 'E',

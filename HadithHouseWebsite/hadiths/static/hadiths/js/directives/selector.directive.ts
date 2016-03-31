@@ -26,22 +26,22 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../resources/resources.ts" />
 
 
 module HadithHouse.Directives {
-
   import IQService = angular.IQService;
   import IScope = angular.IScope;
-  import IPersonResourceClass = HadithHouse.Services.IPersonResourceClass;
-  import IBookResourceClass = HadithHouse.Services.IBookResourceClass;
-  import IHadithTagResourceClass = HadithHouse.Services.IHadithTagResourceClass;
-  import IEntity = HadithHouse.Services.IEntity;
-  import IResourceArray = angular.resource.IResourceArray;
-  import IUserResourceClass = HadithHouse.Services.IUserResourceClass;
+  import CacheableResource = HadithHouse.Resources.CacheableResource;
+  import Entity = HadithHouse.Resources.Entity;
+  import Person = HadithHouse.Resources.Person;
+  import Book = HadithHouse.Resources.Book;
+  import HadithTag = HadithHouse.Resources.HadithTag;
+  import User = HadithHouse.Resources.User;
 
   export class SelectorCtrl {
-    EntityResourceClass:ng.resource.IResourceClass<IEntity>;
-    ids:any;
+    EntityResource:CacheableResource<Entity>;
+    ids:number|number[];
     entities:any;
     type:string;
     singleSelect:string;
@@ -50,10 +50,10 @@ module HadithHouse.Directives {
     firstLoad = true;
 
     constructor(private $scope:IScope,
-                private PersonResourceClass:IPersonResourceClass,
-                private BookResourceClass:IBookResourceClass,
-                private HadithTagResourceClass:IHadithTagResourceClass,
-                private UserResourceClass:IUserResourceClass) {
+                private PersonResource:CacheableResource<Person>,
+                private BookResource:CacheableResource<Book>,
+                private HadithTagResource:CacheableResource<HadithTag>,
+                private UserResource:CacheableResource<User>) {
 
       if (!this.ids) {
         if (this.singleSelect) {
@@ -81,19 +81,19 @@ module HadithHouse.Directives {
 
       switch (this.type.toLowerCase()) {
         case 'person':
-          this.EntityResourceClass = PersonResourceClass;
+          this.EntityResource = PersonResource;
           break;
 
         case 'book':
-          this.EntityResourceClass = BookResourceClass;
+          this.EntityResource = BookResource;
           break;
 
         case 'hadithtag':
-          this.EntityResourceClass = HadithTagResourceClass;
+          this.EntityResource = HadithTagResource;
           break;
 
         case 'user':
-          this.EntityResourceClass = UserResourceClass;
+          this.EntityResource = UserResource;
           break;
 
         default:
@@ -125,10 +125,9 @@ module HadithHouse.Directives {
         if (this.ids !== null) {
           this.entities = [this.ids].map((id) => {
             // See if we already have the entity loaded, otherwise make a request to load it.
-            return _.find<IEntity>(this.entities, (e) => {
+            return _.find<Entity>(this.entities, (e) => {
                 return e.id == id;
-              }) || this.EntityResourceClass.get({id: id}, (e) => {
-              });
+              }) || this.EntityResource.get(id);
           });
         } else {
           this.entities = [];
@@ -136,9 +135,9 @@ module HadithHouse.Directives {
       } else {
         this.entities = this.ids.map((id) => {
           // See if we already have the entity loaded, otherwise make a request to load it.
-          return _.find<IEntity>(this.entities, (e) => {
+          return _.find<Entity>(this.entities, (e) => {
               return e.id == id;
-            }) || this.EntityResourceClass.get({id: id});
+            }) || this.EntityResource.get(id);
         });
       }
     }
@@ -176,7 +175,7 @@ module HadithHouse.Directives {
     }
 
     public findEntities(query) {
-      return this.EntityResourceClass.query({search: query});
+      return this.EntityResource.query({search: query});
     };
 
     public entityToString = (entity) => {
@@ -200,7 +199,7 @@ module HadithHouse.Directives {
   }
 
   HadithHouseApp.controller('SelectorCtrl',
-    ['$scope', 'PersonResourceClass', 'BookResourceClass', 'HadithTagResourceClass', 'UserResourceClass', SelectorCtrl]);
+    ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhSelector', function () {
