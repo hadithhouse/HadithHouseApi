@@ -123,6 +123,15 @@ class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
   patch_perm_code = 'change_hadith'
   delete_perm_code = 'delete_hadith'
 
+  def get(self, request, *args, **kwargs):
+    id = kwargs['id']
+    if id == 'random':
+      random_hadith = Hadith.objects.order_by('?').first()
+      serializer = self.get_serializer(random_hadith)
+      return Response(serializer.data)
+    else:
+      return super(HadithView, self).get(request, *args, **kwargs)
+
 
 class ChainSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
