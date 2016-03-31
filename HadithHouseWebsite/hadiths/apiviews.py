@@ -1,11 +1,9 @@
 from django.db.models import ProtectedError
 from rest_framework.filters import DjangoFilterBackend, SearchFilter
 from rest_framework.filters import OrderingFilter
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.status import HTTP_403_FORBIDDEN
 
-from hadiths import fbapi
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 from hadiths.filters import TagsFilter, IdsFilter
 from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain
@@ -158,17 +156,17 @@ class UserSetView(FBAuthListCreateAPIView):
   filter_fields = ('first_name', 'last_name', 'username')
   search_fields = ('first_name', 'last_name', 'username')
   ordering_fields = ('first_name', 'last_name', 'username', 'is_supervisor', 'is_staff', 'date_joined')
+  http_method_names = ('get',) # Only allow GET methods
 
+  def post(self, request, *args, **kwargs):
+    raise RuntimeError("Users API doesn't support adding new users. Please ask an admin to add new users.")
 
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
   lookup_field = 'id'
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_perm_code = None
-  post_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
-  put_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
-  patch_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
-  delete_perm_code = None  # Permission.get_code_by_name('Can Control Permissions')
+  http_method_names = ('get',) # Only allow GET methods
 
   def get(self, request, *args, **kwargs):
     id = kwargs['id']
@@ -177,3 +175,12 @@ class UserView(FBAuthRetrieveUpdateDestroyAPIView):
       return Response(serializer.data)
     else:
       return super(UserView, self).get(request, *args, **kwargs)
+
+  def put(self, request, *args, **kwargs):
+    raise RuntimeError("Users API doesn't support updating users. Please ask an admin to make the required changes.")
+
+  def patch(self, request, *args, **kwargs):
+    raise RuntimeError("Users API doesn't support updating users. Please ask an admin to make the required changes.")
+
+  def delete(self, request, *args, **kwargs):
+    raise RuntimeError("Users API doesn't support deleting users. Please ask an admin to delete the user.")
