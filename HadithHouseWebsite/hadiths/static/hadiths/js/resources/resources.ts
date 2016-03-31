@@ -386,16 +386,28 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class User extends Entity {
-    title:string;
-    display_name:string;
-    full_name:string;
-    brief_desc:string;
-    birth_year:number;
-    birth_month:number;
-    birth_day:number;
-    death_year:number;
-    death_month:number;
-    death_day:number;
+    first_name:string;
+    last_name:string;
+    is_superuser:boolean;
+    is_staff:boolean;
+    username:string;
+    date_joined:string;
+    permissions:Array<string>;
+    permissionsOrdered:Array<string>;
+
+    public set(entity:Entity) {
+      super.set(entity);
+      this.first_name = (<User>entity).first_name;
+      this.last_name = (<User>entity).last_name;
+      this.is_superuser = (<User>entity).is_superuser;
+      this.is_staff = (<User>entity).is_staff;
+      this.username = (<User>entity).username;
+      this.date_joined = (<User>entity).date_joined;
+      this.permissions = (<User>entity).permissions.slice();
+      this.permissionsOrdered = ((<User>entity).permissionsOrdered != null)
+        ? (<User>entity).permissionsOrdered.slice()
+        : null;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('UserResource',

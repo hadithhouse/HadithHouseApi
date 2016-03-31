@@ -356,6 +356,19 @@ var HadithHouse;
             function User() {
                 _super.apply(this, arguments);
             }
+            User.prototype.set = function (entity) {
+                _super.prototype.set.call(this, entity);
+                this.first_name = entity.first_name;
+                this.last_name = entity.last_name;
+                this.is_superuser = entity.is_superuser;
+                this.is_staff = entity.is_staff;
+                this.username = entity.username;
+                this.date_joined = entity.date_joined;
+                this.permissions = entity.permissions.slice();
+                this.permissionsOrdered = (entity.permissionsOrdered != null)
+                    ? entity.permissionsOrdered.slice()
+                    : null;
+            };
             return User;
         }(Entity));
         Resources.User = User;

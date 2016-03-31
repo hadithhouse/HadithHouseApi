@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../app.ts" />
@@ -30,56 +29,19 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IUser = HadithHouse.Services.IUserResource;
-  import IUserResource = HadithHouse.Services.IUserResourceClass;
+  import User = HadithHouse.Resources.User;
 
-  export class UserPageCtrl extends EntityPageCtrl<IUser> {
-    oldUser:IUser;
-    UserResourceClass:Services.IUserResourceClass;
+  export class UserPageCtrl extends EntityPageCtrl<User> {
+    UserResource:Resources.CacheableResource<User>;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                UserResourceClass:Services.IUserResourceClass,
+                UserResource:Resources.CacheableResource<User>,
                 ToastService:any) {
-      // Setting UserResourceClass before calling super, because super might end up
-      // calling methods which requires UserResourceClass, e.g. newEntity().
-      this.UserResourceClass = UserResourceClass;
-      this.oldUser = new this.UserResourceClass({});
-      super($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
-    }
-
-    /**
-     * Makes a copy of the data of the person in case we have to restore them
-     * if the user cancels editing or we fail to send changes to the server.
-     */
-    protected copyEntity() {
-      this.oldUser.first_name = this.entity.first_name;
-      this.oldUser.last_name = this.entity.last_name;
-      this.oldUser.is_superuser = this.entity.is_superuser;
-      this.oldUser.is_staff = this.entity.is_staff;
-      this.oldUser.username = this.entity.username;
-      this.oldUser.date_joined = this.entity.date_joined;
-      this.oldUser.permissions = this.entity.permissions.slice();
-    }
-
-    /**
-     * Restores the saved data of the person after the user cancels editing
-     * or we fail to send changes to the server.
-     */
-    protected restoreEntity() {
-      this.entity.first_name = this.oldUser.first_name;
-      this.entity.last_name = this.oldUser.last_name;
-      this.entity.is_superuser = this.oldUser.is_superuser;
-      this.entity.is_staff = this.oldUser.is_staff;
-      this.entity.username = this.oldUser.username;
-      this.entity.date_joined = this.oldUser.date_joined;
-      this.entity.permissions = this.oldUser.permissions.slice();
-    }
-
-    protected newEntity():IUser {
-      return new this.UserResourceClass({});
+      super($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+      this.UserResource = UserResource;
     }
 
     protected getEntityPath(id: number) {
@@ -95,7 +57,10 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('UserPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService) {
-      return new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResourceClass, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
+      let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+      ctrl.initialize();
+      return ctrl;
     });
 }
+

@@ -28,32 +28,32 @@
 /// <reference path="../services/services.ts" />
 /// <reference path="entity-page.ts" />
 
-  module HadithHouse.Controllers {
-    import HadithTag = HadithHouse.Resources.HadithTag;
+module HadithHouse.Controllers {
+  import HadithTag = HadithHouse.Resources.HadithTag;
 
-    export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
-      HadithTagResource:Resources.CacheableResource<HadithTag>;
+  export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
+    HadithTagResource:Resources.CacheableResource<HadithTag>;
 
-      constructor($scope:ng.IScope,
-                  $rootScope:ng.IScope,
-                  $location:ng.ILocationService,
-                  $routeParams:any,
-                  HadithTagResource:Resources.CacheableResource<HadithTag>,
-                  ToastService:any) {
-        super($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
-        this.HadithTagResource = HadithTagResource;
-      }
-
-      protected getEntityPath(id: number) {
-        return 'hadithtag/' + id;
-      }
+    constructor($scope:ng.IScope,
+                $rootScope:ng.IScope,
+                $location:ng.ILocationService,
+                $routeParams:any,
+                HadithTagResource:Resources.CacheableResource<HadithTag>,
+                ToastService:any) {
+      super($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+      this.HadithTagResource = HadithTagResource;
     }
 
-    HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
-      function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
-        let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
-        ctrl.initialize();
-        return ctrl;
-      });
+    protected getEntityPath(id: number) {
+      return 'hadithtag/' + id;
+    }
   }
+
+  HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
+    function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
+      let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+      ctrl.initialize();
+      return ctrl;
+    });
+}
 

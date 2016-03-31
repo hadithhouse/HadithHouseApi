@@ -37,56 +37,20 @@ var HadithHouse;
     (function (Controllers) {
         var PersonPageCtrl = (function (_super) {
             __extends(PersonPageCtrl, _super);
-            function PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService) {
-                // Setting PersonResourceClass before calling super, because super might end up
-                // calling methods which requires PersonResourceClass, e.g. newEntity().
-                this.PersonResourceClass = PersonResourceClass;
-                this.oldPerson = new this.PersonResourceClass({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService);
+            function PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+                this.PersonResource = PersonResource;
             }
-            /**
-             * Makes a copy of the data of the person in case we have to restore them
-             * if the user cancels editing or we fail to send changes to the server.
-             */
-            PersonPageCtrl.prototype.copyEntity = function () {
-                this.oldPerson.title = this.entity.title;
-                this.oldPerson.display_name = this.entity.display_name;
-                this.oldPerson.full_name = this.entity.full_name;
-                this.oldPerson.brief_desc = this.entity.brief_desc;
-                this.oldPerson.birth_year = this.entity.birth_year;
-                this.oldPerson.birth_month = this.entity.birth_month;
-                this.oldPerson.birth_day = this.entity.birth_day;
-                this.oldPerson.death_year = this.entity.death_year;
-                this.oldPerson.death_month = this.entity.death_month;
-                this.oldPerson.death_day = this.entity.death_day;
-            };
-            /**
-             * Restores the saved data of the person after the user cancels editing
-             * or we fail to send changes to the server.
-             */
-            PersonPageCtrl.prototype.restoreEntity = function () {
-                this.entity.title = this.oldPerson.title;
-                this.entity.display_name = this.oldPerson.display_name;
-                this.entity.full_name = this.oldPerson.full_name;
-                this.entity.brief_desc = this.oldPerson.brief_desc;
-                this.entity.birth_year = this.oldPerson.birth_year;
-                this.entity.birth_month = this.oldPerson.birth_month;
-                this.entity.birth_day = this.oldPerson.birth_day;
-                this.entity.death_year = this.oldPerson.death_year;
-                this.entity.death_month = this.oldPerson.death_month;
-                this.entity.death_day = this.oldPerson.death_day;
-            };
-            PersonPageCtrl.prototype.newEntity = function () {
-                return new this.PersonResourceClass({});
-            };
             PersonPageCtrl.prototype.getEntityPath = function (id) {
                 return 'person/' + id;
             };
             return PersonPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.PersonPageCtrl = PersonPageCtrl;
-        HadithHouse.HadithHouseApp.controller('PersonPageCtrl', function ($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService) {
-            return new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('PersonPageCtrl', function ($scope, $rootScope, $location, $routeParams, PersonResource, ToastService) {
+            var ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+            ctrl.initialize();
+            return ctrl;
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));
