@@ -28,58 +28,32 @@
 /// <reference path="../services/services.ts" />
 /// <reference path="entity-page.ts" />
 
-module HadithHouse.Controllers {
-  import IHadithTag = HadithHouse.Services.IHadithTagResource;
-  import IHadithTagResource = HadithHouse.Services.IHadithTagResourceClass;
+  module HadithHouse.Controllers {
+    import HadithTag = HadithHouse.Resources.HadithTag;
 
-  export class HadithTagPageCtrl extends EntityPageCtrl<IHadithTag> {
-    oldHadithTag:IHadithTag;
-    HadithTagResourceClass:Services.IHadithTagResourceClass;
+    export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
+      HadithTagResource:Resources.CacheableResource<HadithTag>;
 
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $location:ng.ILocationService,
-                $routeParams:any,
-                HadithTagResourceClass:Services.IHadithTagResourceClass,
-                ToastService:any) {
-      // Setting HadithTagResourceClass before calling super, because super might end up
-      // calling methods which requires HadithTagResourceClass, e.g. newEntity().
-      this.HadithTagResourceClass = HadithTagResourceClass;
-      this.oldHadithTag = new this.HadithTagResourceClass({});
-      super($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
+      constructor($scope:ng.IScope,
+                  $rootScope:ng.IScope,
+                  $location:ng.ILocationService,
+                  $routeParams:any,
+                  HadithTagResource:Resources.CacheableResource<HadithTag>,
+                  ToastService:any) {
+        super($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+        this.HadithTagResource = HadithTagResource;
+      }
+
+      protected getEntityPath(id: number) {
+        return 'hadithtag/' + id;
+      }
     }
 
-    /**
-     * Makes a copy of the data of the tag in case we have to restore them
-     * if the user cancels editing or we fail to send changes to the server.
-     */
-    protected copyEntity() {
-      this.oldHadithTag.name = this.entity.name;
-    }
-
-    /**
-     * Restores the saved data of the tag after the user cancels editing
-     * or we fail to send changes to the server.
-     */
-    protected restoreEntity() {
-      this.entity.name = this.oldHadithTag.name;
-    }
-
-    protected newEntity():IHadithTag {
-      return new this.HadithTagResourceClass({
-        title: '',
-        brief_desc: '',
-        pub_year: null
+    HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
+      function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
+        let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+        ctrl.initialize();
+        return ctrl;
       });
-    }
-
-    protected getEntityPath(id: number) {
-      return 'hadithtag/' + id;
-    }
   }
 
-  HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService) {
-      return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
-    });
-}

@@ -249,6 +249,13 @@ var HadithHouse;
             function Hadith() {
                 _super.apply(this, arguments);
             }
+            Hadith.prototype.set = function (entity) {
+                _super.prototype.set.call(this, entity);
+                this.text = entity.text;
+                this.person = entity.person;
+                this.book = entity.book;
+                this.tags = entity.tags.slice();
+            };
             return Hadith;
         }(Entity));
         Resources.Hadith = Hadith;
@@ -263,6 +270,19 @@ var HadithHouse;
             function Person() {
                 _super.apply(this, arguments);
             }
+            Person.prototype.set = function (entity) {
+                _super.prototype.set.call(this, entity);
+                this.title = entity.title;
+                this.display_name = entity.display_name;
+                this.full_name = entity.full_name;
+                this.brief_desc = entity.brief_desc;
+                this.birth_year = entity.birth_year;
+                this.birth_month = entity.birth_month;
+                this.birth_day = entity.birth_day;
+                this.death_year = entity.death_year;
+                this.death_month = entity.death_month;
+                this.death_day = entity.death_day;
+            };
             return Person;
         }(Entity));
         Resources.Person = Person;
@@ -297,6 +317,10 @@ var HadithHouse;
             function HadithTag() {
                 _super.apply(this, arguments);
             }
+            HadithTag.prototype.set = function (entity) {
+                _super.prototype.set.call(this, entity);
+                this.name = entity.name;
+            };
             return HadithTag;
         }(Entity));
         Resources.HadithTag = HadithTag;
@@ -311,6 +335,13 @@ var HadithHouse;
             function Chain() {
                 _super.apply(this, arguments);
             }
+            Chain.prototype.set = function (entity) {
+                _super.prototype.set.call(this, entity);
+                this.hadith = entity.hadith;
+                this.persons = entity.persons.slice();
+                this.isEditing = entity.isEditing;
+                this.isAddingNew = entity.isAddingNew;
+            };
             return Chain;
         }(Entity));
         Resources.Chain = Chain;

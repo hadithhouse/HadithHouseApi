@@ -37,42 +37,20 @@ var HadithHouse;
     (function (Controllers) {
         var HadithTagPageCtrl = (function (_super) {
             __extends(HadithTagPageCtrl, _super);
-            function HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService) {
-                // Setting HadithTagResourceClass before calling super, because super might end up
-                // calling methods which requires HadithTagResourceClass, e.g. newEntity().
-                this.HadithTagResourceClass = HadithTagResourceClass;
-                this.oldHadithTag = new this.HadithTagResourceClass({});
-                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
+            function HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
+                _super.call(this, $scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+                this.HadithTagResource = HadithTagResource;
             }
-            /**
-             * Makes a copy of the data of the tag in case we have to restore them
-             * if the user cancels editing or we fail to send changes to the server.
-             */
-            HadithTagPageCtrl.prototype.copyEntity = function () {
-                this.oldHadithTag.name = this.entity.name;
-            };
-            /**
-             * Restores the saved data of the tag after the user cancels editing
-             * or we fail to send changes to the server.
-             */
-            HadithTagPageCtrl.prototype.restoreEntity = function () {
-                this.entity.name = this.oldHadithTag.name;
-            };
-            HadithTagPageCtrl.prototype.newEntity = function () {
-                return new this.HadithTagResourceClass({
-                    title: '',
-                    brief_desc: '',
-                    pub_year: null
-                });
-            };
             HadithTagPageCtrl.prototype.getEntityPath = function (id) {
                 return 'hadithtag/' + id;
             };
             return HadithTagPageCtrl;
-        })(Controllers.EntityPageCtrl);
+        }(Controllers.EntityPageCtrl));
         Controllers.HadithTagPageCtrl = HadithTagPageCtrl;
-        HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService) {
-            return new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResourceClass, ToastService);
+        HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl', function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
+            var ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+            ctrl.initialize();
+            return ctrl;
         });
     })(Controllers = HadithHouse.Controllers || (HadithHouse.Controllers = {}));
 })(HadithHouse || (HadithHouse = {}));

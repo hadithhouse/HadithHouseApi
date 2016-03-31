@@ -266,6 +266,14 @@ module HadithHouse.Resources {
     person:number;
     book:number;
     tags:number[];
+
+    public set(entity:Entity) {
+      super.set(entity);
+      this.text = (<Hadith>entity).text;
+      this.person = (<Hadith>entity).person;
+      this.book = (<Hadith>entity).book;
+      this.tags = (<Hadith>entity).tags.slice();
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('HadithResource',
@@ -288,6 +296,20 @@ module HadithHouse.Resources {
     death_year:number;
     death_month:number;
     death_day:number;
+
+    public set(entity:Entity) {
+      super.set(entity);
+      this.title = (<Person>entity).title;
+      this.display_name = (<Person>entity).display_name;
+      this.full_name = (<Person>entity).full_name;
+      this.brief_desc = (<Person>entity).brief_desc;
+      this.birth_year = (<Person>entity).birth_year;
+      this.birth_month = (<Person>entity).birth_month;
+      this.birth_day = (<Person>entity).birth_day;
+      this.death_year = (<Person>entity).death_year;
+      this.death_month = (<Person>entity).death_month;
+      this.death_day = (<Person>entity).death_day;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('PersonResource',
@@ -306,9 +328,9 @@ module HadithHouse.Resources {
 
     public set(entity:Entity) {
       super.set(entity);
-      this.title = entity.title;
-      this.brief_desc = entity.brief_desc;
-      this.pub_year = entity.pub_year;
+      this.title = (<Book>entity).title;
+      this.brief_desc = (<Book>entity).brief_desc;
+      this.pub_year = (<Book>entity).pub_year;
     }
   }
 
@@ -323,6 +345,11 @@ module HadithHouse.Resources {
 
   export class HadithTag extends Entity {
     name:string;
+
+    public set(entity:Entity) {
+      super.set(entity);
+      this.name = (<HadithTag>entity).name;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('HadithTagResource',
@@ -339,6 +366,14 @@ module HadithHouse.Resources {
     persons:Array<number>;
     isEditing:boolean;
     isAddingNew:boolean;
+
+    public set(entity:Entity) {
+      super.set(entity);
+      this.hadith = (<Chain>entity).hadith;
+      this.persons = (<Chain>entity).persons.slice();
+      this.isEditing = (<Chain>entity).isEditing;
+      this.isAddingNew = (<Chain>entity).isAddingNew;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('ChainResource',
