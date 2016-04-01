@@ -1,4 +1,6 @@
-from django.db.models import ProtectedError
+from random import randint
+
+from django.db.models import ProtectedError, Count
 from rest_framework.filters import DjangoFilterBackend, SearchFilter
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
@@ -126,7 +128,9 @@ class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
   def get(self, request, *args, **kwargs):
     id = kwargs['id']
     if id == 'random':
-      random_hadith = Hadith.objects.order_by('?').first()
+      count = Hadith.objects.aggregate(count=Count('id'))['count']
+      random_index = randint(0, count - 1)
+      random_hadith = Hadith.objects.all()[random_index]
       serializer = self.get_serializer(random_hadith)
       return Response(serializer.data)
     else:
