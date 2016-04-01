@@ -1,7 +1,7 @@
 from django.db import migrations
 from django.db.transaction import atomic
 
-from hadiths.first_hadith_data import *
+from hadiths.initial_data import *
 from hadiths.models import Person, Hadith, HadithTag, Chain, ChainPersonRel, Book, HadithTagRel
 
 
@@ -115,7 +115,7 @@ def add_first_hadiths(apps, schema_editor):
 
 class Migration(migrations.Migration):
   dependencies = [
-    ('hadiths', '0002_create_admin_user'),
+    ('hadiths', '0003_add_holy_quran'),
   ]
 
   operations = [
