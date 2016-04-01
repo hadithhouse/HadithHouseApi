@@ -38,7 +38,7 @@ module HadithHouse.Controllers {
   import Person = HadithHouse.Resources.Person;
   import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
-  export class EntityListingPageCtrl<TEntity extends Entity> {
+  export class EntityListingPageCtrl<TEntity extends Entity<number>> {
     pagedEntities:ObjectWithPromise<PagedResults<TEntity>>;
     searchQuery:string;
     searchPromise:IPromise<void> = null;
@@ -50,7 +50,7 @@ module HadithHouse.Controllers {
                 private $timeout:ng.ITimeoutService,
                 private $location:ng.ILocationService,
                 private $mdDialog:ng.material.IDialogService,
-                private EntityResource:Resources.CacheableResource<TEntity>,
+                private EntityResource:Resources.CacheableResource<TEntity, number>,
                 private ToastService:any) {
       let urlParams = $location.search();
       this.page = parseInt(urlParams['page']) || 1;
@@ -79,20 +79,25 @@ module HadithHouse.Controllers {
       });
     }
 
-    private loadEntities() {
-      // TODO: Show an alert if an error happens.
+    protected getQueryParams():{} {
       if (!this.searchQuery) {
-        this.pagedEntities = this.EntityResource.pagedQuery({
+        return {
           limit: this.pageSize,
           offset: (this.page - 1) * this.pageSize
-        });
+        };
       } else {
-        this.pagedEntities = this.EntityResource.pagedQuery({
+        return {
           search: this.searchQuery,
           limit: this.pageSize,
           offset: (this.page - 1) * this.pageSize
-        });
+        };
       }
+    }
+    
+    protected loadEntities() {
+      // TODO: Show an alert if an error happens.
+      this.pagedEntities = this.EntityResource.pagedQuery(this.getQueryParams());
+      
       if (typeof(this.page) === 'number' && this.page > 1) {
         this.$location.search('page', this.page);
       } else {

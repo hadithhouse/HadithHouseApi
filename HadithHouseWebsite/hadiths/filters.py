@@ -29,5 +29,5 @@ class TagsFilter(BaseFilterBackend):
       return queryset
     filtered_queryset = queryset
     for tag in tags:
-      filtered_queryset = filtered_queryset.filter(tags__name=tag)
+      filtered_queryset = filtered_queryset.filter(tag_rels__tag=tag)
     return filtered_queryset

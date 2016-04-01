@@ -1,6 +1,6 @@
 <div ng-include="'/static/hadiths/html/entity-listing-header.html'"></div>
+<hh-selector ids="ctrl.tagsFilter" type="hadithtag"></hh-selector>
 <md-content class="md-whiteframe-z1" layout="column" flex layout-fill>
-
   <md-list>
     <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
