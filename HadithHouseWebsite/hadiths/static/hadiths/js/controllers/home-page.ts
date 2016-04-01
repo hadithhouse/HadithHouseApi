@@ -34,7 +34,6 @@ module HadithHouse.Controllers {
     
     constructor(private $scope:ng.IScope,
                 private $http:ng.IHttpService) {
-      debugger;
       this.randomHadith = new Hadith($http, '/apis/hadiths', 'random');
     }
   }

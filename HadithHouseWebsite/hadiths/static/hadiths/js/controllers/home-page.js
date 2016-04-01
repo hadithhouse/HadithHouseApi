@@ -33,7 +33,6 @@ var HadithHouse;
             function HomePageCtrl($scope, $http) {
                 this.$scope = $scope;
                 this.$http = $http;
-                debugger;
                 this.randomHadith = new Hadith($http, '/apis/hadiths', 'random');
             }
             return HomePageCtrl;

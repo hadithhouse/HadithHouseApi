@@ -40,7 +40,7 @@ module HadithHouse.Directives {
   import User = HadithHouse.Resources.User;
 
   export class SelectorCtrl {
-    EntityResource:CacheableResource<Entity>;
+    EntityResource:CacheableResource<Entity<number>, number>;
     ids:number|number[];
     entities:any;
     type:string;
@@ -50,10 +50,10 @@ module HadithHouse.Directives {
     firstLoad = true;
 
     constructor(private $scope:IScope,
-                private PersonResource:CacheableResource<Person>,
-                private BookResource:CacheableResource<Book>,
-                private HadithTagResource:CacheableResource<HadithTag>,
-                private UserResource:CacheableResource<User>) {
+                private PersonResource:CacheableResource<Person, number>,
+                private BookResource:CacheableResource<Book, number>,
+                private HadithTagResource:CacheableResource<HadithTag, number>,
+                private UserResource:CacheableResource<User, number>) {
 
       if (!this.ids) {
         if (this.singleSelect) {
@@ -123,9 +123,9 @@ module HadithHouse.Directives {
       }
       if (this.singleSelect) {
         if (this.ids !== null) {
-          this.entities = [this.ids].map((id) => {
+          this.entities = [<number>this.ids].map((id) => {
             // See if we already have the entity loaded, otherwise make a request to load it.
-            return _.find<Entity>(this.entities, (e) => {
+            return _.find<Entity<number>>(this.entities, (e) => {
                 return e.id == id;
               }) || this.EntityResource.get(id);
           });
@@ -133,9 +133,9 @@ module HadithHouse.Directives {
           this.entities = [];
         }
       } else {
-        this.entities = this.ids.map((id) => {
+        this.entities = (<number[]>this.ids).map((id) => {
           // See if we already have the entity loaded, otherwise make a request to load it.
-          return _.find<Entity>(this.entities, (e) => {
+          return _.find<Entity<number>>(this.entities, (e) => {
               return e.id == id;
             }) || this.EntityResource.get(id);
         });
