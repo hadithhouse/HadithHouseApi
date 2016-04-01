@@ -38,6 +38,7 @@ sunni_first_hadith_persons = [
   u"سفيان بن عيينة الهلالي".strip(),
 ]
 
+holy_quran = "القرآن الكريم"
 # كتاب الكافي، باب ما امر النبي صلى الله عليه وآله بالنصيحة لائمة المسلمين واللزوم لجماعتهم ومن هم؟
 # http://www.mezan.net/books/kafi/kafi1/html/ara/books/al-kafi-1/166.html
 shia_first_hadith_book = "الكافي"
