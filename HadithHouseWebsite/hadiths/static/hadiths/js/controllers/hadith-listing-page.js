@@ -37,9 +37,28 @@ var HadithHouse;
         var HadithListingPageCtrl = (function (_super) {
             __extends(HadithListingPageCtrl, _super);
             function HadithListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService) {
+                var _this = this;
                 _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
                 this.HadithResource = HadithResource;
+                var urlParams = $location.search();
+                try {
+                    this.tagsFilter = urlParams['tags'].split(',').map(function (t) { return parseInt(t); });
+                }
+                catch (e) {
+                    this.tagsFilter = [];
+                }
+                $scope.$watch(function () { return _this.tagsFilter; }, function (newValue, oldValue) {
+                    console.log('Tags changed');
+                    _this.loadEntities();
+                });
             }
+            HadithListingPageCtrl.prototype.getQueryParams = function () {
+                var queryParams = _super.prototype.getQueryParams.call(this);
+                if (this.tagsFilter && this.tagsFilter.length > 0) {
+                    queryParams['tags'] = this.tagsFilter.join(',');
+                }
+                return queryParams;
+            };
             return HadithListingPageCtrl;
         }(Controllers.EntityListingPageCtrl));
         Controllers.HadithListingPageCtrl = HadithListingPageCtrl;

@@ -93,21 +93,24 @@ var HadithHouse;
                     _this.loadEntities();
                 });
             }
-            EntityListingPageCtrl.prototype.loadEntities = function () {
-                // TODO: Show an alert if an error happens.
+            EntityListingPageCtrl.prototype.getQueryParams = function () {
                 if (!this.searchQuery) {
-                    this.pagedEntities = this.EntityResource.pagedQuery({
+                    return {
                         limit: this.pageSize,
                         offset: (this.page - 1) * this.pageSize
-                    });
+                    };
                 }
                 else {
-                    this.pagedEntities = this.EntityResource.pagedQuery({
+                    return {
                         search: this.searchQuery,
                         limit: this.pageSize,
                         offset: (this.page - 1) * this.pageSize
-                    });
+                    };
                 }
+            };
+            EntityListingPageCtrl.prototype.loadEntities = function () {
+                // TODO: Show an alert if an error happens.
+                this.pagedEntities = this.EntityResource.pagedQuery(this.getQueryParams());
                 if (typeof (this.page) === 'number' && this.page > 1) {
                     this.$location.search('page', this.page);
                 }

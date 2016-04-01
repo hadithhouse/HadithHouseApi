@@ -36,7 +36,7 @@
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   $mdDialog:ng.material.IDialogService,
-                  private UserResource:Resources.CacheableResource<User>,
+                  private UserResource:Resources.CacheableResource<User, number>,
                   ToastService:any) {
         super($scope, $rootScope, $timeout, $location, $mdDialog, UserResource, ToastService);
       }

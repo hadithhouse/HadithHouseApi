@@ -36,7 +36,7 @@
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   $mdDialog:ng.material.IDialogService,
-                  private HadithTagResource:Resources.CacheableResource<HadithTag>,
+                  private HadithTagResource:Resources.CacheableResource<HadithTag, number>,
                   ToastService:any) {
         super($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
       }
