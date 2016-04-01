@@ -41,70 +41,63 @@ module HadithHouse.Controllers {
   import Person = HadithHouse.Resources.Person;
   import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
-  class ChainTreeNodeArray {
-    nodeDict:any = {};
-    nodes:ChainTreeNode[] = [];
+  class ChainTreeNode {
+    id:string;
+    name:string;
+    _children:ChainTreeNode[];
+    children:ChainTreeNode[];
 
-    public add(node:ITreeNode) {
-      if (this.nodeDict[node.id]) {
-        // It is already added.
+    private static addUniqueElementToArray<T extends { id }>(array:T[], element:T) {
+      if (_.find(array, (e) => { return e.id === element.id})) {
         return;
       }
-      this.nodes.push(node);
-      this.nodeDict[node.id] = node;
+      array.push(element);
     }
 
-    public get(id:string) {
-      return this.nodeDict[id] || null;
-    }
-  }
-
-  class ChainTreeNode {
     public static create(rootPersonId:number,
                          chains:Chain[],
                          personsDict:any):ITreeNode {
-      var previousLevel = new ChainTreeNodeArray();
-      var rootNode = {
-        id: rootPersonId.toString(),
-        name: personsDict[rootPersonId].display_name || personsDict[rootPersonId].full_name,
-        _children: [],
-        children: []
-      };
-      previousLevel.add(rootNode);
+      let previousLevel:ChainTreeNode[] = [];
+      let rootNode =  new ChainTreeNode();
+      rootNode.id =  rootPersonId.toString();
+      rootNode.name = personsDict[rootPersonId].display_name || personsDict[rootPersonId].full_name;
+      rootNode._children = [];
+      rootNode.children = [];
+      ChainTreeNode.addUniqueElementToArray(previousLevel, rootNode);
 
-      var finished = false;
-      for (var i = 0; !finished; i++) {
-        var currentLevel = new ChainTreeNodeArray();
+      let finished = false;
+      for (let i = 0; !finished; i++) {
+        let currentLevel:ChainTreeNode[] = [];
         finished = true;
-        for (var j = 0; j < chains.length; j++) {
+        for (let j = 0; j < chains.length; j++) {
           // Does this chain have any person at and beyond this level?
           if (chains[j].persons.length <= i) {
             continue;
           }
           finished = false;
-          var personId:number = chains[j].persons[i];
-          var parentPersonId:number;
+          let personId:number = chains[j].persons[i];
+          let parentPersonId:number;
           if (i == 0) {
             parentPersonId = rootPersonId;
           } else {
             parentPersonId = chains[j].persons[i - 1];
           }
 
-          var node = {
-            id: personId.toString(),
-            name: personsDict[personId].full_name,
-            _children: [],
-            children: []
-          };
-          previousLevel.get(parentPersonId.toString()).children.push(node);
-          currentLevel.add(node);
+          let node = new ChainTreeNode();
+          node.id = personId.toString();
+          node.name = personsDict[personId].full_name;
+          node._children = [];
+          node.children = [];
+          ChainTreeNode.addUniqueElementToArray(
+            _.find(previousLevel, (e) => e.id === parentPersonId.toString()).children, node);
+          ChainTreeNode.addUniqueElementToArray(currentLevel, node);
         }
         previousLevel = currentLevel;
       }
 
-      var stack = [rootNode];
+      let stack = [rootNode];
       while (stack.length > 0) {
-        var n = stack.pop();
+        let n = stack.pop();
         delete n.id;
         if (n.children) {
           n.children.forEach((c) => {
@@ -121,9 +114,9 @@ module HadithHouse.Controllers {
     pagedChains:ObjectWithPromise<PagedResults<Chain>>;
     chainCopies:any;
     $mdDialog:IDialogService;
-    HadithResource:Resources.CacheableResource<Hadith>;
-    PersonResource:Resources.CacheableResource<Person>;
-    ChainResource:Resources.CacheableResource<Chain>;
+    HadithResource:Resources.CacheableResource<Hadith, number>;
+    PersonResource:Resources.CacheableResource<Person, number>;
+    ChainResource:Resources.CacheableResource<Chain, number>;
     rootNode:any;
 
     constructor($scope:ng.IScope,
@@ -131,9 +124,9 @@ module HadithHouse.Controllers {
                 $location:ng.ILocationService,
                 $routeParams:any,
                 $mdDialog:IDialogService,
-                HadithResource:Resources.CacheableResource<Hadith>,
-                PersonResource:Resources.CacheableResource<Person>,
-                ChainResource:Resources.CacheableResource<Chain>,
+                HadithResource:Resources.CacheableResource<Hadith, number>,
+                PersonResource:Resources.CacheableResource<Person, number>,
+                ChainResource:Resources.CacheableResource<Chain, number>,
                 ToastService:any) {
       super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
       this.HadithResource = HadithResource;
@@ -204,7 +197,7 @@ module HadithHouse.Controllers {
     }
 
     public addNewChain() {
-      var chain = this.ChainResource.create();
+      let chain = this.ChainResource.create();
       chain.hadith = this.entity.id;
       chain.isEditing = true;
       chain.isAddingNew = true;
@@ -212,7 +205,7 @@ module HadithHouse.Controllers {
     }
 
     public deleteChain(event:any, chain:Chain) {
-      var confirm = this.$mdDialog.confirm()
+      let confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the chain?')
         .ok('Yes')
@@ -239,7 +232,7 @@ module HadithHouse.Controllers {
     buildChainTree() {
       // Find the IDs of all persons in all chains to make a single request to
       // fetch their names.
-      var allPersons = [this.entity.person];
+      let allPersons = [this.entity.person];
       this.pagedChains.results.forEach((chain) => {
         allPersons = allPersons.concat(chain.persons);
       });
@@ -249,11 +242,12 @@ module HadithHouse.Controllers {
       // TODO: We should do this request early and cache it so that selector
       // directives won't need to fetch them again.
       this.PersonResource.get(allPersons).promise.then((persons) => {
-        var personDict = {};
+        let personDict = {};
         persons.forEach((p) => {
           personDict[p.id] = p;
         });
 
+        debugger;
         this.rootNode = ChainTreeNode.create(this.entity.person, this.pagedChains.results, personDict);
       });
     }
@@ -261,7 +255,7 @@ module HadithHouse.Controllers {
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
     function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService) {
-      var ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService);
+      let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService);
       ctrl.initialize();
       return ctrl;
     });

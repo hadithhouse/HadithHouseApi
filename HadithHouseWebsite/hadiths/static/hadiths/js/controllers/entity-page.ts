@@ -35,7 +35,7 @@ module HadithHouse.Controllers {
   import CacheableResource = HadithHouse.Resources.CacheableResource;
   import Entity = HadithHouse.Resources.Entity;
 
-  export abstract class EntityPageCtrl<TEntity extends Entity> {
+  export abstract class EntityPageCtrl<TEntity extends Entity<number>> {
     entity:TEntity;
     entityCopy:TEntity;
     isAddingNew:boolean;
@@ -46,7 +46,7 @@ module HadithHouse.Controllers {
                 protected $rootScope:ng.IScope,
                 protected $location:ng.ILocationService,
                 protected $routeParams:any,
-                protected EntityResource:CacheableResource<TEntity>,
+                protected EntityResource:CacheableResource<TEntity, number>,
                 protected ToastService:any) {
       this.error = null;
       this.entityCopy = EntityResource.create();

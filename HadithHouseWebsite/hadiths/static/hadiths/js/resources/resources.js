@@ -1,4 +1,5 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../caching/cache.ts" />
 /// <reference path="../app.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
@@ -15,12 +16,20 @@ var HadithHouse;
             if (!idOrIds) {
                 return baseUrl;
             }
-            else if (typeof (idOrIds) === 'number') {
+            else if (!Array.isArray(idOrIds)) {
                 return baseUrl + "/" + idOrIds;
             }
             else {
-                var ids = idOrIds.join(',');
-                return baseUrl + "?id=" + ids;
+                if (idOrIds.length == 1) {
+                    // If there is one ID only, pass directly in the URL path. This
+                    // is necessary for special requests like hadiths/random or
+                    // users/current.
+                    return baseUrl + "/" + idOrIds;
+                }
+                else {
+                    var ids = idOrIds.join(',');
+                    return baseUrl + "?id=" + ids;
+                }
             }
         }
         var Entity = (function () {
@@ -30,7 +39,7 @@ var HadithHouse;
                 if (!idOrObject) {
                     return;
                 }
-                else if (idOrObject instanceof Number) {
+                else if (typeof (idOrObject) === 'number' || typeof (idOrObject) === 'string') {
                     this.load(idOrObject);
                 }
                 else {
@@ -100,8 +109,9 @@ var HadithHouse;
             CacheableResource.prototype.create = function () {
                 return new this.TEntityClass(this.$http, this.baseUrl);
             };
-            CacheableResource.prototype.query = function (query) {
+            CacheableResource.prototype.query = function (query, useCache) {
                 var _this = this;
+                if (useCache === void 0) { useCache = true; }
                 var queryParams = $.param(query);
                 var entities = [];
                 var httpPromise = this.$http.get(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -114,12 +124,14 @@ var HadithHouse;
                         // NOTE: If there is an object in the cache already, don't overwrite it,
                         // update it. This way other code parts which reference it will
                         // automatically get the updated values.
-                        var entityInCache = _this.cache.get(entity.id, true /* Returns expired */);
+                        var entityInCache = useCache ? _this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
                         if (!entityInCache) {
                             entityInCache = _this.create();
                         }
                         entityInCache.set(entity);
-                        _this.cache.put(entity.id, entityInCache);
+                        if (useCache) {
+                            _this.cache.put(entity.id.toString(), entityInCache);
+                        }
                     }
                     queryDeferred.resolve(entities);
                 }, function (reason) {
@@ -128,8 +140,9 @@ var HadithHouse;
                 entities.promise = queryDeferred.promise;
                 return entities;
             };
-            CacheableResource.prototype.pagedQuery = function (query) {
+            CacheableResource.prototype.pagedQuery = function (query, useCache) {
                 var _this = this;
+                if (useCache === void 0) { useCache = true; }
                 var queryParams = $.param(query);
                 var pagedEntities = new PagedResults();
                 var promise = this.$http.get(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -145,42 +158,47 @@ var HadithHouse;
                         // NOTE: If there is an object in the cache already, don't overwrite it,
                         // update it. This way other code parts which reference it will
                         // automatically get the updated values.
-                        var entityInCache = _this.cache.get(entity.id, true /* Returns expired */);
+                        var entityInCache = useCache ? _this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
                         if (!entityInCache) {
                             entityInCache = _this.create();
                         }
                         entityInCache.set(entity);
-                        _this.cache.put(entity.id, entityInCache);
+                        if (useCache) {
+                            _this.cache.put(entity.id.toString(), entityInCache);
+                        }
                     }
                 });
                 pagedEntities.promise = promise;
                 return pagedEntities;
             };
-            CacheableResource.prototype.get = function (idOrIds) {
-                if (Array.isArray(idOrIds) && typeof (idOrIds[0]) === 'number') {
-                    return this.getByMultipleIds(idOrIds);
-                }
-                else if (typeof (idOrIds) === 'number') {
-                    return this.getBySingleId(idOrIds);
+            CacheableResource.prototype.get = function (idOrIds, useCache) {
+                if (useCache === void 0) { useCache = true; }
+                if (Array.isArray(idOrIds)) {
+                    // An array of IDs.
+                    return this.getByMultipleIds(idOrIds, useCache);
                 }
                 else {
-                    throw 'Invalid argument passed to get(). Arugment should be a number or an array of numbers.';
+                    // A single ID.
+                    return this.getBySingleId(idOrIds, useCache);
                 }
             };
-            CacheableResource.prototype.getBySingleId = function (id) {
-                return this.getByMultipleIds([id])[0];
+            CacheableResource.prototype.getBySingleId = function (id, useCache) {
+                if (useCache === void 0) { useCache = true; }
+                return this.getByMultipleIds([id], useCache)[0];
             };
-            CacheableResource.prototype.getByMultipleIds = function (ids) {
-                var _this = this;
+            CacheableResource.prototype.getByMultipleIds = function (ids, useCache) {
+                if (useCache === void 0) { useCache = true; }
                 // Which objects do we already have in the cache?
                 var entities = [];
-                var entitiesToFetch = [];
+                var idsOfEntitiesToFetch = [];
+                // Remove duplicated IDs before starting.
+                ids = _.uniq(ids);
                 // Check the cache to see which entities we already have and which ones
                 // we need to fetch from the cache.
                 var deferredsToResolve = {};
                 for (var _i = 0, ids_1 = ids; _i < ids_1.length; _i++) {
                     var id = ids_1[_i];
-                    var entity = this.cache.get(id);
+                    var entity = useCache ? this.cache.get(id.toString()) : null;
                     if (entity != null) {
                         entities.push(entity);
                         // Create a promise object in the entity in case the user wants to
@@ -196,8 +214,11 @@ var HadithHouse;
                         // the response from the RESTful API. Also cache it so next requests
                         // for the same object won't have to go to the RESTful API again.
                         entity = this.create();
-                        this.cache.put(id, entity);
-                        entitiesToFetch.push(id);
+                        entity.id = id;
+                        if (useCache) {
+                            this.cache.put(id.toString(), entity);
+                        }
+                        idsOfEntitiesToFetch.push(id);
                         entities.push(entity);
                         // Create a promise object in the entity in case the user wants to
                         // get notified when the object is loaded or an error happens.
@@ -205,30 +226,60 @@ var HadithHouse;
                         entity.promise = deferred.promise;
                         // Save an instance of the deferred so we could resolve it later
                         // when we get the response.
-                        deferredsToResolve[id] = deferred;
+                        deferredsToResolve[id.toString()] = deferred;
                     }
                 }
                 // Requests the entities we don't have from the RESTful API.
-                if (entitiesToFetch.length > 0) {
-                    var httpPromise = this.$http.get(getRestfulUrl(this.baseUrl, entitiesToFetch));
-                    var entitiesDeferred = this.$q.defer();
+                if (idsOfEntitiesToFetch.length > 1) {
+                    var httpPromise = this.$http.get(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+                    var entitiesDeferred_1 = this.$q.defer();
                     httpPromise.then(function (response) {
+                        // Now that we receive the data from the server, start filling in the
+                        // entities we returned to the user and resolving their promises.
+                        var _loop_1 = function(entity) {
+                            _.each(_.filter(entities, function (e) { return e.id === entity.id; }), function (e) {
+                                e.set(entity);
+                            });
+                            // Resolve the promise object of the entity.
+                            deferredsToResolve[entity.id.toString()].resolve(entity);
+                        };
                         for (var _i = 0, _a = response.data.results; _i < _a.length; _i++) {
                             var entity = _a[_i];
-                            _this.cache.get(entity.id).set(entity);
-                            // Resolve the promise object of the entity.
-                            deferredsToResolve[entity.id].resolve(entity);
+                            _loop_1(entity);
                         }
-                        entitiesDeferred.resolve(entities);
+                        entitiesDeferred_1.resolve(entities);
                     }, function (reason) {
                         for (var _i = 0, entities_1 = entities; _i < entities_1.length; _i++) {
                             var entity = entities_1[_i];
                             // Rejects the promise object of the entity.
-                            deferredsToResolve[entity.id].reject(reason);
+                            deferredsToResolve[entity.id.toString()].reject(reason);
                         }
-                        entitiesDeferred.reject(reason);
+                        entitiesDeferred_1.reject(reason);
                     });
-                    entities.promise = entitiesDeferred.promise;
+                    entities.promise = entitiesDeferred_1.promise;
+                }
+                else if (idsOfEntitiesToFetch.length == 1) {
+                    // Cannot use the same variable name as above with different type :-S
+                    // How is let useful over var then?
+                    var httpPromise2 = this.$http.get(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+                    var entitiesDeferred_2 = this.$q.defer();
+                    httpPromise2.then(function (response) {
+                        var entity = response.data;
+                        _.each(_.filter(entities, function (e) { return e.id === entity.id; }), function (e) {
+                            e.set(entity);
+                        });
+                        // Resolve the promise object of the entity.
+                        deferredsToResolve[entity.id.toString()].resolve(entity);
+                        entitiesDeferred_2.resolve(entities);
+                    }, function (reason) {
+                        for (var _i = 0, entities_2 = entities; _i < entities_2.length; _i++) {
+                            var entity = entities_2[_i];
+                            // Rejects the promise object of the entity.
+                            deferredsToResolve[entity.id.toString()].reject(reason);
+                        }
+                        entitiesDeferred_2.reject(reason);
+                    });
+                    entities.promise = entitiesDeferred_2.promise;
                 }
                 else {
                     // Nothing to fetch, so create promise object that resolves immediately.
@@ -346,7 +397,7 @@ var HadithHouse;
         }(Entity));
         Resources.Chain = Chain;
         HadithHouse.HadithHouseApp.factory('ChainResource', function ($http, $q) {
-            return new CacheableResource(Chain, '/apis/chains/', $http, $q);
+            return new CacheableResource(Chain, '/apis/chains', $http, $q);
         });
         //============================================================================
         // User Resource

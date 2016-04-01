@@ -38,44 +38,31 @@ var HadithHouse;
 (function (HadithHouse) {
     var Controllers;
     (function (Controllers) {
-        var ChainTreeNodeArray = (function () {
-            function ChainTreeNodeArray() {
-                this.nodeDict = {};
-                this.nodes = [];
-            }
-            ChainTreeNodeArray.prototype.add = function (node) {
-                if (this.nodeDict[node.id]) {
-                    // It is already added.
-                    return;
-                }
-                this.nodes.push(node);
-                this.nodeDict[node.id] = node;
-            };
-            ChainTreeNodeArray.prototype.get = function (id) {
-                return this.nodeDict[id] || null;
-            };
-            return ChainTreeNodeArray;
-        }());
         var ChainTreeNode = (function () {
             function ChainTreeNode() {
             }
+            ChainTreeNode.addUniqueElementToArray = function (array, element) {
+                if (_.find(array, function (e) { return e.id === element.id; })) {
+                    return;
+                }
+                array.push(element);
+            };
             ChainTreeNode.create = function (rootPersonId, chains, personsDict) {
-                var previousLevel = new ChainTreeNodeArray();
-                var rootNode = {
-                    id: rootPersonId.toString(),
-                    name: personsDict[rootPersonId].display_name || personsDict[rootPersonId].full_name,
-                    _children: [],
-                    children: []
-                };
-                previousLevel.add(rootNode);
+                var previousLevel = [];
+                var rootNode = new ChainTreeNode();
+                rootNode.id = rootPersonId.toString();
+                rootNode.name = personsDict[rootPersonId].display_name || personsDict[rootPersonId].full_name;
+                rootNode._children = [];
+                rootNode.children = [];
+                ChainTreeNode.addUniqueElementToArray(previousLevel, rootNode);
                 var finished = false;
                 for (var i = 0; !finished; i++) {
-                    var currentLevel = new ChainTreeNodeArray();
+                    var currentLevel = [];
                     finished = true;
-                    for (var j = 0; j < chains.length; j++) {
+                    var _loop_1 = function(j) {
                         // Does this chain have any person at and beyond this level?
                         if (chains[j].persons.length <= i) {
-                            continue;
+                            return "continue";
                         }
                         finished = false;
                         var personId = chains[j].persons[i];
@@ -86,14 +73,17 @@ var HadithHouse;
                         else {
                             parentPersonId = chains[j].persons[i - 1];
                         }
-                        var node = {
-                            id: personId.toString(),
-                            name: personsDict[personId].full_name,
-                            _children: [],
-                            children: []
-                        };
-                        previousLevel.get(parentPersonId.toString()).children.push(node);
-                        currentLevel.add(node);
+                        var node = new ChainTreeNode();
+                        node.id = personId.toString();
+                        node.name = personsDict[personId].full_name;
+                        node._children = [];
+                        node.children = [];
+                        ChainTreeNode.addUniqueElementToArray(_.find(previousLevel, function (e) { return e.id === parentPersonId.toString(); }).children, node);
+                        ChainTreeNode.addUniqueElementToArray(currentLevel, node);
+                    };
+                    for (var j = 0; j < chains.length; j++) {
+                        var state_1 = _loop_1(j);
+                        if (state_1 === "continue") continue;
                     }
                     previousLevel = currentLevel;
                 }
@@ -227,6 +217,7 @@ var HadithHouse;
                     persons.forEach(function (p) {
                         personDict[p.id] = p;
                     });
+                    debugger;
                     _this.rootNode = ChainTreeNode.create(_this.entity.person, _this.pagedChains.results, personDict);
                 });
             };
