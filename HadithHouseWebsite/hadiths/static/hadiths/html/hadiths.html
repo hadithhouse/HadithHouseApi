@@ -8,9 +8,15 @@
                  ng-click="ctrl.deleteEntity($event, entity)"
                  ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
         </md-icon>
+        <span>
         <a ng-href="#/hadith/{{ entity.id }}">
           {{ entity.text | limitTo:50 }}
         </a>
+          </span>
+        <span>
+        <hh-selector ids="entity.tags" type="hadithtag" read-only="true" single-select="false"
+                     text-only="false" clickable="true"></hh-selector>
+         <span>
       </div>
       <md-divider ng-if="!$last"></md-divider>
     </md-list-item>
