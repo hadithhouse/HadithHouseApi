@@ -52,7 +52,7 @@ var HadithHouse;
                             return;
                         }
                     }
-                    if (_this.singleSelect) {
+                    if (_this.singleSelect === 'true') {
                         if (_this.ids !== null) {
                             _this.entities = [_this.ids].map(function (id) {
                                 // See if we already have the entity loaded, otherwise make a request to load it.

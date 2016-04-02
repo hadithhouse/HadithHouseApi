@@ -121,7 +121,7 @@ module HadithHouse.Directives {
           return;
         }
       }
-      if (this.singleSelect) {
+      if (this.singleSelect === 'true') {
         if (this.ids !== null) {
           this.entities = [<number>this.ids].map((id) => {
             // See if we already have the entity loaded, otherwise make a request to load it.
