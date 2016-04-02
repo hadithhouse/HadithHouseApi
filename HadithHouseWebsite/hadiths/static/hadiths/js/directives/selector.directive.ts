@@ -38,6 +38,7 @@ module HadithHouse.Directives {
   import Book = HadithHouse.Resources.Book;
   import HadithTag = HadithHouse.Resources.HadithTag;
   import User = HadithHouse.Resources.User;
+  import ILocationService = angular.ILocationService;
 
   export class SelectorCtrl {
     EntityResource:CacheableResource<Entity<number>, number>;
@@ -50,6 +51,7 @@ module HadithHouse.Directives {
     firstLoad = true;
 
     constructor(private $scope:IScope,
+                private $location:ILocationService,
                 private PersonResource:CacheableResource<Person, number>,
                 private BookResource:CacheableResource<Book, number>,
                 private HadithTagResource:CacheableResource<HadithTag, number>,
@@ -108,6 +110,13 @@ module HadithHouse.Directives {
     }
 
 
+    private onClick(entity) {
+      if (this.clickCallback) {
+        this.clickCallback({entity: entity});
+      } else {
+        this.$location.path(`${this.type}/${entity.id}`)
+      }
+    }
 
     private onIdsChanged = (newValue, oldValue) => {
       if (newValue && this.firstLoad) {
@@ -121,7 +130,7 @@ module HadithHouse.Directives {
           return;
         }
       }
-      if (this.singleSelect) {
+      if (this.singleSelect === 'true') {
         if (this.ids !== null) {
           this.entities = [<number>this.ids].map((id) => {
             // See if we already have the entity loaded, otherwise make a request to load it.
@@ -199,7 +208,7 @@ module HadithHouse.Directives {
   }
 
   HadithHouseApp.controller('SelectorCtrl',
-    ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
+    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhSelector', function () {
@@ -216,7 +225,8 @@ module HadithHouse.Directives {
         readOnly: '=',
         singleSelect: '@',
         textOnly: '@',
-        clickable: '@'
+        clickable: '@',
+        clickCallback: '&?'
       }
     };
   });

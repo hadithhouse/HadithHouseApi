@@ -1,4 +1,4 @@
-<span>
+<span class="hh-selector" style="display: inline-block;">
   <span ng-if="ctrl.textOnly !== 'true'">
     <md-chips ng-model="ctrl.entities" readonly="ctrl.readOnly"
               md-autocomplete-snap
@@ -22,14 +22,19 @@
         <span ng-if="ctrl.clickable !== 'true' || !ctrl.readOnly">
           {{ ctrl.entityToString($chip) }}
         </span>
-        <a ng-href="#/{{ ctrl.type }}/{{ $chip.id }}" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
+        <a href="" ng-click="ctrl.onClick($chip)" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
           {{ ctrl.entityToString($chip) }}
         </a>
       </md-chip-template>
     </md-chips>
   </span>
   <!-- TODO: text-only mode supports only one element at the moment. -->
-  <span ng-if="ctrl.textOnly === 'true' && ctrl.clickable !== 'true'">{{ ctrl.entityToString(ctrl.entities[0]) }}</span>
-  <a ng-href="#/{{ ctrl.type }}/{{ ctrl.entities[0].id }}" ng-if="ctrl.textOnly === 'true' && ctrl.clickable ==='true'">
-    {{ ctrl.entityToString(ctrl.entities[0]) }}</a>
+  <span ng-if="ctrl.textOnly === 'true'">
+    <span ng-if="ctrl.clickable !== 'true'" ng-repeat="entity in ctrl.entities">
+      {{ ctrl.entityToString(entity) }}
+    </span>
+    <a href="" ng-click="ctrl.onClick(entity)" ng-if="ctrl.clickable ==='true'" ng-repeat="entity in ctrl.entities">
+      {{ ctrl.entityToString(entity) }}
+    </a>
+  </span>
 </span>

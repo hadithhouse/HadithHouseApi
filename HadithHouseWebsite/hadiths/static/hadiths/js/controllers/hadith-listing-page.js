@@ -40,24 +40,38 @@ var HadithHouse;
                 var _this = this;
                 _super.call(this, $scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
                 this.HadithResource = HadithResource;
-                var urlParams = $location.search();
+                $scope.$watch(function () { return _this.tagsFilter; }, function (newValue, oldValue) {
+                    _this.loadEntities();
+                });
+            }
+            HadithListingPageCtrl.prototype.readUrlParams = function () {
+                _super.prototype.readUrlParams.call(this);
+                var urlParams = this.$location.search();
                 try {
                     this.tagsFilter = urlParams['tags'].split(',').map(function (t) { return parseInt(t); });
                 }
                 catch (e) {
                     this.tagsFilter = [];
                 }
-                $scope.$watch(function () { return _this.tagsFilter; }, function (newValue, oldValue) {
-                    console.log('Tags changed');
-                    _this.loadEntities();
-                });
-            }
+            };
+            HadithListingPageCtrl.prototype.updateUrlParams = function () {
+                _super.prototype.updateUrlParams.call(this);
+                if (this.tagsFilter && this.tagsFilter.length > 0) {
+                    this.$location.search('tags', this.tagsFilter.join(','));
+                }
+                else {
+                    this.$location.search('tags', null);
+                }
+            };
             HadithListingPageCtrl.prototype.getQueryParams = function () {
                 var queryParams = _super.prototype.getQueryParams.call(this);
                 if (this.tagsFilter && this.tagsFilter.length > 0) {
                     queryParams['tags'] = this.tagsFilter.join(',');
                 }
                 return queryParams;
+            };
+            HadithListingPageCtrl.prototype.onHadithTagClicked = function (hadithTag) {
+                this.tagsFilter = [hadithTag.id];
             };
             return HadithListingPageCtrl;
         }(Controllers.EntityListingPageCtrl));
