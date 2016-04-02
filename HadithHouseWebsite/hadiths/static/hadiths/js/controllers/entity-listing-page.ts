@@ -45,17 +45,14 @@ module HadithHouse.Controllers {
     page:number = 1;
     pageSize:number = 10;
 
-    constructor(private $scope:ng.IScope,
-                private $rootScope:ng.IScope,
-                private $timeout:ng.ITimeoutService,
-                private $location:ng.ILocationService,
-                private $mdDialog:ng.material.IDialogService,
-                private EntityResource:Resources.CacheableResource<TEntity, number>,
-                private ToastService:any) {
-      let urlParams = $location.search();
-      this.page = parseInt(urlParams['page']) || 1;
-      this.searchQuery = urlParams['search'] || '';
-
+    constructor(protected $scope:ng.IScope,
+                protected $rootScope:ng.IScope,
+                protected $timeout:ng.ITimeoutService,
+                protected $location:ng.ILocationService,
+                protected $mdDialog:ng.material.IDialogService,
+                protected EntityResource:Resources.CacheableResource<TEntity, number>,
+                protected ToastService:any) {
+      this.readUrlParams();
       this.loadEntities();
 
       $scope.$watch(() => this.searchQuery, (newValue, oldValue) => {
@@ -78,6 +75,25 @@ module HadithHouse.Controllers {
         this.loadEntities();
       });
     }
+    
+    protected readUrlParams() {
+      let urlParams = this.$location.search();
+      this.page = parseInt(urlParams['page']) || 1;
+      this.searchQuery = urlParams['search'] || '';
+    }
+    
+    protected updateUrlParams() {
+      if (typeof(this.page) === 'number' && this.page > 1) {
+        this.$location.search('page', this.page);
+      } else {
+        this.$location.search('page', null);
+      }
+      if (this.searchQuery) {
+        this.$location.search('search', this.searchQuery);
+      } else {
+        this.$location.search('search', null);
+      }
+    }
 
     protected getQueryParams():{} {
       if (!this.searchQuery) {
@@ -97,17 +113,7 @@ module HadithHouse.Controllers {
     protected loadEntities() {
       // TODO: Show an alert if an error happens.
       this.pagedEntities = this.EntityResource.pagedQuery(this.getQueryParams());
-      
-      if (typeof(this.page) === 'number' && this.page > 1) {
-        this.$location.search('page', this.page);
-      } else {
-        this.$location.search('page', null);
-      }
-      if (this.searchQuery) {
-        this.$location.search('search', this.searchQuery);
-      } else {
-        this.$location.search('search', null);
-      }
+      this.updateUrlParams();
     }
 
     public deleteEntity = (event:any, entity:TEntity) => {

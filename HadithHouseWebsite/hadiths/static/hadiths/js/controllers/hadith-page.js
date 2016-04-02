@@ -217,7 +217,6 @@ var HadithHouse;
                     persons.forEach(function (p) {
                         personDict[p.id] = p;
                     });
-                    debugger;
                     _this.rootNode = ChainTreeNode.create(_this.entity.person, _this.pagedChains.results, personDict);
                 });
             };

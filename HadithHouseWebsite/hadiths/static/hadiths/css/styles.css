@@ -91,6 +91,10 @@ md-sidenav md-list {
   box-shadow: 0 0;
 }
 
+md-input-container {
+  margin: 5px 0;
+}
+
 /* Tree styles */
 .tree_node {
   cursor: pointer;

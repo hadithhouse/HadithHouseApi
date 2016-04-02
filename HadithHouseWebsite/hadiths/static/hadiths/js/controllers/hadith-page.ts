@@ -247,7 +247,6 @@ module HadithHouse.Controllers {
           personDict[p.id] = p;
         });
 
-        debugger;
         this.rootNode = ChainTreeNode.create(this.entity.person, this.pagedChains.results, personDict);
       });
     }

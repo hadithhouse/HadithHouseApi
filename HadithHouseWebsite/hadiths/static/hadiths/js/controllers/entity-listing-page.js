@@ -70,9 +70,7 @@ var HadithHouse;
                         });
                     });
                 };
-                var urlParams = $location.search();
-                this.page = parseInt(urlParams['page']) || 1;
-                this.searchQuery = urlParams['search'] || '';
+                this.readUrlParams();
                 this.loadEntities();
                 $scope.$watch(function () { return _this.searchQuery; }, function (newValue, oldValue) {
                     if (newValue == oldValue) {
@@ -93,6 +91,25 @@ var HadithHouse;
                     _this.loadEntities();
                 });
             }
+            EntityListingPageCtrl.prototype.readUrlParams = function () {
+                var urlParams = this.$location.search();
+                this.page = parseInt(urlParams['page']) || 1;
+                this.searchQuery = urlParams['search'] || '';
+            };
+            EntityListingPageCtrl.prototype.updateUrlParams = function () {
+                if (typeof (this.page) === 'number' && this.page > 1) {
+                    this.$location.search('page', this.page);
+                }
+                else {
+                    this.$location.search('page', null);
+                }
+                if (this.searchQuery) {
+                    this.$location.search('search', this.searchQuery);
+                }
+                else {
+                    this.$location.search('search', null);
+                }
+            };
             EntityListingPageCtrl.prototype.getQueryParams = function () {
                 if (!this.searchQuery) {
                     return {
@@ -111,18 +128,7 @@ var HadithHouse;
             EntityListingPageCtrl.prototype.loadEntities = function () {
                 // TODO: Show an alert if an error happens.
                 this.pagedEntities = this.EntityResource.pagedQuery(this.getQueryParams());
-                if (typeof (this.page) === 'number' && this.page > 1) {
-                    this.$location.search('page', this.page);
-                }
-                else {
-                    this.$location.search('page', null);
-                }
-                if (this.searchQuery) {
-                    this.$location.search('search', this.searchQuery);
-                }
-                else {
-                    this.$location.search('search', null);
-                }
+                this.updateUrlParams();
             };
             EntityListingPageCtrl.prototype.range = function (n) {
                 var res = [];
