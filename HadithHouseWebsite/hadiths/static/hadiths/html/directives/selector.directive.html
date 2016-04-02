@@ -22,7 +22,7 @@
         <span ng-if="ctrl.clickable !== 'true' || !ctrl.readOnly">
           {{ ctrl.entityToString($chip) }}
         </span>
-        <a ng-href="#/{{ ctrl.type }}/{{ $chip.id }}" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
+        <a href="" ng-click="ctrl.onClick($chip)" ng-if="ctrl.clickable === 'true' && ctrl.readOnly">
           {{ ctrl.entityToString($chip) }}
         </a>
       </md-chip-template>
@@ -33,9 +33,7 @@
     <span ng-if="ctrl.clickable !== 'true'" ng-repeat="entity in ctrl.entities">
       {{ ctrl.entityToString(entity) }}
     </span>
-    <a ng-href="#/{{ ctrl.type }}/{{ entity.id }}"
-       ng-if="ctrl.clickable ==='true'"
-       ng-repeat="entity in ctrl.entities">
+    <a href="" ng-click="ctrl.onClick(entity)" ng-if="ctrl.clickable ==='true'" ng-repeat="entity in ctrl.entities">
       {{ ctrl.entityToString(entity) }}
     </a>
   </span>
