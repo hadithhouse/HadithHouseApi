@@ -138,18 +138,30 @@ LOGGING = {
   'handlers': {
     'django_log_file': {
       'level': 'DEBUG',
-      'class': 'logging.FileHandler',
-      'filename': os.path.join(get_log_dir(), 'django.log')
+      'class': 'logging.handlers.TimedRotatingFileHandler',
+      'filename': os.path.join(get_log_dir(), 'django.log'),
+      'when': 'D',
+      'interval': 1,
+      'backupCount': 30,
+      'utc': True
     },
     'django_requests_log_file': {
       'level': 'DEBUG',
-      'class': 'logging.FileHandler',
-      'filename': os.path.join(get_log_dir(), 'django.request.log')
+      'class': 'logging.handlers.TimedRotatingFileHandler',
+      'filename': os.path.join(get_log_dir(), 'django.request.log'),
+      'when': 'D',
+      'interval': 1,
+      'backupCount': 30,
+      'utc': True
     },
     'django_db_backends_log_file': {
       'level': 'DEBUG',
-      'class': 'logging.FileHandler',
-      'filename': os.path.join(get_log_dir(), 'django.db.backends.log')
+      'class': 'logging.handlers.TimedRotatingFileHandler',
+      'filename': os.path.join(get_log_dir(), 'django.db.backends.log'),
+      'when': 'D',
+      'interval': 1,
+      'backupCount': 30,
+      'utc': True
     },
     'mail_admins': {
       'level': 'ERROR',
