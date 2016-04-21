@@ -127,7 +127,7 @@ LOGGING = {
       'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
     },
     'simple': {
-      'format': '%(levelname)s %(message)s'
+      'format': '%(levelname)s %(asctime)s %(message)s'
     },
   },
   'filters': {
@@ -143,7 +143,8 @@ LOGGING = {
       'when': 'D',
       'interval': 1,
       'backupCount': 30,
-      'utc': True
+      'utc': True,
+      'formatter': 'simple'
     },
     'django_requests_log_file': {
       'level': 'DEBUG',
@@ -152,7 +153,8 @@ LOGGING = {
       'when': 'D',
       'interval': 1,
       'backupCount': 30,
-      'utc': True
+      'utc': True,
+      'formatter': 'simple'
     },
     'django_db_backends_log_file': {
       'level': 'DEBUG',
@@ -161,7 +163,8 @@ LOGGING = {
       'when': 'D',
       'interval': 1,
       'backupCount': 30,
-      'utc': True
+      'utc': True,
+      'formatter': 'simple'
     },
     'mail_admins': {
       'level': 'ERROR',
