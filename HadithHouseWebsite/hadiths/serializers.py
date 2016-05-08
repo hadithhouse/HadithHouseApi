@@ -111,18 +111,25 @@ class HadithSerializer(AutoTrackSerializer):
     return instance
 
   def to_representation(self, instance):
+    expand = self.context['request'].query_params.get('expand', 'false').lower() == 'true'
     ret = OrderedDict()
     ret['id'] = instance.id
     ret['text'] = instance.text
-    ret['book'] = instance.book_id
-    ret['person'] = instance.person_id
-    ret['book'] = instance.book_id
-    ret['tags'] = instance.tag_rels.values_list('tag_id', flat=True)
+    ret['book'] = instance.book_id if not expand else \
+      BookSerializer(instance.book, context=self.context).to_representation(instance.book)
+    if instance.person_id is not None:
+      ret['person'] = instance.person_id if not expand else \
+        PersonSerializer(instance.person, context=self.context).to_representation(instance.person)
+    else:
+      ret['person'] = None
+    ret['tags'] = instance.tag_rels.values_list('tag_id', flat=True) if not expand \
+      else [HadithTagSerializer(t.tag, self.context).to_representation(t.tag) for t in instance.tag_rels.all()]
     ret['added_on'] = instance.added_on
     ret['updated_on'] = instance.updated_on
     ret['added_by'] = instance.added_by_id
     ret['updated_by'] = instance.updated_by_id
     return ret
+
 
 class ChainSerializer(serializers.ModelSerializer):
   """
@@ -134,6 +141,7 @@ class ChainSerializer(serializers.ModelSerializer):
   the necessary creations and deletion for the end result to match what the
   user sends.
   """
+
   class Meta:
     model = Chain
     fields = ['id', 'hadith', 'persons', 'added_on', 'updated_on', 'added_by', 'updated_by']
@@ -184,10 +192,14 @@ class ChainSerializer(serializers.ModelSerializer):
     return persons
 
   def to_representation(self, instance):
+    expand = self.context['request'].query_params.get('expand', 'false').lower() == 'true'
     ret = OrderedDict()
     ret['id'] = instance.id
-    ret['hadith'] = instance.hadith_id
-    ret['persons'] = instance.person_rels.values_list('person_id', flat=True).order_by('order')
+    ret['hadith'] = instance.hadith_id if not expand else \
+      HadithSerializer(instance.hadith, context=self.context).to_representation(instance.hadith)
+    ret['persons'] = instance.person_rels.values_list('person_id', flat=True).order_by('order') if not expand \
+      else [PersonSerializer(p.person, context=self.context).to_representation(p.person) for p in
+            instance.person_rels.order_by('order').all()]
     ret['added_on'] = instance.added_on
     ret['updated_on'] = instance.updated_on
     ret['added_by'] = instance.added_by_id
