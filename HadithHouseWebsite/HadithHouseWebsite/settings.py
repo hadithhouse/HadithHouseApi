@@ -144,7 +144,8 @@ LOGGING = {
       'interval': 1,
       'backupCount': 30,
       'utc': True,
-      'formatter': 'simple'
+      'formatter': 'simple',
+      'encoding': 'utf-8'
     },
     'django_requests_log_file': {
       'level': 'DEBUG',
@@ -154,7 +155,8 @@ LOGGING = {
       'interval': 1,
       'backupCount': 30,
       'utc': True,
-      'formatter': 'simple'
+      'formatter': 'simple',
+      'encoding': 'utf-8'
     },
     'django_db_backends_log_file': {
       'level': 'DEBUG',
@@ -164,7 +166,8 @@ LOGGING = {
       'interval': 1,
       'backupCount': 30,
       'utc': True,
-      'formatter': 'simple'
+      'formatter': 'simple',
+      'encoding': 'utf-8'
     },
     'mail_admins': {
       'level': 'ERROR',
