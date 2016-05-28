@@ -23,12 +23,29 @@ class Command(BaseCommand):
     file_path = os.path.join(os.path.dirname(__file__), 'quran-uthmani.txt')
     holy_quran = Book.objects.get(title=initial_data.holy_quran)
     sura = None
+    # The total number of verses in the Holy Quran is 6236, excluding Basmalas
+    # at the beginning of Suras.
+    total_verse_count = 6236
+    perc, prev_perc = 0, 0
+    return
     with codecs.open(file_path, 'r', 'utf-8') as file:
-      for line in file:
+      for i, line in enumerate(file):
         if line.startswith('#') or line.isspace():
           # Ignore comment and empty lines.
           continue
-        chapter, verse_no, verse = line.split('|')
-        if sura is None or sura.number != chapter:
-          sura = holy_quran.chapters.get(number=chapter)
-        h = Hadith.objects.get_or_create(text=verse, book=holy_quran, chapter=sura)
+        try:
+          chapter, verse_no, verse = line.split('|')
+          if sura is None or sura.number != chapter:
+            sura = holy_quran.chapters.get(number=chapter)
+          h = Hadith.objects.get_or_create(text=verse, book=holy_quran, chapter=sura)
+          perc = int(i*100/total_verse_count)
+          if perc != prev_perc:
+            self.stdout.write(str(perc) + '%')
+            self.stdout.flush()
+          prev_perc = perc
+        except Exception as e:
+          self.style.SUC
+          self.stderr.write('Failed while processing the line: ' + line)
+          self.stderr.write('Exception was: ' + str(e))
+          self.stdout.flush()
+
