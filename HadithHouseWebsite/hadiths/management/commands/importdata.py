@@ -27,7 +27,6 @@ class Command(BaseCommand):
     # at the beginning of Suras.
     total_verse_count = 6236
     perc, prev_perc = 0, 0
-    return
     with codecs.open(file_path, 'r', 'utf-8') as file:
       for i, line in enumerate(file):
         if line.startswith('#') or line.isspace():
