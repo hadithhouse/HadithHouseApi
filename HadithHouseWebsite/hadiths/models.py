@@ -1,10 +1,8 @@
-import re
-
-import sys
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from textprocessing.arabic import simplify_arabic_text
 
 # NOTE: Django automatically index foreign keys, but we still add db_index=True
 # to make it clear to the reader.
@@ -17,7 +15,6 @@ from django.dispatch import receiver
 # because I don't think they will be frequently used for filtering.
 
 # TODO: Do we need to index added_on and updated_on?
-from django.utils.datetime_safe import datetime
 
 
 class Person(models.Model):
@@ -227,24 +224,6 @@ class FbUser(models.Model):
 
   fb_id = models.BigIntegerField(unique=True)
   user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='fb_user')
-
-
-def remove_arabic_diactrictics(input):
-  if input is None:
-    return None
-  return re.sub(u'[\u064B-\u0652]', '', input, flags=re.MULTILINE)
-
-
-def unify_alif_letters(input):
-  if input is None:
-    return None
-  return re.sub(u'[\u0622\u0623\u0625]', u'\u0627', input, flags=re.MULTILINE)
-
-
-def simplify_arabic_text(input):
-  if input is None:
-    return None
-  return unify_alif_letters(remove_arabic_diactrictics(input))
 
 
 @receiver(pre_save, sender=Person)

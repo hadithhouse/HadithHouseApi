@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts, get_log_dir
+import sys
+
+from HadithHouseWebsite.server_settings import get_db_settings, get_test_db_settings, get_debug, get_allowed_hosts, get_log_dir
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -65,7 +67,10 @@ ADMINS = (
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 # This
-DATABASES = get_db_settings()
+if 'test' in sys.argv:
+  DATABASES = get_test_db_settings()
+else:
+  DATABASES = get_db_settings()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
