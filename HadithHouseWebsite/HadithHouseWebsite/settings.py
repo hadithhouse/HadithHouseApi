@@ -13,7 +13,7 @@ import os
 
 import sys
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_test_db_settings, get_debug, get_allowed_hosts, \
+from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts, \
   get_log_dir
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
