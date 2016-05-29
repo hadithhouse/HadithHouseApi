@@ -6,11 +6,12 @@ from hadiths.models import Person
 class PersonTestCase(TestCase):
   def test_pre_save(self):
     p = Person()
-    p.display_name = 'رافِد'
-    p.full_name = 'رافِد خالِد'
-    p.brief_desc = 'مُبَرْمِج'
+    p.display_name = 'إخْتِبار إزَاْلة عَلامات التَشْكيل'
+    p.full_name = 'إخْتِبار إزَاْلة عَلامات التَشْكيل'
+    p.brief_desc ='إخْتِبار إزَاْلة عَلامات التَشْكيل'
     p.save()
 
-    self.assertEqual(p.simple_display_name, 'رافد')
-    self.assertEqual(p.simple_full_name, 'رافد خالد')
-    self.assertEqual(p.simple_brief_desc, 'مبرمج')
+    self.assertEqual('اختبار ازالة علامات التشكيل', p.simple_display_name, )
+    self.assertEqual('اختبار ازالة علامات التشكيل', p.simple_full_name, )
+    self.assertEqual('اختبار ازالة علامات التشكيل', p.simple_brief_desc, )
+
