@@ -13,7 +13,8 @@ import os
 
 import sys
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_test_db_settings, get_debug, get_allowed_hosts, get_log_dir
+from HadithHouseWebsite.server_settings import get_db_settings, get_test_db_settings, get_debug, get_allowed_hosts, \
+  get_log_dir
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -68,7 +69,12 @@ ADMINS = (
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 # This
 if 'test' in sys.argv:
-  DATABASES = get_test_db_settings()
+  DATABASES = {
+    'default': {
+      'ENGINE': 'django.db.backends.sqlite3',
+      'NAME': os.path.join(BASE_DIR, 'HadithHouse'),
+    }
+  }
 else:
   DATABASES = get_db_settings()
 
