@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.test.testcases import SimpleTestCase
 
-from textprocessing.arabic import remove_arabic_diactrictics, unify_alef_letters
+from textprocessing.arabic import remove_arabic_diacritics, unify_alef_letters
 from textprocessing.generic import multiline_to_singleline, remove_brackets_whitespaces, reformat_text
+from textprocessing.regex import DocScanner
 
 
 class GenericTestCase(SimpleTestCase):
@@ -30,13 +31,33 @@ class GenericTestCase(SimpleTestCase):
     '''.strip()
     self.assertEqual(expected, output)
 
+
 class ArabicTestCase(SimpleTestCase):
-  def test_remove_arabic_diactric(self):
+  def test_remove_arabic_diacritic(self):
     input = 'اخْتِبار ازَاْلة عَلامات التَشْكيل'
-    output = remove_arabic_diactrictics(input)
+    output = remove_arabic_diacritics(input)
     self.assertEqual('اختبار ازالة علامات التشكيل', output)
 
   def test_unify_alef_letters(self):
     input = 'اآأإٱٲٳٵ'
     output = unify_alef_letters(input)
     self.assertEqual('اااااااا', output)
+
+
+class DocumentScannerTestCase(SimpleTestCase):
+  def test_scan_bullet_points(self):
+    numbers_found = []
+
+    def found_number(type, prev_type, match, prev_match, document):
+      self.assertEqual('number', type)
+      self.assertIsNotNone(match.group('number_value'))
+      numbers_found.append(match.group('number_value'))
+
+    document = '1. First bullet point 2. Second bullet point'
+
+    ds = DocScanner({
+      'number': r'(?P<number_value>[0-9]+)\.'
+    }, found_number)
+    ds.scan(document)
+
+    self.assertEqual(['1', '2'], numbers_found)
