@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class TextprocessorConfig(AppConfig):
+class TextProcessingConfig(AppConfig):
     name = 'textprocessing'
