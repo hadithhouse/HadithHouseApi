@@ -37,14 +37,12 @@ class Command(BaseCommand):
           if sura is None or sura.number != chapter:
             sura = holy_quran.chapters.get(number=chapter)
           h = Hadith.objects.get_or_create(text=verse, book=holy_quran, chapter=sura)
-          perc = int(i*100/total_verse_count)
+          perc = int(i * 100 / total_verse_count)
           if perc != prev_perc:
             self.stdout.write(str(perc) + '%')
             self.stdout.flush()
           prev_perc = perc
         except Exception as e:
-          self.style.SUC
           self.stderr.write('Failed while processing the line: ' + line)
           self.stderr.write('Exception was: ' + str(e))
           self.stdout.flush()
-
