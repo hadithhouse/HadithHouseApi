@@ -31,4 +31,4 @@ class DocScanner(object):
             prev_match,
             document
           )
-        break
+          break

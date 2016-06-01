@@ -61,3 +61,50 @@ class DocumentScannerTestCase(SimpleTestCase):
     ds.scan(document)
 
     self.assertEqual(['1', '2'], numbers_found)
+
+  def test_scan_simple_book(self):
+    book = '''
+Chapter 1: Title of Chapter 1
+Section 1.1: Title of Section 1 of Chapter 1
+Section 1.2: Title of Section 2 of Chapter 1
+Chapter 2: Title of Chapter 2
+Section 2.1: Title of Section 1 of Chapter 2
+Section 2.2: Title of Section 2 of Chapter 2
+    '''
+
+    tokens_found = []
+
+    def found_token(type, prev_type, match, prev_match, document):
+      self.assertIn(type, ['chapter', 'section'])
+
+      if type == 'chapter':
+        self.assertIsNotNone(match.group('chapter_number'))
+        self.assertIsNotNone(match.group('chapter_title'))
+        tokens_found.append({
+          'number': match.group('chapter_number'),
+          'title': match.group('chapter_title'),
+        })
+      elif type == 'section':
+        self.assertIsNotNone(match.group('section_number'))
+        self.assertIsNotNone(match.group('section_title'))
+        tokens_found.append({
+          'number': match.group('section_number'),
+          'title': match.group('section_title'),
+        })
+      else:
+        self.fail()
+
+    ds = DocScanner({
+      'chapter': r'^Chapter (?P<chapter_number>[0-9]+): (?P<chapter_title>.*)$',
+      'section': r'^Section (?P<section_number>[0-9]+\.[0-9]+): (?P<section_title>.*)$',
+    }, found_token)
+    ds.scan(book)
+
+    self.assertListEqual([
+      {'number': '1', 'title': 'Title of Chapter 1'},
+      {'number': '1.1', 'title': 'Title of Section 1 of Chapter 1'},
+      {'number': '1.2', 'title': 'Title of Section 2 of Chapter 1'},
+      {'number': '2', 'title': 'Title of Chapter 2'},
+      {'number': '2.1', 'title': 'Title of Section 1 of Chapter 2'},
+      {'number': '2.2', 'title': 'Title of Section 2 of Chapter 2'},
+    ], tokens_found)
