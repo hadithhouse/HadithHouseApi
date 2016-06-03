@@ -8,7 +8,7 @@ def multiline_to_singleline(text):
   :param text: The text to convert.
   :return: The single-line version of the text.
   """
-  return re.sub('\s+', ' ', text)
+  return re.sub(u'\s+', u' ', text)
 
 
 def remove_brackets_whitespaces(text):
@@ -18,7 +18,7 @@ def remove_brackets_whitespaces(text):
   :param text: The text to process.
   :return: The processed texts.
   """
-  return re.sub(r'\(\s*', '(', re.sub(r'\s*\)', ')', text))
+  return re.sub(r'\(\s*', u'(', re.sub(r'\s*\)', u')', text))
 
 
 def reformat_text(input):
