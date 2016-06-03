@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.test import TestCase
 from django.test.testcases import SimpleTestCase
 
@@ -8,14 +10,14 @@ from textprocessing.regex import DocScanner
 
 class GenericTestCase(SimpleTestCase):
   def test_multiline_to_singleline(self):
-    input = 'My name is \n  Rafid \r Khalid'
+    input = u'My name is \n  Rafid \r Khalid'
     output = multiline_to_singleline(input)
-    self.assertEqual('My name is Rafid Khalid', output)
+    self.assertEqual(u'My name is Rafid Khalid', output)
 
   def test_remove_brackets_whitespaces(self):
-    input = 'This is a text with (  incorrect whitespaces between brackets   ).'
+    input = u'This is a text with (  incorrect whitespaces between brackets   ).'
     output = remove_brackets_whitespaces(input)
-    self.assertEqual('This is a text with (incorrect whitespaces between brackets).', output)
+    self.assertEqual(u'This is a text with (incorrect whitespaces between brackets).', output)
 
   def test_reformat_text(self):
     input = u'''
@@ -34,31 +36,31 @@ class GenericTestCase(SimpleTestCase):
 
 class ArabicTestCase(SimpleTestCase):
   def test_remove_arabic_diacritic(self):
-    input = 'اخْتِبار ازَاْلة عَلامات التَشْكيل'
+    input = u'اخْتِبار ازَاْلة عَلامات التَشْكيل'
     output = remove_arabic_diacritics(input)
-    self.assertEqual('اختبار ازالة علامات التشكيل', output)
+    self.assertEqual(u'اختبار ازالة علامات التشكيل', output)
 
   def test_unify_alef_letters(self):
-    input = 'اآأإٱٲٳٵ'
+    input = u'اآأإٱٲٳٵ'
     output = unify_alef_letters(input)
-    self.assertEqual('اااااااا', output)
+    self.assertEqual(u'اااااااا', output)
 
   def test_simplify_arabic_text_for_surat_alfatiha(self):
-    self.assertEqual('بسم الله الرحمن الرحيم', simplify_arabic_text('بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ'))
-    self.assertEqual('الحمد لله رب العالمين', simplify_arabic_text('الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ'))
-    self.assertEqual('الرحمن الرحيم', simplify_arabic_text('الرَّحْمَنِ الرَّحِيمِ'))
-    self.assertEqual('مالك يوم الدين', simplify_arabic_text('مَالِكِ يَوْمِ الدِّينِ'))
-    self.assertEqual('اياك نعبد واياك نستعين', simplify_arabic_text('إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ'))
-    self.assertEqual('اهدنا الصراط المستقيم', simplify_arabic_text('اهدِنَا الصِّرَاطَ الْمُسْتَقِيمَ'))
-    self.assertEqual('صراط الذين انعمت عليهم غير المغضوب عليهم ولا الضالين', simplify_arabic_text(
-      'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلاَ الضَّالِّينَ'))
+    self.assertEqual(u'بسم الله الرحمن الرحيم', simplify_arabic_text(u'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ'))
+    self.assertEqual(u'الحمد لله رب العالمين', simplify_arabic_text(u'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ'))
+    self.assertEqual(u'الرحمن الرحيم', simplify_arabic_text(u'الرَّحْمَنِ الرَّحِيمِ'))
+    self.assertEqual(u'مالك يوم الدين', simplify_arabic_text(u'مَالِكِ يَوْمِ الدِّينِ'))
+    self.assertEqual(u'اياك نعبد واياك نستعين', simplify_arabic_text(u'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ'))
+    self.assertEqual(u'اهدنا الصراط المستقيم', simplify_arabic_text(u'اهدِنَا الصِّرَاطَ الْمُسْتَقِيمَ'))
+    self.assertEqual(u'صراط الذين انعمت عليهم غير المغضوب عليهم ولا الضالين', simplify_arabic_text(
+      u'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلاَ الضَّالِّينَ'))
 
   def test_simplify_arabic_text_for_different_alef_types(self):
     # TODO: Add tests for the rest of Alef types.
-    self.assertEqual('امنا', simplify_arabic_text('آمَنَّا'))
-    self.assertEqual('اولئك', simplify_arabic_text('أُوْلَئِكَ'))
-    self.assertEqual('او', simplify_arabic_text('أَوْ'))
-    self.assertEqual('واذا', simplify_arabic_text('وَإِذَا'))
+    self.assertEqual(u'امنا', simplify_arabic_text(u'آمَنَّا'))
+    self.assertEqual(u'اولئك', simplify_arabic_text(u'أُوْلَئِكَ'))
+    self.assertEqual(u'او', simplify_arabic_text(u'أَوْ'))
+    self.assertEqual(u'واذا', simplify_arabic_text(u'وَإِذَا'))
     pass
 
 
