@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.test.testcases import SimpleTestCase
 
-from textprocessing.arabic import remove_arabic_diacritics, unify_alef_letters
+from textprocessing.arabic import remove_arabic_diacritics, unify_alef_letters, simplify_arabic_text
 from textprocessing.generic import multiline_to_singleline, remove_brackets_whitespaces, reformat_text
 from textprocessing.regex import DocScanner
 
@@ -42,6 +42,24 @@ class ArabicTestCase(SimpleTestCase):
     input = 'اآأإٱٲٳٵ'
     output = unify_alef_letters(input)
     self.assertEqual('اااااااا', output)
+
+  def test_simplify_arabic_text_for_surat_alfatiha(self):
+    self.assertEqual('بسم الله الرحمن الرحيم', simplify_arabic_text('بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ'))
+    self.assertEqual('الحمد لله رب العالمين', simplify_arabic_text('الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ'))
+    self.assertEqual('الرحمن الرحيم', simplify_arabic_text('الرَّحْمَنِ الرَّحِيمِ'))
+    self.assertEqual('مالك يوم الدين', simplify_arabic_text('مَالِكِ يَوْمِ الدِّينِ'))
+    self.assertEqual('اياك نعبد واياك نستعين', simplify_arabic_text('إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ'))
+    self.assertEqual('اهدنا الصراط المستقيم', simplify_arabic_text('اهدِنَا الصِّرَاطَ الْمُسْتَقِيمَ'))
+    self.assertEqual('صراط الذين انعمت عليهم غير المغضوب عليهم ولا الضالين', simplify_arabic_text(
+      'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلاَ الضَّالِّينَ'))
+
+  def test_simplify_arabic_text_for_different_alef_types(self):
+    # TODO: Add tests for the rest of Alef types.
+    self.assertEqual('امنا', simplify_arabic_text('آمَنَّا'))
+    self.assertEqual('اولئك', simplify_arabic_text('أُوْلَئِكَ'))
+    self.assertEqual('او', simplify_arabic_text('أَوْ'))
+    self.assertEqual('واذا', simplify_arabic_text('وَإِذَا'))
+    pass
 
 
 class DocumentScannerTestCase(SimpleTestCase):
