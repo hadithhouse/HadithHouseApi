@@ -1,4 +1,7 @@
+import json
+
 from django.contrib.auth.models import User
+from django.test import Client
 from django.test import TestCase
 
 from hadiths import fbapi
@@ -106,3 +109,15 @@ class TestCaseBase(TestCase):
   @classmethod
   def tearDownClass(cls):
     pass
+
+  def setUp(self):
+    self.client = Client()
+
+  def get(self, path):
+    return self.client.get(path)
+
+  def post(self, path, data):
+    return self.client.post(path, data)
+
+  def put(self, path, data):
+    return self.client.put(path, json.dumps(data), content_type='application/json')
