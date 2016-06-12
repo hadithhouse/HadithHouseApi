@@ -1,5 +1,12 @@
 import re
 
+PUNCTUATION_MARKS = (
+  '\u061f',  # Question mark
+  '!',
+  '\u060c',  # Comma
+  '.'
+)
+
 
 def remove_arabic_diacritics(input):
   if input is None:
@@ -35,4 +42,3 @@ def simplify_arabic_text(input):
   if input is None:
     return None
   return unify_alef_letters(remove_arabic_diacritics(input))
-
