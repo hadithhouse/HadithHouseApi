@@ -18,17 +18,20 @@ class DocScanner(object):
     self.scanning_regex = '|'.join(['(?P<%s>%s)' % (type, regex) for type, regex in tokens_dict.items()])
     self.callback = callback
 
-  def scan(self, document):
+  def scan(self, document, context=None):
     prev_match = None
     prev_type = None
-    for curr_match in re.finditer(self.scanning_regex, document, flags=re.MULTILINE):
+    for match in re.finditer(self.scanning_regex, document, flags=re.MULTILINE):
       for type in self.types:
-        if curr_match.group(type) is not None:
+        if match.group(type) is not None:
           self.callback(
             type,
             prev_type,
-            curr_match,
+            match,
             prev_match,
-            document
+            document,
+            context
           )
+          prev_type = type
+          prev_match = match
           break
