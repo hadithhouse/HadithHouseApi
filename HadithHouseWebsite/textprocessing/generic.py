@@ -1,5 +1,7 @@
 import re
 
+from textprocessing import english
+
 
 def multiline_to_singleline(text):
   """
@@ -8,7 +10,7 @@ def multiline_to_singleline(text):
   :param text: The text to convert.
   :return: The single-line version of the text.
   """
-  return re.sub(u'\s+', u' ', text)
+  return re.sub(u'\s+', u' ', text, flags=re.MULTILINE)
 
 
 def remove_brackets_whitespaces(text):
@@ -16,9 +18,23 @@ def remove_brackets_whitespaces(text):
   Ensure that there are no whitespaces after opening brackets '(' or before
   closing brackets ')'.
   :param text: The text to process.
-  :return: The processed texts.
+  :return: The processed text.
   """
-  return re.sub(r'\(\s*', u'(', re.sub(r'\s*\)', u')', text))
+  ret = re.sub(r'\s*\)', u')', text, flags=re.MULTILINE)
+  ret = re.sub(r'\(\s*', u'(', ret, flags=re.MULTILINE)
+  return ret
+
+
+def remove_punctuation_marks_whitespaces(text,
+                                         punct_marks=english.PUNCTUATION_MARKS):
+  """
+  Ensure that there are no whitespaces before punctuation marks. For example,
+  this string "Hello , how are you?" gets converted to "Hello, how are you".
+  :param text: The text to process.
+  :param punct_marks: If specified,
+  :return: The processed text.
+  """
+  return re.sub(r'\s+([' + ''.join(punct_marks) + '])', r'\1', text, flags=re.MULTILINE)
 
 
 def reformat_text(input):
@@ -32,7 +48,9 @@ def reformat_text(input):
   :return: The formatted text.
   """
   return remove_brackets_whitespaces(
-    multiline_to_singleline(
-      input
+    remove_punctuation_marks_whitespaces(
+      multiline_to_singleline(
+        input
+      )
     )
   ).strip()
