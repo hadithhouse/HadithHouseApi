@@ -5,8 +5,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.List;
-
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -31,7 +29,7 @@ public interface ApiClient {
   /**
    * Updates an existing person.
    *
-   * @param id The ID of the person to update.
+   * @param id     The ID of the person to update.
    * @param person The updated person object.
    * @return The updated person object retrieved from the server.
    */
@@ -53,7 +51,7 @@ public interface ApiClient {
    * @param callback The callback to execute when the call finishes.
    */
   @GET("/persons")
-  void getPersons(Callback<List<Person>> callback);
+  void getPersons(Callback<PagedResults<Person>> callback);
 
   /**
    * Posts a new hadith tag.
@@ -67,7 +65,7 @@ public interface ApiClient {
   /**
    * Updates an existing tag.
    *
-   * @param id The ID of the tag to update.
+   * @param id  The ID of the tag to update.
    * @param tag The updated tag object.
    * @return The updated tag object retrieved from the server.
    */
@@ -77,7 +75,7 @@ public interface ApiClient {
   /**
    * Asynchronously deletes the given tag.
    *
-   * @param id     The ID of the tag to delete.
+   * @param id       The ID of the tag to delete.
    * @param callback The callback to execute when the call finishes.
    */
   @DELETE("/hadithtags/{id}")
@@ -89,12 +87,12 @@ public interface ApiClient {
    * @param callback The callback to execute when the call finishes.
    */
   @GET("/hadithtags")
-  void getHadithTags(Callback<List<HadithTag>> callback);
+  void getHadithTags(Callback<PagedResults<HadithTag>> callback);
 
   /**
    * Posts a new hadith.
    *
-   * @param hadith The hadith object to be posted.
+   * @param hadith   The hadith object to be posted.
    * @param callback A callback to be executed when the call finishes.
    */
   @POST("/hadiths/")
@@ -103,7 +101,7 @@ public interface ApiClient {
   /**
    * Updates an existing hadith.
    *
-   * @param id The ID of the hadith to update.
+   * @param id     The ID of the hadith to update.
    * @param hadith The updated hadith object.
    * @return The updated hadith object retrieved from the server.
    */
@@ -113,8 +111,8 @@ public interface ApiClient {
   /**
    * Asynchronously deletes the given hadith.
    *
-   * @paraidme     The ID of the hadith to delete.
    * @param callback The callback to execute when the call finishes.
+   * @paraidme The ID of the hadith to delete.
    */
   @DELETE("/hadiths/{id}")
   void deleteHadith(@Path("id") int id, Callback<Void> callback);
@@ -125,12 +123,13 @@ public interface ApiClient {
    * @param callback The callback to execute when the call finishes.
    */
   @GET("/hadiths")
-  void getHadiths(Callback<List<Hadith>> callback);
+  void getHadiths(Callback<PagedResults<Hadith>> callback);
 
 
   class Factory {
     private final static String getServerUrl() {
-      return "http://192.168.1.6/apis";
+      //return "http://192.168.1.6/apis";
+      return "http://www.hadithhouse-dev.net/apis";
     }
 
     public static ApiClient create() {
@@ -145,6 +144,7 @@ public interface ApiClient {
       // conventions this has to be converted to lowerCaseWithUnderscores. This Gson configuration
       // dictates that.
       Gson gson = new GsonBuilder()
+          .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
           .serializeNulls()
           .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
           .create();

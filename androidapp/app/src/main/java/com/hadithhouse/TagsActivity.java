@@ -3,6 +3,7 @@ package com.hadithhouse;
 import android.widget.Toast;
 
 import com.hadithhouse.api.HadithTag;
+import com.hadithhouse.api.PagedResults;
 
 import java.util.List;
 
@@ -67,10 +68,10 @@ public class TagsActivity extends GenericHadithObjectActivity<HadithTag> {
   }
 
   protected void loadObjects() {
-    apiClient.getHadithTags(new Callback<List<HadithTag>>() {
+    apiClient.getHadithTags(new Callback<PagedResults<HadithTag>>() {
       @Override
-      public void success(List<HadithTag> tags, Response response) {
-        setObjects(tags);
+      public void success(PagedResults<HadithTag> response, Response httpResponse) {
+        setObjects(response.results);
       }
 
       @Override

@@ -11,8 +11,7 @@ import android.widget.MultiAutoCompleteTextView;
 import com.hadithhouse.R;
 import com.hadithhouse.api.ApiClient;
 import com.hadithhouse.api.HadithTag;
-
-import java.util.List;
+import com.hadithhouse.api.PagedResults;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -50,10 +49,10 @@ public class TagTextView extends MultiAutoCompleteTextView {
       // TODO: We shouldn't be loading the whole tag objects, just names are enough, but this
       // requires implementation on the server side.
       ApiClient api = ApiClient.Factory.create();
-      api.getHadithTags(new Callback<List<HadithTag>>() {
+      api.getHadithTags(new Callback<PagedResults<HadithTag>>() {
         @Override
-        public void success(List<HadithTag> hadithTags, Response response) {
-          for (HadithTag tag : hadithTags) {
+        public void success(PagedResults<HadithTag> response, Response httpResponse) {
+          for (HadithTag tag : response.results) {
             tagsAdapter.add(tag.name);
           }
         }
