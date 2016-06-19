@@ -7,11 +7,11 @@ module HadithHouse.Caching {
    * Used by Cache class to cache objects.
    */
   export class CacheEntry<TObject, TKey> {
-    expiryTime:Moment;
-    key:TKey;
-    object:TObject;
+    public expiryTime:Moment;
+    public key:TKey;
+    public object:TObject;
 
-    isExpired():boolean {
+    public isExpired():boolean {
       let now = moment();
       return this.expiryTime.isBefore(now);
     }
@@ -21,13 +21,13 @@ module HadithHouse.Caching {
    * Supports caching object for specified periods of time.
    */
   export class Cache<TObject, TKey> {
-    objectDict:any;
+    private objectDict:any;
 
     /**
      * Constructs a new cache object.
      * @param defaultCachingPeriod Default caching time in minutes.
      */
-    constructor(private defaultCachingPeriod:number = 5) {
+    constructor(private defaultCachingPeriod = 5) {
       this.objectDict = {};
     }
 
@@ -44,7 +44,7 @@ module HadithHouse.Caching {
       entry.object = object;
       this.objectDict[key.toString()] = entry;
     }
-    
+
     /**
      * Retrieves an object from the cache.
      * @param key The key of the object.
@@ -52,7 +52,7 @@ module HadithHouse.Caching {
      * @returns The cached object or null if no object with the given key is
      * cached or it has expired.
      */
-    public get(key:TKey, returnsExpired:boolean = true):TObject {
+    public get(key:TKey, returnsExpired = true):TObject {
       let entry = this.objectDict[key.toString()];
       if (!entry || (entry.isExpired() && !returnsExpired)) {
         return null;

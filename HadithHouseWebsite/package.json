@@ -1,0 +1,15 @@
+{
+  "name": "hadithhouse",
+  "version": "0.1.0",
+  "description": "Website for Hadith House project",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rafid Khalid Al-Humaimidi",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-ts": "^5.5.1"
+  }
+}

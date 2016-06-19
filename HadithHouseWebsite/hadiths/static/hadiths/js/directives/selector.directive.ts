@@ -41,14 +41,15 @@ module HadithHouse.Directives {
   import ILocationService = angular.ILocationService;
 
   export class SelectorCtrl {
-    EntityResource:CacheableResource<Entity<number>, number>;
-    ids:number|number[];
-    entities:any;
-    type:string;
-    singleSelect:string;
-    textOnly:string;
-    clickable:string;
-    firstLoad = true;
+    public ids:number|number[];
+    public entities:any;
+    public type:string;
+    public singleSelect:string;
+    public textOnly:string;
+    public clickable:string;
+    public clickCallback:any;
+    public firstLoad = true;
+    private EntityResource:CacheableResource<Entity<number>, number>;
 
     constructor(private $scope:IScope,
                 private $location:ILocationService,
@@ -149,7 +150,7 @@ module HadithHouse.Directives {
             }) || this.EntityResource.get(id);
         });
       }
-    }
+    };
 
     private onEntitiesChanged = (newValue, oldValue) => {
       if (newValue && oldValue && angular.equals(newValue, oldValue)) {
@@ -181,7 +182,7 @@ module HadithHouse.Directives {
           }
         }
       }
-    }
+    };
 
     public findEntities(query) {
       return this.EntityResource.query({search: query});
@@ -220,13 +221,13 @@ module HadithHouse.Directives {
       controllerAs: 'ctrl',
       bindToController: true,
       scope: {
+        clickCallback: '&?',
+        clickable: '@',
         ids: '=',
-        type: '@',
         readOnly: '=',
         singleSelect: '@',
         textOnly: '@',
-        clickable: '@',
-        clickCallback: '&?'
+        type: '@'
       }
     };
   });

@@ -32,13 +32,13 @@ module HadithHouse.Controllers {
   import Person = HadithHouse.Resources.Person;
 
   export class PersonPageCtrl extends EntityPageCtrl<Person> {
-    PersonResource:Resources.CacheableResource<Person>;
+    private PersonResource:Resources.CacheableResource<Person, number>;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                PersonResource:Resources.CacheableResource<Person>,
+                PersonResource:Resources.CacheableResource<Person, number>,
                 ToastService:any) {
       super($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
       this.PersonResource = PersonResource;
