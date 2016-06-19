@@ -10,6 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "^1.0.1",
+    "grunt-contrib-uglify": "^1.0.1",
     "grunt-ts": "^5.5.1"
   }
 }
