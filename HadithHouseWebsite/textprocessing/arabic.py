@@ -1,10 +1,10 @@
 import re
 
 PUNCTUATION_MARKS = (
-  '\u061f',  # Question mark
-  '!',
-  '\u060c',  # Comma
-  '.'
+  u'\u061f',  # Question mark
+  u'!',
+  u'\u060c',  # Comma
+  u'.'
 )
 
 
