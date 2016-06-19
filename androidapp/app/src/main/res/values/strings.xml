@@ -4,8 +4,9 @@
   <string name="title_activity_counting">CountingActivity</string>
 
   <!-- HadithHouse Server URLs -->
-  <string name="server_url_local">http://192.168.1.6/apis/</string>
-  <string name="server_url_dev">http://www.hadithhouse.net/apis/</string>
+  <string name="server_url_local">http://www.hadithhouse-dev.net/apis/</string>
+  <string name="server_url_dev">http://www.hadithhouse-dev.net/apis/</string>
+  <string name="server_url">http://www.hadithhouse.net/apis/</string>
 
   <!-- Menu items -->
   <string name="settingsItem">Settings</string>
