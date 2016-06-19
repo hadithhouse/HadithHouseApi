@@ -6,6 +6,12 @@ HadithHouseWebsite/server_settings.py
 # Django's files generated using collectstatic command.
 /static/
 
+# Nodejs modules
+/node_modules
+
+# TypeScript cache
+/.tscache
+
 # PyCharm files
 /.idea/workspace.xml
 /.idea/libraries

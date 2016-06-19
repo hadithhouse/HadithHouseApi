@@ -32,13 +32,13 @@ module HadithHouse.Controllers {
   import Book = HadithHouse.Resources.Book;
 
   export class BookPageCtrl extends EntityPageCtrl<Book> {
-    BookResource:Resources.CacheableResource<Book>;
+    private BookResource:Resources.CacheableResource<Book, number>;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                BookResource:Resources.CacheableResource<Book>,
+                BookResource:Resources.CacheableResource<Book, number>,
                 ToastService:any) {
       super($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
       this.BookResource = BookResource;

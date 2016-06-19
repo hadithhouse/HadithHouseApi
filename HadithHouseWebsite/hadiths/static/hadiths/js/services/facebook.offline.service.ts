@@ -27,7 +27,7 @@
 
 module HadithHouse.Services {
   import IQService = angular.IQService;
-  export class FacebookService {
+  export class FacebookOfflineService {
     private $q:IQService;
 
     constructor($q:IQService) {
@@ -83,6 +83,6 @@ module HadithHouse.Services {
   }
 
   HadithHouse.HadithHouseApp.factory('FacebookService', function ($q) {
-    return new FacebookService($q);
+    return new FacebookOfflineService($q);
   });
 }

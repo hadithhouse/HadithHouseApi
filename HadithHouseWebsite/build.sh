@@ -15,6 +15,12 @@ mkdir -p $LOGS_PATH
 echo "Copy server_settings.py from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
 cp ${SERVER_SETTINGS_PATH}/server_settings.py HadithHouseWebsite/
 
+# Install Nodejs packages.
+npm install
+
+# Run grunt
+./node_modules/.bin/grunt
+
 # Collect Django's static files.
 echo "Running manage.py collectstatic to collect static files."
 python manage.py collectstatic --noinput

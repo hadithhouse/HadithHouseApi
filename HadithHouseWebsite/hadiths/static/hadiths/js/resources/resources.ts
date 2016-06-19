@@ -101,10 +101,10 @@ module HadithHouse.Resources {
   }
 
   export class PagedResults<TEntity> {
-    count:number;
-    next:string;
-    previous:string;
-    results:TEntity[]
+    public count:number;
+    public next:string;
+    public previous:string;
+    public results:TEntity[];
   }
 
   export type ObjectWithPromise<TObject> = TObject & { promise?:IPromise<TObject> };
@@ -123,7 +123,7 @@ module HadithHouse.Resources {
       return new this.TEntityClass(this.$http, this.baseUrl)
     }
 
-    public query(query:any, useCache:boolean = true):ObjectWithPromise<TEntity[]> {
+    public query(query:any, useCache = true):ObjectWithPromise<TEntity[]> {
       let queryParams = $.param(query);
       let entities:ObjectWithPromise<TEntity[]> = [];
       let httpPromise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);

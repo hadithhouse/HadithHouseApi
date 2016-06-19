@@ -139,7 +139,7 @@ module HadithHouse.Controllers {
           }
         });
       });
-    }
+    };
 
     public range(n:number):number[] {
       let res:number[] = [];

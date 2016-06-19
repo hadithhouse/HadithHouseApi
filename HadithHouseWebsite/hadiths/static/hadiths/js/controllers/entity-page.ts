@@ -75,7 +75,7 @@ module HadithHouse.Controllers {
         this.cancelEditing();
         this.$scope.$apply();
       }
-    }
+    };
 
     /**
      * Makes a copy of the data of the entity in case we have to restore them

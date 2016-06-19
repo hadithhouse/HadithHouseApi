@@ -77,7 +77,7 @@ module HadithHouse.Controllers {
           finished = false;
           let personId:number = chains[j].persons[i];
           let parentPersonId:number;
-          if (i == 0) {
+          if (i === 0) {
             parentPersonId = rootPersonId;
           } else {
             parentPersonId = chains[j].persons[i - 1];
