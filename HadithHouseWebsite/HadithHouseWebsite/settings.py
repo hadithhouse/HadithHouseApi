@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import socket
+import socketserver
 
 import sys
 
@@ -29,6 +31,24 @@ DEBUG = get_debug()
 DJANGO_LOG_LEVEL = DEBUG
 
 ALLOWED_HOSTS = get_allowed_hosts()
+
+PRODUCTION_HOSTS = (
+  'www.hadithhouse.net'
+)
+
+DEVELOPMENT_HOSTS = (
+  'www.hadithhouse-dev.net'
+)
+
+def get_environment():
+  host = socket.getfqdn().lower()
+
+  if host in PRODUCTION_HOSTS:
+    return 'production'
+  elif host in DEVELOPMENT_HOSTS:
+    return 'development'
+  else:
+    return 'local'
 
 SERVER_EMAIL = 'noreply@hadithhouse.net'
 

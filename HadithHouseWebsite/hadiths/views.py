@@ -10,7 +10,8 @@ def index(request):
   else:
     template = loader.get_template('hadiths/index.html')
   context = {
-    'appId': get_fb_appid()
+    'appId': get_fb_appid(),
+    'environment': settings.get_environment()
   }
   return HttpResponse(template.render(context))
 
