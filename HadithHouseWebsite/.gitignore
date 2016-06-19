@@ -16,6 +16,9 @@ HadithHouseWebsite/server_settings.py
 /hadiths/static/hadiths/js/**/*.js
 /hadiths/static/hadiths/js/**/*.js.map
 
+# Ignore minified CSS file.
+/hadiths/static/hadiths/css/all.css
+/hadiths/static/hadiths/css/all.css.map
 
 # PyCharm files
 /.idea/workspace.xml

@@ -174,11 +174,12 @@
   }
 </script>
 
-<link rel="stylesheet" href="{% static 'hadiths/css/styles.css' %}">
-
 {% if environment == 'production' %}
+  <link rel="stylesheet" href="{% static 'hadiths/css/all.css' %}">
   <script src="{% static 'hadiths/js/all.js' %}"></script>
 {% else %}
+  <link rel="stylesheet" href="{% static 'hadiths/css/styles.css' %}">
+
   <script src="{% static 'hadiths/js/app.js' %}"></script>
 
   <!-- Services -->

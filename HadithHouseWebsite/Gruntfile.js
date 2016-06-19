@@ -43,10 +43,27 @@ module.exports = function(grunt) {
           }
         ]
       },
+    },
+    cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1,
+        rebase: true,
+        sourceMap: true
+      },
+      all: {
+        files: [
+          {
+            dest: 'hadiths/static/hadiths/css/all.css',
+            src: ['hadiths/static/hadiths/css/styles.css']
+          }
+        ]
+      },
     }
   });
   grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-  grunt.registerTask('default', ['ts', 'uglify']);
+  grunt.registerTask('default', ['ts', 'uglify', 'cssmin']);
 };
