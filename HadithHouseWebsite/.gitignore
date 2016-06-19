@@ -12,6 +12,11 @@ HadithHouseWebsite/server_settings.py
 # TypeScript cache
 /.tscache
 
+# Ignore generated JS and JS map files.
+/hadiths/static/hadiths/js/**/*.js
+/hadiths/static/hadiths/js/**/*.js.map
+
+
 # PyCharm files
 /.idea/workspace.xml
 /.idea/libraries
