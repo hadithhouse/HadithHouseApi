@@ -21,94 +21,88 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-(function () {
-  'use strict';
-
-  var HadithHouseApp = angular.module('HadithHouseApp');
-
-  HadithHouseApp.factory('FacebookService', function ($q) {
-    var fbUserId = window['fbUserId'];
-
-    function login() {
-      var deferred = $q.defer();
-      FB.login(function (response) {
-        if (response.authResponse) {
-          deferred.resolve(response);
-        } else {
-          deferred.reject('User cancelled login');
-        }
-      });
-      return deferred.promise;
-    }
-
-    function logout() {
-      var deferred = $q.defer();
-      FB.logout(function (response) {
-        deferred.resolve(response);
-      });
-      return deferred.promise;
-    }
-
-    function getLoginStatus() {
-
-      var deferred = $q.defer();
-      FB.getLoginStatus(function (response) {
-        deferred.resolve(response);
-      });
-      return deferred.promise;
-    }
-
-    /**
-     * Makes an FB request to retrieve information about the current
-     * logged in user.
-     * @returns A promise resolving to the user info object.
-     */
-    function getLoggedInUser() {
-      var deferred = $q.defer();
-      FB.api('/me', {fields: 'link,picture'},
-        function (user) {
-          deferred.resolve(user);
-        }
-      );
-      return deferred.promise;
-    }
-
-    function getProfilePictureUrl(userId) {
-      var deferred = $q.defer();
-      FB.api('/' + fbUserId + '/picture',
-        function (response) {
-          if (response && !response.error) {
-            deferred.resolve(response.data.url);
-          } else {
-            deferred.reject(null);
-          }
-        }
-      );
-      return deferred.promise;
-    }
-
-    function getUserFriends(userId) {
-      var deferred = $q.defer();
-      FB.api('/' + fbUserId + '/friends',
-        function (response) {
-          if (response && !response.error) {
-            deferred.resolve(response.data.url);
-          } else {
-            deferred.reject(null);
-          }
-        }
-      );
-      return deferred.promise;
-    }
-
-    return {
-      login: login,
-      logout: logout,
-      getLoginStatus: getLoginStatus,
-      getLoggedInUser: getLoggedInUser,
-      getProfilePictureUrl: getProfilePictureUrl,
-      getUserFriends: getUserFriends
-    };
-  });
-}());
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../app.ts" />
+var HadithHouse;
+(function (HadithHouse) {
+    var Services;
+    (function (Services) {
+        var FacebookService = (function () {
+            function FacebookService($q, FB, fbUserId) {
+                this.$q = $q;
+                this.FB = FB;
+                this.fbUserId = fbUserId;
+            }
+            FacebookService.prototype.login = function () {
+                var deferred = this.$q.defer();
+                this.FB.login(function (response) {
+                    if (response.authResponse) {
+                        deferred.resolve(response);
+                    }
+                    else {
+                        deferred.reject('User cancelled login');
+                    }
+                });
+                return deferred.promise;
+            };
+            FacebookService.prototype.logout = function () {
+                var deferred = this.$q.defer();
+                this.FB.logout(function (response) {
+                    deferred.resolve(response);
+                });
+                return deferred.promise;
+            };
+            FacebookService.prototype.getLoginStatus = function () {
+                var deferred = this.$q.defer();
+                this.FB.getLoginStatus(function (response) {
+                    deferred.resolve(response);
+                });
+                return deferred.promise;
+            };
+            /**
+             * Makes an FB request to retrieve information about the current
+             * logged in user.
+             * @returns A promise resolving to the user info object.
+             */
+            FacebookService.prototype.getLoggedInUser = function () {
+                var deferred = this.$q.defer();
+                this.FB.api('/me', { fields: 'link,picture' }, function (user) {
+                    deferred.resolve(user);
+                });
+                return deferred.promise;
+            };
+            FacebookService.prototype.getProfilePictureUrl = function (userId) {
+                var deferred = this.$q.defer();
+                this.FB.api('/' + this.fbUserId + '/picture', function (response) {
+                    if (response && !response.error) {
+                        deferred.resolve(response.data.url);
+                    }
+                    else {
+                        deferred.reject(null);
+                    }
+                });
+                return deferred.promise;
+            };
+            FacebookService.prototype.getUserFriends = function (userId) {
+                var deferred = this.$q.defer();
+                this.FB.api('/' + this.fbUserId + '/friends', function (response) {
+                    if (response && !response.error) {
+                        deferred.resolve(response.data.url);
+                    }
+                    else {
+                        deferred.reject(null);
+                    }
+                });
+                return deferred.promise;
+            };
+            return FacebookService;
+        }());
+        Services.FacebookService = FacebookService;
+        HadithHouse.HadithHouseApp.factory('FacebookService', function ($q) {
+            var fbUserId = window['fbUserId'];
+            var FB = window['FB'];
+            return new FacebookService($q, FB, fbUserId);
+        });
+    })(Services = HadithHouse.Services || (HadithHouse.Services = {}));
+})(HadithHouse || (HadithHouse = {}));
+//# sourceMappingURL=facebook.service.js.map

@@ -21,69 +21,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-(function () {
-  'use strict';
-
-  var HadithHouseApp = angular.module('HadithHouseApp');
-
-  HadithHouseApp.factory('FacebookService', function ($q) {
-    var fbUserId = window['fbUserId'];
-
-    function login() {
-      var deferred = $q.defer();
-      deferred.reject('Not supported while offline');
-      return deferred.promise;
-    }
-
-    function logout() {
-      var deferred = $q.defer();
-      deferred.reject('Not supported while offline');
-      return deferred.promise;
-    }
-
-    function getLoginStatus() {
-      throw 'Not implemented in the offline version of Facebook service'
-    }
-
-    /**
-     * Makes an FB request to retrieve information about the current
-     * logged in user.
-     * @returns A promise resolving to the user info object.
-     */
-    function getLoggedInUser() {
-      var deferred = $q.defer();
-      var user = {
-        "link": "https://www.facebook.com/app_scoped_user_id/10152863219036905/",
-        "picture": {
-          "data": {
-            "is_silhouette": false,
-            "url": "https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E"
-          }
-        },
-        "id": "10152863219036905"
-      }
-      deferred.resolve(user);
-      return deferred.promise;
-    }
-
-    function getProfilePictureUrl(userId) {
-      var deferred = $q.defer();
-      deferred.resolve('https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E');
-      return deferred.promise;
-    }
-
-    function getUserFriends(userId) {
-      throw 'Not implemented in the offline version of Facebook service'
-    }
-
-    return {
-      login: login,
-      logout: logout,
-      getLoginStatus: getLoginStatus,
-      getLoggedInUser: getLoggedInUser,
-      getProfilePictureUrl: getProfilePictureUrl,
-      getUserFriends: getUserFriends
-    };
-  });
-}());
+/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
+/// <reference path="../app.ts" />
+var HadithHouse;
+(function (HadithHouse) {
+    var Services;
+    (function (Services) {
+        var FacebookService = (function () {
+            function FacebookService($q) {
+                this.$q = $q;
+            }
+            FacebookService.prototype.login = function () {
+                var deferred = this.$q.defer();
+                deferred.reject('Not supported while offline');
+                return deferred.promise;
+            };
+            FacebookService.prototype.logout = function () {
+                var deferred = this.$q.defer();
+                deferred.reject('Not supported while offline');
+                return deferred.promise;
+            };
+            FacebookService.prototype.getLoginStatus = function () {
+                throw 'Not implemented in the offline version of Facebook service';
+            };
+            /**
+             * Makes an FB request to retrieve information about the current
+             * logged in user.
+             * @returns A promise resolving to the user info object.
+             */
+            FacebookService.prototype.getLoggedInUser = function () {
+                var deferred = this.$q.defer();
+                var user = {
+                    'link': 'https://www.facebook.com/app_scoped_user_id/10152863219036905/',
+                    'picture': {
+                        'data': {
+                            'is_silhouette': false,
+                            'url': 'https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E'
+                        }
+                    },
+                    'id': '10152863219036905'
+                };
+                deferred.resolve(user);
+                return deferred.promise;
+            };
+            FacebookService.prototype.getProfilePictureUrl = function (userId) {
+                var deferred = this.$q.defer();
+                deferred.resolve('https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E');
+                return deferred.promise;
+            };
+            FacebookService.prototype.getUserFriends = function (userId) {
+                throw 'Not implemented in the offline version of Facebook service';
+            };
+            return FacebookService;
+        }());
+        Services.FacebookService = FacebookService;
+        HadithHouse.HadithHouseApp.factory('FacebookService', function ($q) {
+            return new FacebookService($q);
+        });
+    })(Services = HadithHouse.Services || (HadithHouse.Services = {}));
+})(HadithHouse || (HadithHouse = {}));
+//# sourceMappingURL=facebook.offline.service.js.map
