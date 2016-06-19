@@ -33,11 +33,11 @@ DJANGO_LOG_LEVEL = DEBUG
 ALLOWED_HOSTS = get_allowed_hosts()
 
 PRODUCTION_HOSTS = (
-  'www.hadithhouse.net'
+  'www.hadithhouse.net',
 )
 
 DEVELOPMENT_HOSTS = (
-  'www.hadithhouse-dev.net'
+  'www.hadithhouse-dev.net',
 )
 
 def get_environment():
