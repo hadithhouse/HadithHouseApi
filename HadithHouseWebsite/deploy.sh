@@ -26,7 +26,7 @@ cp -r ./* ${DEPLOYMENT_PATH}/
 echo "Give Apache2 ownership of the log files so it can write to them."
 chown www-data /var/log/hadithhouse/*
 
-# Restart Apache2 server.
-echo "Restarting Apache2 server"
-service apache2 restart
+# Reloading Apache2 service configuration.
+echo "Reloading Apache2 server configuration"
+service apache2 reload
 
