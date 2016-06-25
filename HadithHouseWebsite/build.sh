@@ -1,14 +1,15 @@
 #!/bin/bash
 
-SERVER_SETTINGS_PATH='/home/jenkins'
-
 # Stops the execution of the script if any command, including pipes, fail.
 set -e 
 set -o pipefail
 
-# Copy server settings file into te build directory.
-echo "Copy server_settings.py from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
-cp ${SERVER_SETTINGS_PATH}/server_settings.py HadithHouseWebsite/
+# Copy server settings file into the build directory.
+# The SERVER_SETTINGS_FILE environment variable should be defined in Jenkins
+# after uploading the settings file using the Config File Provider plugin:
+# https://wiki.jenkins-ci.org/display/JENKINS/Config+File+Provider+Plugin
+echo "Copy server settings  from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
+cp ${SERVER_SETTINGS_PATH} HadithHouseWebsite/server_settings.py
 
 # Install Nodejs packages.
 npm install
