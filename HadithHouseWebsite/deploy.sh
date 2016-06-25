@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEPLOYMENT_PATH='/var/www/hadithhouse'
+LOGS_PATH='/var/log/hadithhouse'
 
 # Stops the execution of the script if any command, including pipes, fail.
 set -e 
@@ -21,6 +22,10 @@ mkdir -p $DEPLOYMENT_PATH
 # Copy the project onto the deployment directory.
 echo "Copying `pwd`/* to $DEPLOYMENT_PATH"
 cp -r ./* ${DEPLOYMENT_PATH}/
+
+# Create the logs directory if it is not created
+echo "Creating the logs directory if it is not created"
+mkdir -p $LOGS_PATH
 
 # Give Apache2 ownership of the log files so it can write to them.
 echo "Give Apache2 ownership of the log files so it can write to them."

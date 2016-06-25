@@ -1,15 +1,10 @@
 #!/bin/bash
 
 SERVER_SETTINGS_PATH='/home/jenkins'
-LOGS_PATH='/var/log/hadithhouse'
 
 # Stops the execution of the script if any command, including pipes, fail.
 set -e 
 set -o pipefail
-
-# Create the logs directory if it is not created
-echo "Creating the logs directory if it is not created"
-mkdir -p $LOGS_PATH
 
 # Copy server settings file into te build directory.
 echo "Copy server_settings.py from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
