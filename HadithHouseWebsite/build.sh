@@ -8,8 +8,8 @@ set -o pipefail
 # The SERVER_SETTINGS_FILE environment variable should be defined in Jenkins
 # after uploading the settings file using the Config File Provider plugin:
 # https://wiki.jenkins-ci.org/display/JENKINS/Config+File+Provider+Plugin
-echo "Copy server settings  from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/"
-cp ${SERVER_SETTINGS_PATH} HadithHouseWebsite/server_settings.py
+echo "Copy server settings  from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/server_settings.py"
+cp "${SERVER_SETTINGS_PATH}" "HadithHouseWebsite/server_settings.py"
 
 # Install Nodejs packages.
 npm install

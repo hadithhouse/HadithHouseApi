@@ -14,8 +14,17 @@ import socket
 
 import sys
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts, \
-  get_log_dir
+from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts
+
+if len(set(['test', 'collectstatic']) & set(sys.argv)) > 0:
+  # We are running in test mode or collecting static files. Hence, avoid using
+  # the real log directory to avoid breaking Jenkins build, as there is no
+  # log directory on Jenkins.
+  import tempfile
+  def get_log_dir():
+    return tempfile.gettempdir()
+else:
+  from HadithHouseWebsite.server_settings import get_log_dir
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
