@@ -1,8 +1,22 @@
 #!/bin/bash
 
+error() {
+  local line_lo="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "build.sh experienced an error on line ${line_lo}: ${message}; exiting with status ${code}"
+  else
+    echo "build.sh experienced an error on line ${line_lo}; exiting with status ${code}"
+  fi
+  
+  exit 1
+}
+
 # Stops the execution of the script if any command, including pipes, fail.
-set -x
+set -e
 set -o pipefail
+trap 'error ${LINENO}' ERR
 
 # Copy server settings file into the build directory.
 # The SERVER_SETTINGS_FILE environment variable should be defined in Jenkins
