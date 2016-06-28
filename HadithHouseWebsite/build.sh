@@ -33,10 +33,12 @@ npm install
 echo "Run Grunt..."
 ./node_modules/.bin/grunt
 
-# Remove Node modules
-echo "Remove NodeJS modules..."
+# Remove Node modules and delete TypeScript cache (.tscache)
+echo "Remove NodeJS modules and delete TypeScript cache (.tscache)..."
 rm -rf node_modules/
+rm -rf .tscache/
 
+# Install and activate a Python virtual environment.
 echo "Install and activate a Python virtual environment..."
 virtualenv --python=python2.7 venv
 source venv/bin/activate
@@ -51,3 +53,7 @@ python manage.py collectstatic --noinput
 # Running tests...
 echo "Running tests..."
 python manage.py test
+
+echo "Deactivate Python's virtual environment and delete it..."
+deactivate
+rm -rf venv
