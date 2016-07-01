@@ -13,11 +13,10 @@ module HadithHouse.Resources {
   function getRestfulUrl<TId>(baseUrl:string, idOrIds?:TId|TId[]):string {
     if (!idOrIds) {
       return baseUrl;
-    }
-    else if (!Array.isArray(idOrIds)) {
+    } else if (!Array.isArray(idOrIds)) {
       return `${baseUrl}/${idOrIds}`;
     } else {
-      if ((<TId[]>idOrIds).length == 1) {
+      if ((<TId[]>idOrIds).length === 1) {
         // If there is one ID only, pass directly in the URL path. This
         // is necessary for special requests like hadiths/random or
         // users/current.
@@ -30,21 +29,36 @@ module HadithHouse.Resources {
   }
 
   export class Entity<TId> {
-    id:TId;
-    added_by:number;
-    updated_by:number;
-    added_on:string;
-    updated_on:string;
-    promise:IHttpPromise<Entity<TId>>;
+    public id:TId;
+    public added_by:number;
+    public updated_by:number;
+    public added_on:string;
+    public updated_on:string;
+    public promise:IHttpPromise<Entity<TId>>;
 
     /**
-     * Loads the entity having the given URL, or set it from an existing object.
-     * @param idOrObject The ID of the entity or the object to set this entity from.
+     * Constructs a new entity.
      * @param $http Angular's HTTP module.
+     * @param baseUrl The base URL for doing CRUD operations on this entity.
      */
     constructor($http:IHttpService, baseUrl:string);
+
+    /**
+     * Loads the entity having the given ID.
+     * @param $http Angular's HTTP module.
+     * @param baseUrl The base URL for doing CRUD operations on this entity.
+     * @param id The ID of the entity to load.
+     */
     constructor($http:IHttpService, baseUrl:string, id:number|string);
+
+    /**
+     * Constructs a wrapper entity for the given object.
+     * @param $http Angular's HTTP module.
+     * @param baseUrl The base URL for doing CRUD operations on this entity.
+     * @param object The object to wrap.
+     */
     constructor($http:IHttpService, baseUrl:string, object:Entity<TId>);
+
     constructor(private $http:IHttpService, private baseUrl:string, idOrObject?:any) {
       if (!idOrObject) {
         return;
@@ -53,16 +67,6 @@ module HadithHouse.Resources {
       } else {
         this.set(idOrObject);
       }
-    }
-
-    /**
-     * Loads the entity having the given ID.
-     * @param id The ID of the entity to load.
-     */
-    private load(id:TId) {
-      this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then((result) => {
-        this.set(result.data);
-      });
     }
 
     /**
@@ -98,6 +102,16 @@ module HadithHouse.Resources {
       let url = getRestfulUrl(this.baseUrl, this.id);
       return this.$http.delete(url);
     }
+
+    /**
+     * Loads the entity having the given ID.
+     * @param id The ID of the entity to load.
+     */
+    private load(id:TId) {
+      this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then((result) => {
+        this.set(result.data);
+      });
+    }
   }
 
   export class PagedResults<TEntity> {
@@ -110,7 +124,7 @@ module HadithHouse.Resources {
   export type ObjectWithPromise<TObject> = TObject & { promise?:IPromise<TObject> };
 
   export class CacheableResource<TEntity extends Entity<TId>, TId> {
-    cache:Cache<TEntity, string>;
+    private cache:Cache<TEntity, string>;
 
     constructor(private TEntityClass:any,
                 private baseUrl:string,
@@ -120,7 +134,7 @@ module HadithHouse.Resources {
     }
 
     public create():TEntity {
-      return new this.TEntityClass(this.$http, this.baseUrl)
+      return new this.TEntityClass(this.$http, this.baseUrl);
     }
 
     public query(query:any, useCache = true):ObjectWithPromise<TEntity[]> {
@@ -152,7 +166,7 @@ module HadithHouse.Resources {
       return entities;
     }
 
-    public pagedQuery(query:any, useCache:boolean = true):ObjectWithPromise<PagedResults<TEntity>> {
+    public pagedQuery(query:any, useCache = true):ObjectWithPromise<PagedResults<TEntity>> {
       let queryParams = $.param(query);
       let pagedEntities:ObjectWithPromise<PagedResults<TEntity>> = new PagedResults<TEntity>();
       let promise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -162,7 +176,7 @@ module HadithHouse.Resources {
         pagedEntities.previous = response.data.previous;
         pagedEntities.results = [];
         for (let entity of response.data.results) {
-          pagedEntities.results.push(entity);
+          pagedEntities.results.push(new this.TEntityClass(this.$http, this.baseUrl, entity));
           // Since we already get some entities back, we might as well cache them.
           // NOTE: If there is an object in the cache already, don't overwrite it,
           // update it. This way other code parts which reference it will
@@ -183,7 +197,7 @@ module HadithHouse.Resources {
 
     public get(id:TId, useCache?:boolean):TEntity;
     public get(ids:TId[], useCache?:boolean):ObjectWithPromise<TEntity[]>;
-    public get(idOrIds:TId|TId[], useCache:boolean = true):TEntity|ObjectWithPromise<TEntity[]> {
+    public get(idOrIds:TId|TId[], useCache = true):TEntity|ObjectWithPromise<TEntity[]> {
       if (Array.isArray(idOrIds)) {
         // An array of IDs.
         return this.getByMultipleIds(<TId[]>idOrIds, useCache);
@@ -193,11 +207,11 @@ module HadithHouse.Resources {
       }
     }
 
-    private getBySingleId(id:TId, useCache:boolean = true):TEntity {
+    private getBySingleId(id:TId, useCache= true):TEntity {
       return this.getByMultipleIds([id], useCache)[0];
     }
 
-    private getByMultipleIds(ids:TId[], useCache:boolean = true):ObjectWithPromise<TEntity[]> {
+    private getByMultipleIds(ids:TId[], useCache= true):ObjectWithPromise<TEntity[]> {
       // Which objects do we already have in the cache?
       let entities:ObjectWithPromise<TEntity[]> = [];
       let idsOfEntitiesToFetch:TId[] = [];
@@ -267,7 +281,7 @@ module HadithHouse.Resources {
           entitiesDeferred.reject(reason);
         });
         entities.promise = entitiesDeferred.promise;
-      } else if (idsOfEntitiesToFetch.length == 1) {
+      } else if (idsOfEntitiesToFetch.length === 1) {
         // Cannot use the same variable name as above with different type :-S
         // How is let useful over var then?
         let httpPromise2 = this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
@@ -305,10 +319,10 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class Hadith extends Entity<number> {
-    text:string;
-    person:number;
-    book:number;
-    tags:number[];
+    public text:string;
+    public person:number;
+    public book:number;
+    public tags:number[];
 
     public set(entity:Entity<number>) {
       super.set(entity);
@@ -329,16 +343,16 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class Person extends Entity<number> {
-    title:string;
-    display_name:string;
-    full_name:string;
-    brief_desc:string;
-    birth_year:number;
-    birth_month:number;
-    birth_day:number;
-    death_year:number;
-    death_month:number;
-    death_day:number;
+    public title:string;
+    public display_name:string;
+    public full_name:string;
+    public brief_desc:string;
+    public birth_year:number;
+    public birth_month:number;
+    public birth_day:number;
+    public death_year:number;
+    public death_month:number;
+    public death_day:number;
 
     public set(entity:Entity<number>) {
       super.set(entity);
@@ -365,9 +379,9 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class Book extends Entity<number> {
-    title:string;
-    brief_desc:string;
-    pub_year:number;
+    public title:string;
+    public brief_desc:string;
+    public pub_year:number;
 
     public set(entity:Entity<number>) {
       super.set(entity);
@@ -387,7 +401,7 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class HadithTag extends Entity<number> {
-    name:string;
+    public name:string;
 
     public set(entity:Entity<number>) {
       super.set(entity);
@@ -405,10 +419,10 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class Chain extends Entity<number> {
-    hadith:number;
-    persons:Array<number>;
-    isEditing:boolean;
-    isAddingNew:boolean;
+    public hadith:number;
+    public persons:Array<number>;
+    public isEditing:boolean;
+    public isAddingNew:boolean;
 
     public set(entity:Entity<number>) {
       super.set(entity);
@@ -429,14 +443,14 @@ module HadithHouse.Resources {
   //============================================================================
 
   export class User extends Entity<number> {
-    first_name:string;
-    last_name:string;
-    is_superuser:boolean;
-    is_staff:boolean;
-    username:string;
-    date_joined:string;
-    permissions:Array<string>;
-    permissionsOrdered:Array<string>;
+    public first_name:string;
+    public last_name:string;
+    public is_superuser:boolean;
+    public is_staff:boolean;
+    public username:string;
+    public date_joined:string;
+    public permissions:Array<string>;
+    public permissionsOrdered:Array<string>;
 
     public set(entity:Entity<number>) {
       super.set(entity);
