@@ -31,19 +31,16 @@
 
 module HadithHouse.Controllers {
   import IPromise = angular.IPromise;
-  import IEntityQueryResult = HadithHouse.Services.IEntityQueryResult;
   import Entity = HadithHouse.Resources.Entity;
   import PagedResults = HadithHouse.Resources.PagedResults;
-  import Chain = HadithHouse.Resources.Chain;
-  import Person = HadithHouse.Resources.Person;
   import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
   export class EntityListingPageCtrl<TEntity extends Entity<number>> {
-    pagedEntities:ObjectWithPromise<PagedResults<TEntity>>;
-    searchQuery:string;
-    searchPromise:IPromise<void> = null;
-    page:number = 1;
-    pageSize:number = 10;
+    public pagedEntities:ObjectWithPromise<PagedResults<TEntity>>;
+    public searchQuery:string;
+    public searchPromise:IPromise<void> = null;
+    public page:number = 1;
+    public pageSize:number = 10;
 
     constructor(protected $scope:ng.IScope,
                 protected $rootScope:ng.IScope,
@@ -56,7 +53,7 @@ module HadithHouse.Controllers {
       this.loadEntities();
 
       $scope.$watch(() => this.searchQuery, (newValue, oldValue) => {
-        if (newValue == oldValue) {
+        if (newValue === oldValue) {
           return;
         }
         if (this.searchPromise != null) {
@@ -69,19 +66,19 @@ module HadithHouse.Controllers {
       });
 
       $scope.$watch(() => this.page, (newValue, oldValue) => {
-        if (newValue == oldValue) {
+        if (newValue === oldValue) {
           return;
         }
         this.loadEntities();
       });
     }
-    
+
     protected readUrlParams() {
       let urlParams = this.$location.search();
       this.page = parseInt(urlParams['page']) || 1;
       this.searchQuery = urlParams['search'] || '';
     }
-    
+
     protected updateUrlParams() {
       if (typeof(this.page) === 'number' && this.page > 1) {
         this.$location.search('page', this.page);
@@ -109,7 +106,7 @@ module HadithHouse.Controllers {
         };
       }
     }
-    
+
     protected loadEntities() {
       // TODO: Show an alert if an error happens.
       this.pagedEntities = this.EntityResource.pagedQuery(this.getQueryParams());
@@ -117,7 +114,7 @@ module HadithHouse.Controllers {
     }
 
     public deleteEntity = (event:any, entity:TEntity) => {
-      var confirm = this.$mdDialog.confirm()
+      let confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the entity?')
         .ok('Yes')
@@ -127,15 +124,15 @@ module HadithHouse.Controllers {
         entity.delete().then(() => {
           this.ToastService.show('Successfully deleted');
           this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
-            return e.id != entity.id;
+            return e.id !== entity.id;
           });
         }, (result) => {
           if (result.data && result.data.detail) {
-            this.ToastService.show("Failed to delete entity. Error was: " + result.data.detail);
+            this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
           } else if (result.data) {
-            this.ToastService.show("Failed to delete entity. Error was: " + result.data);
+            this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
           } else {
-            this.ToastService.show("Failed to delete entity. Please try again!");
+            this.ToastService.show('Failed to delete entity. Please try again!');
           }
         });
       });
@@ -143,7 +140,7 @@ module HadithHouse.Controllers {
 
     public range(n:number):number[] {
       let res:number[] = [];
-      for (var i = 0; i < n; i++) {
+      for (let i = 0; i < n; i++) {
         res.push(i + 1);
       }
       return res;
