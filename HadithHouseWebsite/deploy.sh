@@ -58,7 +58,7 @@ echo "Deleting the content of '${DEPLOYMENT_PATH}'"
 rm -rf $DEPLOYMENT_PATH/*
 
 # Copy the project onto the deployment directory.
-echo "Copying `pwd`/* to $DEPLOYMENT_PATH"
+echo "Copying `pwd`/* to $DEPLOYMENT_PATH..."
 cp -r ./* $DEPLOYMENT_PATH/
 
 # Give Apache2 ownership of the log files so it can write to them.
@@ -71,6 +71,6 @@ echo "Give Apache2 ownership of the log files so it can write to them."
 chgrp www-data $LOGS_PATH
 chgrp -R www-data $LOGS_PATH/*
 
-# Reloading Apache2 service configuration.
-echo "Reloading Apache2 server configuration"
-service apache2 reload
+# Gracefully reloading Apache2.
+echo "Gracefully reloading Apache2..."
+sudo /usr/sbin/apache2ctl graceful
