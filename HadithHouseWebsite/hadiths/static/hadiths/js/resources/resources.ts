@@ -71,7 +71,7 @@ module HadithHouse.Resources {
 
     /**
      * Sets the values of this entity to the values of the given entity.
-     * @param object The entity to copy values from.
+     * @param entity The entity to copy values from.
      */
     public set(entity:Entity<TId>) {
       this.id = entity.id;
@@ -144,7 +144,7 @@ module HadithHouse.Resources {
       let queryDeferred = this.$q.defer<TEntity[]>();
       httpPromise.then((response) => {
         for (let entity of response.data.results) {
-          entities.push(entity);
+          entities.push(new this.TEntityClass(this.$http, this.baseUrl, entity));
           // Since we already get some entities back, we might as well cache them.
           // NOTE: If there is an object in the cache already, don't overwrite it,
           // update it. This way other code parts which reference it will
@@ -207,11 +207,11 @@ module HadithHouse.Resources {
       }
     }
 
-    private getBySingleId(id:TId, useCache= true):TEntity {
+    private getBySingleId(id:TId, useCache = true):TEntity {
       return this.getByMultipleIds([id], useCache)[0];
     }
 
-    private getByMultipleIds(ids:TId[], useCache= true):ObjectWithPromise<TEntity[]> {
+    private getByMultipleIds(ids:TId[], useCache = true):ObjectWithPromise<TEntity[]> {
       // Which objects do we already have in the cache?
       let entities:ObjectWithPromise<TEntity[]> = [];
       let idsOfEntitiesToFetch:TId[] = [];
@@ -225,7 +225,7 @@ module HadithHouse.Resources {
       for (let id of ids) {
         let entity = useCache ? this.cache.get(id.toString()) : null;
         if (entity != null) {
-          entities.push(entity);
+          entities.push(new this.TEntityClass(this.$http, this.baseUrl, entity));
 
           // Create a promise object in the entity in case the user wants to
           // get notified when the object is loaded or an error happens. Here,
@@ -314,9 +314,9 @@ module HadithHouse.Resources {
     }
   }
 
-  //============================================================================
-  // Hadith Resource
-  //============================================================================
+  ///===========================================================================
+  /// Hadith Resource
+  ///===========================================================================
 
   export class Hadith extends Entity<number> {
     public text:string;
@@ -338,9 +338,9 @@ module HadithHouse.Resources {
       return new CacheableResource<Hadith, number>(Hadith, '/apis/hadiths', $http, $q);
     });
 
-  //============================================================================
-  // Person Resource
-  //============================================================================
+  ///===========================================================================
+  /// Person Resource
+  ///===========================================================================
 
   export class Person extends Entity<number> {
     public title:string;
@@ -367,6 +367,10 @@ module HadithHouse.Resources {
       this.death_month = (<Person>entity).death_month;
       this.death_day = (<Person>entity).death_day;
     }
+
+    public toString():string {
+      return this.display_name || this.full_name;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('PersonResource',
@@ -374,9 +378,9 @@ module HadithHouse.Resources {
       return new CacheableResource<Person, number>(Person, '/apis/persons', $http, $q);
     });
 
-  //============================================================================
-  // Book Resource
-  //============================================================================
+  ///===========================================================================
+  /// Book Resource
+  ///===========================================================================
 
   export class Book extends Entity<number> {
     public title:string;
@@ -389,6 +393,10 @@ module HadithHouse.Resources {
       this.brief_desc = (<Book>entity).brief_desc;
       this.pub_year = (<Book>entity).pub_year;
     }
+
+    public toString():string {
+      return this.title;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('BookResource',
@@ -396,9 +404,9 @@ module HadithHouse.Resources {
       return new CacheableResource<Book, number>(Book, '/apis/books', $http, $q);
     });
 
-  //============================================================================
-  // HadithTag Resource
-  //============================================================================
+  ///===========================================================================
+  /// HadithTag Resource
+  ///===========================================================================
 
   export class HadithTag extends Entity<number> {
     public name:string;
@@ -407,6 +415,10 @@ module HadithHouse.Resources {
       super.set(entity);
       this.name = (<HadithTag>entity).name;
     }
+
+    public toString():string {
+      return this.name;
+    }
   }
 
   HadithHouse.HadithHouseApp.factory('HadithTagResource',
@@ -414,9 +426,9 @@ module HadithHouse.Resources {
       return new CacheableResource<HadithTag, number>(HadithTag, '/apis/hadithtags', $http, $q);
     });
 
-  //============================================================================
-  // Chain Resource
-  //============================================================================
+  ///===========================================================================
+  /// Chain Resource
+  ///===========================================================================
 
   export class Chain extends Entity<number> {
     public hadith:number;
@@ -438,9 +450,9 @@ module HadithHouse.Resources {
       return new CacheableResource<Chain, number>(Chain, '/apis/chains', $http, $q);
     });
 
-  //============================================================================
-  // User Resource
-  //============================================================================
+  ///===========================================================================
+  /// User Resource
+  ///===========================================================================
 
   export class User extends Entity<number> {
     public first_name:string;
@@ -464,6 +476,10 @@ module HadithHouse.Resources {
       this.permissionsOrdered = ((<User>entity).permissionsOrdered != null)
         ? (<User>entity).permissionsOrdered.slice()
         : null;
+    }
+
+    public toString():string {
+      return `${this.first_name} ${this.last_name}`;
     }
   }
 

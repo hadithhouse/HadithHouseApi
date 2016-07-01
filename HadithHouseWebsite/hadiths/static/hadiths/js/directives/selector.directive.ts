@@ -30,7 +30,6 @@
 
 
 module HadithHouse.Directives {
-  import IQService = angular.IQService;
   import IScope = angular.IScope;
   import CacheableResource = HadithHouse.Resources.CacheableResource;
   import Entity = HadithHouse.Resources.Entity;
@@ -111,12 +110,25 @@ module HadithHouse.Directives {
     }
 
 
-    private onClick(entity) {
+    public onClick(entity) {
       if (this.clickCallback) {
         this.clickCallback({entity: entity});
       } else {
         this.$location.path(`${this.type}/${entity.id}`)
       }
+    }
+
+    public findEntities(query) {
+      return this.EntityResource.query({search: query});
+    }
+
+    public createEntity(query) {
+      // TODO: Implement this.
+      alert('Not implemented yet');
+    }
+
+    public entityToString(entity) {
+      return entity.toString();
     }
 
     private onIdsChanged = (newValue, oldValue) => {
@@ -136,7 +148,7 @@ module HadithHouse.Directives {
           this.entities = [<number>this.ids].map((id) => {
             // See if we already have the entity loaded, otherwise make a request to load it.
             return _.find<Entity<number>>(this.entities, (e) => {
-                return e.id == id;
+                return e.id === id;
               }) || this.EntityResource.get(id);
           });
         } else {
@@ -146,7 +158,7 @@ module HadithHouse.Directives {
         this.entities = (<number[]>this.ids).map((id) => {
           // See if we already have the entity loaded, otherwise make a request to load it.
           return _.find<Entity<number>>(this.entities, (e) => {
-              return e.id == id;
+              return e.id === id;
             }) || this.EntityResource.get(id);
         });
       }
@@ -164,7 +176,7 @@ module HadithHouse.Directives {
           if (this.entities.length > 1) {
             this.entities.splice(0, this.entities.length - 1);
           }
-          if (this.entities.length == 1) {
+          if (this.entities.length === 1) {
             // Ensure that the resource has been resolved before updating the scope's ID
             if (typeof(this.entities[0].id) === 'number') {
               this.ids = this.entities[0].id;
@@ -183,29 +195,6 @@ module HadithHouse.Directives {
         }
       }
     };
-
-    public findEntities(query) {
-      return this.EntityResource.query({search: query});
-    };
-
-    public entityToString = (entity) => {
-      switch (this.type.toLowerCase()) {
-        case 'person':
-          return entity.display_name || entity.full_name;
-
-        case 'book':
-          return entity.title;
-
-        case 'hadithtag':
-          return entity.name;
-
-        case 'user':
-          return `${entity.first_name} ${entity.last_name}`;
-
-        default:
-          throw 'Unreachable code';
-      }
-    }
   }
 
   HadithHouseApp.controller('SelectorCtrl',
