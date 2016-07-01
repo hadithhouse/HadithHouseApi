@@ -32,7 +32,6 @@
 /// <reference path="entity-page.ts" />
 
 module HadithHouse.Controllers {
-  import IResource = angular.resource.IResource;
   import IDialogService = angular.material.IDialogService;
   import ITreeNode = HadithHouse.Directives.ITreeNode;
   import Hadith = HadithHouse.Resources.Hadith;
@@ -42,24 +41,17 @@ module HadithHouse.Controllers {
   import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
   class ChainTreeNode {
-    id:string;
-    name:string;
-    _children:ChainTreeNode[];
-    children:ChainTreeNode[];
-
-    private static addUniqueElementToArray<T extends { id }>(array:T[], element:T) {
-      if (_.find(array, (e) => { return e.id === element.id})) {
-        return;
-      }
-      array.push(element);
-    }
+    public id:string;
+    public name:string;
+    public _children:ChainTreeNode[];
+    public children:ChainTreeNode[];
 
     public static create(rootPersonId:number,
                          chains:Chain[],
                          personsDict:any):ITreeNode {
       let previousLevel:ChainTreeNode[] = [];
-      let rootNode =  new ChainTreeNode();
-      rootNode.id =  rootPersonId.toString();
+      let rootNode = new ChainTreeNode();
+      rootNode.id = rootPersonId.toString();
       rootNode.name = personsDict[rootPersonId].display_name || personsDict[rootPersonId].full_name;
       rootNode._children = [];
       rootNode.children = [];
@@ -108,16 +100,23 @@ module HadithHouse.Controllers {
 
       return rootNode;
     }
+
+    private static addUniqueElementToArray<T extends { id }>(array:T[], element:T) {
+      if (_.find(array, (e) => { return e.id === element.id; })) {
+        return;
+      }
+      array.push(element);
+    }
   }
 
   export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
-    pagedChains:ObjectWithPromise<PagedResults<Chain>>;
-    chainCopies:any;
-    $mdDialog:IDialogService;
-    HadithResource:Resources.CacheableResource<Hadith, number>;
-    PersonResource:Resources.CacheableResource<Person, number>;
-    ChainResource:Resources.CacheableResource<Chain, number>;
-    rootNode:any;
+    public pagedChains:ObjectWithPromise<PagedResults<Chain>>;
+    public chainCopies:any;
+    public $mdDialog:IDialogService;
+    public HadithResource:Resources.CacheableResource<Hadith, number>;
+    public PersonResource:Resources.CacheableResource<Person, number>;
+    public ChainResource:Resources.CacheableResource<Chain, number>;
+    public rootNode:any;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
@@ -134,6 +133,7 @@ module HadithHouse.Controllers {
       this.ChainResource = ChainResource;
       this.$mdDialog = $mdDialog;
       this.chainCopies = {};
+      this.rootNode = null;
     }
 
     protected getEntityPath(id:number) {
@@ -161,7 +161,7 @@ module HadithHouse.Controllers {
     protected copyChain(chain:Chain) {
       this.chainCopies[chain.id] = {
         persons: chain.persons.slice()
-      }
+      };
     }
 
     /**
@@ -188,7 +188,7 @@ module HadithHouse.Controllers {
       if (chain.isAddingNew) {
         // Item is not yet saved, just remove it.
         this.pagedChains.results = this.pagedChains.results.filter((c) => {
-          return c != chain;
+          return c !== chain;
         });
       } else {
         chain.isEditing = false;
@@ -215,21 +215,26 @@ module HadithHouse.Controllers {
         chain.delete().then(() => {
           this.ToastService.show('Successfully deleted');
           this.pagedChains.results = this.pagedChains.results.filter((e) => {
-            return e.id != chain.id;
+            return e.id !== chain.id;
           });
         }, (result) => {
           if (result.data && result.data.detail) {
-            this.ToastService.show("Failed to delete chain. Error was: " + result.data.detail);
+            this.ToastService.show('Failed to delete chain. Error was: ' + result.data.detail);
           } else if (result.data) {
-            this.ToastService.show("Failed to delete chain. Error was: " + result.data);
+            this.ToastService.show('Failed to delete chain. Error was: ' + result.data);
           } else {
-            this.ToastService.show("Failed to delete chain. Please try again!");
+            this.ToastService.show('Failed to delete chain. Please try again!');
           }
         });
       });
     }
 
-    buildChainTree() {
+    private buildChainTree() {
+      if (!this.entity.person || this.pagedChains.results.length === 0) {
+        // This hadith doesn't have a person, so there is not much point in
+        // building a chain tree for it even if it has some chains.
+        return;
+      }
       // Find the IDs of all persons in all chains to make a single request to
       // fetch their names.
       let allPersons = [this.entity.person];
@@ -253,8 +258,10 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService) {
-      let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog, HadithResource, PersonResource, ChainResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, $mdDialog,
+              HadithResource, PersonResource, ChainResource, ToastService) {
+      let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog,
+        HadithResource, PersonResource, ChainResource, ToastService);
       ctrl.initialize();
       return ctrl;
     });
