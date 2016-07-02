@@ -225,7 +225,7 @@ module HadithHouse.Resources {
       for (let id of ids) {
         let entity = useCache ? this.cache.get(id.toString()) : null;
         if (entity != null) {
-          entities.push(new this.TEntityClass(this.$http, this.baseUrl, entity));
+          entities.push(entity);
 
           // Create a promise object in the entity in case the user wants to
           // get notified when the object is loaded or an error happens. Here,
