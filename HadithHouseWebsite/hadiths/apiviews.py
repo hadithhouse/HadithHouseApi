@@ -8,9 +8,9 @@ from rest_framework.status import HTTP_403_FORBIDDEN
 
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 from hadiths.filters import TagsFilter, IdsFilter
-from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain
+from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain, BookVolume, BookChapter, BookSection
 from hadiths.serializers import HadithSerializer, PersonSerializer, BookSerializer, HadithTagSerializer, \
-  UserSerializer, ChainSerializer
+  UserSerializer, ChainSerializer, BookVolumeSerializer, BookChapterSerializer, BookSectionSerializer
 
 common_filter_fields = ('added_by', 'updated_by')
 common_ordering_fields = ('added_on', 'updated_on')
@@ -80,6 +80,99 @@ class BookView(FBAuthRetrieveUpdateDestroyAPIView):
     return super(BookView, self).handle_exception(ex)
 
 
+class BookVolumeSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = BookVolume.objects.all()
+  serializer_class = BookVolumeSerializer
+  get_perm_code = None
+  post_perm_code = 'add_book'
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
+  filter_fields = common_filter_fields + ('book', 'number')
+  search_fields = ('title', 'simple_title')
+  ordering_fields = common_ordering_fields + ('title', 'book', 'number')
+
+
+class BookVolumeView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
+  queryset = BookVolume.objects.all()
+  serializer_class = BookVolumeSerializer
+  get_perm_code = None
+  post_perm_code = 'add_book'
+  put_perm_code = 'change_book'
+  patch_perm_code = 'change_book'
+  delete_perm_code = 'delete_book'
+
+  def handle_exception(self, ex):
+    if isinstance(ex, ProtectedError):
+      return Response({
+        'detail': 'Cannot delete book volume because it is still referenced. Delete '
+                  'all entities, e.g. hadiths, referencing it and try again.',
+      }, status=HTTP_403_FORBIDDEN, exception=True)
+    return super(BookVolumeView, self).handle_exception(ex)
+
+
+class BookChapterSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = BookChapter.objects.all()
+  serializer_class = BookChapterSerializer
+  get_perm_code = None
+  post_perm_code = 'add_book'
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
+  filter_fields = common_filter_fields + ('book', 'number')
+  search_fields = ('title', 'simple_title')
+  ordering_fields = common_ordering_fields + ('title', 'book', 'number')
+
+
+class BookChapterView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
+  queryset = BookChapter.objects.all()
+  serializer_class = BookChapterSerializer
+  get_perm_code = None
+  post_perm_code = 'add_book'
+  put_perm_code = 'change_book'
+  patch_perm_code = 'change_book'
+  delete_perm_code = 'delete_book'
+
+  def handle_exception(self, ex):
+    if isinstance(ex, ProtectedError):
+      return Response({
+        'detail': 'Cannot delete book chapter because it is still referenced. Delete '
+                  'all entities, e.g. hadiths, referencing it and try again.',
+      }, status=HTTP_403_FORBIDDEN, exception=True)
+    return super(BookChapterView, self).handle_exception(ex)
+
+
+class BookSectionSetView(FBAuthListCreateAPIView):
+  lookup_field = 'id'
+  queryset = BookSection.objects.all()
+  serializer_class = BookSectionSerializer
+  get_perm_code = None
+  post_perm_code = 'add_book'
+  filter_backends = (DjangoFilterBackend, IdsFilter, OrderingFilter, SearchFilter)
+  filter_fields = common_filter_fields + ('book', 'number')
+  search_fields = ('title', 'simple_title')
+  ordering_fields = common_ordering_fields + ('title', 'book', 'number')
+
+
+class BookSectionView(FBAuthRetrieveUpdateDestroyAPIView):
+  lookup_field = 'id'
+  queryset = BookSection.objects.all()
+  serializer_class = BookSectionSerializer
+  get_perm_code = None
+  post_perm_code = 'add_book'
+  put_perm_code = 'change_book'
+  patch_perm_code = 'change_book'
+  delete_perm_code = 'delete_book'
+
+  def handle_exception(self, ex):
+    if isinstance(ex, ProtectedError):
+      return Response({
+        'detail': 'Cannot delete book section because it is still referenced. Delete '
+                  'all entities, e.g. hadiths, referencing it and try again.',
+      }, status=HTTP_403_FORBIDDEN, exception=True)
+    return super(BookSectionView, self).handle_exception(ex)
+
+
 class HadithTagSetView(FBAuthListCreateAPIView):
   lookup_field = 'id'
   queryset = HadithTag.objects.all()
@@ -110,9 +203,9 @@ class HadithSetView(FBAuthListCreateAPIView):
   get_perm_code = None
   post_perm_code = 'add_hadith'
   filter_backends = (DjangoFilterBackend, IdsFilter, TagsFilter, OrderingFilter, SearchFilter)
-  filter_fields = common_filter_fields + ('person', 'book')
+  filter_fields = common_filter_fields + ('person', 'book', 'volume', 'chapter', 'section', 'number')
   search_fields = ('text', 'simple_text')
-  ordering_fields = common_ordering_fields + ('text', 'person', 'book')
+  ordering_fields = common_ordering_fields + ('id', 'text', 'person', 'book', 'volume', 'chapter', 'section', 'number')
 
 
 class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
@@ -169,17 +262,18 @@ class UserSetView(FBAuthListCreateAPIView):
   filter_fields = ('first_name', 'last_name', 'username')
   search_fields = ('first_name', 'last_name', 'username')
   ordering_fields = ('first_name', 'last_name', 'username', 'is_supervisor', 'is_staff', 'date_joined')
-  http_method_names = ('get',) # Only allow GET methods
+  http_method_names = ('get',)  # Only allow GET methods
 
   def post(self, request, *args, **kwargs):
     raise RuntimeError("Users API doesn't support adding new users. Please ask an admin to add new users.")
+
 
 class UserView(FBAuthRetrieveUpdateDestroyAPIView):
   lookup_field = 'id'
   queryset = User.objects.all()
   serializer_class = UserSerializer
   get_perm_code = None
-  http_method_names = ('get',) # Only allow GET methods
+  http_method_names = ('get',)  # Only allow GET methods
 
   def get(self, request, *args, **kwargs):
     id = kwargs['id']

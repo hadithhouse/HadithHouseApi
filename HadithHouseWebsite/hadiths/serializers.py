@@ -6,7 +6,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import APIException
 from rest_framework.serializers import Serializer
 
-from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain, HadithTagRel  # , User, Permission
+from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain, HadithTagRel, \
+  BookVolume, BookChapter, BookSection  # , User, Permission
 
 
 class AutoTrackSerializer(serializers.ModelSerializer):
@@ -40,6 +41,33 @@ class BookSerializer(AutoTrackSerializer):
   class Meta:
     model = Book
     fields = ['id', 'title', 'brief_desc', 'pub_year', 'added_on', 'updated_on', 'added_by', 'updated_by']
+
+  added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+  updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+
+
+class BookVolumeSerializer(AutoTrackSerializer):
+  class Meta:
+    model = BookVolume
+    fields = ['id', 'title', 'number', 'book', 'added_on', 'updated_on', 'added_by', 'updated_by']
+
+  added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+  updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+
+
+class BookChapterSerializer(AutoTrackSerializer):
+  class Meta:
+    model = BookChapter
+    fields = ['id', 'title', 'number', 'book', 'volume', 'added_on', 'updated_on', 'added_by', 'updated_by']
+
+  added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+  updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
+
+
+class BookSectionSerializer(AutoTrackSerializer):
+  class Meta:
+    model = BookSection
+    fields = ['id', 'title', 'number', 'book', 'chapter', 'added_on', 'updated_on', 'added_by', 'updated_by']
 
   added_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
   updated_on = serializers.DateTimeField(read_only=True, format='%Y-%m-%dT%H:%M:%SZ')
@@ -88,6 +116,10 @@ class HadithSerializer(AutoTrackSerializer):
       instance.text = validated_data['text']
       instance.person = validated_data['person']
       instance.book = validated_data['book']
+      instance.volume = validated_data['volume']
+      instance.chapter = validated_data['chapter']
+      instance.section = validated_data['section']
+      instance.number = validated_data['number']
       instance.added_by = self.context['request'].user
       instance.save()
       for tag in validated_data['tags']:
@@ -99,6 +131,10 @@ class HadithSerializer(AutoTrackSerializer):
       instance.text = validated_data['text']
       instance.person = validated_data['person']
       instance.book = validated_data['book']
+      instance.volume = validated_data['volume']
+      instance.chapter = validated_data['chapter']
+      instance.section = validated_data['section']
+      instance.number = validated_data['number']
       instance.updated_by = self.context['request'].user
       # Delete relations for those persons who are not in the updated person list.
       updated_tag_ids = list(t.id for t in validated_data['tags'])
@@ -117,6 +153,13 @@ class HadithSerializer(AutoTrackSerializer):
     ret['text'] = instance.text
     ret['book'] = instance.book_id if not expand else \
       BookSerializer(instance.book, context=self.context).to_representation(instance.book)
+    ret['volume'] = instance.volume_id if not expand else \
+      VolumeSerializer(instance.volume, context=self.context).to_representation(instance.volume)
+    ret['chapter'] = instance.chapter_id if not expand else \
+      ChapterSerializer(instance.chapter, context=self.context).to_representation(instance.chapter)
+    ret['section'] = instance.section_id if not expand else \
+      SectionSerializer(instance.section, context=self.context).to_representation(instance.section)
+    ret['number'] = instance.number
     if instance.person_id is not None:
       ret['person'] = instance.person_id if not expand else \
         PersonSerializer(instance.person, context=self.context).to_representation(instance.person)

@@ -3,6 +3,10 @@
 HadithHouseWebsite/database_settings.py
 HadithHouseWebsite/server_settings.py
 
+# Python's virtual environment
+/venv/
+
+
 # Django's files generated using collectstatic command.
 /static/
 
