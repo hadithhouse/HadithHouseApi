@@ -5,8 +5,8 @@
     <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
         <md-icon class="material-icons"
-          ng-click="ctrl.deleteEntity($event, entity)"
-          ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
+                 ng-click="ctrl.deleteEntity($event, entity)"
+                 ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
         </md-icon>
         <span>
         <a ng-href="#/hadith/{{ entity.id }}">
@@ -30,8 +30,8 @@
 <div layout="row">
   <span flex></span>
   <md-button class="md-fab md-mini"
-    ng-href="#/hadith/new"
-    ng-if="ctrl.$rootScope.user.permissions.add_hadith">
+             ng-href="#/hadith/new"
+             ng-if="ctrl.$rootScope.user.permissions.add_hadith">
     <md-icon class="material-icons">add</md-icon>
   </md-button>
 </div>

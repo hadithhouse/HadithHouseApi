@@ -38,8 +38,10 @@ module HadithHouse.Directives {
   import HadithTag = HadithHouse.Resources.HadithTag;
   import User = HadithHouse.Resources.User;
   import ILocationService = angular.ILocationService;
+  import ToastService = HadithHouse.Services.ToastService;
 
   export class SelectorCtrl {
+    public addingEntitiesEnabled:string;
     public ids:number|number[];
     public entities:any;
     public type:string;
@@ -48,6 +50,7 @@ module HadithHouse.Directives {
     public clickable:string;
     public clickCallback:any;
     public firstLoad = true;
+    public query:string;
     private EntityResource:CacheableResource<Entity<number>, number>;
 
     constructor(private $scope:IScope,
@@ -55,7 +58,8 @@ module HadithHouse.Directives {
                 private PersonResource:CacheableResource<Person, number>,
                 private BookResource:CacheableResource<Book, number>,
                 private HadithTagResource:CacheableResource<HadithTag, number>,
-                private UserResource:CacheableResource<User, number>) {
+                private UserResource:CacheableResource<User, number>,
+                private ToastService:ToastService) {
 
       if (!this.ids) {
         if (this.singleSelect) {
@@ -75,6 +79,10 @@ module HadithHouse.Directives {
 
       if (!this.clickable) {
         this.clickable = 'false';
+      }
+
+      if (!this.addingEntitiesEnabled) {
+        this.addingEntitiesEnabled = 'false';
       }
 
       if (!this.type || typeof(this.type) !== 'string') {
@@ -102,10 +110,7 @@ module HadithHouse.Directives {
           throw 'Invalid type for selector.';
       }
 
-      //$scope.$watch('ctrl.ids', this.onIdsChanged);
       $scope.$watchCollection('ctrl.ids', this.onIdsChanged);
-
-      //$scope.$watch('ctrl.entities', this.onEntitiesChanged);
       $scope.$watchCollection('ctrl.entities', this.onEntitiesChanged);
     }
 
@@ -114,7 +119,7 @@ module HadithHouse.Directives {
       if (this.clickCallback) {
         this.clickCallback({entity: entity});
       } else {
-        this.$location.path(`${this.type}/${entity.id}`)
+        this.$location.path(`${this.type}/${entity.id}`);
       }
     }
 
@@ -123,8 +128,35 @@ module HadithHouse.Directives {
     }
 
     public createEntity(query) {
-      // TODO: Implement this.
-      alert('Not implemented yet');
+      switch (this.type.toLowerCase()) {
+        case 'hadithtag':
+          let entity = this.HadithTagResource.create();
+          entity.name = query;
+          entity.save().then(() => {
+            this.entities.push(entity);
+            this.query = '';
+          }, (result) => {
+            // TODO: This code is duplicated. Once we work on issue 86, we can create a helper function in
+            // ToastService and use it here. Issue link:
+            // https://github.com/hadithhouse/hadithhouse/issues/86
+            if (result.data && result.data.detail) {
+              this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
+            } else if (result.data) {
+              this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
+            } else {
+              this.ToastService.show('Failed to delete entity. Please try again!');
+            }
+          });
+          break;
+
+        case 'person':
+        case 'book':
+        case 'user':
+          throw 'Not implemented yet.';
+
+        default:
+          throw 'Unreachable code.';
+      }
     }
 
     public entityToString(entity) {
@@ -198,7 +230,8 @@ module HadithHouse.Directives {
   }
 
   HadithHouseApp.controller('SelectorCtrl',
-    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', SelectorCtrl]);
+    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', 'ToastService',
+      SelectorCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhSelector', function () {
@@ -210,6 +243,7 @@ module HadithHouse.Directives {
       controllerAs: 'ctrl',
       bindToController: true,
       scope: {
+        addingEntitiesEnabled: '@',
         clickCallback: '&?',
         clickable: '@',
         ids: '=',

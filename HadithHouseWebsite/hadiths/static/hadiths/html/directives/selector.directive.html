@@ -4,7 +4,8 @@
               md-autocomplete-snap
               md-require-match="true">
       <md-autocomplete
-          md-selected-item="ctrl.selectedTag"
+          md-no-cache="true"
+          md-selected-item="ctrl.selectedEntity"
           md-selected-item-change=""
           md-search-text="ctrl.query"
           md-search-text-change=""
@@ -15,7 +16,8 @@
           <span md-highlight-text="ctrl.query">{{ ctrl.entityToString(entity) }}</span>
         </md-item-template>
         <md-not-found>
-          No matches.
+          <a ng-click="ctrl.createEntity(ctrl.query)" ng-if="ctrl.addingEntitiesEnabled === 'true'">No matches. Create new.</a>
+          <span ng-if="ctrl.addingEntitiesEnabled !== 'true'">No matches.</span>
         </md-not-found>
       </md-autocomplete>
       <md-chip-template>
