@@ -6,7 +6,7 @@ from doctest import DocTestParser
 from django.core.management.base import BaseCommand, CommandError
 
 from HadithHouseWebsite import settings
-from hadiths.models import Hadith, Book
+from hadiths.models import Hadith, Book, BookVolume, BookChapter
 from hadiths import initial_data
 from textprocessing.generic import reformat_text
 from textprocessing.regex import DocScanner
@@ -26,8 +26,8 @@ class Command(BaseCommand):
     data_name = options['dataname'][0]
     if data_name == 'holyquran':
       self.import_holy_quran()
-    elif data_name == 'alkafi':
-      self.import_alkafi()
+    elif data_name == 'alkafi-v1':
+      self.import_alkafi_v1()
     else:
       raise CommandError('Invalid data name specified: ' + data_name)
 
@@ -48,7 +48,7 @@ class Command(BaseCommand):
           chapter, verse_no, verse = line.split('|')
           if sura is None or sura.number != chapter:
             sura = holy_quran.chapters.get(number=chapter)
-          h = Hadith.objects.get_or_create(text=verse, book=holy_quran, chapter=sura, number=verse_no)
+          Hadith.objects.get_or_create(text=verse, book=holy_quran, chapter=sura, number=verse_no)
           perc = int(i * 100 / total_verse_count)
           if perc != prev_perc:
             self.stdout.write(str(perc) + '%')
@@ -59,9 +59,8 @@ class Command(BaseCommand):
           self.stderr.write('Exception was: ' + str(e))
           self.stdout.flush()
 
-  def import_alkafi(self):
+  def import_alkafi_v1(self):
     input_path = Command.get_book_path('al-kafi/vol1/alkafi_1.txt')
-    output_path = Command.get_book_path('al-kafi/vol1/alkafi_1-processed.txt')
 
     # Open the input file and remove some unnecessary parts in it.
     with codecs.open(input_path, 'r', 'utf-8') as input_file:
@@ -75,6 +74,13 @@ class Command(BaseCommand):
       'bab': None,
     }
 
+    alkafi_v1_title = u"الكافي - الجزء الأول"
+    alkafi = Book.objects.get(title=initial_data.shia_first_hadith_book)
+    alkafi_v1, volume_created = BookVolume.objects.get_or_create(
+      title=alkafi_v1_title, book=alkafi, number=1)
+    chapter = [None]
+    chapter_no = [1]
+
     def callback(type, prev_type, match, prev_match, doc, context):
       if type == 'kitab':
         ignore = 'كِتَابُ هِشَامِ بْنِ عَبْدِ الْمَلِكِ'
@@ -83,25 +89,27 @@ class Command(BaseCommand):
           hadith_info['kitab'] = kitab
       elif type == 'bab':
         hadith_info['bab'] = reformat_text(doc[match.start():match.end()])
+        chapter[0], chapter_created = BookChapter.objects.get_or_create(
+          book=alkafi, volume=alkafi_v1, title=alkafi_v1_title, number=chapter_no[0])
+        chapter_no[0] += 1
       if prev_type == 'hadith_num':
         hadith_info['hadith'] = reformat_text(doc[prev_match.end():match.start()])
         hadith_info['num'] = int(doc[prev_match.start():prev_match.end() - 1])
-        output_file = context['output_file']
-        output_file.write('كتاب: ' + str(hadith_info['kitab']) + os.linesep)
-        output_file.write('باب: ' + str(hadith_info['bab']) + os.linesep)
-        output_file.write('رقم الحديث: ' + str(hadith_info['num']) + os.linesep)
-        output_file.write('متن الحديث: ' + hadith_info['hadith'] + os.linesep)
-        output_file.write(os.linesep)
 
-    with codecs.open(output_path, 'w', 'utf-8') as output_file:
-      kitab_word_regex = '\u0643\u0650?\u062A\u064E?\u0627\u0628?\u064F'
-      bab_word_regex = '\u0628\u064e?\u0627\u0628\u064f?'
-      ds = DocScanner({
-        'kitab': '^\s*' + kitab_word_regex + '.*',
-        'bab': '^\s*' + bab_word_regex + '.*',
-        'hadith_num': '^\s*[\u0660-\u06690-9]+\s*-',
-        'eof': '\Z'
-      }, callback)
-      ds.scan(content, {'output_file': output_file})
+        Hadith.objects.get_or_create(text=hadith_info['hadith'],
+                                     book=alkafi,
+                                     volume=alkafi_v1,
+                                     chapter=chapter[0],
+                                     number=hadith_info['num'])
+
+    kitab_word_regex = '\u0643\u0650?\u062A\u064E?\u0627\u0628?\u064F'
+    bab_word_regex = '\u0628\u064e?\u0627\u0628\u064f?'
+    ds = DocScanner({
+      'kitab': '^\s*' + kitab_word_regex + '.*',
+      'bab': '^\s*' + bab_word_regex + '.*',
+      'hadith_num': '^\s*[\u0660-\u06690-9]+\s*-',
+      'eof': '\Z'
+    }, callback)
+    ds.scan(content, {})
 
     print('Finished processing input file.')
