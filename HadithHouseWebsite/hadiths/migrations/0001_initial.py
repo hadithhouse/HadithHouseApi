@@ -131,8 +131,8 @@ class Migration(migrations.Migration):
             name='Hadith',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(db_index=True)),
-                ('simple_text', models.TextField(db_index=True, default='')),
+                ('text', models.TextField()),
+                ('simple_text', models.TextField(default='')),
                 ('number', models.SmallIntegerField(blank=True, db_index=True, null=True)),
                 ('added_on', models.DateTimeField(auto_now_add=True)),
                 ('updated_on', models.DateTimeField(auto_now=True)),

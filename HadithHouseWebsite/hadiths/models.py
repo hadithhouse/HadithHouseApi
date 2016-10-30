@@ -152,8 +152,8 @@ class Hadith(models.Model):
     default_permissions = ('add', 'change', 'delete')
 
   """A model describing a hadith."""
-  text = models.TextField(db_index=True)
-  simple_text = models.TextField(db_index=True, default='')
+  text = models.TextField()
+  simple_text = models.TextField(default='')
   person = models.ForeignKey(Person, null=True, blank=True, related_name='hadiths', db_index=True,
                              on_delete=models.PROTECT)
   book = models.ForeignKey(Book, null=True, blank=True, related_name='hadiths', db_index=True,
