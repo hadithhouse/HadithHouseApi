@@ -1,8 +1,6 @@
-from django.db import migrations
-from django.db.transaction import atomic
+import sys
 
-from hadiths.initial_data import *
-from hadiths.models import Person, Hadith, HadithTag, Chain, ChainPersonRel, Book, HadithTagRel
+from django.db import migrations
 
 
 class Migration(migrations.Migration):
@@ -10,9 +8,12 @@ class Migration(migrations.Migration):
     ('hadiths', '0004_add_first_hadiths'),
   ]
 
-  operations = [
-    migrations.RunSQL('''
-CREATE INDEX hadiths_text_idx ON hadiths USING GIN (TO_TSVECTOR('english', text));
-CREATE INDEX hadiths_simpletext_idx ON hadiths USING GIN (TO_TSVECTOR('english', simple_text));
-''')
-  ]
+  if len({'test'} & set(sys.argv)) > 0:
+    operations = ()
+  else:
+    operations = [
+      migrations.RunSQL('''
+  CREATE INDEX hadiths_text_idx ON hadiths USING GIN (TO_TSVECTOR('english', text));
+  CREATE INDEX hadiths_simpletext_idx ON hadiths USING GIN (TO_TSVECTOR('english', simple_text));
+  ''')
+    ]
