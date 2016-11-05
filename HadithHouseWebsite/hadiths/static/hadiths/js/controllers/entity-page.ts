@@ -30,33 +30,32 @@
 /// <reference path="../resources/resources.ts" />
 
 module HadithHouse.Controllers {
-  import IEntity = HadithHouse.Services.IEntity;
-  import IResource = angular.resource.IResource;
   import CacheableResource = HadithHouse.Resources.CacheableResource;
   import Entity = HadithHouse.Resources.Entity;
 
   export abstract class EntityPageCtrl<TEntity extends Entity<number>> {
-    entity:TEntity;
-    entityCopy:TEntity;
-    isAddingNew:boolean;
-    isEditing:boolean;
-    error:string;
+    // TODO: Should entity be public?
+    public entity: TEntity;
+    private entityCopy: TEntity;
+    private error: string;
+    private isAddingNew: boolean;
+    private isEditing: boolean;
 
-    constructor(protected $scope:ng.IScope,
-                protected $rootScope:ng.IScope,
-                protected $location:ng.ILocationService,
-                protected $routeParams:any,
-                protected EntityResource:CacheableResource<TEntity, number>,
-                protected ToastService:any) {
+    constructor(protected $scope: ng.IScope,
+                protected $rootScope: ng.IScope,
+                protected $location: ng.ILocationService,
+                protected $routeParams: any,
+                protected EntityResource: CacheableResource<TEntity, number>,
+                protected ToastService: any) {
       this.error = null;
       this.entityCopy = EntityResource.create();
     }
-    
+
     public initialize() {
       if (this.$routeParams.id === 'new') {
         this.setAddingNewEntityMode();
       } else {
-        var id = parseInt(this.$routeParams.id);
+        let id = parseInt(this.$routeParams.id);
         if (isNaN(id)) {
           this.error = `'${this.$routeParams.id}' is not a valid ID!`;
           return;
@@ -69,7 +68,7 @@ module HadithHouse.Controllers {
       });
     }
 
-    protected onKeyUp = (e:any) => {
+    protected onKeyUp = (e: any) => {
       if (e.keyCode === 27) {
         console.log('test');
         this.cancelEditing();
@@ -93,15 +92,13 @@ module HadithHouse.Controllers {
       this.entity.set(this.entityCopy);
     }
 
-    protected newEntity():TEntity {
+    protected newEntity(): TEntity {
       return this.EntityResource.create();
     }
 
-    protected abstract getEntityPath(id:number);
+    protected abstract getEntityPath(id: number);
 
-    protected onEntityLoaded() {
-
-    }
+    protected  onEntityLoaded() { }
 
     protected setAddingNewEntityMode() {
       this.entity = this.newEntity();
@@ -109,7 +106,7 @@ module HadithHouse.Controllers {
       this.isEditing = true;
     }
 
-    protected setOpeningExistingEntityMode(id:number) {
+    protected setOpeningExistingEntityMode(id: number) {
       this.entity = this.EntityResource.get(id);
       this.entity.promise.then(() => {
         this.onEntityLoaded();
@@ -138,12 +135,12 @@ module HadithHouse.Controllers {
         // Successfully saved changes. Don't need to do anything.
         this.isEditing = false;
         this.isAddingNew = false;
-        this.ToastService.show("Successful.");
+        this.ToastService.show('Successful.');
       }, (result) => {
         if (result.data) {
-          this.ToastService.showDjangoError("Failed to save changes. Error was: ", result.data);
+          this.ToastService.showDjangoError('Failed to save changes. Error was: ', result.data);
         } else {
-          this.ToastService.show("Failed to save changes. Please try again.");
+          this.ToastService.show('Failed to save changes. Please try again.');
         }
       });
     };

@@ -26,6 +26,7 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../services/services.ts" />
+/// <reference path="../services/toast.service.ts"/>
 /// <reference path="../resources/resources.ts" />
 
 

@@ -322,6 +322,9 @@ module HadithHouse.Resources {
     public text:string;
     public person:number;
     public book:number;
+    public volume:number;
+    public chapter:number;
+    public section:number;
     public tags:number[];
 
     public set(entity:Entity<number>) {
@@ -329,6 +332,9 @@ module HadithHouse.Resources {
       this.text = (<Hadith>entity).text;
       this.person = (<Hadith>entity).person;
       this.book = (<Hadith>entity).book;
+      this.volume = (<Hadith>entity).volume;
+      this.chapter = (<Hadith>entity).chapter;
+      this.section = (<Hadith>entity).section;
       this.tags = (<Hadith>entity).tags.slice();
     }
   }

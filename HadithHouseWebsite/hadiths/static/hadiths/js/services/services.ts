@@ -62,6 +62,9 @@ module HadithHouse.Services {
     text:string;
     person:number;
     book:number;
+    volume:number;
+    chapter:number;
+    section:number;
     tags:number[];
   }
 
