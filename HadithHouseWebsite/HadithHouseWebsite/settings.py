@@ -16,11 +16,13 @@ import sys
 
 from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts
 
-if len(set(['test', 'collectstatic']) & set(sys.argv)) > 0:
+if len({'test', 'collectstatic'} & set(sys.argv)) > 0:
   # We are running in test mode or collecting static files. Hence, avoid using
   # the real log directory to avoid breaking Jenkins build, as there is no
   # log directory on Jenkins.
   import tempfile
+
+
   def get_log_dir():
     return tempfile.gettempdir()
 else:
@@ -48,6 +50,7 @@ DEVELOPMENT_HOSTS = (
   'www.hadithhouse-dev.net',
 )
 
+
 def get_environment():
   host = socket.getfqdn().lower()
 
@@ -57,6 +60,7 @@ def get_environment():
     return 'development'
   else:
     return 'local'
+
 
 SERVER_EMAIL = 'noreply@hadithhouse.net'
 
