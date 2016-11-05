@@ -3,7 +3,7 @@ from collections import OrderedDict, Counter
 from django.contrib.auth.models import User
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.serializers import Serializer
 
 from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain, HadithTagRel, \
@@ -116,10 +116,10 @@ class HadithSerializer(AutoTrackSerializer):
       instance.text = validated_data['text']
       instance.person = validated_data['person']
       instance.book = validated_data['book']
-      instance.volume = validated_data['volume']
-      instance.chapter = validated_data['chapter']
-      instance.section = validated_data['section']
-      instance.number = validated_data['number']
+      instance.volume = validated_data['volume'] if 'volume' in validated_data else None
+      instance.chapter = validated_data['chapter'] if 'chapter' in validated_data else None
+      instance.section = validated_data['section'] if 'section' in validated_data else None
+      instance.number = validated_data['number'] if 'number' in validated_data else None
       instance.added_by = self.context['request'].user
       instance.save()
       for tag in validated_data['tags']:
@@ -131,10 +131,10 @@ class HadithSerializer(AutoTrackSerializer):
       instance.text = validated_data['text']
       instance.person = validated_data['person']
       instance.book = validated_data['book']
-      instance.volume = validated_data['volume']
-      instance.chapter = validated_data['chapter']
-      instance.section = validated_data['section']
-      instance.number = validated_data['number']
+      instance.volume = validated_data['volume'] if 'volume' in validated_data else None
+      instance.chapter = validated_data['chapter'] if 'chapter' in validated_data else None
+      instance.section = validated_data['section'] if 'section' in validated_data else None
+      instance.number = validated_data['number'] if 'number' in validated_data else None
       instance.updated_by = self.context['request'].user
       # Delete relations for those persons who are not in the updated person list.
       updated_tag_ids = list(t.id for t in validated_data['tags'])
@@ -154,11 +154,11 @@ class HadithSerializer(AutoTrackSerializer):
     ret['book'] = instance.book_id if not expand else \
       BookSerializer(instance.book, context=self.context).to_representation(instance.book)
     ret['volume'] = instance.volume_id if not expand else \
-      VolumeSerializer(instance.volume, context=self.context).to_representation(instance.volume)
+      BookVolumeSerializer(instance.volume, context=self.context).to_representation(instance.volume)
     ret['chapter'] = instance.chapter_id if not expand else \
-      ChapterSerializer(instance.chapter, context=self.context).to_representation(instance.chapter)
+      BookChapterSerializer(instance.chapter, context=self.context).to_representation(instance.chapter)
     ret['section'] = instance.section_id if not expand else \
-      SectionSerializer(instance.section, context=self.context).to_representation(instance.section)
+      BookSectionSerializer(instance.section, context=self.context).to_representation(instance.section)
     ret['number'] = instance.number
     if instance.person_id is not None:
       ret['person'] = instance.person_id if not expand else \
