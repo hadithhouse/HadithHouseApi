@@ -1,6 +1,7 @@
 from random import randint
 
 from django.db.models import ProtectedError, Count
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import DjangoFilterBackend, SearchFilter
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
@@ -42,10 +43,9 @@ class PersonView(FBAuthRetrieveUpdateDestroyAPIView):
 
   def handle_exception(self, ex):
     if isinstance(ex, ProtectedError):
-      return Response({
-        'detail': 'Cannot delete person because it is still referenced. Delete '
-                  'all entities, e.g. hadiths, referencing it and try again.',
-      }, status=HTTP_403_FORBIDDEN, exception=True)
+      return super(PersonView, self).handle_exception(PermissionDenied(
+        'Cannot delete person because it is still referenced. Delete '
+        'all entities, e.g. hadiths, referencing it and try again.'))
     return super(PersonView, self).handle_exception(ex)
 
 
@@ -73,10 +73,9 @@ class BookView(FBAuthRetrieveUpdateDestroyAPIView):
 
   def handle_exception(self, ex):
     if isinstance(ex, ProtectedError):
-      return Response({
-        'detail': 'Cannot delete book because it is still referenced. Delete '
-                  'all entities, e.g. hadiths, referencing it and try again.',
-      }, status=HTTP_403_FORBIDDEN, exception=True)
+      return super(BookView, self).handle_exception(PermissionDenied(
+        'Cannot delete book because it is still referenced. Delete '
+        'all entities, e.g. hadiths, referencing it and try again.'))
     return super(BookView, self).handle_exception(ex)
 
 
@@ -104,10 +103,9 @@ class BookVolumeView(FBAuthRetrieveUpdateDestroyAPIView):
 
   def handle_exception(self, ex):
     if isinstance(ex, ProtectedError):
-      return Response({
-        'detail': 'Cannot delete book volume because it is still referenced. Delete '
-                  'all entities, e.g. hadiths, referencing it and try again.',
-      }, status=HTTP_403_FORBIDDEN, exception=True)
+      return super(BookVolumeView, self).handle_exception(PermissionDenied(
+        'Cannot delete book volume because it is still referenced. Delete '
+        'all entities, e.g. hadiths, referencing it and try again.'))
     return super(BookVolumeView, self).handle_exception(ex)
 
 
@@ -135,10 +133,9 @@ class BookChapterView(FBAuthRetrieveUpdateDestroyAPIView):
 
   def handle_exception(self, ex):
     if isinstance(ex, ProtectedError):
-      return Response({
-        'detail': 'Cannot delete book chapter because it is still referenced. Delete '
-                  'all entities, e.g. hadiths, referencing it and try again.',
-      }, status=HTTP_403_FORBIDDEN, exception=True)
+      return super(BookChapterView, self).handle_exception(PermissionDenied(
+        'Cannot delete book chapter because it is still referenced. Delete '
+        'all entities, e.g. hadiths, referencing it and try again.'))
     return super(BookChapterView, self).handle_exception(ex)
 
 
@@ -166,10 +163,9 @@ class BookSectionView(FBAuthRetrieveUpdateDestroyAPIView):
 
   def handle_exception(self, ex):
     if isinstance(ex, ProtectedError):
-      return Response({
-        'detail': 'Cannot delete book section because it is still referenced. Delete '
-                  'all entities, e.g. hadiths, referencing it and try again.',
-      }, status=HTTP_403_FORBIDDEN, exception=True)
+      return super(BookSectionView, self).handle_exception(PermissionDenied(
+        'Cannot delete book section because it is still referenced. Delete '
+        'all entities, e.g. hadiths, referencing it and try again.'))
     return super(BookSectionView, self).handle_exception(ex)
 
 
@@ -194,6 +190,13 @@ class HadithTagView(FBAuthRetrieveUpdateDestroyAPIView):
   put_perm_code = 'change_hadithtag'
   patch_perm_code = 'change_hadithtag'
   delete_perm_code = 'delete_hadithtag'
+
+  def handle_exception(self, ex):
+    if isinstance(ex, ProtectedError):
+      return super(HadithTagView, self).handle_exception(PermissionDenied(
+        'Cannot delete hadith tag because it is still referenced. Delete '
+        'all entities, e.g. hadiths, referencing it and try again.'))
+    return super(HadithTagView, self).handle_exception(ex)
 
 
 class HadithSetView(FBAuthListCreateAPIView):
@@ -284,10 +287,12 @@ class UserView(FBAuthRetrieveUpdateDestroyAPIView):
       return super(UserView, self).get(request, *args, **kwargs)
 
   def put(self, request, *args, **kwargs):
-    raise RuntimeError("Users API doesn't support updating users. Please ask an admin to make the required changes.")
+    raise PermissionDenied(
+      "Users API doesn't support updating users. Please ask an admin to make the required changes.")
 
   def patch(self, request, *args, **kwargs):
-    raise RuntimeError("Users API doesn't support updating users. Please ask an admin to make the required changes.")
+    raise PermissionDenied(
+      "Users API doesn't support updating users. Please ask an admin to make the required changes.")
 
   def delete(self, request, *args, **kwargs):
-    raise RuntimeError("Users API doesn't support deleting users. Please ask an admin to delete the user.")
+    raise PermissionDenied("Users API doesn't support deleting users. Please ask an admin to delete the user.")

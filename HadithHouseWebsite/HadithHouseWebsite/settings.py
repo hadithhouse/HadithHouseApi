@@ -16,6 +16,9 @@ import sys
 
 from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts
 
+test_mode = 'test' in sys.argv
+collectstatic_mode = 'collectstatic' in sys.argv
+
 
 def is_test_mode():
   """
@@ -23,7 +26,7 @@ def is_test_mode():
   i.e. python manage.py test.
   :return: True or false.
   """
-  return 'test' in sys.argv
+  return test_mode
 
 
 def is_collectstatic_mode():
@@ -32,7 +35,7 @@ def is_collectstatic_mode():
   "python manage.py collectstatic".
   :return: True or false.
   """
-  return 'collectstatic' in sys.argv
+  return collectstatic_mode
 
 
 if is_test_mode() or is_collectstatic_mode():
@@ -260,7 +263,8 @@ REST_FRAMEWORK = {
   'PAGE_SIZE': 10,
   'DEFAULT_AUTHENTICATION_CLASSES': (
     'hadiths.auth.FacebookAuthentication',
-  )
+  ),
+  'EXCEPTION_HANDLER': 'HadithHouseWebsite.exception_handler.hadithhouse_exception_handler'
 }
 
 OFFLINE_MODE = False
