@@ -16,7 +16,26 @@ import sys
 
 from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts
 
-if len({'test', 'collectstatic'} & set(sys.argv)) > 0:
+
+def is_test_mode():
+  """
+  Determines whether the applicaiton is being currently running in test mode,
+  i.e. python manage.py test.
+  :return: True or false.
+  """
+  return 'test' in sys.argv
+
+
+def is_collectstatic_mode():
+  """
+  Determines whether the code is being executed during a call to
+  "python manage.py collectstatic".
+  :return: True or false.
+  """
+  return 'collectstatic' in sys.argv
+
+
+if is_test_mode() or is_collectstatic_mode():
   # We are running in test mode or collecting static files. Hence, avoid using
   # the real log directory to avoid breaking Jenkins build, as there is no
   # log directory on Jenkins.
