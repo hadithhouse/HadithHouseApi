@@ -4,6 +4,14 @@ import urlfetch
 GRAPH_API_URL = 'https://graph.facebook.com'
 
 
+# TODO: Consider moving this exception somewhere else.
+class FacebookError(Exception):
+  """
+  Raised when there is a problem communicating with Facebook.
+  """
+  pass
+
+
 def fb_get(path, access_token):
   """
   Retrieves information from Facebook via their Graph API.
@@ -20,7 +28,7 @@ def fb_get(path, access_token):
   response = urlfetch.fetch(url, method='GET')
   result = json.loads(response.content.decode('utf-8'))
   if response.status_code != 200:
-    raise Exception(result['error']['message'])
+    raise FacebookError(result['error']['message'])
   return result
 
 
@@ -31,4 +39,10 @@ def get_current_user(access_token):
   :param access_token: Facebook's access token.
   :return: User information.
   """
-  return fb_get('me', access_token)
+  try:
+    return fb_get('me', access_token)
+  except FacebookError:
+    # This could either be the authentication token is invalid, or there is a problem
+    # communicating with Facebook. In both cases, we return None as we couldn't
+    # authenticate the user.
+    return None
