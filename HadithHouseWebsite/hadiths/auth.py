@@ -18,6 +18,8 @@ class FacebookAuthentication(BaseAuthentication):
       return None
     fb_token = request.query_params['fb_token']
     fb_user_info = fbapi.get_current_user(fb_token)
+    if fb_user_info is None:
+      return None
     fb_id = fb_user_info['id']
 
     try:
@@ -25,7 +27,7 @@ class FacebookAuthentication(BaseAuthentication):
     except FbUser.DoesNotExist:
       raise None
 
-    return (fb_user.user, None)
+    return fb_user.user, None
 
 
 class FacebookOfflineAuthentication(BaseAuthentication):
