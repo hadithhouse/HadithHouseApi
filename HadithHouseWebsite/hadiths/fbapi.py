@@ -12,6 +12,14 @@ class FacebookError(Exception):
   pass
 
 
+def get_fb_graph_url(api, access_token):
+  return '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
+    'graph_url': GRAPH_API_URL,
+    'path': api,
+    'access_token': access_token
+  }
+
+
 def fb_get(path, access_token):
   """
   Retrieves information from Facebook via their Graph API.
@@ -20,11 +28,7 @@ def fb_get(path, access_token):
   :param access_token: Facebook's access token.
   :return: The result of the API.
   """
-  url = '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
-    'graph_url': GRAPH_API_URL,
-    'path': path,
-    'access_token': access_token
-  }
+  url = get_fb_graph_url(path, access_token)
   response = urlfetch.fetch(url, method='GET')
   result = json.loads(response.content.decode('utf-8'))
   if response.status_code != 200:
