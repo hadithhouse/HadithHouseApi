@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.test import Client
 from django.test import TestCase
-from rest_framework.status import HTTP_403_FORBIDDEN
 
 from hadiths.models import Person, Book, BookVolume, BookChapter, BookSection, HadithTag, Hadith
 
@@ -76,14 +74,4 @@ class TestModeTestCase(TestCase):
   def test__is_test_mode__returns_true(self):
     from HadithHouseWebsite.settings import is_test_mode
     self.assertEqual(True, is_test_mode(), "is_test_mode() should return True.")
-
-
-class HadithTagApiTestCase(TestCase):
-  def test__post__noauthtoken__403(self):
-    c = Client()
-    resp = c.post('/apis/hadithtags', {})
-    self.assertEqual(HTTP_403_FORBIDDEN, resp.status_code)
-    self.assertEqual(HTTP_403_FORBIDDEN, resp.data['status_code'])
-    self.assertEqual("User doesn't have permission for this action.", resp.data['error'])
-
 

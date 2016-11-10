@@ -1,23 +1,22 @@
 import json
+
 import urlfetch
+
+from HadithHouseWebsite.settings import is_test_mode
+from hadiths.exceptions import FacebookError
 
 GRAPH_API_URL = 'https://graph.facebook.com'
 
-
-# TODO: Consider moving this exception somewhere else.
-class FacebookError(Exception):
-  """
-  Raised when there is a problem communicating with Facebook.
-  """
-  pass
-
-
-def get_fb_graph_url(api, access_token):
-  return '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
-    'graph_url': GRAPH_API_URL,
-    'path': api,
-    'access_token': access_token
-  }
+if not is_test_mode():
+  def get_fb_graph_url(api, access_token):
+    return '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
+      'graph_url': GRAPH_API_URL,
+      'path': api,
+      'access_token': access_token
+    }
+else:
+  def get_fb_graph_url(api, access_token):
+    raise RuntimeError('get_fb_graph_url() method cannot be called during test mode. Please mock it.')
 
 
 def fb_get(path, access_token):
