@@ -7,32 +7,33 @@ from hadiths.exceptions import FacebookError
 
 GRAPH_API_URL = 'https://graph.facebook.com'
 
+
+def get_fb_graph_url(api, access_token):
+  return '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
+    'graph_url': GRAPH_API_URL,
+    'path': api,
+    'access_token': access_token
+  }
+
+
 if not is_test_mode():
-  def get_fb_graph_url(api, access_token):
-    return '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
-      'graph_url': GRAPH_API_URL,
-      'path': api,
-      'access_token': access_token
-    }
+  def fb_get(path, access_token):
+    """
+    Retrieves information from Facebook via their Graph API.
+
+    :param path: The path of the Graph API to execute.
+    :param access_token: Facebook's access token.
+    :return: The result of the API.
+    """
+    url = get_fb_graph_url(path, access_token)
+    response = urlfetch.fetch(url, method='GET')
+    result = json.loads(response.content.decode('utf-8'))
+    if response.status_code != 200:
+      raise FacebookError(result['error']['message'])
+    return result
 else:
-  def get_fb_graph_url(api, access_token):
-    raise RuntimeError('get_fb_graph_url() method cannot be called during test mode. Please mock it.')
-
-
-def fb_get(path, access_token):
-  """
-  Retrieves information from Facebook via their Graph API.
-
-  :param path: The path of the Graph API to execute.
-  :param access_token: Facebook's access token.
-  :return: The result of the API.
-  """
-  url = get_fb_graph_url(path, access_token)
-  response = urlfetch.fetch(url, method='GET')
-  result = json.loads(response.content.decode('utf-8'))
-  if response.status_code != 200:
-    raise FacebookError(result['error']['message'])
-  return result
+  def fb_get(api, access_token):
+    raise RuntimeError('fb_get() method cannot be called during test mode. Please mock it.')
 
 
 def get_current_user(access_token):
