@@ -7,7 +7,9 @@ from hadiths.models import FbUser
 
 
 class TestCaseBase(TestCase):
+  setup = False
   invalid_accesstoken = 'aaaaa'
+
   # Jack
   jack_accesstoken = 'abcde'
   jack = None
@@ -89,9 +91,13 @@ class TestCaseBase(TestCase):
 
     fbapi.fb_get = fb_get_mock
 
+
   # noinspection PyPep8Naming
   @classmethod
   def setUpClass(cls):
+    if TestCaseBase.setup:
+      return
+    TestCaseBase.setup = True
     TestCaseBase.create_test_users()
     TestCaseBase.mock_fbapi()
     pass
