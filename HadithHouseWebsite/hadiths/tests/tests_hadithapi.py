@@ -54,7 +54,7 @@ class HadithApiTestCase(TestCaseBase):
     resp2 = c.get('/apis/hadiths/%d' % hadith['id'])
     self.assertEqual(HTTP_200_OK, resp2.status_code)
     hadith2 = resp2.data
-    
+
     self.assertEqual(hadith['id'], hadith2['id'])
     self.assertEqual(hadith['text'], hadith2['text'])
     self.assertEqual(hadith['person'], hadith2['person'])
