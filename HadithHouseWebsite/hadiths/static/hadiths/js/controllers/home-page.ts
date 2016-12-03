@@ -30,8 +30,8 @@ module HadithHouse.Controllers {
   import Hadith = HadithHouse.Resources.Hadith;
 
   export class HomePageCtrl {
-    randomHadith:Hadith;
-    
+    private randomHadith:Hadith;
+
     constructor(private $scope:ng.IScope,
                 private $http:ng.IHttpService) {
       this.randomHadith = new Hadith($http, '/apis/hadiths', 'random');

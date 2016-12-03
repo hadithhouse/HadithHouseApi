@@ -49,7 +49,7 @@ module HadithHouse.Resources {
      * @param baseUrl The base URL for doing CRUD operations on this entity.
      * @param id The ID of the entity to load.
      */
-    constructor($http:IHttpService, baseUrl:string, id:number|string);
+    constructor($http:IHttpService, baseUrl:string, id:TId);
 
     /**
      * Constructs a wrapper entity for the given object.
@@ -62,10 +62,10 @@ module HadithHouse.Resources {
     constructor(private $http:IHttpService, private baseUrl:string, idOrObject?:any) {
       if (!idOrObject) {
         return;
-      } else if (typeof(idOrObject) === 'number' || typeof(idOrObject) === 'string') {
-        this.load(idOrObject);
-      } else {
+      } else if (typeof(idOrObject) === 'object') {
         this.set(idOrObject);
+      } else {
+        this.load(idOrObject);
       }
     }
 
@@ -318,7 +318,7 @@ module HadithHouse.Resources {
   /// Hadith Resource
   ///===========================================================================
 
-  export class Hadith extends Entity<number> {
+  export class Hadith extends Entity<number|string> {
     public text:string;
     public person:number;
     public book:number;
@@ -327,7 +327,7 @@ module HadithHouse.Resources {
     public section:number;
     public tags:number[];
 
-    public set(entity:Entity<number>) {
+    public set(entity:Entity<number|string>) {
       super.set(entity);
       this.text = (<Hadith>entity).text;
       this.person = (<Hadith>entity).person;
@@ -340,8 +340,8 @@ module HadithHouse.Resources {
   }
 
   HadithHouse.HadithHouseApp.factory('HadithResource',
-    ($http:IHttpService, $q:IQService):CacheableResource<Hadith, number> => {
-      return new CacheableResource<Hadith, number>(Hadith, '/apis/hadiths', $http, $q);
+    ($http:IHttpService, $q:IQService):CacheableResource<Hadith, number|string> => {
+      return new CacheableResource<Hadith, number|string>(Hadith, '/apis/hadiths', $http, $q);
     });
 
   ///===========================================================================
@@ -437,7 +437,7 @@ module HadithHouse.Resources {
   ///===========================================================================
 
   export class Chain extends Entity<number> {
-    public hadith:number;
+    public hadith:number|string;
     public persons:Array<number>;
     public isEditing:boolean;
     public isAddingNew:boolean;

@@ -35,7 +35,7 @@ module HadithHouse.Controllers {
   import PagedResults = HadithHouse.Resources.PagedResults;
   import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
-  export class EntityListingPageCtrl<TEntity extends Entity<number>> {
+  export class EntityListingPageCtrl<TEntity extends Entity<number|string>> {
     public pagedEntities:ObjectWithPromise<PagedResults<TEntity>>;
     public searchQuery:string;
     public searchPromise:IPromise<void> = null;
@@ -47,7 +47,7 @@ module HadithHouse.Controllers {
                 protected $timeout:ng.ITimeoutService,
                 protected $location:ng.ILocationService,
                 protected $mdDialog:ng.material.IDialogService,
-                protected EntityResource:Resources.CacheableResource<TEntity, number>,
+                protected EntityResource:Resources.CacheableResource<TEntity, number|string>,
                 protected ToastService:any) {
       this.readUrlParams();
       this.loadEntities();
