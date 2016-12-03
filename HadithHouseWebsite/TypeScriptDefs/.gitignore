@@ -1,0 +1,5 @@
+*
+!.gitignore
+!restore.ps1
+!restore.sh
+!TypeScriptDefs.zip
