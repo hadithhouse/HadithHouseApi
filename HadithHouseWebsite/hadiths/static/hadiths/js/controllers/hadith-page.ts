@@ -113,7 +113,7 @@ module HadithHouse.Controllers {
     public pagedChains:ObjectWithPromise<PagedResults<Chain>>;
     public chainCopies:any;
     public $mdDialog:IDialogService;
-    public HadithResource:Resources.CacheableResource<Hadith, number>;
+    public HadithResource:Resources.CacheableResource<Hadith, number|string>;
     public PersonResource:Resources.CacheableResource<Person, number>;
     public ChainResource:Resources.CacheableResource<Chain, number>;
     public rootNode:any;
@@ -123,7 +123,7 @@ module HadithHouse.Controllers {
                 $location:ng.ILocationService,
                 $routeParams:any,
                 $mdDialog:IDialogService,
-                HadithResource:Resources.CacheableResource<Hadith, number>,
+                HadithResource:Resources.CacheableResource<Hadith, number|string>,
                 PersonResource:Resources.CacheableResource<Person, number>,
                 ChainResource:Resources.CacheableResource<Chain, number>,
                 ToastService:any) {

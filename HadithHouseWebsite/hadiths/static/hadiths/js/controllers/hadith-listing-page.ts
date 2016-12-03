@@ -31,13 +31,13 @@
     import Hadith = HadithHouse.Resources.Hadith;
 
     export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
-      tagsFilter:number[];
+      private tagsFilter:number[];
       constructor($scope:ng.IScope,
                   $rootScope:ng.IScope,
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   $mdDialog:ng.material.IDialogService,
-                  private HadithResource:Resources.CacheableResource<Hadith, number>,
+                  private HadithResource:Resources.CacheableResource<Hadith, number|string>,
                   ToastService:any) {
         super($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
 
@@ -66,7 +66,7 @@
       }
 
       protected getQueryParams():{} {
-        var queryParams = super.getQueryParams();
+        let queryParams = super.getQueryParams();
         if (this.tagsFilter && this.tagsFilter.length > 0) {
           queryParams['tags'] = this.tagsFilter.join(',');
         }

@@ -33,7 +33,7 @@ module HadithHouse.Controllers {
   import CacheableResource = HadithHouse.Resources.CacheableResource;
   import Entity = HadithHouse.Resources.Entity;
 
-  export abstract class EntityPageCtrl<TEntity extends Entity<number>> {
+  export abstract class EntityPageCtrl<TEntity extends Entity<number|string>> {
     // TODO: Should entity be public?
     public entity: TEntity;
     private entityCopy: TEntity;
@@ -45,7 +45,7 @@ module HadithHouse.Controllers {
                 protected $rootScope: ng.IScope,
                 protected $location: ng.ILocationService,
                 protected $routeParams: any,
-                protected EntityResource: CacheableResource<TEntity, number>,
+                protected EntityResource: CacheableResource<TEntity, number|string>,
                 protected ToastService: any) {
       this.error = null;
       this.entityCopy = EntityResource.create();
@@ -96,9 +96,10 @@ module HadithHouse.Controllers {
       return this.EntityResource.create();
     }
 
-    protected abstract getEntityPath(id: number);
+    protected abstract getEntityPath(id: number|string);
 
-    protected  onEntityLoaded() { }
+    protected onEntityLoaded() {
+    }
 
     protected setAddingNewEntityMode() {
       this.entity = this.newEntity();
@@ -106,7 +107,7 @@ module HadithHouse.Controllers {
       this.isEditing = true;
     }
 
-    protected setOpeningExistingEntityMode(id: number) {
+    protected setOpeningExistingEntityMode(id: number|string) {
       this.entity = this.EntityResource.get(id);
       this.entity.promise.then(() => {
         this.onEntityLoaded();
