@@ -117,7 +117,7 @@ class TestCaseBase(TestCase):
     return self.client.get(path)
 
   def post(self, path, data):
-    return self.client.post(path, data)
+    return self.client.post(path, json.dumps(data), content_type='application/json')
 
   def put(self, path, data):
     return self.client.put(path, json.dumps(data), content_type='application/json')

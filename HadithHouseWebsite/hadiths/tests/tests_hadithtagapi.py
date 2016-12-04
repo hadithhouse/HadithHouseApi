@@ -103,7 +103,7 @@ class HadithTagPutApiTestCase(TestCaseBase):
     self.assertTrue('name' in resp.data['detail'])
     self.assertEqual(['This field may not be blank.'], resp.data['detail']['name'])
 
-  def test__valid_auth_token__user_permission__valid_new_name__tag_renamed(self):
+  def test__valid_auth_token__user_permission__valid_new_name__tag_updated(self):
     resp = self.put(
       '/apis/hadithtags/%d?fb_token=%s' % (HadithTagPutApiTestCase.tag_id, TestCaseBase.marie_accesstoken),
       {'name': 'test_updated'})

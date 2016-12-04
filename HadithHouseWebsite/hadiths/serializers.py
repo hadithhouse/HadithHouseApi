@@ -129,8 +129,8 @@ class HadithSerializer(AutoTrackSerializer):
   def update(self, instance, validated_data):
     with transaction.atomic():
       instance.text = validated_data['text']
-      instance.person = validated_data['person']
-      instance.book = validated_data['book']
+      instance.person = validated_data['person'] if 'person' in validated_data else None
+      instance.book = validated_data['book'] if 'book' in validated_data else None
       instance.volume = validated_data['volume'] if 'volume' in validated_data else None
       instance.chapter = validated_data['chapter'] if 'chapter' in validated_data else None
       instance.section = validated_data['section'] if 'section' in validated_data else None
