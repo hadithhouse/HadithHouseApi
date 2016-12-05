@@ -128,23 +128,54 @@ class HadithSerializer(AutoTrackSerializer):
 
   def update(self, instance, validated_data):
     with transaction.atomic():
+      if self.partial:
+        self.__partial_update(instance, validated_data)
+      else:
+        self.__full_update(instance, validated_data)
+      instance.save()
+    return instance
+
+  def __full_update(self, instance, validated_data):
+    instance.text = validated_data['text']
+    instance.person = validated_data['person'] if 'person' in validated_data else None
+    instance.book = validated_data['book'] if 'book' in validated_data else None
+    instance.volume = validated_data['volume'] if 'volume' in validated_data else None
+    instance.chapter = validated_data['chapter'] if 'chapter' in validated_data else None
+    instance.section = validated_data['section'] if 'section' in validated_data else None
+    instance.number = validated_data['number'] if 'number' in validated_data else None
+    instance.updated_by = self.context['request'].user
+    # Delete relations for those persons who are not in the updated person list.
+    updated_tag_ids = list(t.id for t in validated_data['tags'])
+    instance.tag_rels.exclude(tag_id__in=updated_tag_ids).delete()
+    tag_ids_to_keep = instance.tag_rels.values_list('tag_id', flat=True)
+    # Make the necessary changes to the existing relations.
+    for tag in [t for t in validated_data['tags'] if t.id not in tag_ids_to_keep]:
+      HadithTagRel.objects.create(hadith=instance, tag=tag, added_by=self.context['request'].user)
+
+  def __partial_update(self, instance, validated_data):
+    if 'text' in validated_data:
       instance.text = validated_data['text']
-      instance.person = validated_data['person'] if 'person' in validated_data else None
-      instance.book = validated_data['book'] if 'book' in validated_data else None
-      instance.volume = validated_data['volume'] if 'volume' in validated_data else None
-      instance.chapter = validated_data['chapter'] if 'chapter' in validated_data else None
-      instance.section = validated_data['section'] if 'section' in validated_data else None
-      instance.number = validated_data['number'] if 'number' in validated_data else None
-      instance.updated_by = self.context['request'].user
-      # Delete relations for those persons who are not in the updated person list.
+    if 'person' in validated_data:
+      instance.person = validated_data['person']
+    if 'book' in validated_data:
+      instance.book = validated_data['book']
+    if 'volume' in validated_data:
+      instance.volume = validated_data['volume']
+    if 'chapter' in validated_data:
+      instance.chapter = validated_data['chapter']
+    if 'section' in validated_data:
+      instance.section = validated_data['section']
+    if 'number' in validated_data:
+      instance.number = validated_data['number']
+    instance.updated_by = self.context['request'].user
+    # Delete relations for those persons who are not in the updated person list.
+    if 'tags' in validated_data:
       updated_tag_ids = list(t.id for t in validated_data['tags'])
       instance.tag_rels.exclude(tag_id__in=updated_tag_ids).delete()
       tag_ids_to_keep = instance.tag_rels.values_list('tag_id', flat=True)
       # Make the necessary changes to the existing relations.
       for tag in [t for t in validated_data['tags'] if t.id not in tag_ids_to_keep]:
         HadithTagRel.objects.create(hadith=instance, tag=tag, added_by=self.context['request'].user)
-      instance.save()
-    return instance
 
   def to_representation(self, instance):
     expand = self.context['request'].query_params.get('expand', 'false').lower() == 'true'

@@ -94,7 +94,6 @@ class TestCaseBase(TestCase):
 
     fbapi.fb_get = fb_get_mock
 
-
   # noinspection PyPep8Naming
   @classmethod
   def setUpClass(cls):
@@ -121,3 +120,6 @@ class TestCaseBase(TestCase):
 
   def put(self, path, data):
     return self.client.put(path, json.dumps(data), content_type='application/json')
+
+  def patch(self, path, data):
+    return self.client.patch(path, json.dumps(data), content_type='application/json')
