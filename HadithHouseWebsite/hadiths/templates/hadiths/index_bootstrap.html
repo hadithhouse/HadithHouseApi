@@ -1,0 +1,243 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Hadith House</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+
+  <style>
+    body {
+      padding-top: 5rem;
+    }
+
+    .starter-template {
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body ng-controller="HadithHouseCtrl as ctrl">
+
+<!-- Facebook Authentication -->
+<script>
+  var fbApiInit = false;
+  var fbAccessToken = null;
+  var fbFetchedLoginStatus = false;
+
+  window.fbAsyncInit = function () {
+    FB.init({
+      appId: '{{ appId }}',
+      xfbml: true,
+      version: 'v2.4'
+    });
+
+    fbApiInit = true;
+
+    FB.getLoginStatus(function (response) {
+      fbFetchedLoginStatus = true;
+      if (response.status === 'connected') {
+        // The user is logged in to Facebook and has authenticated
+        // the application.
+        fbAccessToken = response.authResponse.accessToken;
+      } else if (response.status === 'not_authorized') {
+        // The user is logged in to Facebook, but has not authenticated
+        // the application.
+        fbAccessToken = null;
+      } else {
+        // The user isn't logged in to Facebook.
+        fbAccessToken = null;
+      }
+
+      angular.bootstrap(document.body, ['HadithHouseApp']);
+    });
+  };
+
+  (function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+      return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+          data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Hadith House</a>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Hadiths</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Books</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Persons</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Tags</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Users</a>
+      </li>
+    </ul>
+    <!--
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    -->
+    <ul class="navbar-nav">
+      {% verbatim %}
+      <li class="nav-item" ng-if="fetchedLoginStatus && fbUser === null">
+        <a class="nav-link" href="#" ng-click="ctrl.fbLogin()">Login with Facebook</a>
+      </li>
+      <li class="nav-item dropdown" ng-if="fetchedLoginStatus && fbUser !== null">
+        <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}"
+               class="rounded-circle" style="width: 32px; height: 32px;"/>
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdown01" style="left: -100px;">
+          <a class="dropdown-item" ng-href="{{ fbUser.link }}">Facebook Profile</a>
+          <a class="dropdown-item" ng-click="ctrl.fbLogout()">Logout</a>
+        </div>
+      </li>
+      {% endverbatim %}
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="starter-template" ng-view>
+  </div>
+
+</div><!-- /.container -->
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<!-- Tether -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+
+<!-- Angular -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-resource.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+
+<!-- Lo-Dash -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.6/lodash.min.js"></script>
+
+<!-- MomentJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+
+<!-- D3.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script>
+  /*!
+   * IE10 viewport hack for Surface/desktop Windows 8 bug
+   * Copyright 2014-2017 The Bootstrap Authors
+   * Copyright 2014-2017 Twitter, Inc.
+   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+   */
+
+  // See the Getting Started docs for more information:
+  // https://getbootstrap.com/getting-started/#support-ie10-width
+
+  (function () {
+    'use strict';
+
+    if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+      var msViewportStyle = document.createElement('style');
+      msViewportStyle.appendChild(
+        document.createTextNode(
+          '@-ms-viewport{width:auto!important}'
+        )
+      );
+      document.head.appendChild(msViewportStyle)
+    }
+
+  }())
+</script>
+
+<!--suppress JSUnusedLocalSymbols -->
+<script>
+  function getHtmlBasePath() {
+    return '{% static 'hadiths/html' %}/';
+  }
+
+  function getApiUrl() {
+    return '/apis/';
+  }
+</script>
+
+{% if environment == 'production' %}
+  <link rel="stylesheet" href="{% static 'hadiths/css/all.css' %}">
+  <script src="{% static 'hadiths/js/all.js' %}"></script>
+{% else %}
+  <!-- <link rel="stylesheet" href="{% static 'hadiths/css/styles.css' %}"> -->
+
+  <script src="{% static 'hadiths/js/app.js' %}"></script>
+
+  <!-- Services -->
+  <script src="{% static 'hadiths/js/services/facebook.service.js' %}"></script>
+  <script src="{% static 'hadiths/js/services/services.js' %}"></script>
+  <script src="{% static 'hadiths/js/services/toast.service.js' %}"></script>
+  <script src="{% static 'hadiths/js/caching/cache.js' %}"></script>
+  <script src="{% static 'hadiths/js/resources/resources.js' %}"></script>
+
+  <!-- Controllers -->
+  <script src="{% static 'hadiths/js/controllers/entity-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/entity-listing-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/book-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/book-listing-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/hadith-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/hadith-listing-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/hadithtag-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/hadithtag-listing-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/home-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/person-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/person-listing-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/user-page.js' %}"></script>
+  <script src="{% static 'hadiths/js/controllers/user-listing-page.js' %}"></script>
+
+  <!-- Directives -->
+  <script src="{% static 'hadiths/js/directives/selector.directive.js' %}"></script>
+  <script src="{% static 'hadiths/js/directives/hadith-listing.directive.js' %}"></script>
+  <script src="{% static 'hadiths/js/directives/tree.directive.js' %}"></script>
+{% endif %}
+</body>
+</html>
