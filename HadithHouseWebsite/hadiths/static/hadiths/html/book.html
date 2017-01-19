@@ -42,4 +42,7 @@
   </md-input-container>
   </div>
 </md-content>
+<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
+  <hh-hadith-listing book-id="ctrl.entity.id"></hh-hadith-listing>
+</md-content>
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>
