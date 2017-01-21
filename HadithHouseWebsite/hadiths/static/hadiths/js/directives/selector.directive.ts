@@ -26,7 +26,6 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../services/services.ts" />
-/// <reference path="../services/toast.service.ts"/>
 /// <reference path="../resources/resources.ts" />
 
 
@@ -39,7 +38,6 @@ module HadithHouse.Directives {
   import HadithTag = HadithHouse.Resources.HadithTag;
   import User = HadithHouse.Resources.User;
   import ILocationService = angular.ILocationService;
-  import ToastService = HadithHouse.Services.ToastService;
 
   export class SelectorCtrl {
     public addingEntitiesEnabled:string;
@@ -59,8 +57,7 @@ module HadithHouse.Directives {
                 private PersonResource:CacheableResource<Person, number>,
                 private BookResource:CacheableResource<Book, number>,
                 private HadithTagResource:CacheableResource<HadithTag, number>,
-                private UserResource:CacheableResource<User, number>,
-                private ToastService:ToastService) {
+                private UserResource:CacheableResource<User, number>) {
 
       if (!this.ids) {
         if (this.singleSelect) {
@@ -141,11 +138,11 @@ module HadithHouse.Directives {
             // ToastService and use it here. Issue link:
             // https://github.com/hadithhouse/hadithhouse/issues/86
             if (result.data && result.data.detail) {
-              this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
+              toastr.error('Failed to delete entity. Error was: ' + result.data.detail);
             } else if (result.data) {
-              this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
+              toastr.error('Failed to delete entity. Error was: ' + result.data);
             } else {
-              this.ToastService.show('Failed to delete entity. Please try again!');
+              toastr.error('Failed to delete entity. Please try again!');
             }
           });
           break;
@@ -231,7 +228,7 @@ module HadithHouse.Directives {
   }
 
   HadithHouseApp.controller('SelectorCtrl',
-    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', 'ToastService',
+    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
       SelectorCtrl]);
 
   // TODO: Consider creating a class for this.

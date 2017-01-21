@@ -39,9 +39,7 @@ module HadithHouse.Directives {
     public pageSize:number = 10;
 
     constructor(private $scope: IScope,
-                private $mdDialog:ng.material.IDialogService,
-                private HadithResource: CacheableResource<Hadith, number|string>,
-                private ToastService:any) {
+                private HadithResource: CacheableResource<Hadith, number|string>) {
       $scope.$watch('ctrl.bookId', this.onBookIdChanged);
     }
 
@@ -69,7 +67,8 @@ module HadithHouse.Directives {
     }
 
     public deleteEntity = (event:any, entity:Hadith) => {
-      let confirm = this.$mdDialog.confirm()
+      // FIXME: Use Bootstrap dialog.
+      /*let confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the entity?')
         .ok('Yes')
@@ -90,7 +89,7 @@ module HadithHouse.Directives {
             this.ToastService.show('Failed to delete entity. Please try again!');
           }
         });
-      });
+      });*/
     };
 
     private onBookIdChanged = (newId:number, oldId:number) => {
@@ -108,8 +107,7 @@ module HadithHouse.Directives {
   }
 
 
-  HadithHouseApp.controller('HadithListingCtrl',
-    ['$scope', '$mdDialog', 'HadithResource', 'ToastService', HadithListingCtrl]);
+  HadithHouseApp.controller('HadithListingCtrl', ['$scope', 'HadithResource', HadithListingCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhHadithListing', function () {

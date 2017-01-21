@@ -24,15 +24,17 @@
 
 /// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../TypeScriptDefs/angularjs/angular-route.d.ts" />
+/// <reference path="../../../../TypeScriptDefs/toastr/toastr.d.ts" />
 
-declare function getHtmlBasePath():String;
-declare var fbFetchedLoginStatus:boolean;
-declare var fbAccessToken:String;
+declare function getHtmlBasePath(): String;
+declare let fbFetchedLoginStatus: boolean;
+declare let fbAccessToken: String;
 
 module HadithHouse {
-  export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute', 'ngMaterial', 'ngMdIcons']);
+  export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
 
-  HadithHouseApp.config(function ($httpProvider : ng.IHttpProvider, $routeProvider : ng.route.IRouteProvider) {
+  HadithHouseApp.config(function ($httpProvider: ng.IHttpProvider,
+                                  $routeProvider: ng.route.IRouteProvider) {
     $routeProvider.when('/', {
       templateUrl: getHtmlBasePath() + 'home-page.html',
       controller: 'HomePageCtrl',
@@ -88,51 +90,50 @@ module HadithHouse {
       controller: 'UserPageCtrl',
       controllerAs: 'ctrl',
       reloadOnSearch: false
-    }).otherwise({redirectTo:'/'});
+    }).otherwise({redirectTo: '/'});
 
-    $httpProvider.interceptors.push([
-      "$q", "$rootScope", function ($q : ng.IQService, $rootScope : ng.IScope) {
-        return {
-          'request': function (config : any) {
-            //To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
-            if (!config.headers.hasOwnProperty("X-global")) {
-              $rootScope['pendingRequests']++;
-            }
-            // If this is a request to the API, appends Facebook authentication token.
-            if (config.url.startsWith('/apis/') && $rootScope['fbAccessToken'] !== null) {
-              config.params = config.params || {};
-              config.params['fb_token'] = $rootScope['fbAccessToken'];
-            }
-            return config || $q.when(config);
-          },
-          'requestError': function (rejection) {
-            if ($rootScope['pendingRequests'] >= 1) {
-              $rootScope['pendingRequests']--;
-            }
-            return $q.reject(rejection);
-          },
-          'response': function (response) {
-            if ($rootScope['pendingRequests'] >= 1) {
-              $rootScope['pendingRequests']--;
-            }
-            return response || $q.when(response);
-          },
-          'responseError': function (rejection) {
-            if ($rootScope['pendingRequests'] >= 1) {
-              $rootScope['pendingRequests']--;
-            }
-            return $q.reject(rejection);
+    $httpProvider.interceptors.push(['$q', '$rootScope', function ($q: ng.IQService, $rootScope: ng.IScope) {
+      return {
+        'request': function (config: any) {
+          // To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
+          if (!config.headers.hasOwnProperty('X-global')) {
+            $rootScope['pendingRequests']++;
           }
-        };
-      }
+          // If this is a request to the API, appends Facebook authentication token.
+          if (config.url.startsWith('/apis/') && $rootScope['fbAccessToken'] !== null) {
+            config.params = config.params || {};
+            config.params['fb_token'] = $rootScope['fbAccessToken'];
+          }
+          return config || $q.when(config);
+        },
+        'requestError': function (rejection) {
+          if ($rootScope['pendingRequests'] >= 1) {
+            $rootScope['pendingRequests']--;
+          }
+          return $q.reject(rejection);
+        },
+        'response': function (response) {
+          if ($rootScope['pendingRequests'] >= 1) {
+            $rootScope['pendingRequests']--;
+          }
+          return response || $q.when(response);
+        },
+        'responseError': function (rejection) {
+          if ($rootScope['pendingRequests'] >= 1) {
+            $rootScope['pendingRequests']--;
+          }
+          return $q.reject(rejection);
+        }
+      };
+    }
     ]);
-  }).run(['$rootScope', '$mdDialog', function ($rootScope) {
+  }).run(['$rootScope', function ($rootScope) {
     $rootScope['pendingRequests'] = 0;
   }]);
 
 
   HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $rootScope, $location, $mdSidenav, FacebookService, UserResourceClass) {
+    function ($scope, $rootScope, $location, FacebookService, UserResourceClass) {
       let ctrl = this;
 
       $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
@@ -140,13 +141,13 @@ module HadithHouse {
       $rootScope.fbAccessToken = fbAccessToken;
 
       ctrl.fbLogin = function () {
-        FacebookService.login().then(function (response) {
+        FacebookService.login().then(function (/*response*/) {
           ctrl.getLoggedInUser();
         });
       };
 
       ctrl.fbLogout = function () {
-        FacebookService.logout().then(function (response) {
+        FacebookService.logout().then(function (/*response*/) {
           $rootScope.fbUser = null;
           $rootScope.fbAccessToken = null;
         });
@@ -164,7 +165,9 @@ module HadithHouse {
         UserResourceClass.get({id: 'current'}, function onSuccess(user) {
           let perms = {};
           for (let i in user.permissions) {
-            perms[user.permissions[i]] = true;
+            if (user.permissions.hasOwnProperty(i)) {
+              perms[user.permissions[i]] = true;
+            }
           }
           user.permissions = perms;
           $rootScope.user = user;
@@ -173,19 +176,24 @@ module HadithHouse {
 
       ctrl.getUserInfo();
 
+      ctrl.search = function () {
+        toastr.warning('Search is not implemented yet!');
+      };
+
       // Load all registered items
       ctrl.menuItems = [
-        {name: 'Hadiths', urlPath: 'hadiths'},
-        {name: 'Books', urlPath: 'books'},
-        {name: 'Persons', urlPath: 'persons'},
-        {name: 'Tags', urlPath: 'hadithtags'},
-        {name: 'Users', urlPath: 'users'}
+        {name: 'Home', urlPath: '', selected: false},
+        {name: 'Hadiths', urlPath: 'hadiths', selected: false},
+        {name: 'Books', urlPath: 'books', selected: false},
+        {name: 'Persons', urlPath: 'persons', selected: false},
+        {name: 'Tags', urlPath: 'hadithtags', selected: false},
+        {name: 'Users', urlPath: 'users', selected: false}
       ];
 
       let path = $location.path() ? $location.path().substr(1) : null;
       if (path) {
         for (let i = 0; i < ctrl.menuItems.length; i++) {
-          if (ctrl.menuItems[i].urlPath == path) {
+          if (ctrl.menuItems[i].urlPath === path) {
             ctrl.selected = ctrl.menuItems[i];
             break;
           }
@@ -195,23 +203,30 @@ module HadithHouse {
         ctrl.selected = ctrl.menuItems[0];
       }
 
-      $scope.$on('toggleSideNav', function () {
-        toggleItemsList();
-      });
-
-      function toggleItemsList() {
-        $mdSidenav('left').toggle();
-      }
-
       ctrl.selectMenuItem = function (item) {
+        _.each(ctrl.menuItems, (i) => i.selected = false);
         ctrl.selected = angular.isNumber(item) ? ctrl.menuItems[item] : item;
         $location.url(ctrl.selected.urlPath);
-        toggleItemsList();
       };
 
-      ctrl.toggleSideNav = function () {
-        $scope.$broadcast('toggleSideNav', []);
-      };
+      ctrl.selectMenuItem(ctrl.menuItems[0]);
     });
+
+  toastr.options = {
+    'closeButton': true,
+    'debug': false,
+    'newestOnTop': true,
+    'progressBar': false,
+    'positionClass': 'toast-bottom-full-width',
+    'preventDuplicates': false,
+    'showDuration': 300,
+    'hideDuration': 1000,
+    'timeOut': 5000,
+    'extendedTimeOut': 1000,
+    'showEasing': 'swing',
+    'hideEasing': 'linear',
+    'showMethod': 'fadeIn',
+    'hideMethod': 'fadeOut'
+  };
 }
 

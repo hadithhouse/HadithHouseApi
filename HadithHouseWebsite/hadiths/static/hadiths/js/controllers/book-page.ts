@@ -38,9 +38,8 @@ module HadithHouse.Controllers {
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                BookResource:Resources.CacheableResource<Book, number>,
-                ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+                BookResource:Resources.CacheableResource<Book, number>) {
+      super($scope, $rootScope, $location, $routeParams, BookResource);
       this.BookResource = BookResource;
     }
 
@@ -50,8 +49,8 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('BookPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-      let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, BookResource) {
+      let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
       ctrl.initialize();
       return ctrl;
     });

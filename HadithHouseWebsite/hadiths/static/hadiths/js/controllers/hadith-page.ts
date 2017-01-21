@@ -112,7 +112,6 @@ module HadithHouse.Controllers {
   export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
     public pagedChains:ObjectWithPromise<PagedResults<Chain>>;
     public chainCopies:any;
-    public $mdDialog:IDialogService;
     public HadithResource:Resources.CacheableResource<Hadith, number|string>;
     public PersonResource:Resources.CacheableResource<Person, number>;
     public ChainResource:Resources.CacheableResource<Chain, number>;
@@ -122,16 +121,13 @@ module HadithHouse.Controllers {
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                $mdDialog:IDialogService,
                 HadithResource:Resources.CacheableResource<Hadith, number|string>,
                 PersonResource:Resources.CacheableResource<Person, number>,
-                ChainResource:Resources.CacheableResource<Chain, number>,
-                ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, HadithResource, ToastService);
+                ChainResource:Resources.CacheableResource<Chain, number>) {
+      super($scope, $rootScope, $location, $routeParams, HadithResource);
       this.HadithResource = HadithResource;
       this.PersonResource = PersonResource;
       this.ChainResource = ChainResource;
-      this.$mdDialog = $mdDialog;
       this.chainCopies = {};
       this.rootNode = null;
     }
@@ -205,7 +201,8 @@ module HadithHouse.Controllers {
     }
 
     public deleteChain(event:any, chain:Chain) {
-      let confirm = this.$mdDialog.confirm()
+      // FIXME: Use Bootstrap dialog.
+      /*let confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the chain?')
         .ok('Yes')
@@ -226,7 +223,7 @@ module HadithHouse.Controllers {
             this.ToastService.show('Failed to delete chain. Please try again!');
           }
         });
-      });
+      });*/
     }
 
     private buildChainTree() {
@@ -258,10 +255,10 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, $mdDialog,
-              HadithResource, PersonResource, ChainResource, ToastService) {
-      let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams, $mdDialog,
-        HadithResource, PersonResource, ChainResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams,
+              HadithResource, PersonResource, ChainResource) {
+      let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams,
+        HadithResource, PersonResource, ChainResource);
       ctrl.initialize();
       return ctrl;
     });

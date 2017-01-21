@@ -6,9 +6,7 @@ from HadithHouseWebsite.server_settings import get_fb_appid
 
 
 def index(request):
-  if 'bootstrap' in request.GET:
-    template = loader.get_template('hadiths/index_bootstrap.html')
-  elif settings.OFFLINE_MODE:
+  if settings.OFFLINE_MODE:
     template = loader.get_template('hadiths/index_offline.html')
   else:
     template = loader.get_template('hadiths/index.html')

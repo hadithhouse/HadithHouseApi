@@ -45,8 +45,7 @@ module HadithHouse.Controllers {
                 protected $rootScope: ng.IScope,
                 protected $location: ng.ILocationService,
                 protected $routeParams: any,
-                protected EntityResource: CacheableResource<TEntity, number|string>,
-                protected ToastService: any) {
+                protected EntityResource: CacheableResource<TEntity, number|string>) {
       this.error = null;
       this.entityCopy = EntityResource.create();
     }
@@ -136,15 +135,24 @@ module HadithHouse.Controllers {
         // Successfully saved changes. Don't need to do anything.
         this.isEditing = false;
         this.isAddingNew = false;
-        this.ToastService.show('Successful.');
+        toastr.success('Saved');
       }, (result) => {
         if (result.data) {
-          this.ToastService.showDjangoError('Failed to save changes. Error was: ', result.data);
+          let message = 'Failed to save changes. Error was: ';
+          message += '\n';
+          _.each(result.data, function (errors, fieldName) {
+            message += fieldName;
+            message += ': ';
+            message += errors.join(', ');
+            message += '\n';
+          });
+          toastr.error(message);
         } else {
-          this.ToastService.show('Failed to save changes. Please try again.');
+          toastr.error('Failed to save changes. Please try again.');
         }
       });
     };
+
 
     /**
      * Called when the user clicks on the X icon to cancel the changes made.

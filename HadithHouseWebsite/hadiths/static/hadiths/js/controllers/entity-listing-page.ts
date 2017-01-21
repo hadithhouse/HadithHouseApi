@@ -46,9 +46,7 @@ module HadithHouse.Controllers {
                 protected $rootScope:ng.IScope,
                 protected $timeout:ng.ITimeoutService,
                 protected $location:ng.ILocationService,
-                protected $mdDialog:ng.material.IDialogService,
-                protected EntityResource:Resources.CacheableResource<TEntity, number|string>,
-                protected ToastService:any) {
+                protected EntityResource:Resources.CacheableResource<TEntity, number|string>) {
       this.readUrlParams();
       this.loadEntities();
 
@@ -114,7 +112,8 @@ module HadithHouse.Controllers {
     }
 
     public deleteEntity = (event:any, entity:TEntity) => {
-      let confirm = this.$mdDialog.confirm()
+      // FIXME: Use Bootstrap dialog.
+      /*let confirm = this.$mdDialog.confirm()
         .title('Confirm')
         .textContent('Are you sure you want to delete the entity?')
         .ok('Yes')
@@ -135,7 +134,7 @@ module HadithHouse.Controllers {
             this.ToastService.show('Failed to delete entity. Please try again!');
           }
         });
-      });
+      });*/
     };
 
     public range(n:number):number[] {

@@ -35,16 +35,14 @@
                   $rootScope:ng.IScope,
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
-                  $mdDialog:ng.material.IDialogService,
-                  private HadithTagResource:Resources.CacheableResource<HadithTag, number>,
-                  ToastService:any) {
-        super($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
+                  private HadithTagResource:Resources.CacheableResource<HadithTag, number>) {
+        super($scope, $rootScope, $timeout, $location, HadithTagResource);
       }
     }
 
     HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService) {
-        return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithTagResource, ToastService);
+      function ($scope, $rootScope, $timeout, $location, HadithTagResource) {
+        return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, HadithTagResource);
       });
   }
 

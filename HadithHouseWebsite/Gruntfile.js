@@ -21,7 +21,6 @@ module.exports = function(grunt) {
               'hadiths/static/hadiths/js/app.js',
               'hadiths/static/hadiths/js/services/facebook.service.js',
               'hadiths/static/hadiths/js/services/services.js',
-              'hadiths/static/hadiths/js/services/toast.service.js',
               'hadiths/static/hadiths/js/caching/cache.js',
               'hadiths/static/hadiths/js/resources/resources.js',
               'hadiths/static/hadiths/js/controllers/entity-page.js',
@@ -37,6 +36,7 @@ module.exports = function(grunt) {
               'hadiths/static/hadiths/js/controllers/person-listing-page.js',
               'hadiths/static/hadiths/js/controllers/user-page.js',
               'hadiths/static/hadiths/js/controllers/user-listing-page.js',
+              'hadiths/static/hadiths/js/directives/hadith-listing.directive.js',
               'hadiths/static/hadiths/js/directives/selector.directive.js',
               'hadiths/static/hadiths/js/directives/tree.directive.js'
             ]
