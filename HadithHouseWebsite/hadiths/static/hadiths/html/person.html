@@ -1,77 +1,79 @@
 <div ng-if="ctrl.error">
   Couldn't load person or the person is not found.
 </div>
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
-  <h1>
+<div class="container" ng-if="!ctrl.error">
+  <h2>
     {{ ctrl.entity.display_name || ctrl.entity.full_name }}
-    <md-icon class="material-icons"
-             ng-click="ctrl.startEditing()"
-             ng-hide="ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_person">edit
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.cancelEditing()"
-             ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
-             ng-if="ctrl.$rootScope.user.permissions.change_person">cancel
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.finishEditing()"
-             ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_person">save
-    </md-icon>
-  </h1>
+    <button class="btn btn-secondary btn-sm fa fa-pencil" aria-hidden="true"
+            ng-click="ctrl.startEditing()"
+            ng-hide="ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Title</label>
-      <input ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-    <md-input-container flex>
-      <label>Full Name</label>
-      <input ng-model="ctrl.entity.full_name" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-    <md-input-container>
-      <label>Display Name</label>
-      <input ng-model="ctrl.entity.display_name" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-  </div>
+    <button class="btn btn-secondary btn-sm fa fa-times" aria-hidden="true"
+            ng-click="ctrl.cancelEditing()"
+            ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Brief Description</label>
-      <textarea ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
-    </md-input-container>
-  </div>
+    <button class="btn btn-secondary btn-sm fa fa-floppy-o" aria-hidden="true"
+            ng-click="ctrl.finishEditing()"
+            ng-hide="!ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
+  </h2>
 
-  <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Birth Year</label>
-      <input ng-model="ctrl.entity.birth_year" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-    <md-input-container flex>
-      <label>Birth Month</label>
-      <input ng-model="ctrl.entity.birth_month" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-    <md-input-container flex>
-      <label>Birth Day</label>
-      <input ng-model="ctrl.entity.birth_day" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-  </div>
+  <form>
+    <div class="row">
+      <div class="form-group col-sm-2">
+        <label for="title">Title</label>
+        <input id="title" type="text" class="form-control" ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="full_name">Full Name</label>
+        <input id="full_name" type="text" class="form-control" ng-model="ctrl.entity.full_name" ng-disabled="!ctrl.isEditing"/>
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="display_name">Display Name</label>
+        <input id="display_name" type="text" class="form-control" ng-model="ctrl.entity.display_name" ng-disabled="!ctrl.isEditing"/>
+      </div>
+    </div>
 
-  <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Death Year</label>
-      <input ng-model="ctrl.entity.death_year" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-    <md-input-container flex>
-      <label>Death Month</label>
-      <input ng-model="ctrl.entity.death_month" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-    <md-input-container flex>
-      <label>Death Day</label>
-      <input ng-model="ctrl.entity.death_day" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-  </div>
+    <div class="row">
+    <div class="form-group col-sm-12">
+      <label for="brief_desc">Brief Description</label>
+      <textarea id="brief_desc" class="form-control" ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing">
 
-</md-content>
+      </textarea>
+    </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-sm-3">
+        <label for="birth_year">Birth Year</label>
+        <input id="birth_year" type="number" class="form-control" ng-model="ctrl.entity.birth_year" ng-disabled="!ctrl.isEditing"/>
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="birth_month">Birth Month</label>
+        <input id="birth_month" type="number" class="form-control" ng-model="ctrl.entity.birth_month" ng-disabled="!ctrl.isEditing"/>
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="birth_day">Birth Day</label>
+        <input id="birth_day" type="number" class="form-control" ng-model="ctrl.entity.birth_day" ng-disabled="!ctrl.isEditing"/>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-sm-3">
+        <label for="death_year">Death Year</label>
+        <input id="death_year" type="number" class="form-control" ng-model="ctrl.entity.death_year" ng-disabled="!ctrl.isEditing"/>
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="death_month">Death Month</label>
+        <input id="death_month" type="number" class="form-control" ng-model="ctrl.entity.death_month" ng-disabled="!ctrl.isEditing"/>
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="death_day">Death Day</label>
+        <input id="death_day" type="number" class="form-control" ng-model="ctrl.entity.death_day" ng-disabled="!ctrl.isEditing"/>
+      </div>
+    </div>
+  </form>
+</div>
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>
