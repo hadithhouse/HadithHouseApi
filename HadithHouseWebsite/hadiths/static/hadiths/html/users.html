@@ -1,15 +1,14 @@
+<!--
 <div ng-include="'/static/hadiths/html/entity-listing-header.html'"></div>
-<md-content class="md-whiteframe-z1" layout="column" flex layout-fill>
-  <md-list>
-    <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
-      <div style="width: 100%;">
-        <a ng-href="#/user/{{ entity.id }}">
-          {{ entity.first_name }} {{ entity.last_name }}
-        </a>
-      </div>
-      <md-divider ng-if="!$last"></md-divider>
-    </md-list-item>
-  </md-list>
-</md-content>
+-->
 
+<div ng-repeat="entity in ctrl.pagedEntities.results">
+  <a ng-href="/user/{{ entity.id }}">
+    {{ entity.first_name }} {{ entity.last_name }}
+  </a>
+  <hr/>
+</div>
+
+<!--
 <div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>
+-->

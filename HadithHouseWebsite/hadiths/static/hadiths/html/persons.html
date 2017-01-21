@@ -6,17 +6,17 @@
   <button type="button"
           class="btn btn-danger btn-sm"
           ng-click="ctrl.deleteEntity($event, entity)"
-          ng-if="ctrl.$rootScope.user.permissions.delete_hadithtag">
+          ng-if="ctrl.$rootScope.user.permissions.delete_person">
     X
   </button>
-  <a ng-href="#/hadithtag/{{ entity.id }}">
+  <a ng-href="/person/{{ entity.id }}">
     {{ entity.display_name || entity.full_name }}
   </a>
   <hr/>
 </div>
 
 <div>
-  <a class="btn btn-primary" ng-href="person/new" ng-if="ctrl.$rootScope.user.permissions.add_person">
+  <a class="btn btn-primary" ng-href="/person/new" ng-if="ctrl.$rootScope.user.permissions.add_person">
     Add
   </a>
 </div>

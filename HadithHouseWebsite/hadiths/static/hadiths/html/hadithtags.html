@@ -9,14 +9,14 @@
           ng-if="ctrl.$rootScope.user.permissions.delete_hadithtag">
     X
   </button>
-  <a ng-href="#/hadithtag/{{ entity.id }}">
+  <a ng-href="/hadithtag/{{ entity.id }}">
     {{ entity.name }}
   </a>
   <hr/>
 </div>
 
 <div>
-  <a class="btn btn-primary" ng-href="hadithtag/new" ng-if="ctrl.$rootScope.user.permissions.add_hadithtag">
+  <a class="btn btn-primary" ng-href="/hadithtag/new" ng-if="ctrl.$rootScope.user.permissions.add_hadithtag">
     Add
   </a>
 </div>
