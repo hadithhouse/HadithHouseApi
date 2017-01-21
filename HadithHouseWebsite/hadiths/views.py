@@ -5,7 +5,7 @@ from HadithHouseWebsite import settings
 from HadithHouseWebsite.server_settings import get_fb_appid
 
 
-def index(request):
+def index(request, path):
   if settings.OFFLINE_MODE:
     template = loader.get_template('hadiths/index_offline.html')
   else:

@@ -34,7 +34,12 @@ module HadithHouse {
   export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
 
   HadithHouseApp.config(function ($httpProvider: ng.IHttpProvider,
-                                  $routeProvider: ng.route.IRouteProvider) {
+                                  $routeProvider: ng.route.IRouteProvider,
+                                  $locationProvider: ng.ILocationProvider) {
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
+    });
     $routeProvider.when('/', {
       templateUrl: getHtmlBasePath() + 'home-page.html',
       controller: 'HomePageCtrl',
