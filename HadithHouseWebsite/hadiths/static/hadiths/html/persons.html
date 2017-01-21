@@ -1,28 +1,26 @@
+<!--
 <div ng-include="'/static/hadiths/html/entity-listing-header.html'"></div>
-<md-content class="md-whiteframe-z1" layout="column" flex layout-fill>
-  <md-list>
-    <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
-      <div style="width: 100%;">
-        <md-icon class="material-icons"
-                 ng-click="ctrl.deleteEntity($event, entity)"
-                 ng-if="ctrl.$rootScope.user.permissions.delete_person">close
-        </md-icon>
-        <a ng-href="#/person/{{ entity.id }}">
-          {{ entity.display_name || entity.full_name }}
-        </a>
-      </div>
-      <md-divider ng-if="!$last"></md-divider>
-    </md-list-item>
-  </md-list>
-</md-content>
+-->
 
-<div layout="row">
-  <span flex></span>
-  <md-button class="md-fab md-mini"
-             ng-href="#/person/new"
-             ng-if="ctrl.$rootScope.user.permissions.add_person">
-    <md-icon class="material-icons">add</md-icon>
-  </md-button>
+<div ng-repeat="entity in ctrl.pagedEntities.results">
+  <button type="button"
+          class="btn btn-danger btn-sm"
+          ng-click="ctrl.deleteEntity($event, entity)"
+          ng-if="ctrl.$rootScope.user.permissions.delete_hadithtag">
+    X
+  </button>
+  <a ng-href="#/hadithtag/{{ entity.id }}">
+    {{ entity.display_name || entity.full_name }}
+  </a>
+  <hr/>
 </div>
 
+<div>
+  <a class="btn btn-primary" ng-href="#/person/new" ng-if="ctrl.$rootScope.user.permissions.add_person">
+    Add
+  </a>
+</div>
+
+<!--
 <div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>
+-->

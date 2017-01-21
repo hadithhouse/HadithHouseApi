@@ -18,15 +18,10 @@
 
   <style>
     body {
-      padding-top: 5rem;
+      padding-top: 2rem;
     }
 
-    .starter-template {
-      padding: 3rem 1.5rem;
-      text-align: center;
-    }
-
-    a {
+    a, button {
       cursor: pointer;
     }
   </style>
@@ -79,6 +74,8 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 </script>
+
+
 <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
           data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
@@ -121,12 +118,19 @@
   </div>
 </nav>
 
-<div class="container">
-
-  <div class="starter-template" ng-view>
+{% verbatim %}
+<div class="jumbotron" ng-if="ctrl.selected" style="padding: 3rem 1rem 1rem 1rem;">
+  <div class="container">
+    <h1 class="display-3">{{ ctrl.selected.name }}</h1>
+    <p ng-if="ctrl.selected.description">{{ ctrl.selected.description }}</p>
   </div>
+</div>
+{% endverbatim %}
 
-</div><!-- /.container -->
+<div class="container" ng-view>
+
+
+</div>
 
 
 <!-- jQuery -->

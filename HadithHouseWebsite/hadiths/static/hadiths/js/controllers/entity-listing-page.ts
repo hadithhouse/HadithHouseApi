@@ -112,6 +112,7 @@ module HadithHouse.Controllers {
     }
 
     public deleteEntity = (event:any, entity:TEntity) => {
+      toastr.warning('Not implemented yet!');
       // FIXME: Use Bootstrap dialog.
       /*let confirm = this.$mdDialog.confirm()
         .title('Confirm')

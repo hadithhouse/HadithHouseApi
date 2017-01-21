@@ -185,7 +185,12 @@ module HadithHouse {
         {name: 'Home', urlPath: '', selected: false},
         {name: 'Hadiths', urlPath: 'hadiths', selected: false},
         {name: 'Books', urlPath: 'books', selected: false},
-        {name: 'Persons', urlPath: 'persons', selected: false},
+        {
+          name: 'Persons',
+          urlPath: 'persons',
+          selected: false,
+          description: 'This page contains a listing of all the persons added to the database of Hadith House.'
+        },
         {name: 'Tags', urlPath: 'hadithtags', selected: false},
         {name: 'Users', urlPath: 'users', selected: false}
       ];
@@ -208,8 +213,6 @@ module HadithHouse {
         ctrl.selected = angular.isNumber(item) ? ctrl.menuItems[item] : item;
         $location.url(ctrl.selected.urlPath);
       };
-
-      ctrl.selectMenuItem(ctrl.menuItems[0]);
     });
 
   toastr.options = {
