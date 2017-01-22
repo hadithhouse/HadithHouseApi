@@ -43,7 +43,8 @@ module HadithHouse.Directives {
     public entityId: string = null;
     public entity: Entity<number> = null;
     public type: string;
-    public clickable: string|boolean;
+    public mode: string;
+    public normalisedMode: string|boolean;
     public clickCallback: any;
     public firstLoad = true;
     private EntityResource: CacheableResource<Entity<number>, number>;
@@ -61,8 +62,26 @@ module HadithHouse.Directives {
       }
     }
 
-    public $onInit() {
-      this.clickable = this.clickable === 'true' || this.clickable === true;
+    public $onInit = () => {
+      switch (this.mode.toLowerCase()) {
+        case 'text':
+          this.normalisedMode = 'text';
+          break;
+        case 'link':
+          this.normalisedMode = 'link';
+          break;
+        case 'button':
+          this.normalisedMode = 'button';
+          break;
+        case 'badge':
+          this.normalisedMode = 'badge';
+          break;
+        case 'clickable-badge':
+          this.normalisedMode = 'clickable-badge';
+          break;
+        default:
+          throw 'Invalid type for hh-entity element.';
+      }
 
       if (!this.type || typeof(this.type) !== 'string') {
         throw 'hh-entity element must have its type attribute set to a string.';
@@ -72,19 +91,15 @@ module HadithHouse.Directives {
         case 'person':
           this.EntityResource = this.PersonResource;
           break;
-
         case 'book':
           this.EntityResource = this.BookResource;
           break;
-
         case 'hadithtag':
           this.EntityResource = this.HadithTagResource;
           break;
-
         case 'user':
           this.EntityResource = this.UserResource;
           break;
-
         default:
           throw 'Invalid type for hh-entity element.';
       }
@@ -93,18 +108,25 @@ module HadithHouse.Directives {
     }
 
     public onClick() {
+      if (this.normalisedMode === 'text') {
+        return;
+      }
       if (this.clickCallback) {
         this.clickCallback({entity: this.entity});
       } else {
-        this.$location.path(`${this.type}/${this.entity.id}`);
+        this.$location.path(`/${this.type}/${this.entity.id}`);
       }
     }
 
-    public getEntityTitle(entity: Entity<number>): string {
-      if (!entity) {
+    public getEntityTitle(): string {
+      if (!this.entity) {
         return '';
       }
-      return entity.toString();
+      return this.entity.toString();
+    }
+
+    public getEntityLink(): string {
+      return `/${this.type}/${this.entity.id}`;
     }
 
     private onIdChanged = (newValue, oldValue) => {
@@ -131,14 +153,14 @@ module HadithHouse.Directives {
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.component('hhEntity', {
-      templateUrl: getHtmlBasePath() + 'directives/entity.directive.html',
-      controller: 'EntityCtrl',
-      controllerAs: 'ctrl',
-      bindings: {
-        clickCallback: '&?',
-        clickable: '@',
-        entityId: '@',
-        type: '@'
-      }
+    templateUrl: getHtmlBasePath() + 'directives/entity.directive.html',
+    controller: 'EntityCtrl',
+    controllerAs: 'ctrl',
+    bindings: {
+      clickCallback: '&?',
+      mode: '@',
+      entityId: '@',
+      type: '@'
+    }
   });
 }

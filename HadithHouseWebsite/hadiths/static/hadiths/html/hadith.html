@@ -35,7 +35,7 @@
       <div class="form-group col-sm-12">
         <label>Person</label>
         <div>
-          <hh-entity entity-id="{{ ctrl.entity.person }}" type="person" clickable="true"></hh-entity>
+            <hh-entity entity-id="{{ ctrl.entity.person }}" type="person" mode="clickable-badge"></hh-entity>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
       <div class="form-group col-sm-12">
         <label>Book</label>
         <div>
-          <hh-entity entity-id="{{ ctrl.entity.book }}" type="book" clickable="true"></hh-entity>
+          <hh-entity entity-id="{{ ctrl.entity.book }}" type="book" mode="clickable-badge"></hh-entity>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@
       <div class="form-group col-sm-12">
         <label>Tags</label>
         <div ng-repeat="tagId in ctrl.entity.tags">
-          <hh-entity entity-id="{{ tagId }}" type="hadithtag" clickable="true"></hh-entity>
+          <hh-entity entity-id="{{ tagId }}" type="hadithtag" mode="clickable-badge"></hh-entity>
         </div>
       </div>
     </div>
