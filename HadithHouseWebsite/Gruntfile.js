@@ -36,6 +36,7 @@ module.exports = function(grunt) {
               'hadiths/static/hadiths/js/controllers/person-listing-page.js',
               'hadiths/static/hadiths/js/controllers/user-page.js',
               'hadiths/static/hadiths/js/controllers/user-listing-page.js',
+              'hadiths/static/hadiths/js/directives/entity.directive.js',
               'hadiths/static/hadiths/js/directives/hadith-listing.directive.js',
               'hadiths/static/hadiths/js/directives/selector.directive.js',
               'hadiths/static/hadiths/js/directives/tree.directive.js'
