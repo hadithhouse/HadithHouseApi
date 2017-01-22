@@ -1,7 +1,21 @@
 <div ng-if="ctrl.error">
   Couldn't load book or the book is not found.
 </div>
-<div class="container" ng-if="!ctrl.error">
+
+<ul class="nav nav-tabs" style="margin-bottom: 10px;">
+  <li class="nav-item">
+    <a class="nav-link" ng-class="ctrl.activeTab == 1 ? 'active': ''" href="#" ng-click="ctrl.activeTab = 1">Hadiths</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" ng-class="ctrl.activeTab == 2 ? 'active': ''" href="#" ng-click="ctrl.activeTab = 2">Book Info</a>
+  </li>
+</ul>
+
+<div class="container" ng-if="!ctrl.error" ng-show="ctrl.activeTab == 1">
+  <hh-hadith-listing book-id="ctrl.entity.id"></hh-hadith-listing>
+</div>
+
+<div class="container" ng-if="!ctrl.error" ng-show="ctrl.activeTab == 2">
   <h2>
     {{ ctrl.entity.title }}
     <button class="btn btn-secondary btn-sm fa fa-pencil" aria-hidden="true"
@@ -41,8 +55,5 @@
       </div>
     </div>
   </form>
-</div>
-<div class="container" ng-if="!ctrl.error">
-  <hh-hadith-listing book-id="ctrl.entity.id"></hh-hadith-listing>
 </div>
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>

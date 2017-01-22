@@ -125,12 +125,12 @@
 {% verbatim %}
 <div class="jumbotron" ng-if="ctrl.selected" style="padding: 3rem 1rem 1rem 1rem;">
   <div class="container">
-    <h1 class="display-3" style="float: right;">
+    <h3 class="display-4" style="float: right;">
       <i class="fa fa-spin fa-refresh" aria-hidden="true" ng-show="pendingRequests > 0"></i>
-    </h1>
-    <h1 class="display-3">
+    </h3>
+    <h3 class="display-4">
       {{ ctrl.selected.name }}
-    </h1>
+    </h3>
     <p ng-if="ctrl.selected.description">{{ ctrl.selected.description }}</p>
   </div>
 </div>

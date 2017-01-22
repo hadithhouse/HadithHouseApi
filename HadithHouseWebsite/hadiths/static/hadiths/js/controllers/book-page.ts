@@ -33,6 +33,7 @@ module HadithHouse.Controllers {
 
   export class BookPageCtrl extends EntityPageCtrl<Book> {
     private BookResource:Resources.CacheableResource<Book, number>;
+    private activeTab:number;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
@@ -41,6 +42,7 @@ module HadithHouse.Controllers {
                 BookResource:Resources.CacheableResource<Book, number>) {
       super($scope, $rootScope, $location, $routeParams, BookResource);
       this.BookResource = BookResource;
+      this.activeTab = 1;
     }
 
     protected getEntityPath(id: number) {
