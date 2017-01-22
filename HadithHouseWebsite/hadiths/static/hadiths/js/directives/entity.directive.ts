@@ -92,11 +92,11 @@ module HadithHouse.Directives {
       this.$scope.$watch('ctrl.entityId', this.onIdChanged);
     }
 
-    public onClick(entity: Entity<number>) {
+    public onClick() {
       if (this.clickCallback) {
-        this.clickCallback({entity: entity});
+        this.clickCallback({entity: this.entity});
       } else {
-        this.$location.path(`${this.type}/${entity.id}`);
+        this.$location.path(`${this.type}/${this.entity.id}`);
       }
     }
 
