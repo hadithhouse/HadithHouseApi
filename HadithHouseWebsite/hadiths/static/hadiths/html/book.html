@@ -1,48 +1,48 @@
 <div ng-if="ctrl.error">
   Couldn't load book or the book is not found.
 </div>
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
-  <h1>
+<div class="container" ng-if="!ctrl.error">
+  <h2>
     {{ ctrl.entity.title }}
-    <md-icon class="material-icons"
-             ng-click="ctrl.startEditing()"
-             ng-hide="ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_book">edit
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.cancelEditing()"
-             ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
-             ng-if="ctrl.$rootScope.user.permissions.change_book">cancel
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.finishEditing()"
-             ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_book">save
-    </md-icon>
-  </h1>
+    <button class="btn btn-secondary btn-sm fa fa-pencil" aria-hidden="true"
+            ng-click="ctrl.startEditing()"
+            ng-hide="ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <div layout layout-sm="column">
-  <md-input-container flex>
-    <label>Title</label>
-    <input ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
-  </md-input-container>
-  </div>
+    <button class="btn btn-secondary btn-sm fa fa-times" aria-hidden="true"
+            ng-click="ctrl.cancelEditing()"
+            ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <div layout layout-sm="column">
-  <md-input-container flex>
-    <label>Brief Description</label>
-    <textarea ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing"></textarea>
-  </md-input-container>
-  </div>
-
-  <div layout layout-sm="column">
-  <md-input-container flex>
-    <label>Publication Year</label>
-    <input ng-model="ctrl.entity.pub_year" ng-disabled="!ctrl.isEditing"/>
-  </md-input-container>
-  </div>
-</md-content>
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
+    <button class="btn btn-secondary btn-sm fa fa-floppy-o" aria-hidden="true"
+            ng-click="ctrl.finishEditing()"
+            ng-hide="!ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
+  </h2>
+  <form>
+    <div class="row">
+      <div class="form-group col-sm-6">
+        <label for="title">Title</label>
+        <input id="title" type="text" class="form-control" ng-model="ctrl.entity.title" ng-disabled="!ctrl.isEditing"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <label for="brief_desc">Brief Description</label>
+        <textarea id="brief_desc" class="form-control" ng-model="ctrl.entity.brief_desc" ng-disabled="!ctrl.isEditing">
+        </textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-sm-3">
+        <label for="pub_year">Publication Year</label>
+        <input id="pub_year" type="number" class="form-control" ng-model="ctrl.entity.pub_year"
+               ng-disabled="!ctrl.isEditing"/>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="container" ng-if="!ctrl.error">
   <hh-hadith-listing book-id="ctrl.entity.id"></hh-hadith-listing>
-</md-content>
+</div>
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>
