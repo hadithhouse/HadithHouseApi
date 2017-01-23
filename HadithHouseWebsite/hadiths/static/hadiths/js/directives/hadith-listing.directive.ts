@@ -51,6 +51,16 @@ module HadithHouse.Directives {
       return res;
     }
 
+    public pageRange():number[] {
+      let res:number[] = [];
+      let start = Math.max(this.page - 3, 0);
+      let end = Math.min(start + 4, this.getPageCount() - 1);
+      for (let i = start; i <= end; i++) {
+        res.push(i + 1);
+      }
+      return res;
+    }
+
     public getPageCount() {
       if (this.pagedEntities) {
         return Math.ceil(this.pagedEntities.count / this.pageSize);

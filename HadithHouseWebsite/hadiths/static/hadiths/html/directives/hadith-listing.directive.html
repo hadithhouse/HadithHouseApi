@@ -1,36 +1,37 @@
-<div>
-  <md-content class="md-whiteframe-z1" layout="column" flex layout-fill>
-    <md-list>
-      <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
-        <div style="width: 100%;">
-          <md-icon class="material-icons"
-                   ng-click="ctrl.deleteEntity($event, entity)"
-                   ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
-          </md-icon>
-          <span>
-        <a ng-href="#/hadith/{{ entity.id }}">
-        {{ entity.text | limitTo:500 }}
-        </a>
-        </span>
-          <span>
-          <hh-selector ids="entity.tags"
-                       click-callback="ctrl.onHadithTagClicked(entity)"
-                       type="hadithtag"
-                       read-only="true"
-                       single-select="false"
-                       text-only="false"
-                       clickable="true"></hh-selector>
-        </span>
-        </div>
-        <md-divider ng-if="!$last"></md-divider>
-      </md-list-item>
-    </md-list>
-  </md-content>
-  <md-input-container ng-if="ctrl.getPageCount() > 1">
-    <label>Page</label>
-    <md-select ng-model="ctrl.page">
-      <md-option ng-value="i"
-                 ng-repeat="i in ctrl.range(ctrl.getPageCount())">{{ i }}/{{ ctrl.getPageCount()}}</md-option>
-    </md-select>
-  </md-input-container>
+<div class="container">
+  <div ng-repeat="entity in ctrl.pagedEntities.results">
+    <button type="button"
+            class="btn btn-danger btn-sm"
+            ng-click="ctrl.deleteEntity($event, entity)"
+            ng-if="ctrl.$rootScope.user.permissions.delete_hadith">
+      X
+    </button>
+    <a ng-href="/hadith/{{ entity.id }}">
+      {{ entity.text | limitTo:500 }}
+    </a>
+
+    <span ng-repeat="tagId in entity.tags">
+        <hh-entity entity-id="{{ tagId }}" type="hadithtag" mode="clickable-badge"></hh-entity>
+      </span>
+
+    <hr/>
+  </div>
+  <nav aria-label="Page navigation" ng-if="ctrl.getPageCount() > 1">
+    <ul class="pagination">
+      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+      <li class="page-item" ng-class="ctrl.page == i ? 'active' : ''" ng-repeat="i in ctrl.pageRange()">
+        <a class="page-link" href="#" ng-click="ctrl.page = i">{{ i }}</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">Next</a></li>
+    </ul>
+  </nav>
+  <!--
+    <md-input-container ng-if="ctrl.getPageCount() > 1">
+      <label>Page</label>
+      <md-select ng-model="ctrl.page">
+        <md-option ng-value="i"
+                   ng-repeat="i in ctrl.range(ctrl.getPageCount())">{{ i }}/{{ ctrl.getPageCount()}}</md-option>
+      </md-select>
+    </md-input-container>
+    -->
 </div>
