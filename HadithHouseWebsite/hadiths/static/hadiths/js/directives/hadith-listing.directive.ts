@@ -41,6 +41,7 @@ module HadithHouse.Directives {
     constructor(private $scope: IScope,
                 private HadithResource: CacheableResource<Hadith, number|string>) {
       $scope.$watch('ctrl.bookId', this.onBookIdChanged);
+      $scope.$watch('ctrl.page', this.onPageChanged);
     }
 
     public range(n:number):number[] {
@@ -101,6 +102,13 @@ module HadithHouse.Directives {
         });
       });*/
     };
+
+    private onPageChanged = (newPage:number, oldPage:number) => {
+      if (!newPage) {
+        return;
+      }
+      this.loadEntities();
+    }
 
     private onBookIdChanged = (newId:number, oldId:number) => {
       if (!newId) {
