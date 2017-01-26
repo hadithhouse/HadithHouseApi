@@ -37,7 +37,7 @@
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   private HadithResource:Resources.CacheableResource<Hadith, number|string>) {
-        super($scope, $rootScope, $timeout, $location, HadithResource);
+        super($scope, $rootScope, $timeout, $location, HadithResource, 'hadith');
 
         $scope.$watch(() => this.tagsFilter, (newValue, oldValue) => {
           this.loadEntities();

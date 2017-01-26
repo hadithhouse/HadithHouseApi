@@ -1,12 +1,10 @@
-<!--
 <div ng-include="'/static/hadiths/html/entity-listing-header.html'"></div>
--->
 
 <div ng-repeat="entity in ctrl.pagedEntities.results">
   <button type="button"
           class="btn btn-danger btn-sm"
           ng-click="ctrl.deleteEntity($event, entity)"
-          ng-if="ctrl.$rootScope.user.permissions.delete_hadithtag">
+          ng-if="ctrl.userHasDeletePermission()">
     X
   </button>
   <a ng-href="/hadithtag/{{ entity.id }}">
@@ -15,12 +13,4 @@
   <hr/>
 </div>
 
-<div>
-  <a class="btn btn-primary" ng-href="/hadithtag/new" ng-if="ctrl.$rootScope.user.permissions.add_hadithtag">
-    Add
-  </a>
-</div>
-
-<!--
 <div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>
--->

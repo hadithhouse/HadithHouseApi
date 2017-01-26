@@ -18,20 +18,15 @@
   </div>
   <nav aria-label="Page navigation" ng-if="ctrl.getPageCount() > 1">
     <ul class="pagination">
-      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-      <li class="page-item" ng-class="ctrl.page == i ? 'active' : ''" ng-repeat="i in ctrl.pageRange()">
-        <a class="page-link" href="#" ng-click="ctrl.page = i">{{ i }}</a>
+      <li class="page-item" ng-class="ctrl.isFirstPage() ? 'disabled' : ''">
+        <a class="page-link" href="#" ng-click="ctrl.setPage(ctrl.page - 1)">Previous</a>
       </li>
-      <li class="page-item"><a class="page-link" href="#">Next</a></li>
+      <li class="page-item" ng-class="ctrl.page === i ? 'active' : ''" ng-repeat="i in ctrl.pageRange()">
+        <a class="page-link" href="#" ng-click="ctrl.setPage(i)">{{ i }}</a>
+      </li>
+      <li class="page-item" ng-class="ctrl.isLastPage() ? 'disabled' : ''">
+        <a class="page-link" href="#" ng-click="ctrl.setPage(ctrl.page - 1)">Next</a>
+      </li>
     </ul>
   </nav>
-  <!--
-    <md-input-container ng-if="ctrl.getPageCount() > 1">
-      <label>Page</label>
-      <md-select ng-model="ctrl.page">
-        <md-option ng-value="i"
-                   ng-repeat="i in ctrl.range(ctrl.getPageCount())">{{ i }}/{{ ctrl.getPageCount()}}</md-option>
-      </md-select>
-    </md-input-container>
-    -->
 </div>

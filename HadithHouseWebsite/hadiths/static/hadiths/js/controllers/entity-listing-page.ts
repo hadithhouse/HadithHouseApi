@@ -42,11 +42,13 @@ module HadithHouse.Controllers {
     public page:number = 1;
     public pageSize:number = 10;
 
+
     constructor(protected $scope:ng.IScope,
-                protected $rootScope:ng.IScope,
+                protected $rootScope:any, // TODO: Avoid using type 'any'.
                 protected $timeout:ng.ITimeoutService,
                 protected $location:ng.ILocationService,
-                protected EntityResource:Resources.CacheableResource<TEntity, number|string>) {
+                protected EntityResource:Resources.CacheableResource<TEntity, number|string>,
+                protected type:string) {
       this.readUrlParams();
       this.loadEntities();
 
@@ -138,9 +140,25 @@ module HadithHouse.Controllers {
       });*/
     };
 
-    public range(n:number):number[] {
-      let res:number[] = [];
-      for (let i = 0; i < n; i++) {
+    public userHasAddPermission():boolean {
+      if (this.$rootScope.user) {
+        return this.$rootScope.user.permissions['add_' + this.type];
+      }
+      return false;
+    }
+
+    public userHasDeletePermission():boolean {
+      if (this.$rootScope.user) {
+        return this.$rootScope.user.permissions['delete_' + this.type];
+      }
+      return false;
+    }
+
+    public pageRange(): number[] {
+      let res: number[] = [];
+      let start = Math.max(this.page - 3, 0);
+      let end = Math.min(start + 4, this.getPageCount() - 1);
+      for (let i = start; i <= end; i++) {
         res.push(i + 1);
       }
       return res;
@@ -153,8 +171,22 @@ module HadithHouse.Controllers {
       return 0;
     }
 
-    public setPage(index:number) {
-      this.page = index;
+    public setPage(page: number) {
+      this.page = page;
+      if (this.page < 1) {
+        this.page = 1;
+      }
+      if (this.page > this.getPageCount()) {
+        this.page = this.getPageCount();
+      }
+    }
+
+    public isFirstPage(): boolean {
+      return this.page <= 1;
+    }
+
+    public isLastPage(): boolean {
+      return this.page >= this.getPageCount();
     }
   }
 }

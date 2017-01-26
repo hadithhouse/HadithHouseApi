@@ -36,7 +36,7 @@
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   private HadithTagResource:Resources.CacheableResource<HadithTag, number>) {
-        super($scope, $rootScope, $timeout, $location, HadithTagResource);
+        super($scope, $rootScope, $timeout, $location, HadithTagResource, 'hadithtag');
       }
     }
 

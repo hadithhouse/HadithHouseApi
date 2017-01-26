@@ -36,7 +36,7 @@
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   private BookResource:Resources.CacheableResource<Book, number>) {
-        super($scope, $rootScope, $timeout, $location, BookResource);
+        super($scope, $rootScope, $timeout, $location, BookResource, 'book');
       }
     }
 

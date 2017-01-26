@@ -36,7 +36,7 @@
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
                   private PersonResource:Resources.CacheableResource<Person, number>) {
-        super($scope, $rootScope, $timeout, $location, PersonResource);
+        super($scope, $rootScope, $timeout, $location, PersonResource, 'person');
       }
     }
 
