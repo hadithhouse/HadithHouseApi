@@ -5,7 +5,7 @@
     <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
         <md-icon class="material-icons"
-                 ng-click="ctrl.deleteEntity($event, entity)"
+                 ng-click="ctrl.showDeleteDialog(entity)"
                  ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
         </md-icon>
         <span>

@@ -3,7 +3,7 @@
 <div ng-repeat="entity in ctrl.pagedEntities.results">
   <button type="button"
           class="btn btn-danger btn-sm"
-          ng-click="ctrl.deleteEntity($event, entity)"
+          ng-click="ctrl.showDeleteDialog(entity)"
           ng-if="ctrl.userHasDeletePermission()">
     X
   </button>

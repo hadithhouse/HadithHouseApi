@@ -41,6 +41,7 @@ module HadithHouse.Controllers {
     public searchPromise:IPromise<void> = null;
     public page:number = 1;
     public pageSize:number = 10;
+    public entityToDelete:TEntity;
 
 
     constructor(protected $scope:ng.IScope,
@@ -113,32 +114,29 @@ module HadithHouse.Controllers {
       this.updateUrlParams();
     }
 
-    public deleteEntity = (event:any, entity:TEntity) => {
-      toastr.warning('Not implemented yet!');
-      // FIXME: Use Bootstrap dialog.
-      /*let confirm = this.$mdDialog.confirm()
-        .title('Confirm')
-        .textContent('Are you sure you want to delete the entity?')
-        .ok('Yes')
-        .cancel('No')
-        .targetEvent(event);
-      this.$mdDialog.show(confirm).then(() => {
-        entity.delete().then(() => {
-          this.ToastService.show('Successfully deleted');
-          this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
-            return e.id !== entity.id;
-          });
-        }, (result) => {
-          if (result.data && result.data.detail) {
-            this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
-          } else if (result.data) {
-            this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
-          } else {
-            this.ToastService.show('Failed to delete entity. Please try again!');
-          }
-        });
-      });*/
+    public showDeleteDialog = (entity:TEntity) => {
+      this.entityToDelete = entity;
+      $('#deleteConfirmDialog').modal('show');
     };
+
+    public deleteEntity = () => {
+      $('#deleteConfirmDialog').modal('hide');
+      this.entityToDelete.delete().then(() => {
+        toastr.success('Entity deleted');
+        this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
+          return e.id !== this.entityToDelete.id;
+        });
+        this.entityToDelete = null;
+      }, (result) => {
+        if (result.data && result.data.detail) {
+          toastr.error('Failed to delete entity. Error was: ' + result.data.detail);
+        } else if (result.data) {
+          toastr.error('Failed to delete entity. Error was: ' + result.data);
+        } else {
+          toastr.error('Failed to delete entity. Please try again!');
+        }
+      });
+    }
 
     public userHasAddPermission():boolean {
       if (this.$rootScope.user) {

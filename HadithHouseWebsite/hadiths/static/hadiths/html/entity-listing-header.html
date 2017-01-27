@@ -8,7 +8,7 @@
 </form>
 
 <div class="btn-toolbar mb-5" role="toolbar" aria-label="Page navigation and entity creation">
-  <div class="btn-group mr-auto" role="group" aria-label="Page navigation" ng-if="ctrl.getPageCount() >
+  <div class="btn-group mr-auto" role="group" aria-label="Page navigation" ng-if="ctrl.getPageCount() > 0">
     <button type="button"
             class="btn btn-secondary"
             ng-class="ctrl.isFirstPage() ? 'disabled' : ''"
@@ -30,5 +30,26 @@
     <a class="btn btn-primary ml-auto" ng-href="/{{ ctrl.type }}/new" ng-if="ctrl.userHasAddPermission()">
       Add
     </a>
+  </div>
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<div class="modal fade" id="deleteConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmDialogLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmDialogLabel">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the entity? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" ng-click="ctrl.deleteEntity()">Yes</button>
+      </div>
+    </div>
   </div>
 </div>
