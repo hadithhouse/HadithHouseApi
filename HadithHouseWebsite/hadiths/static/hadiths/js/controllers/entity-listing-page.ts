@@ -24,6 +24,7 @@
 
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/bootstrap/bootstrap.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../resources/resources.ts" />

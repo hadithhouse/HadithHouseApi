@@ -24,12 +24,14 @@
 
 /// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../TypeScriptDefs/angularjs/angular-route.d.ts" />
-/// <reference path="../../../../TypeScriptDefs/toastr/toastr.d.ts" />
 /// <reference path="../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 
 declare function getHtmlBasePath(): String;
 declare let fbFetchedLoginStatus: boolean;
 declare let fbAccessToken: String;
+// TODO: Reference toastr`s TypeScrpt definition and use `import` keyword:
+// https://github.com/hadithhouse/hadithhouse/issues/268
+declare let toastr: any;
 
 module HadithHouse {
   export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
