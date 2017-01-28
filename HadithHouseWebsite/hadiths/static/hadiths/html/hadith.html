@@ -1,43 +1,69 @@
 <div ng-if="ctrl.error">
   Couldn't load hadith or the hadith is not found. Error was: {{ ctrl.error }}
 </div>
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
-  <h1>
+
+
+<div class="container" ng-if="!ctrl.error">
+  <h2>
     Hadith {{ ctrl.entity.id }}
-    <md-icon class="material-icons"
-             ng-click="ctrl.startEditing()"
-             ng-hide="ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_hadith">edit
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.cancelEditing()"
-             ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
-             ng-if="ctrl.$rootScope.user.permissions.change_hadith">cancel
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.finishEditing()"
-             ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_hadith">save
-    </md-icon>
-  </h1>
+    <button class="btn btn-secondary btn-sm fa fa-pencil" aria-hidden="true"
+            ng-click="ctrl.startEditing()"
+            ng-hide="ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <label>Text</label>
-  <md-input-container>
-    <input aria-label="Hadith Text" ng-model="ctrl.entity.text" ng-disabled="!ctrl.isEditing"/>
-  </md-input-container>
+    <button class="btn btn-secondary btn-sm fa fa-times" aria-hidden="true"
+            ng-click="ctrl.cancelEditing()"
+            ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <label>Person</label>
-  <hh-selector ids="ctrl.entity.person" type="person" read-only="!ctrl.isEditing"
-               single-select="true" clickable="true"></hh-selector>
+    <button class="btn btn-secondary btn-sm fa fa-floppy-o" aria-hidden="true"
+            ng-click="ctrl.finishEditing()"
+            ng-hide="!ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
+  </h2>
 
-  <label>Book</label>
-  <hh-selector ids="ctrl.entity.book" type="book" read-only="!ctrl.isEditing"
-               single-select="true" clickable="true"></hh-selector>
+  <form>
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <label for="text">Text</label>
+        <textarea id="text" class="form-control" ng-model="ctrl.entity.text" ng-disabled="!ctrl.isEditing">
+        </textarea>
+      </div>
+    </div>
 
-  <label>Tags</label>
-  <hh-selector ids="ctrl.entity.tags" type="hadithtag" read-only="!ctrl.isEditing"
-               adding-entities-enabled="true" clickable="true"></hh-selector>
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <label>Person</label>
+        <div>
+            <hh-entity entity-id="{{ ctrl.entity.person }}" type="person" mode="clickable-badge"></hh-entity>
+        </div>
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <label>Book</label>
+        <div>
+          <hh-entity entity-id="{{ ctrl.entity.book }}" type="book" mode="clickable-badge"></hh-entity>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <label>Tags</label>
+        <div ng-repeat="tagId in ctrl.entity.tags">
+          <hh-entity entity-id="{{ tagId }}" type="hadithtag" mode="clickable-badge"></hh-entity>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!--
+FIXME: Use Bootstrap for chains.
+<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
   <label>
     Chains
     <md-icon class="material-icons"
@@ -82,4 +108,5 @@
 
   </hh-tree>
 </md-content>
+-->
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>

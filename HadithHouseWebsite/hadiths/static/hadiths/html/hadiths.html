@@ -5,7 +5,7 @@
     <md-list-item ng-repeat="entity in ctrl.pagedEntities.results">
       <div style="width: 100%;">
         <md-icon class="material-icons"
-                 ng-click="ctrl.deleteEntity($event, entity)"
+                 ng-click="ctrl.showDeleteDialog(entity)"
                  ng-if="ctrl.$rootScope.user.permissions.delete_hadith">close
         </md-icon>
         <span>
@@ -27,12 +27,4 @@
     </md-list-item>
   </md-list>
 </md-content>
-<div layout="row">
-  <span flex></span>
-  <md-button class="md-fab md-mini"
-             ng-href="#/hadith/new"
-             ng-if="ctrl.$rootScope.user.permissions.add_hadith">
-    <md-icon class="material-icons">add</md-icon>
-  </md-button>
-</div>
 <div ng-include="'/static/hadiths/html/entity-listing-footer.html'"></div>

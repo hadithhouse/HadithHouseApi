@@ -1,46 +1,37 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html dir="ltr">
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
-  <!-- TODO: Is it OK to keep Google Site verification meta-data? -->
-  <meta name="google-site-verification" content="GrYjmJUBaIei8LmgWjl-YTJNa-vdtr0rcDGBI58mN2U"/>
+  <meta name="author" content="">
 
   <title>Hadith House</title>
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 
-  <!-- jQuery-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- Toastr -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
-  <!-- Angular -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-aria.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-resource.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.js"></script>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.css">
-  <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
-
-  <!-- Lo-Dash -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.6/lodash.min.js"></script>
-
-  <!-- MomentJS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
-
-  <!-- D3.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 
 
+  <style>
+    body {
+      padding-top: 2rem;
+    }
+
+    a, button {
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body layout="column" ng-controller="HadithHouseCtrl as ctrl">
+
+<body ng-controller="HadithHouseCtrl as ctrl">
 
 <!-- Facebook Authentication -->
 <script>
@@ -88,82 +79,125 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<md-toolbar layout="row">
-  <div class="md-toolbar-tools">
-    <md-button aria-label="Menu" ng-click="ctrl.toggleSideNav('left')" hide-gt-sm class="md-icon-button">
-      <!-- TODO: Use an icon from Angular Material rather than the hardcoded link. -->
-      <md-icon aria-label="Menu"></md-icon>
-    </md-button>
-    <h1><a ng-href="#/" style="text-decoration: none; color: white;">Hadith House</a></h1>
 
-    <span flex></span>
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+          data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Hadith House</a>
 
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-      <input type="hidden" name="cmd" value="_s-xclick">
-      <input type="hidden" name="hosted_button_id" value="US33JTX5B3478">
-      <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0"
-             name="submit" alt="PayPal - The safer, easier way to pay online.">
-      <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      {% verbatim %}
+      <li class="nav-item" ng-class="ctrl.selected == item ? 'active': ''" ng-repeat="item in ctrl.menuItems">
+        <a class="nav-link" ng-click="ctrl.selectMenuItem(item)">{{ item.name }}</a>
+      </li>
+      {% endverbatim %}
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" ng-click="ctrl.search()">Search</button>
     </form>
-
-    <span flex></span>
-
-    <md-button ng-if="fetchedLoginStatus && fbUser === null"
-               ng-click="ctrl.fbLogin()">
-      Login with Facebook
-    </md-button>
-
-    {% verbatim %}
-    <div ng-if="fetchedLoginStatus && fbUser !== null">
-      <md-menu>
-        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="User Menu">
+    <ul class="navbar-nav">
+      {% verbatim %}
+      <li class="nav-item" ng-if="fetchedLoginStatus && fbUser === null">
+        <a class="nav-link" href="#" ng-click="ctrl.fbLogin()">Login with Facebook</a>
+      </li>
+      <li class="nav-item dropdown" ng-if="fetchedLoginStatus && fbUser !== null">
+        <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
           <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}"
-               style="position: relative; left: -10px; top: -10px;"/>
-        </md-button>
+               class="rounded-circle" style="width: 32px; height: 32px;"/>
+        </a>
 
-        <md-menu-content width="4">
-          <md-menu-item>
-            <md-button ng-href="{{ fbUser.link }}">Facebook Profile</md-button>
-          </md-menu-item>
-          <md-menu-item>
-            <md-button ng-click="ctrl.fbLogout()">Logout</md-button>
-          </md-menu-item>
-        </md-menu-content>
-      </md-menu>
-    </div>
-    {% endverbatim %}
+        <div class="dropdown-menu" aria-labelledby="dropdown01" style="left: -100px;">
+          <a class="dropdown-item" ng-href="{{ fbUser.link }}">Facebook Profile</a>
+          <a class="dropdown-item" ng-click="ctrl.fbLogout()">Logout</a>
+        </div>
+      </li>
+      {% endverbatim %}
+    </ul>
   </div>
-</md-toolbar>
+</nav>
 
 {% verbatim %}
-<div layout="row" flex>
-  <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
-              md-component-id="left"
-              md-is-locked-open="$mdMedia('gt-sm')">
-
-    <md-list>
-      <md-list-item ng-repeat="item in ctrl.menuItems">
-        <md-button ng-click="ctrl.selectMenuItem(item)" ng-class="{'selected' : item === ctrl.selected }">
-          {{ item.name }}
-        </md-button>
-      </md-list-item>
-    </md-list>
-
-  </md-sidenav>
-
-
-  <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
-    <md-content flex layout="column" id="content">
-      <div layout="column" style="height: 10px;">
-        <md-progress-linear md-mode="indeterminate" ng-show="pendingRequests > 0"></md-progress-linear>
-      </div>
-      <md-content flex layout="column" ng-view></md-content>
-    </md-content>
+<div class="jumbotron" ng-if="ctrl.selected" style="padding: 3rem 1rem 1rem 1rem;">
+  <div class="container">
+    <h3 class="display-4" style="float: right;">
+      <i class="fa fa-spin fa-refresh" aria-hidden="true" ng-show="pendingRequests > 0"></i>
+    </h3>
+    <h3 class="display-4">
+      {{ ctrl.selected.name }}
+    </h3>
+    <p ng-if="ctrl.selected.description">{{ ctrl.selected.description }}</p>
   </div>
 </div>
-
 {% endverbatim %}
 
+<div class="container" ng-view>
+</div>
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<!-- Tether -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+
+<!-- Angular -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-animate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-aria.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-resource.min.js"></script>
+
+<!-- Lo-Dash -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.6/lodash.min.js"></script>
+
+<!-- MomentJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<!-- D3.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script>
+  /*!
+   * IE10 viewport hack for Surface/desktop Windows 8 bug
+   * Copyright 2014-2017 The Bootstrap Authors
+   * Copyright 2014-2017 Twitter, Inc.
+   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+   */
+
+  // See the Getting Started docs for more information:
+  // https://getbootstrap.com/getting-started/#support-ie10-width
+
+  (function () {
+    'use strict';
+
+    if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+      var msViewportStyle = document.createElement('style');
+      msViewportStyle.appendChild(
+        document.createTextNode(
+          '@-ms-viewport{width:auto!important}'
+        )
+      );
+      document.head.appendChild(msViewportStyle)
+    }
+
+  }())
+</script>
+
+<!--suppress JSUnusedLocalSymbols -->
 <script>
   function getHtmlBasePath() {
     return '{% static 'hadiths/html' %}/';
@@ -185,7 +219,6 @@
   <!-- Services -->
   <script src="{% static 'hadiths/js/services/facebook.service.js' %}"></script>
   <script src="{% static 'hadiths/js/services/services.js' %}"></script>
-  <script src="{% static 'hadiths/js/services/toast.service.js' %}"></script>
   <script src="{% static 'hadiths/js/caching/cache.js' %}"></script>
   <script src="{% static 'hadiths/js/resources/resources.js' %}"></script>
 
@@ -205,10 +238,10 @@
   <script src="{% static 'hadiths/js/controllers/user-listing-page.js' %}"></script>
 
   <!-- Directives -->
+  <script src="{% static 'hadiths/js/directives/entity.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/selector.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/hadith-listing.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/tree.directive.js' %}"></script>
 {% endif %}
-
 </body>
 </html>

@@ -33,15 +33,16 @@ module HadithHouse.Controllers {
 
   export class BookPageCtrl extends EntityPageCtrl<Book> {
     private BookResource:Resources.CacheableResource<Book, number>;
+    private activeTab:number;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                BookResource:Resources.CacheableResource<Book, number>,
-                ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+                BookResource:Resources.CacheableResource<Book, number>) {
+      super($scope, $rootScope, $location, $routeParams, BookResource);
       this.BookResource = BookResource;
+      this.activeTab = 1;
     }
 
     protected getEntityPath(id: number) {
@@ -50,8 +51,8 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('BookPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, BookResource, ToastService) {
-      let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, BookResource) {
+      let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
       ctrl.initialize();
       return ctrl;
     });

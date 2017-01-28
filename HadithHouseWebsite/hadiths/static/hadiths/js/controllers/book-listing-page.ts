@@ -35,16 +35,14 @@
                   $rootScope:ng.IScope,
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
-                  $mdDialog:ng.material.IDialogService,
-                  private BookResource:Resources.CacheableResource<Book, number>,
-                  ToastService:any) {
-        super($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
+                  private BookResource:Resources.CacheableResource<Book, number>) {
+        super($scope, $rootScope, $timeout, $location, BookResource, 'book');
       }
     }
 
     HadithHouse.HadithHouseApp.controller('BookListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService) {
-        return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, BookResource, ToastService);
+      function ($scope, $rootScope, $timeout, $location, BookResource) {
+        return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
       });
   }
 

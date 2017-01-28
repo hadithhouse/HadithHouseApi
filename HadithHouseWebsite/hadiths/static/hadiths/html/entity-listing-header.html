@@ -1,4 +1,55 @@
-<md-input-container>
-  <label>Search</label>
-  <input ng-model="ctrl.searchQuery">
-</md-input-container>
+<form>
+  <div class="row">
+    <div class="form-group col-sm-12">
+      <input id="title" type="text" class="form-control" placeholder="Enter filter keyword"
+             ng-model="ctrl.searchQuery"/>
+    </div>
+  </div>
+</form>
+
+<div class="btn-toolbar mb-5" role="toolbar" aria-label="Page navigation and entity creation">
+  <div class="btn-group mr-auto" role="group" aria-label="Page navigation" ng-if="ctrl.getPageCount() > 0">
+    <button type="button"
+            class="btn btn-secondary"
+            ng-class="ctrl.isFirstPage() ? 'disabled' : ''"
+            ng-click="ctrl.setPage(ctrl.page - 1)">Previous
+    </button>
+    <button type="button"
+            class="btn btn-secondary"
+            ng-repeat="i in ctrl.pageRange()"
+            ng-class="i == ctrl.page ? 'active' : ''"
+            ng-click="ctrl.setPage(i)">{{ i }}
+    </button>
+    <button type="button"
+            class="btn btn-secondary"
+            ng-class="ctrl.isLastPage() ? 'disabled' : ''"
+            ng-click="ctrl.setPage(ctrl.page + 1)">Previous
+    </button>
+  </div>
+  <div class="btn-group" role="group" aria-label="Entity creation">
+    <a class="btn btn-primary ml-auto" ng-href="/{{ ctrl.type }}/new" ng-if="ctrl.userHasAddPermission()">
+      Add
+    </a>
+  </div>
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<div class="modal fade" id="deleteConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmDialogLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmDialogLabel">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the entity? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" ng-click="ctrl.deleteEntity()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -32,15 +32,17 @@ module HadithHouse.Controllers {
   import User = HadithHouse.Resources.User;
 
   export class UserPageCtrl extends EntityPageCtrl<User> {
-    UserResource:Resources.CacheableResource<User, number>;
+    private UserResource:Resources.CacheableResource<User, number>;
+    private permissions:{};
+    private permissionGroups:String[];
+    private permissionsNameMap:{};
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                UserResource:Resources.CacheableResource<User, number>,
-                ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+                UserResource:Resources.CacheableResource<User, number>) {
+      super($scope, $rootScope, $location, $routeParams, UserResource);
       this.UserResource = UserResource;
     }
 
@@ -51,14 +53,44 @@ module HadithHouse.Controllers {
     protected onEntityLoaded() {
       this.entity.permissionsOrdered = _.sortBy<string>(this.entity.permissions, (a) => {
         let parts = a.split('_');
-        return `${parts[1]}_${parts[0]}`
+        return `${parts[1]}_${parts[0]}`;
       });
+
+      let permissions = {};
+      let permissionGroups:String[] = [];
+      _.each(this.entity.permissions, (a) => {
+        let parts = a.split('_');
+        let group = parts[1];
+        let type = parts[0];
+        if (!permissions[group]) {
+          permissions[group] = [];
+          permissionGroups.push(group);
+        }
+        permissions[group].push(type);
+      });
+      _.each(permissions, (value, key) => {
+        permissions[key] = _.sortBy<String>(permissions[key]);
+      });
+      this.permissions = permissions;
+      this.permissionGroups = _.sortBy<String>(permissionGroups, p => p);
+      this.permissionsNameMap = {
+        'book': 'Book',
+        'bookchapter': 'Book Chapter',
+        'bookvolume': 'Book Volume',
+        'booksection': 'Book Section',
+        'chain': 'Chain',
+        'chainpersonrel': 'Chain-Person Relation',
+        'hadith': 'Hadith',
+        'hadithtag': 'Hadith Tag',
+        'hadithtagrel': 'Hadith-Tag Relation',
+        'person': 'Person',
+      };
     }
   }
 
   HadithHouse.HadithHouseApp.controller('UserPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, UserResource, ToastService) {
-      let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, UserResource) {
+      let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource);
       ctrl.initialize();
       return ctrl;
     });

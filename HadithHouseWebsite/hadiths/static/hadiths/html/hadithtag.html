@@ -1,31 +1,32 @@
 <div ng-if="ctrl.error">
   Couldn't load tag or the tag is not found.
 </div>
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
-  <h1>
+<div class="container" ng-if="!ctrl.error">
+  <h2>
     {{ ctrl.entity.title }}
-    <md-icon class="material-icons"
-             ng-click="ctrl.startEditing()"
-             ng-hide="ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_hadithtag">edit
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.cancelEditing()"
-             ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
-             ng-if="ctrl.$rootScope.user.permissions.change_hadithtag">cancel
-    </md-icon>
-    <md-icon class="material-icons"
-             ng-click="ctrl.finishEditing()"
-             ng-hide="!ctrl.isEditing"
-             ng-if="ctrl.$rootScope.user.permissions.change_hadithtag">save
-    </md-icon>
-  </h1>
+    <button class="btn btn-secondary btn-sm fa fa-pencil" aria-hidden="true"
+            ng-click="ctrl.startEditing()"
+            ng-hide="ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
 
-  <div layout layout-sm="column">
-    <md-input-container flex>
-      <label>Name</label>
-      <input ng-model="ctrl.entity.name" ng-disabled="!ctrl.isEditing"/>
-    </md-input-container>
-  </div>
-</md-content>
+    <button class="btn btn-secondary btn-sm fa fa-times" aria-hidden="true"
+            ng-click="ctrl.cancelEditing()"
+            ng-hide="!ctrl.isEditing || ctrl.isAddingNew"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
+
+    <button class="btn btn-secondary btn-sm fa fa-floppy-o" aria-hidden="true"
+            ng-click="ctrl.finishEditing()"
+            ng-hide="!ctrl.isEditing"
+            ng-if="ctrl.$rootScope.user.permissions.change_person"></button>
+  </h2>
+
+  <form>
+    <div class="row">
+      <div class="form-group col-sm-4">
+        <label for="name">Name</label>
+        <input id="name" type="text" class="form-control" ng-model="ctrl.entity.name" ng-disabled="!ctrl.isEditing" />
+      </div>
+    </div>
+  </form>
+</div>
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>

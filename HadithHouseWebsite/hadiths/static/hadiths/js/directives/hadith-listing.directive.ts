@@ -33,21 +33,22 @@ module HadithHouse.Directives {
   import PagedResults = HadithHouse.Resources.PagedResults;
 
   export class HadithListingCtrl {
-    public pagedEntities:ObjectWithPromise<PagedResults<Hadith>>;
-    public bookId:number;
-    public page:number = 1;
-    public pageSize:number = 10;
+    public pagedEntities: ObjectWithPromise<PagedResults<Hadith>>;
+    public bookId: number;
+    public page: number = 1;
+    public pageSize: number = 10;
 
     constructor(private $scope: IScope,
-                private $mdDialog:ng.material.IDialogService,
-                private HadithResource: CacheableResource<Hadith, number|string>,
-                private ToastService:any) {
+                private HadithResource: CacheableResource<Hadith, number|string>) {
       $scope.$watch('ctrl.bookId', this.onBookIdChanged);
+      $scope.$watch('ctrl.page', this.onPageChanged);
     }
 
-    public range(n:number):number[] {
-      let res:number[] = [];
-      for (let i = 0; i < n; i++) {
+    public pageRange(): number[] {
+      let res: number[] = [];
+      let start = Math.max(this.page - 3, 0);
+      let end = Math.min(start + 4, this.getPageCount() - 1);
+      for (let i = start; i <= end; i++) {
         res.push(i + 1);
       }
       return res;
@@ -60,7 +61,25 @@ module HadithHouse.Directives {
       return 0;
     }
 
-    protected getQueryParams():{} {
+    public setPage(page: number) {
+      this.page = page;
+      if (this.page < 1) {
+        this.page = 1;
+      }
+      if (this.page > this.getPageCount()) {
+        this.page = this.getPageCount();
+      }
+    }
+
+    public isFirstPage(): boolean {
+      return this.page <= 1;
+    }
+
+    public isLastPage(): boolean {
+      return this.page >= this.getPageCount();
+    }
+
+    protected getQueryParams(): {} {
       return {
         book: this.bookId,
         limit: this.pageSize,
@@ -68,32 +87,40 @@ module HadithHouse.Directives {
       };
     }
 
-    public deleteEntity = (event:any, entity:Hadith) => {
-      let confirm = this.$mdDialog.confirm()
-        .title('Confirm')
-        .textContent('Are you sure you want to delete the entity?')
-        .ok('Yes')
-        .cancel('No')
-        .targetEvent(event);
-      this.$mdDialog.show(confirm).then(() => {
-        entity.delete().then(() => {
-          this.ToastService.show('Successfully deleted');
-          this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
-            return e.id !== entity.id;
-          });
-        }, (result) => {
-          if (result.data && result.data.detail) {
-            this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
-          } else if (result.data) {
-            this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
-          } else {
-            this.ToastService.show('Failed to delete entity. Please try again!');
-          }
-        });
-      });
+    public deleteEntity = (event: any, entity: Hadith) => {
+      // FIXME: Use Bootstrap dialog.
+      /*let confirm = this.$mdDialog.confirm()
+       .title('Confirm')
+       .textContent('Are you sure you want to delete the entity?')
+       .ok('Yes')
+       .cancel('No')
+       .targetEvent(event);
+       this.$mdDialog.show(confirm).then(() => {
+       entity.delete().then(() => {
+       this.ToastService.show('Successfully deleted');
+       this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
+       return e.id !== entity.id;
+       });
+       }, (result) => {
+       if (result.data && result.data.detail) {
+       this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
+       } else if (result.data) {
+       this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
+       } else {
+       this.ToastService.show('Failed to delete entity. Please try again!');
+       }
+       });
+       });*/
     };
 
-    private onBookIdChanged = (newId:number, oldId:number) => {
+    private onPageChanged = (newPage: number, oldPage: number) => {
+      if (!newPage) {
+        return;
+      }
+      this.loadEntities();
+    }
+
+    private onBookIdChanged = (newId: number, oldId: number) => {
       if (!newId) {
         // TODO: Empty the pagedEntities variable.
         return;
@@ -108,8 +135,7 @@ module HadithHouse.Directives {
   }
 
 
-  HadithHouseApp.controller('HadithListingCtrl',
-    ['$scope', '$mdDialog', 'HadithResource', 'ToastService', HadithListingCtrl]);
+  HadithHouseApp.controller('HadithListingCtrl', ['$scope', 'HadithResource', HadithListingCtrl]);
 
   // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhHadithListing', function () {

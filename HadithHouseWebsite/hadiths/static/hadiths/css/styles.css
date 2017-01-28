@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid K. Abdullah
+ * Copyright (c) 2017 Rafid K. Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,79 +22,6 @@
  * THE SOFTWARE.
  */
 
-html, body {
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-/* Borrowed from bootstrap. Check: https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css , line 1099 */
-a {
-  color: #337ab7;
-  text-decoration: none;
-}
-a:hover,
-a:focus {
-  color: #23527c;
-  text-decoration: underline;
-}
-a:focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-
-label {
-  display: inline-block;
-  max-width: 100%;
-  margin-bottom: 5px;
-  font-weight: 700;
-}
-
-[role="button"] {
-  cursor: pointer;
-}
-
-/* Content Header */
-md-content h1 {
-  margin: 5px 0 15px 0
-}
-
-/* Side Navigator */
-md-list .md-button {
-  color: inherit;
-  font-weight: 500;
-  text-align: left;
-  width: 100%;
-}
-
-md-list .md-button.selected {
-  color: #03a9f4;
-}
-
-md-sidenav md-list {
-  padding: 0 0 8px 0;
-}
-
-/* Primary content area */
-
-#content {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 5px;
-}
-
-.hh-selector .md-chips {
-  padding: 0;
-  box-shadow: 0 0;
-}
-
-md-input-container {
-  margin: 5px 0;
-}
-
 /* Tree styles */
 .tree_node {
   cursor: pointer;
@@ -114,4 +41,12 @@ md-input-container {
   fill: none;
   stroke: #ccc;
   stroke-width: 1.5px;
+}
+
+.hh-perms-table {
+}
+
+.hh-perms-table td {
+  border: none;
+  padding: 0;
 }

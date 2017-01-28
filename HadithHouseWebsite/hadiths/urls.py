@@ -6,7 +6,6 @@ from hadiths import apiviews
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
-  url(r'^$', views.index, name='index'),
   url(r'^apis/books/?$', apiviews.BookSetView.as_view()),
   url(r'^apis/books/(?P<id>[0-9]+)$', apiviews.BookView.as_view()),
   url(r'^apis/bookvolumes/?$', apiviews.BookVolumeSetView.as_view()),
@@ -25,4 +24,5 @@ urlpatterns = [
   url(r'^apis/chains/(?P<id>[0-9]+)$', apiviews.ChainView.as_view()),
   url(r'^apis/users/?$', apiviews.UserSetView.as_view()),
   url(r'^apis/users/(?P<id>([0-9]+|current))$', apiviews.UserView.as_view()),
+  url(r'^(?P<path>(.*))$', views.index, name='index'),
 ]

@@ -36,10 +36,8 @@
                   $rootScope:ng.IScope,
                   $timeout:ng.ITimeoutService,
                   $location:ng.ILocationService,
-                  $mdDialog:ng.material.IDialogService,
-                  private HadithResource:Resources.CacheableResource<Hadith, number|string>,
-                  ToastService:any) {
-        super($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
+                  private HadithResource:Resources.CacheableResource<Hadith, number|string>) {
+        super($scope, $rootScope, $timeout, $location, HadithResource, 'hadith');
 
         $scope.$watch(() => this.tagsFilter, (newValue, oldValue) => {
           this.loadEntities();
@@ -79,7 +77,7 @@
     }
 
     HadithHouse.HadithHouseApp.controller('HadithListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService) {
-        return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, $mdDialog, HadithResource, ToastService);
+      function ($scope, $rootScope, $timeout, $location, HadithResource) {
+        return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, HadithResource);
       });
   }

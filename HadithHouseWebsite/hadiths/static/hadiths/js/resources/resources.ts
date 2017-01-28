@@ -375,7 +375,10 @@ module HadithHouse.Resources {
     }
 
     public toString():string {
-      return this.display_name || this.full_name;
+      if (this.display_name || this.full_name) {
+        return this.display_name || this.full_name;
+      }
+      return null;
     }
   }
 
@@ -401,7 +404,10 @@ module HadithHouse.Resources {
     }
 
     public toString():string {
-      return this.title;
+      if (this.title) {
+        return this.title;
+      }
+      return null;
     }
   }
 
@@ -423,7 +429,10 @@ module HadithHouse.Resources {
     }
 
     public toString():string {
-      return this.name;
+      if (this.name) {
+        return this.name;
+      }
+      return null;
     }
   }
 
@@ -485,7 +494,14 @@ module HadithHouse.Resources {
     }
 
     public toString():string {
-      return `${this.first_name} ${this.last_name}`;
+      if (this.first_name && this.last_name) {
+        return `${this.first_name} ${this.last_name}`;
+      } else if (this.first_name) {
+        return `${this.first_name}`;
+      } else if (this.last_name) {
+        return `${this.first_name}`;
+      }
+      return null;
     }
   }
 

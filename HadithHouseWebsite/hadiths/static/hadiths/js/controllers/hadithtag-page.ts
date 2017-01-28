@@ -38,9 +38,8 @@ module HadithHouse.Controllers {
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                HadithTagResource:Resources.CacheableResource<HadithTag, number>,
-                ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+                HadithTagResource:Resources.CacheableResource<HadithTag, number>) {
+      super($scope, $rootScope, $location, $routeParams, HadithTagResource);
       this.HadithTagResource = HadithTagResource;
     }
 
@@ -50,8 +49,8 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService) {
-      let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, HadithTagResource) {
+      let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource);
       ctrl.initialize();
       return ctrl;
     });

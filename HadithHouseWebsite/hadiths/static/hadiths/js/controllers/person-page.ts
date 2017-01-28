@@ -38,9 +38,8 @@ module HadithHouse.Controllers {
                 $rootScope:ng.IScope,
                 $location:ng.ILocationService,
                 $routeParams:any,
-                PersonResource:Resources.CacheableResource<Person, number>,
-                ToastService:any) {
-      super($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+                PersonResource:Resources.CacheableResource<Person, number>) {
+      super($scope, $rootScope, $location, $routeParams, PersonResource);
       this.PersonResource = PersonResource;
     }
 
@@ -50,8 +49,8 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('PersonPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, PersonResource, ToastService) {
-      let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource, ToastService);
+    function ($scope, $rootScope, $location, $routeParams, PersonResource) {
+      let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource);
       ctrl.initialize();
       return ctrl;
     });

@@ -1,33 +1,42 @@
 <div ng-if="ctrl.error">
   Couldn't load user or the user is not found.
 </div>
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
-  <h1>
+<div class="container" ng-if="!ctrl.error">
+  <h2>
     {{ ctrl.entity.first_name }} {{ ctrl.entity.last_name }}
-  </h1>
+  </h2>
 
-  <md-input-container>
-    <label>Username</label>
-    <input ng-model="ctrl.entity.username" readonly="!ctrl.isEditing"/>
-  </md-input-container>
+  <table class="table">
+    <tr>
+      <td>Username</td>
+      <td>{{ ctrl.entity.username }}</td>
+    </tr>
+    <tr>
+      <td>Date Joined</td>
+      <td>{{ ctrl.entity.date_joined }}</td>
+    </tr>
+    <tr>
+      <td>Super User</td>
+      <td>{{ ctrl.entity.is_superuser ? 'True' : 'False' }}</td>
+    </tr>
+    <tr>
+      <td>Staff User</td>
+      <td>{{ ctrl.entity.is_staff ? 'True' : 'False' }}</td>
+    </tr>
+    <tr>
+      <td>Permissions</td>
+      <td>
+        <div ng-repeat="group in ctrl.permissionGroups">
+          <div><b>{{ ctrl.permissionsNameMap[group] }}:</b></div>
+          <div>
+              <span ng-repeat="permission in ctrl.permissions[group]">
+                <span class="badge badge-info">{{ permission }}</span>
+                &nbsp;
+              </span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
 
-  <md-input-container>
-    <label>Date joined</label>
-    <input ng-model="ctrl.entity.date_joined" ng-readonly="true"/>
-  </md-input-container>
-
-  <md-input-container flex>
-    <md-checkbox aria-label="Super user" ng-model="ctrl.entity.is_superuser" ng-disabled="true"/>
-    Super user
-  </md-input-container>
-
-  <md-input-container flex>
-    <md-checkbox aria-label="Staff user" ng-model="ctrl.entity.is_staff" ng-disabled="true"/>
-    Staff user
-  </md-input-container>
-
-  <label>Permissions</label>
-  <span>
-    <md-chips ng-model="ctrl.entity.permissionsOrdered" readonly="true"></md-chips>
-  </span>
-</md-content>

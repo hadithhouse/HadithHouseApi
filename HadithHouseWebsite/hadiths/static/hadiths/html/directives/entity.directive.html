@@ -1,0 +1,18 @@
+<span ng-if="ctrl.entity !== null">
+  <span ng-if="ctrl.normalisedMode === 'text'">
+    {{ ctrl.getEntityTitle() }}
+  </span>
+  <a ng-if="ctrl.normalisedMode === 'link'" ng-href="{{ ctrl.getEntityLink() }}" ng-click="ctrl.onClick()">
+    {{ ctrl.getEntityTitle() }}
+  </a>
+  <button class="btn btn-default" ng-if="ctrl.normalisedMode === 'button'" ng-click="ctrl.onClick()">
+    {{ ctrl.getEntityTitle() }}
+  </button>
+  <span class="badge badge-primary" ng-if="ctrl.normalisedMode === 'badge'">
+    {{ ctrl.getEntityTitle() }}
+  </span>
+  <span class="badge badge-primary" style="cursor: pointer;" ng-if="ctrl.normalisedMode === 'clickable-badge'" ng-click="ctrl.onClick()">
+    {{ ctrl.getEntityTitle() }}
+  </span>
+</span>
+

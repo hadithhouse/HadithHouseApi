@@ -24,6 +24,7 @@
 
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/bootstrap/bootstrap.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../resources/resources.ts" />
@@ -41,14 +42,15 @@ module HadithHouse.Controllers {
     public searchPromise:IPromise<void> = null;
     public page:number = 1;
     public pageSize:number = 10;
+    public entityToDelete:TEntity;
+
 
     constructor(protected $scope:ng.IScope,
-                protected $rootScope:ng.IScope,
+                protected $rootScope:any, // TODO: Avoid using type 'any'.
                 protected $timeout:ng.ITimeoutService,
                 protected $location:ng.ILocationService,
-                protected $mdDialog:ng.material.IDialogService,
                 protected EntityResource:Resources.CacheableResource<TEntity, number|string>,
-                protected ToastService:any) {
+                protected type:string) {
       this.readUrlParams();
       this.loadEntities();
 
@@ -113,34 +115,49 @@ module HadithHouse.Controllers {
       this.updateUrlParams();
     }
 
-    public deleteEntity = (event:any, entity:TEntity) => {
-      let confirm = this.$mdDialog.confirm()
-        .title('Confirm')
-        .textContent('Are you sure you want to delete the entity?')
-        .ok('Yes')
-        .cancel('No')
-        .targetEvent(event);
-      this.$mdDialog.show(confirm).then(() => {
-        entity.delete().then(() => {
-          this.ToastService.show('Successfully deleted');
-          this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
-            return e.id !== entity.id;
-          });
-        }, (result) => {
-          if (result.data && result.data.detail) {
-            this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
-          } else if (result.data) {
-            this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
-          } else {
-            this.ToastService.show('Failed to delete entity. Please try again!');
-          }
-        });
-      });
+    public showDeleteDialog = (entity:TEntity) => {
+      this.entityToDelete = entity;
+      $('#deleteConfirmDialog').modal('show');
     };
 
-    public range(n:number):number[] {
-      let res:number[] = [];
-      for (let i = 0; i < n; i++) {
+    public deleteEntity = () => {
+      $('#deleteConfirmDialog').modal('hide');
+      this.entityToDelete.delete().then(() => {
+        toastr.success('Entity deleted');
+        this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
+          return e.id !== this.entityToDelete.id;
+        });
+        this.entityToDelete = null;
+      }, (result) => {
+        if (result.data && result.data.detail) {
+          toastr.error('Failed to delete entity. Error was: ' + result.data.detail);
+        } else if (result.data) {
+          toastr.error('Failed to delete entity. Error was: ' + result.data);
+        } else {
+          toastr.error('Failed to delete entity. Please try again!');
+        }
+      });
+    }
+
+    public userHasAddPermission():boolean {
+      if (this.$rootScope.user) {
+        return this.$rootScope.user.permissions['add_' + this.type];
+      }
+      return false;
+    }
+
+    public userHasDeletePermission():boolean {
+      if (this.$rootScope.user) {
+        return this.$rootScope.user.permissions['delete_' + this.type];
+      }
+      return false;
+    }
+
+    public pageRange(): number[] {
+      let res: number[] = [];
+      let start = Math.max(this.page - 3, 0);
+      let end = Math.min(start + 4, this.getPageCount() - 1);
+      for (let i = start; i <= end; i++) {
         res.push(i + 1);
       }
       return res;
@@ -153,8 +170,22 @@ module HadithHouse.Controllers {
       return 0;
     }
 
-    public setPage(index:number) {
-      this.page = index;
+    public setPage(page: number) {
+      this.page = page;
+      if (this.page < 1) {
+        this.page = 1;
+      }
+      if (this.page > this.getPageCount()) {
+        this.page = this.getPageCount();
+      }
+    }
+
+    public isFirstPage(): boolean {
+      return this.page <= 1;
+    }
+
+    public isLastPage(): boolean {
+      return this.page >= this.getPageCount();
     }
   }
 }
