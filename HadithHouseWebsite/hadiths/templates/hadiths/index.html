@@ -19,7 +19,6 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 
-
   <style>
     body {
       padding-top: 2rem;
@@ -148,6 +147,7 @@
 
 <!-- Bootstrap -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min.js"></script>
 
 <!-- Angular -->
 
@@ -212,6 +212,7 @@
   <link rel="stylesheet" href="{% static 'hadiths/css/all.css' %}">
   <script src="{% static 'hadiths/js/all.js' %}"></script>
 {% else %}
+  <link rel="stylesheet" href="{% static 'hadiths/css/typeaheadjs.css' %}">
   <link rel="stylesheet" href="{% static 'hadiths/css/styles.css' %}">
 
   <script src="{% static 'hadiths/js/app.js' %}"></script>
@@ -239,6 +240,7 @@
 
   <!-- Directives -->
   <script src="{% static 'hadiths/js/directives/entity.directive.js' %}"></script>
+  <script src="{% static 'hadiths/js/directives/entity-lookup.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/selector.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/hadith-listing.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/tree.directive.js' %}"></script>
