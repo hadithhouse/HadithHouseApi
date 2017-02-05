@@ -43,6 +43,7 @@ module HadithHouse.Directives {
   export class TagsInputCtrl {
     public onAdd: any;
     public type: string;
+    public selectionMode: string;
     public text: string;
     public entities: Entity<number>[];
     public autoCompleteEntries: any[];
@@ -60,6 +61,9 @@ module HadithHouse.Directives {
     public $onInit() {
       if (!this.type || typeof(this.type) !== 'string') {
         throw 'hh-entity-lookup must have its type attribute set to a string.';
+      }
+      if (!this.selectionMode) {
+        this.selectionMode = 'multi';
       }
       this.entities = [];
       this.$scope.$watch(() => this.text, (newText, oldText) => {
@@ -100,8 +104,13 @@ module HadithHouse.Directives {
     }
 
     public addEntity(entity: any) {
-      this.entities.push(entity);
-      this.text = '';
+      if (this.selectionMode === 'single') {
+        this.entities = [entity];
+        this.text = '';
+      } else {
+        this.entities.push(entity);
+        this.text = '';
+      }
     }
 
     private setEntityResource() {
@@ -178,6 +187,7 @@ module HadithHouse.Directives {
       scope: {
         onAdd: '&?',
         type: '@',
+        selectionMode: '@',
         entities: '='
       }
     };

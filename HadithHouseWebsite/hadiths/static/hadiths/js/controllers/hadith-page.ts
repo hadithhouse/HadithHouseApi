@@ -39,6 +39,7 @@ module HadithHouse.Controllers {
   import Person = HadithHouse.Resources.Person;
   import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
   import HadithTag = HadithHouse.Resources.HadithTag;
+  import Book = HadithHouse.Resources.Book;
 
   class ChainTreeNode {
     public id: string;
@@ -113,10 +114,13 @@ module HadithHouse.Controllers {
 
   export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
     public tagsExpanded: HadithTag[];
+    public bookExpanded: Book[];
+    public personExpanded: Person[];
     public pagedChains: ObjectWithPromise<PagedResults<Chain>>;
     public chainCopies: any;
     public HadithResource: Resources.CacheableResource<Hadith, number|string>;
     public HadithTagResource: Resources.CacheableResource<HadithTag, number>;
+    public BookResource: Resources.CacheableResource<Book, number>;
     public PersonResource: Resources.CacheableResource<Person, number>;
     public ChainResource: Resources.CacheableResource<Chain, number>;
     public rootNode: any;
@@ -127,11 +131,13 @@ module HadithHouse.Controllers {
                 $routeParams: any,
                 HadithResource: Resources.CacheableResource<Hadith, number|string>,
                 HadithTagResource: Resources.CacheableResource<HadithTag, number>,
+                BookResource: Resources.CacheableResource<Book, number>,
                 PersonResource: Resources.CacheableResource<Person, number>,
                 ChainResource: Resources.CacheableResource<Chain, number>) {
       super($scope, $rootScope, $location, $routeParams, HadithResource);
       this.HadithResource = HadithResource;
       this.HadithTagResource = HadithTagResource;
+      this.BookResource = BookResource;
       this.PersonResource = PersonResource;
       this.ChainResource = ChainResource;
       this.chainCopies = {};
@@ -144,10 +150,22 @@ module HadithHouse.Controllers {
 
     protected onEntityLoaded() {
       this.tagsExpanded = this.HadithTagResource.get(this.entity.tags);
+      this.personExpanded = this.PersonResource.get([this.entity.person]);
+      this.bookExpanded = this.BookResource.get([this.entity.book]);
     }
 
-    protected beforeSave():boolean {
+    protected beforeSave(): boolean {
       this.entity.tags = this.tagsExpanded.map(t => t.id);
+      if (!this.personExpanded || this.personExpanded.length === 0) {
+        this.entity.person = null;
+      } else {
+        this.entity.person = this.personExpanded[0].id;
+      }
+      if (!this.bookExpanded || this.bookExpanded.length === 0) {
+        this.entity.book = null;
+      } else {
+        this.entity.book = this.bookExpanded[0].id;
+      }
       return true;
     }
 
@@ -270,9 +288,9 @@ module HadithHouse.Controllers {
   }
 
   HadithHouse.HadithHouseApp.controller('HadithPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithResource, HadithTagResource, PersonResource, ChainResource) {
+    function ($scope, $rootScope, $location, $routeParams, HadithResource, HadithTagResource, BookResource, PersonResource, ChainResource) {
       let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams,
-        HadithResource, HadithTagResource, PersonResource, ChainResource);
+        HadithResource, HadithTagResource, BookResource, PersonResource, ChainResource);
       ctrl.initialize();
       return ctrl;
     });
