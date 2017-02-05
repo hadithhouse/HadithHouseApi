@@ -34,18 +34,20 @@
     <div class="row">
       <div class="form-group col-sm-12">
         <label>Person</label>
-        <div>
+        <div ng-show="!ctrl.isEditing">
           <hh-entity entity-id="{{ ctrl.entity.person }}" type="person" mode="clickable-badge"></hh-entity>
         </div>
+        <hh-tags-input entities="ctrl.personExpanded" type="person" selection-mode="single" ng-show="ctrl.isEditing"></hh-tags-input>
       </div>
     </div>
 
     <div class="row">
       <div class="form-group col-sm-12">
         <label>Book</label>
-        <div>
+        <div ng-show="!ctrl.isEditing">
           <hh-entity entity-id="{{ ctrl.entity.book }}" type="book" mode="clickable-badge"></hh-entity>
         </div>
+        <hh-tags-input entities="ctrl.bookExpanded" type="book" selection-mode="single" ng-show="ctrl.isEditing"></hh-tags-input>
       </div>
     </div>
 
