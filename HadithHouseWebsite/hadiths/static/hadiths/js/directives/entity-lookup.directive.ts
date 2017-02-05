@@ -110,11 +110,11 @@ module HadithHouse.Directives {
       controllerAs: 'ctrl',
       bindToController: true,
       scope: {
-        callback: '&?',
+        callback: '&',
         type: '@'
       },
-      link: function (scope: IScope & {ctrl: EntityLookupCtrl}, element:IAugmentedJQuery) {
-        let input:any = element.find('input');
+      link: function (scope: IScope & {ctrl: EntityLookupCtrl}, element: IAugmentedJQuery) {
+        let input: any = element.find('input');
 
         input.bind('typeahead:select', function (event, entity) {
           scope.ctrl.onSelect(entity);
@@ -124,7 +124,10 @@ module HadithHouse.Directives {
           highlight: true
         }, {
           display: function (entity) {
-            return entity.name;
+            if (!entity) {
+              return '';
+            }
+            return entity.toString();
           },
           source: function (query, syncResults, asyncResults) {
             // TODO: Should we add onError() and show an error message?

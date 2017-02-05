@@ -100,6 +100,13 @@ module HadithHouse.Controllers {
     protected onEntityLoaded() {
     }
 
+    protected beforeSave(): boolean {
+      return true;
+    }
+
+    protected afterSave() {
+    }
+
     protected setAddingNewEntityMode() {
       this.entity = this.newEntity();
       this.isAddingNew = true;
@@ -127,6 +134,9 @@ module HadithHouse.Controllers {
      * Called when the user clicks on the save icon to save the changes made.
      */
     private finishEditing = () => {
+      if (!this.beforeSave()) {
+        return;
+      }
       // Send the changes to the server.
       this.entity.save().then((result) => {
         if (this.isAddingNew) {

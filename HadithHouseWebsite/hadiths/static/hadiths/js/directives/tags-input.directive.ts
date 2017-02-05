@@ -177,7 +177,8 @@ module HadithHouse.Directives {
       bindToController: true,
       scope: {
         onAdd: '&?',
-        type: '@'
+        type: '@',
+        entities: '='
       }
     };
   });
