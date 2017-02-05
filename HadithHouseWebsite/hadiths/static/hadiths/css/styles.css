@@ -22,6 +22,14 @@
  * THE SOFTWARE.
  */
 
+body {
+  padding-top: 2rem;
+}
+
+a, button {
+  cursor: pointer;
+}
+
 /* Tree styles */
 .tree_node {
   cursor: pointer;
@@ -43,10 +51,20 @@
   stroke-width: 1.5px;
 }
 
-.hh-perms-table {
+/* hh-tags-input directive */
+div.hh-tags-input span.hh-tags-input-tags {
+  display: table-cell;
+  padding-right: 5px;
 }
 
-.hh-perms-table td {
+div.hh-tags-input span.hh-tags-input-input {
+  display: table-cell;
+  width: 100%;
+}
+
+div.hh-tags-input span.hh-tags-input-input input,
+div.hh-tags-input span.hh-tags-input-input input:focus {
+  width: 100%;
   border: none;
-  padding: 0;
+  outline-width: 0;
 }

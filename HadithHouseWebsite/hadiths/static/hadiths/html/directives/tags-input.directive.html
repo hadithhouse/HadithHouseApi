@@ -1,0 +1,13 @@
+<div class="hh-tags-input form-control">
+  <span class="hh-tags-input-tags" ng-repeat="l in ctrl.labels">
+    <span class="badge badge-primary">
+      {{ l }}
+      <span class="btn-sm fa fa-times" ng-click="ctrl.deleteLabel($index)" aria-hidden="true" style="cursor: pointer;">
+
+      </span>
+    </span>
+  </span>
+  <span class="hh-tags-input-input">
+    <input type="text" ng-model="ctrl.text" ng-keypress="ctrl.onKey($event)" ng-keydown="ctrl.onKey($event)"/>
+  </span>
+</div>
