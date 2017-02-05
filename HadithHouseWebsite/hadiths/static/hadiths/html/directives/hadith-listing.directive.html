@@ -25,7 +25,7 @@
         <a class="page-link" href="#" ng-click="ctrl.setPage(i)">{{ i }}</a>
       </li>
       <li class="page-item" ng-class="ctrl.isLastPage() ? 'disabled' : ''">
-        <a class="page-link" href="#" ng-click="ctrl.setPage(ctrl.page - 1)">Next</a>
+        <a class="page-link" href="#" ng-click="ctrl.setPage(ctrl.page + 1)">Next</a>
       </li>
     </ul>
   </nav>
