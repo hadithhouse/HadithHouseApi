@@ -52,6 +52,10 @@ a, button {
 }
 
 /* hh-tags-input directive */
+div.hh-tags-input {
+  display: table;
+}
+
 div.hh-tags-input span.hh-tags-input-tags {
   display: table-cell;
   padding-right: 5px;
