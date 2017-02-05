@@ -31,18 +31,47 @@
 
 module HadithHouse.Directives {
   import IScope = angular.IScope;
+  import IAugmentedJQuery = angular.IAugmentedJQuery;
+  import CacheableResource = HadithHouse.Resources.CacheableResource;
+  import Person = HadithHouse.Resources.Person;
+  import Book = HadithHouse.Resources.Book;
+  import HadithTag = HadithHouse.Resources.HadithTag;
+  import User = HadithHouse.Resources.User;
+  import ILocationProvider = angular.ILocationProvider;
+  import Entity = HadithHouse.Resources.Entity;
 
   export class TagsInputCtrl {
     public onAdd: any;
+    public type: string;
     public text: string;
-    public labels: string[];
+    public entities: Entity<number>[];
+    public autoCompleteEntries: any[];
+    private EntityResource: CacheableResource<Entity<number>, number>;
 
-    constructor(private $scope: IScope) {
-
+    constructor(private $scope: IScope,
+                private $element: IAugmentedJQuery,
+                private $location: ILocationProvider,
+                private PersonResource: CacheableResource<Person, number>,
+                private BookResource: CacheableResource<Book, number>,
+                private HadithTagResource: CacheableResource<HadithTag, number>,
+                private UserResource: CacheableResource<User, number>) {
     }
 
     public $onInit() {
-      this.labels = ['Label 1', 'Label 2'];
+      if (!this.type || typeof(this.type) !== 'string') {
+        throw 'hh-entity-lookup must have its type attribute set to a string.';
+      }
+      this.entities = [];
+      this.$scope.$watch(() => this.text, (newText, oldText) => {
+        if (this.text && this.text.length > 2) {
+          this.findEntities(this.text).promise.then((result) => {
+            this.showAutoComplete(result);
+          });
+        } else {
+          this.hideAutoComplete();
+        }
+      });
+      this.setEntityResource();
     }
 
     public onKey($event) {
@@ -57,17 +86,64 @@ module HadithHouse.Directives {
       }
     }
 
-    public deleteLabel(index:number) {
+    public deleteEntity(index: number) {
       if (typeof(index) !== 'number') {
         throw 'Index must be a number.';
       }
       if (index < 0) {
         throw 'Index must not be negative.';
       }
-      if (index >= this.labels.length) {
+      if (index >= this.entities.length) {
         throw 'Index out of range.';
       }
-      this.labels.splice(index, 1);
+      this.entities.splice(index, 1);
+    }
+
+    public addEntity(entity: any) {
+      this.entities.push(entity);
+      this.text = '';
+    }
+
+    private setEntityResource() {
+      switch (this.type.toLowerCase()) {
+        case 'person':
+          this.EntityResource = this.PersonResource;
+          break;
+
+        case 'book':
+          this.EntityResource = this.BookResource;
+          break;
+
+        case 'hadithtag':
+          this.EntityResource = this.HadithTagResource;
+          break;
+
+        case 'user':
+          this.EntityResource = this.UserResource;
+          break;
+
+        default:
+          throw 'Invalid type for hh-entity-lookup.';
+      }
+    }
+
+    private findEntities(query) {
+      return this.EntityResource.query({search: query});
+    }
+
+    private showAutoComplete(entities) {
+      this.autoCompleteEntries = entities;
+      let input = this.$element.find('input');
+      let pos = input.offset();
+      pos.top += input.height();
+      let dropdown: any = this.$element.find('.dropdown-menu');
+      dropdown.dropdown('toggle');
+      dropdown.show();
+      dropdown.offset(pos);
+    }
+
+    private hideAutoComplete() {
+      this.$element.find('.dropdown-menu').hide();
     }
 
     private isInputEmpty(): boolean {
@@ -75,24 +151,22 @@ module HadithHouse.Directives {
     }
 
     private onBackspace() {
-      if (this.isInputEmpty() && this.labels.length > 0) {
-        this.labels.pop();
+      if (this.isInputEmpty() && this.entities.length > 0) {
+        this.entities.pop();
       }
     }
 
     private onEnter() {
       if (typeof(this.text) !== 'undefined' && this.text !== null && this.text !== '') {
-        this.labels.push(this.text);
-        this.text = '';
+        this.addEntity(this.text);
       }
     }
   }
 
   HadithHouseApp.controller('TagsInputCtrl',
-    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
+    ['$scope', '$element', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
       TagsInputCtrl]);
 
-  // TODO: Consider creating a class for this.
   HadithHouseApp.directive('hhTagsInput', function () {
     return {
       restrict: 'E',
@@ -103,6 +177,7 @@ module HadithHouse.Directives {
       bindToController: true,
       scope: {
         onAdd: '&?',
+        type: '@'
       }
     };
   });
