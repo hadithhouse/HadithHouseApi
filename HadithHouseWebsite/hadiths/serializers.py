@@ -3,8 +3,6 @@ from collections import OrderedDict, Counter
 from django.contrib.auth.models import User
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.exceptions import APIException, ValidationError
-from rest_framework.serializers import Serializer
 
 from hadiths.models import Hadith, Book, Person, HadithTag, ChainPersonRel, Chain, HadithTagRel, \
   BookVolume, BookChapter, BookSection  # , User, Permission

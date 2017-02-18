@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 /// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
 /// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
+/// <reference path="../../../../../TypeScriptDefs/bootstrap/bootstrap.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
 /// <reference path="../resources/resources.ts" />
@@ -151,8 +152,16 @@ module HadithHouse.Controllers {
 
     protected onEntityLoaded() {
       this.tagsExpanded = this.HadithTagResource.get(this.entity.tags);
-      this.personExpanded = this.PersonResource.get([this.entity.person]);
-      this.bookExpanded = this.BookResource.get([this.entity.book]);
+      if (this.entity.person) {
+        this.personExpanded = this.PersonResource.get([this.entity.person]);
+      } else {
+        this.personExpanded = null;
+      }
+      if (this.bookExpanded) {
+        this.bookExpanded = this.BookResource.get([this.entity.book]);
+      } else {
+        this.bookExpanded = null;
+      }
     }
 
     protected beforeSave(): boolean {
