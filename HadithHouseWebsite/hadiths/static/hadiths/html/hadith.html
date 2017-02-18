@@ -63,44 +63,48 @@
   </form>
 </div>
 
-
-<!--
-FIXME: Use Bootstrap for chains.
-<md-content ng-if="!ctrl.error" layout="column" flex layout-fill>
+<div class="container" ng-if="!ctrl.error" layout="column" flex layout-fill>
   <label>
     Chains
-    <md-icon class="material-icons"
+    <button class="btn btn-secondary fa fa-plus"
              ng-click="ctrl.addNewChain()"
-             ng-if="ctrl.$rootScope.user.permissions.add_chain">add
-    </md-icon>
+             ng-if="ctrl.$rootScope.user.permissions.add_chain">
+    </button>
   </label>
   <div>
     <table>
       <tr ng-repeat="chain in ctrl.pagedChains.results">
         <td>
-          <hh-selector ids="chain.persons" type="person" read-only="!chain.isEditing" clickable="true"></hh-selector>
+          Chain {{ $index + 1 }}:
         </td>
-        <td style="width: 70px;">
-          <md-icon class="material-icons"
+        <td>
+          <span ng-show="!chain.isEditing">
+            <hh-entity ng-repeat="personId in chain.persons" entity-id="{{ personId }}" type="person" mode="clickable-badge"></hh-entity>
+          </span>
+          <hh-tags-input entities="chain.personsExpanded" type="person" ng-show="chain.isEditing" clickable="true"></hh-tags-input>
+        </td>
+        <td style="width: 150px;">
+
+          <button class="btn btn-secondary fa fa-pencil"
                    ng-click="ctrl.startChainEditing(chain)"
                    ng-hide="chain.isEditing"
-                   ng-if="ctrl.$rootScope.user.permissions.change_chain">edit
-          </md-icon>
-          <md-icon class="material-icons"
-                   ng-click="ctrl.deleteChain($event, chain)"
+                   ng-if="ctrl.$rootScope.user.permissions.change_chain">
+          </button>
+          <button class="btn btn-secondary fa fa-times"
+                   ng-click="ctrl.showDeleteChainDialog(chain)"
                    ng-hide="chain.isEditing"
-                   ng-if="ctrl.$rootScope.user.permissions.delete_chain">close
-          </md-icon>
-          <md-icon class="material-icons"
+                   ng-if="ctrl.$rootScope.user.permissions.delete_chain">
+          </button>
+          <button class="btn btn-secondary fa fa-times"
                    ng-click="ctrl.cancelChainEditing(chain)"
                    ng-hide="!chain.isEditing || ctrl.isAddingNew"
-                   ng-if="ctrl.$rootScope.user.permissions.change_chain">cancel
-          </md-icon>
-          <md-icon class="material-icons"
+                   ng-if="ctrl.$rootScope.user.permissions.change_chain">
+          </button>
+          <button class="btn btn-secondary fa fa-floppy-o"
                    ng-click="ctrl.saveChain(chain)"
                    ng-hide="!chain.isEditing"
-                   ng-if="ctrl.$rootScope.user.permissions.change_hadith">save
-          </md-icon>
+                   ng-if="ctrl.$rootScope.user.permissions.change_hadith">
+          </button>
         </td>
       </tr>
     </table>
@@ -110,6 +114,26 @@ FIXME: Use Bootstrap for chains.
            style="background-color: rgb(240, 240, 240); width: 800px; height: 600px; margin-top: 10px; overflow-x: auto;">
 
   </hh-tree>
-</md-content>
--->
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<div class="modal fade" id="deleteChainConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="deleteChainConfirmDialogLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteChainConfirmDialogLabel">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the chain? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" ng-click="ctrl.deleteChain()">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div ng-if="!ctrl.error" ng-include="'/static/hadiths/html/entity-footer.html'"></div>
