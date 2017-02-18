@@ -74,17 +74,17 @@
 
 <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-          data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+          data-target="#mainNavBar" aria-controls="mainNavBar" aria-expanded="false"
           aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <a class="navbar-brand" href="#">Hadith House</a>
 
-  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+  <div class="collapse navbar-collapse" id="mainNavBar">
     <ul class="navbar-nav mr-auto">
       {% verbatim %}
       <li class="nav-item" ng-class="ctrl.selected == item ? 'active': ''" ng-repeat="item in ctrl.menuItems">
-        <a class="nav-link" ng-click="ctrl.selectMenuItem(item)">{{ item.name }}</a>
+        <a class="nav-link" data-toggle="collapse" data-target="#mainNavBar" ng-click="ctrl.selectMenuItem(item)">{{ item.name }}</a>
       </li>
       {% endverbatim %}
     </ul>
