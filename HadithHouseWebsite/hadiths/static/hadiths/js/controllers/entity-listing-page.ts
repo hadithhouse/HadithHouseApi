@@ -137,7 +137,7 @@ module HadithHouse.Controllers {
           toastr.error('Failed to delete entity. Please try again!');
         }
       });
-    }
+    };
 
     public userHasAddPermission():boolean {
       if (this.$rootScope.user) {

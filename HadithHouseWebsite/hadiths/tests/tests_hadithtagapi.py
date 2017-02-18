@@ -58,7 +58,7 @@ class HadithTagPutApiTestCase(TestCaseBase):
 
   @classmethod
   def setUpClass(cls):
-    TestCaseBase.setUpClass();
+    TestCaseBase.setUpClass()
     c = Client()
     resp = c.post('/apis/hadithtags?fb_token=%s' % TestCaseBase.marie_accesstoken, {'name': 'test'})
     assert resp.status_code == HTTP_201_CREATED
@@ -68,8 +68,8 @@ class HadithTagPutApiTestCase(TestCaseBase):
   @classmethod
   def tearDownClass(cls):
     c = Client()
-    resp = c.delete('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPutApiTestCase.tag_id, TestCaseBase.marie_accesstoken),
-                    {'title': 'test'})
+    resp = c.delete('/apis/hadithtags/%d?fb_token=%s' %
+                    (HadithTagPutApiTestCase.tag_id, TestCaseBase.marie_accesstoken), {'title': 'test'})
     assert resp.status_code == HTTP_204_NO_CONTENT
     TestCaseBase.tearDownClass()
 
@@ -133,7 +133,7 @@ class HadithTagPatchApiTestCase(TestCaseBase):
 
   @classmethod
   def setUpClass(cls):
-    TestCaseBase.setUpClass();
+    TestCaseBase.setUpClass()
     c = Client()
     resp = c.post('/apis/hadithtags?fb_token=%s' % TestCaseBase.marie_accesstoken, {'name': 'test'})
     assert resp.status_code == HTTP_201_CREATED
@@ -143,8 +143,8 @@ class HadithTagPatchApiTestCase(TestCaseBase):
   @classmethod
   def tearDownClass(cls):
     c = Client()
-    resp = c.delete('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken),
-                    {'name': 'test'})
+    resp = c.delete('/apis/hadithtags/%d?fb_token=%s' %
+                    (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken), {'name': 'test'})
     assert resp.status_code == HTTP_204_NO_CONTENT
     TestCaseBase.tearDownClass()
 
@@ -155,26 +155,27 @@ class HadithTagPatchApiTestCase(TestCaseBase):
     self.assertEqual("Couldn't authenticate user.", resp.data['error'])
 
   def test__patch__invalid_auth_token__403(self):
-    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPatchApiTestCase.tag_id, TestCaseBase.invalid_accesstoken),
-                      {'name': 'test'})
+    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' %
+                      (HadithTagPatchApiTestCase.tag_id, TestCaseBase.invalid_accesstoken), {'name': 'test'})
     self.assertEqual(HTTP_403_FORBIDDEN, resp.status_code)
     self.assertEqual(HTTP_403_FORBIDDEN, resp.data['status_code'])
     self.assertEqual("Invalid Facebook access token.", resp.data['error'])
 
   def test__patch__valid_auth_token__no_user_permission__401(self):
-    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPatchApiTestCase.tag_id, TestCaseBase.jack_accesstoken),
-                      {'name': 'test'})
+    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' %
+                      (HadithTagPatchApiTestCase.tag_id, TestCaseBase.jack_accesstoken), {'name': 'test'})
     self.assertEqual(HTTP_403_FORBIDDEN, resp.status_code)
     self.assertEqual(HTTP_403_FORBIDDEN, resp.data['status_code'])
     self.assertEqual("User doesn't have permission for this action.", resp.data['error'])
 
   def test__patch__valid_auth_token__user_permission__no_title__200(self):
-    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken), {})
+    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' %
+                      (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken), {})
     self.assertEqual(HTTP_200_OK, resp.status_code)
 
   def test__patch__valid_auth_token__user_permission__blank_title__400(self):
-    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken),
-                      {'name': ' '})
+    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' %
+                      (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken), {'name': ' '})
     self.assertEqual(HTTP_400_BAD_REQUEST, resp.status_code)
     self.assertEqual(HTTP_400_BAD_REQUEST, resp.data['status_code'])
     self.assertEqual("Invalid input.", resp.data['error'])
@@ -182,8 +183,8 @@ class HadithTagPatchApiTestCase(TestCaseBase):
     self.assertEqual(['This field may not be blank.'], resp.data['detail']['name'])
 
   def test__patch__valid_auth_token__user_permission__valid_title__person_updated(self):
-    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' % (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken),
-                      {'name': 'test_updated'})
+    resp = self.patch('/apis/hadithtags/%d?fb_token=%s' %
+                      (HadithTagPatchApiTestCase.tag_id, TestCaseBase.marie_accesstoken), {'name': 'test_updated'})
     self.assertEqual(HTTP_200_OK, resp.status_code)
     person = resp.data
     self.assertEqual('test_updated', person['name'])

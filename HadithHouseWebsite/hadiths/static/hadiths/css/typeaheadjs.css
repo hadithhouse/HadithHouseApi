@@ -58,8 +58,7 @@ span.twitter-typeahead .disabled.tt-suggestion, span.twitter-typeahead .disabled
 span.twitter-typeahead .disabled.tt-suggestion:focus, span.twitter-typeahead .disabled.tt-suggestion:hover {
   text-decoration: none;
   cursor: not-allowed;
-  background-color: transparent;
-  background-image: none;
+  background: transparent none;
   filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)";
 }
 

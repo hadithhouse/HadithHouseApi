@@ -269,7 +269,7 @@ module HadithHouse.Controllers {
           toastr.error('Failed to delete chain. Please try again!');
         }
       });
-    }
+    };
 
     private buildChainTree() {
       if (!this.entity.person || this.pagedChains.results.length === 0) {

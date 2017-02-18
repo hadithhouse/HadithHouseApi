@@ -105,7 +105,7 @@ module HadithHouse.Directives {
       }
 
       this.$scope.$watch('ctrl.entityId', this.onIdChanged);
-    }
+    };
 
     public onClick() {
       if (this.normalisedMode === 'text') {

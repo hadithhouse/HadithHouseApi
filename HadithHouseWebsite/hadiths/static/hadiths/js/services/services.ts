@@ -47,7 +47,7 @@ module HadithHouse.Services {
     count: number;
     next: string;
     previous: string;
-    results:IResourceArray<T>
+    results:IResourceArray<T>;
   }
 
   export interface IEntityResourceClass<T> {

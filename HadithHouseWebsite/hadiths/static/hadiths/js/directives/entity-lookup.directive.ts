@@ -86,7 +86,7 @@ module HadithHouse.Directives {
         default:
           throw 'Invalid type for hh-entity-lookup.';
       }
-    }
+    };
 
 
     public onSelect(entity) {

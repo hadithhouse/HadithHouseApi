@@ -244,10 +244,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='hadithtagrel',
-            unique_together=set([('hadith', 'tag')]),
+            unique_together={('hadith', 'tag')},
         ),
         migrations.AlterUniqueTogether(
             name='chainpersonrel',
-            unique_together=set([('chain', 'person')]),
+            unique_together={('chain', 'person')},
         ),
     ]
