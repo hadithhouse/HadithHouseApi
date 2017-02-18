@@ -124,6 +124,7 @@ module HadithHouse.Controllers {
     public PersonResource: Resources.CacheableResource<Person, number>;
     public ChainResource: Resources.CacheableResource<Chain, number>;
     public rootNode: any;
+    public chainToDelete:Chain;
 
     constructor($scope: ng.IScope,
                 $rootScope: ng.IScope,
@@ -202,11 +203,15 @@ module HadithHouse.Controllers {
     }
 
     public startChainEditing(chain: any) {
+      chain.personsExpanded = this.PersonResource.get(chain.persons);
       chain.isEditing = true;
       this.copyChain(chain);
     }
 
-    public saveChain(chain: Chain) {
+    // TODO: Either add the personsExpanded field to the Chain class, or -better- make the necessary changes to
+    // hh-tags-input such that it requires only IDs so we don't have to expand it ourselves.
+    public saveChain(chain: Chain & { personsExpanded: any}) {
+      chain.persons = chain.personsExpanded.map(t => t.id);
       chain.save().then(() => {
         chain.isEditing = false;
         chain.isAddingNew = false;
@@ -233,30 +238,28 @@ module HadithHouse.Controllers {
       this.pagedChains.results.push(chain);
     }
 
-    public deleteChain(event: any, chain: Chain) {
-      // FIXME: Use Bootstrap dialog.
-      /*let confirm = this.$mdDialog.confirm()
-       .title('Confirm')
-       .textContent('Are you sure you want to delete the chain?')
-       .ok('Yes')
-       .cancel('No')
-       .targetEvent(event);
-       this.$mdDialog.show(confirm).then(() => {
-       chain.delete().then(() => {
-       this.ToastService.show('Successfully deleted');
-       this.pagedChains.results = this.pagedChains.results.filter((e) => {
-       return e.id !== chain.id;
-       });
-       }, (result) => {
-       if (result.data && result.data.detail) {
-       this.ToastService.show('Failed to delete chain. Error was: ' + result.data.detail);
-       } else if (result.data) {
-       this.ToastService.show('Failed to delete chain. Error was: ' + result.data);
-       } else {
-       this.ToastService.show('Failed to delete chain. Please try again!');
-       }
-       });
-       });*/
+    public showDeleteChainDialog = (chain:Chain) => {
+      this.chainToDelete = chain;
+      $('#deleteChainConfirmDialog').modal('show');
+    };
+
+    public deleteChain = () => {
+      $('#deleteChainConfirmDialog').modal('hide');
+      this.chainToDelete.delete().then(() => {
+        toastr.success('Chain deleted');
+        this.pagedChains.results = this.pagedChains.results.filter((e) => {
+          return e.id !== this.chainToDelete.id;
+        });
+        this.chainToDelete = null;
+      }, (result) => {
+        if (result.data && result.data.detail) {
+          toastr.error('Failed to delete chain. Error was: ' + result.data.detail);
+        } else if (result.data) {
+          toastr.error('Failed to delete chain. Error was: ' + result.data);
+        } else {
+          toastr.error('Failed to delete chain. Please try again!');
+        }
+      });
     }
 
     private buildChainTree() {
