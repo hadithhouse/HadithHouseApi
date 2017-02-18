@@ -47,4 +47,4 @@ class FacebookOfflineAuthentication(BaseAuthentication):
       return None
     if 'fb_token' not in request.query_params:
       return None
-    return (User.objects.first(), None)
+    return User.objects.first(), None

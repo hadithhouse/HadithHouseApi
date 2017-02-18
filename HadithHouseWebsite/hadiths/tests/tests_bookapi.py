@@ -32,14 +32,6 @@ class BookPostApiTestCase(TestCaseBase):
     self.assertTrue('title' in resp.data['detail'])
     self.assertEqual(['This field is required.'], resp.data['detail']['title'])
 
-  def test__post__valid_auth_token__user_permission__no_title__400(self):
-    resp = self.post('/apis/books?fb_token=%s' % TestCaseBase.marie_accesstoken, {})
-    self.assertEqual(HTTP_400_BAD_REQUEST, resp.status_code)
-    self.assertEqual(HTTP_400_BAD_REQUEST, resp.data['status_code'])
-    self.assertEqual("Invalid input.", resp.data['error'])
-    self.assertTrue('title' in resp.data['detail'])
-    self.assertEqual(['This field is required.'], resp.data['detail']['title'])
-
   def test__post__valid_auth_token__user_permission__blank_title__400(self):
     resp = self.post('/apis/books?fb_token=%s' % TestCaseBase.marie_accesstoken, {'title': ' '})
     self.assertEqual(HTTP_400_BAD_REQUEST, resp.status_code)
@@ -66,7 +58,7 @@ class BookPutApiTestCase(TestCaseBase):
 
   @classmethod
   def setUpClass(cls):
-    TestCaseBase.setUpClass();
+    TestCaseBase.setUpClass()
     c = Client()
     resp = c.post('/apis/books?fb_token=%s' % TestCaseBase.marie_accesstoken, {'title': 'test'})
     assert resp.status_code == HTTP_201_CREATED
@@ -137,7 +129,7 @@ class BookPatchApiTestCase(TestCaseBase):
 
   @classmethod
   def setUpClass(cls):
-    TestCaseBase.setUpClass();
+    TestCaseBase.setUpClass()
     c = Client()
     resp = c.post('/apis/books?fb_token=%s' % TestCaseBase.marie_accesstoken, {'title': 'test'})
     assert resp.status_code == HTTP_201_CREATED

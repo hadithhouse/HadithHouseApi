@@ -118,7 +118,7 @@ module HadithHouse.Directives {
         return;
       }
       this.loadEntities();
-    }
+    };
 
     private onBookIdChanged = (newId: number, oldId: number) => {
       if (!newId) {
@@ -127,7 +127,7 @@ module HadithHouse.Directives {
       }
 
       this.loadEntities();
-    }
+    };
 
     private loadEntities() {
       this.pagedEntities = this.HadithResource.pagedQuery(this.getQueryParams());

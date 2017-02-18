@@ -32,7 +32,7 @@ module HadithHouse.Controllers {
   import HadithTag = HadithHouse.Resources.HadithTag;
 
   export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
-    HadithTagResource:Resources.CacheableResource<HadithTag, number>;
+    private HadithTagResource:Resources.CacheableResource<HadithTag, number>;
 
     constructor($scope:ng.IScope,
                 $rootScope:ng.IScope,

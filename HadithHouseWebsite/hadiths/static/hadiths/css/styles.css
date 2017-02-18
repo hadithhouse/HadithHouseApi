@@ -38,7 +38,7 @@ a, button {
 .tree_node circle {
   fill: #fff;
   stroke: steelblue;
-  stroke-width: 1.5px;
+  stroke-width: 2px;
 }
 
 .tree_node text {
@@ -48,7 +48,7 @@ a, button {
 .tree_link {
   fill: none;
   stroke: #ccc;
-  stroke-width: 1.5px;
+  stroke-width: 2x;
 }
 
 /* hh-tags-input directive */
