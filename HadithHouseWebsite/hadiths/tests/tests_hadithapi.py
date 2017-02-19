@@ -226,3 +226,90 @@ class HadithPatchApiTestCase(TestCaseBase):
     self.assertEqual(hadith['added_by'], hadith2['added_by'])
     self.assertEqual(hadith['updated_on'], hadith2['updated_on'])
     self.assertEqual(hadith['updated_by'], hadith2['updated_by'])
+
+
+class HadithRandomUntaggedApiTestCase(TestCaseBase):
+  tag = None
+  tag_id = None
+  hadith1 = None
+  hadith1_id = None
+  hadith2 = None
+  hadith2_id = None
+  hadith3 = None
+  hadith3_id = None
+
+  @classmethod
+  def setUpClass(cls):
+    TestCaseBase.setUpClass()
+
+    # Create a tag for testing
+    c = Client()
+    resp = c.post('/apis/hadithtags?fb_token=%s' % TestCaseBase.marie_accesstoken, {'name': 'testtag'})
+    cls.tag = resp.data
+    cls.tag_id = cls.tag['id']
+
+  @classmethod
+  def tearDownClass(cls):
+    c = Client()
+    # Delete the tag that we created in setUpClass.
+    resp = c.delete('/apis/hadithtags/%d?fb_token=%s' % (cls.tag_id, cls.marie_accesstoken))
+    assert resp.status_code == HTTP_204_NO_CONTENT
+    TestCaseBase.tearDownClass()
+
+  def test__no_hadith_in_db__empty_result(self):
+    resp = self.get('/apis/hadiths/randomuntagged')
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+
+  def test__no_untagged_hadith_in_db__empty_result(self):
+    # Add few hadiths and tag them all.
+    cls = HadithRandomUntaggedApiTestCase
+    c = Client()
+    resp = c.post('/apis/hadiths?fb_token=%s' % cls.marie_accesstoken, {'text': 'test 1', 'tags': [cls.tag_id]})
+    assert resp.status_code == HTTP_201_CREATED
+    hadith1_id = resp.data['id']
+    resp = c.post('/apis/hadiths?fb_token=%s' % cls.marie_accesstoken, {'text': 'test 2', 'tags': [cls.tag_id]})
+    assert resp.status_code == HTTP_201_CREATED
+    hadith2_id = resp.data['id']
+    resp = c.post('/apis/hadiths?fb_token=%s' % cls.marie_accesstoken, {'text': 'test 3', 'tags': [cls.tag_id]})
+    assert resp.status_code == HTTP_201_CREATED
+    hadith3_id = resp.data['id']
+
+    # Try to retrieve a random hadith and ensure no result is returned.
+    resp = self.get('/apis/hadiths/randomuntagged')
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+
+    # Delete the hadiths we created.
+    resp = c.delete('/apis/hadiths/%d?fb_token=%s' % (hadith1_id, cls.marie_accesstoken))
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+    resp = c.delete('/apis/hadiths/%d?fb_token=%s' % (hadith2_id, cls.marie_accesstoken))
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+    resp = c.delete('/apis/hadiths/%d?fb_token=%s' % (hadith3_id, cls.marie_accesstoken))
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+
+  def test__one_untagged_hadith_in_db__that_one_is_returned(self):
+    # Add few hadiths and tag them all.
+    cls = HadithRandomUntaggedApiTestCase
+    c = Client()
+    resp = c.post('/apis/hadiths?fb_token=%s' % cls.marie_accesstoken, {'text': 'test 1', 'tags': [cls.tag_id]})
+    assert resp.status_code == HTTP_201_CREATED
+    hadith1_id = resp.data['id']
+    resp = c.post('/apis/hadiths?fb_token=%s' % cls.marie_accesstoken, {'text': 'test 2'})
+    assert resp.status_code == HTTP_201_CREATED
+    hadith2_id = resp.data['id']
+    resp = c.post('/apis/hadiths?fb_token=%s' % cls.marie_accesstoken, {'text': 'test 3', 'tags': [cls.tag_id]})
+    assert resp.status_code == HTTP_201_CREATED
+    hadith3_id = resp.data['id']
+
+    # Try to retrieve a random hadith and ensure no result is returned.
+    resp = self.get('/apis/hadiths/randomuntagged')
+    self.assertEqual(HTTP_200_OK, resp.status_code)
+    self.assertIsNotNone(resp.data)
+    self.assertEqual(hadith2_id, resp.data['id'])
+
+    # Delete the hadiths we created.
+    resp = c.delete('/apis/hadiths/%d?fb_token=%s' % (hadith1_id, cls.marie_accesstoken))
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+    resp = c.delete('/apis/hadiths/%d?fb_token=%s' % (hadith2_id, cls.marie_accesstoken))
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)
+    resp = c.delete('/apis/hadiths/%d?fb_token=%s' % (hadith3_id, cls.marie_accesstoken))
+    self.assertEqual(HTTP_204_NO_CONTENT, resp.status_code)

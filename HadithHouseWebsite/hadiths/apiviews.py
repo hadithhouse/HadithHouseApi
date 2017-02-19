@@ -5,7 +5,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import DjangoFilterBackend, SearchFilter
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_204_NO_CONTENT
 
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 from hadiths.filters import TagsFilter, IdsFilter
@@ -233,6 +233,8 @@ class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
     elif id == 'randomuntagged':
       query = Hadith.objects.exclude(id__in = HadithTagRel.objects.values_list('hadith_id', flat=True))
       count = query.aggregate(count=Count('id'))['count']
+      if count == 0:
+        return Response(status=HTTP_204_NO_CONTENT)
       random_index = randint(0, count - 1)
       random_untagged_hadith = query[random_index]
       serializer = self.get_serializer(random_untagged_hadith)
