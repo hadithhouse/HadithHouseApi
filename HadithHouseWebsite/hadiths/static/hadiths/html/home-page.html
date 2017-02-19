@@ -1,5 +1,13 @@
+<h2>Random Hadith</h2>
 <div class="alert alert-success">
-{{ ctrl.randomHadith.text }}
+  {{ ctrl.randomHadith.text }}
 </div>
 
 <a href="" ng-href="/hadith/{{ ctrl.randomHadith.id }}">Go to hadith page</a>
+
+<h2>Random Untagged Hadith</h2>
+<div class="alert alert-success">
+{{ ctrl.randomUntaggedHadith.text }}
+</div>
+
+<a href="" ng-href="/hadith/{{ ctrl.randomUntaggedHadith.id }}">Click to go to hadith page and tag it.</a>
