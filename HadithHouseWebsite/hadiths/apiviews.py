@@ -9,7 +9,8 @@ from rest_framework.status import HTTP_403_FORBIDDEN
 
 from hadiths.fbauthapiviews import FBAuthListCreateAPIView, FBAuthRetrieveUpdateDestroyAPIView
 from hadiths.filters import TagsFilter, IdsFilter
-from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain, BookVolume, BookChapter, BookSection
+from hadiths.models import Hadith, Person, Book, HadithTag, User, Chain, BookVolume, BookChapter, BookSection, \
+  HadithTagRel
 from hadiths.serializers import HadithSerializer, PersonSerializer, BookSerializer, HadithTagSerializer, \
   UserSerializer, ChainSerializer, BookVolumeSerializer, BookChapterSerializer, BookSectionSerializer
 
@@ -228,6 +229,13 @@ class HadithView(FBAuthRetrieveUpdateDestroyAPIView):
       random_index = randint(0, count - 1)
       random_hadith = Hadith.objects.all()[random_index]
       serializer = self.get_serializer(random_hadith)
+      return Response(serializer.data)
+    elif id == 'randomuntagged':
+      query = Hadith.objects.exclude(id__in = HadithTagRel.objects.values_list('hadith_id', flat=True))
+      count = query.aggregate(count=Count('id'))['count']
+      random_index = randint(0, count - 1)
+      random_untagged_hadith = query[random_index]
+      serializer = self.get_serializer(random_untagged_hadith)
       return Response(serializer.data)
     else:
       return super(HadithView, self).get(request, *args, **kwargs)
