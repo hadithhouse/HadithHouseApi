@@ -84,7 +84,9 @@
     <ul class="navbar-nav mr-auto">
       {% verbatim %}
       <li class="nav-item" ng-class="ctrl.selected == item ? 'active': ''" ng-repeat="item in ctrl.menuItems">
-        <a class="nav-link" data-toggle="collapse" data-target="#mainNavBar" ng-click="ctrl.selectMenuItem(item)">{{ item.name }}</a>
+        <a class="nav-link" data-toggle="collapse" data-target="#mainNavBar" ng-click="ctrl.selectMenuItem(item)">
+          {{ item.name }}
+        </a>
       </li>
       {% endverbatim %}
     </ul>
@@ -131,7 +133,6 @@
 <div class="container" ng-view>
 </div>
 
-
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
@@ -143,7 +144,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min.js"></script>
 
 <!-- Angular -->
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-animate.min.js"></script>
