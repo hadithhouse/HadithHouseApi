@@ -33,15 +33,23 @@ module HadithHouse.Controllers {
     private randomHadith: Hadith;
     private randomUntaggedHadith: Hadith;
 
-    constructor(private $scope: ng.IScope,
-                private $http: ng.IHttpService) {
-      this.randomHadith = new Hadith($http, '/apis/hadiths', 'random');
-      this.randomUntaggedHadith = new Hadith($http, '/apis/hadiths', 'randomuntagged');
+    constructor(private $http: ng.IHttpService) {
+      this.loadRandomHadith();
+      this.loadRandomUntaggedHadith();
+    }
+
+    public loadRandomHadith() {
+      this.randomHadith = new Hadith(this.$http, '/apis/hadiths', 'random');
+    }
+
+    public loadRandomUntaggedHadith() {
+      this.randomUntaggedHadith = new Hadith(this.$http, '/apis/hadiths', 'randomuntagged');
+
     }
   }
 
   HadithHouse.HadithHouseApp.controller('HomePageCtrl',
-    function ($scope, $http) {
-      return new HomePageCtrl($scope, $http);
+    function ($http) {
+      return new HomePageCtrl($http);
     });
 }
