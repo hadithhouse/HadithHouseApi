@@ -1,13 +1,24 @@
-<h2>Random Hadith</h2>
+<h4>
+  Random Hadith
+  <button class="btn btn-secondary btn-sm fa fa-refresh" aria-hidden="true"
+          ng-click="ctrl.loadRandomHadith()"></button>
+</h4>
+
 <div class="alert alert-success">
   {{ ctrl.randomHadith.text }}
 </div>
 
 <a href="" ng-href="/hadith/{{ ctrl.randomHadith.id }}">Go to hadith page</a>
 
-<h2>Random Untagged Hadith</h2>
-<div class="alert alert-success">
-{{ ctrl.randomUntaggedHadith.text }}
-</div>
+<div ng-if="ctrl.randomUntaggedHadith" style="margin-top: 30px;">
+  <h4>
+    Random Untagged Hadith
+    <button class="btn btn-secondary btn-sm fa fa-refresh" aria-hidden="true"
+            ng-click="ctrl.loadRandomUntaggedHadith()"></button>
+  </h4>
+  <div class="alert alert-success">
+    {{ ctrl.randomUntaggedHadith.text }}
+  </div>
 
-<a href="" ng-href="/hadith/{{ ctrl.randomUntaggedHadith.id }}">Click to go to hadith page and tag it.</a>
+  <a href="" ng-href="/hadith/{{ ctrl.randomUntaggedHadith.id }}">Click to go to hadith page and tag it.</a>
+</div>

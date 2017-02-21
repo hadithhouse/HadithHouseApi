@@ -62,7 +62,7 @@ echo "Copying `pwd`/* to $DEPLOYMENT_PATH..."
 cp -r ./* $DEPLOYMENT_PATH/
 
 # Give Apache2 ownership of the log files so it can write to them.
-echo "Give Apache2 ownership of the log files so it can write to them."
+echo "Give Apache2 ownership of the app files so it can write to them."
 chgrp www-data $DEPLOYMENT_PATH
 chgrp -R www-data $DEPLOYMENT_PATH/*
 
