@@ -16,7 +16,6 @@ module.exports = function(grunt) {
       all: {
         files: [
           {
-            // concat.dist.dest refers to the above concatenation destination
             'hadiths/static/hadiths/js/all.js': [
               'hadiths/static/hadiths/js/app.js',
               'hadiths/static/hadiths/js/services/facebook.service.js',
@@ -37,8 +36,10 @@ module.exports = function(grunt) {
               'hadiths/static/hadiths/js/controllers/user-page.js',
               'hadiths/static/hadiths/js/controllers/user-listing-page.js',
               'hadiths/static/hadiths/js/directives/entity.directive.js',
+              'hadiths/static/hadiths/js/directives/entity-lookup.directive.js',
               'hadiths/static/hadiths/js/directives/hadith-listing.directive.js',
               'hadiths/static/hadiths/js/directives/selector.directive.js',
+              'hadiths/static/hadiths/js/directives/tags-input.directive.js',
               'hadiths/static/hadiths/js/directives/tree.directive.js'
             ]
           }
@@ -56,7 +57,10 @@ module.exports = function(grunt) {
         files: [
           {
             dest: 'hadiths/static/hadiths/css/all.css',
-            src: ['hadiths/static/hadiths/css/styles.css']
+            src: [
+              'hadiths/static/hadiths/css/styles.css',
+              'hadiths/static/hadiths/css/typeaheadjs.css'
+            ]
           }
         ]
       },
