@@ -37,6 +37,17 @@ if [ ! -d "$LOGS_PATH" ]; then
 fi
 echo "Directory '$LOGS_PATH' exists."
 
+# Deleting the content of '${DEPLOYMENT_PATH}'
+echo "Deleting the content of '${DEPLOYMENT_PATH}'"
+rm -rf $DEPLOYMENT_PATH/*
+
+# Copy the project onto the deployment directory.
+echo "Copying `pwd`/* to $DEPLOYMENT_PATH..."
+cp -r ./* $DEPLOYMENT_PATH/
+
+# Change directory to deployment directory.
+cd $DEPLOYMENT_PATH
+
 # Install and activate a Python virtual environment.
 echo "Install and activate a Python virtual environment..."
 virtualenv --python=python2.7 venv
@@ -52,14 +63,6 @@ python manage.py migrate
 
 echo "Deactivate Python's virtual environment..."
 deactivate
-
-# Deleting the content of '${DEPLOYMENT_PATH}'
-echo "Deleting the content of '${DEPLOYMENT_PATH}'"
-rm -rf $DEPLOYMENT_PATH/*
-
-# Copy the project onto the deployment directory.
-echo "Copying `pwd`/* to $DEPLOYMENT_PATH..."
-cp -r ./* $DEPLOYMENT_PATH/
 
 # Give Apache2 ownership of the log files so it can write to them.
 echo "Give Apache2 ownership of the app files so it can write to them."
