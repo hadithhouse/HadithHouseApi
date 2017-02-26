@@ -149,8 +149,11 @@ module HadithHouse {
       $rootScope.fbAccessToken = fbAccessToken;
 
       ctrl.fbLogin = function () {
-        FacebookService.login().then(function (/*response*/) {
-          ctrl.getLoggedInUser();
+        FacebookService.login().then(function (response) {
+          if (response.status === 'connected') {
+            $rootScope.fbAccessToken = fbAccessToken = response.authResponse.accessToken;
+            ctrl.getUserInfo();
+          }
         });
       };
 
@@ -164,11 +167,17 @@ module HadithHouse {
       ctrl.getUserInfo = function () {
         FacebookService.getLoggedInUser().then(function (user) {
           $rootScope.fetchedLoginStatus = true;
-          $rootScope.fbUser = {
-            id: user.id,
-            link: user.link,
-            profilePicUrl: user.picture.data.url
-          };
+          if (user === null) {
+            $rootScope.fbUser = null;
+          } else {
+            $rootScope.fbUser = {
+              id: user.id,
+              link: user.link,
+              profilePicUrl: user.picture.data.url
+            };
+          }
+        }, function onError(reason) {
+          toastr.error('Failed to fetch logged in user.');
         });
         UserResourceClass.get({id: 'current'}, function onSuccess(user) {
           let perms = {};
