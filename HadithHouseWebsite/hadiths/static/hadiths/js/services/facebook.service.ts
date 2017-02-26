@@ -74,9 +74,17 @@ module HadithHouse.Services {
      */
     public getLoggedInUser() {
       let deferred = this.$q.defer();
+      if (fbAccessToken === null) {
+        // No access token, so user is not logged in.
+        deferred.resolve(null);
+      }
       this.FB.api('/me', {fields: 'link,picture'},
-        function (user) {
-          deferred.resolve(user);
+        function (response) {
+          if (response.error) {
+            deferred.reject(response.error);
+          } else {
+            deferred.resolve(response);
+          }
         }
       );
       return deferred.promise;

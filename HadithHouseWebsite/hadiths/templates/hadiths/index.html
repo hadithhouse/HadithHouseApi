@@ -25,51 +25,6 @@
 
 <body ng-controller="HadithHouseCtrl as ctrl">
 
-<!-- Facebook Authentication -->
-<script>
-  var fbApiInit = false;
-  var fbAccessToken = null;
-  var fbFetchedLoginStatus = false;
-
-  window.fbAsyncInit = function () {
-    FB.init({
-      appId: '{{ appId }}',
-      xfbml: true,
-      version: 'v2.4'
-    });
-
-    fbApiInit = true;
-
-    FB.getLoginStatus(function (response) {
-      fbFetchedLoginStatus = true;
-      if (response.status === 'connected') {
-        // The user is logged in to Facebook and has authenticated
-        // the application.
-        fbAccessToken = response.authResponse.accessToken;
-      } else if (response.status === 'not_authorized') {
-        // The user is logged in to Facebook, but has not authenticated
-        // the application.
-        fbAccessToken = null;
-      } else {
-        // The user isn't logged in to Facebook.
-        fbAccessToken = null;
-      }
-
-      angular.bootstrap(document.body, ['HadithHouseApp']);
-    });
-  };
-
-  (function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) {
-      return;
-    }
-    js = d.createElement(s);
-    js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-</script>
 
 
 <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
@@ -239,5 +194,51 @@
   <script src="{% static 'hadiths/js/directives/tags-input.directive.js' %}"></script>
   <script src="{% static 'hadiths/js/directives/tree.directive.js' %}"></script>
 {% endif %}
+
+<!-- Facebook Authentication -->
+<script>
+  var fbApiInit = false;
+  var fbAccessToken = null;
+  var fbFetchedLoginStatus = false;
+
+  window.fbAsyncInit = function () {
+    FB.init({
+      appId: '{{ appId }}',
+      xfbml: true,
+      version: 'v2.4'
+    });
+
+    fbApiInit = true;
+
+    FB.getLoginStatus(function (response) {
+      fbFetchedLoginStatus = true;
+      if (response.status === 'connected') {
+        // The user is logged in to Facebook and has authenticated
+        // the application.
+        fbAccessToken = response.authResponse.accessToken;
+      } else if (response.status === 'not_authorized') {
+        // The user is logged in to Facebook, but has not authenticated
+        // the application.
+        fbAccessToken = null;
+      } else {
+        // The user isn't logged in to Facebook.
+        fbAccessToken = null;
+      }
+
+      angular.bootstrap(document.body, ['HadithHouseApp']);
+    });
+  };
+
+  (function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+      return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
 </body>
 </html>
