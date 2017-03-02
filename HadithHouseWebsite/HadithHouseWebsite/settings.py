@@ -69,7 +69,7 @@ PRODUCTION_HOSTS = (
 )
 
 DEVELOPMENT_HOSTS = (
-  'www.hadithhouse-dev.net',
+  'dev.hadithhouse.net',
 )
 
 
@@ -158,6 +158,9 @@ STATICFILES_DIRS = (
   # Always use forward slashes, even on Windows.
   # Don't forget to use absolute paths, not relative paths.
 )
+
+if get_environment() == 'production':
+  STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 TEMPLATES = [
   {
