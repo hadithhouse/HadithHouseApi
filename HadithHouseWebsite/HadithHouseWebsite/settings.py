@@ -159,9 +159,6 @@ STATICFILES_DIRS = (
   # Don't forget to use absolute paths, not relative paths.
 )
 
-if get_environment() == 'production':
-  STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
 TEMPLATES = [
   {
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
