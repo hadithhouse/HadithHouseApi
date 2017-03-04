@@ -50,7 +50,7 @@ cd $DEPLOYMENT_PATH
 
 # Install and activate a Python virtual environment.
 echo "Install and activate a Python virtual environment..."
-virtualenv --python=python2.7 venv
+virtualenv --python=python3.6 venv
 source venv/bin/activate
 
 # Install Python packages in requirements.txt.
