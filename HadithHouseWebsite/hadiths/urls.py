@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib import admin
+from django.views.defaults import page_not_found
 
 from hadiths import views
 from hadiths import apiviews
@@ -24,5 +25,9 @@ urlpatterns = [
   url(r'^apis/chains/(?P<id>[0-9]+)$', apiviews.ChainView.as_view()),
   url(r'^apis/users/?$', apiviews.UserSetView.as_view()),
   url(r'^apis/users/(?P<id>([0-9]+|current))$', apiviews.UserView.as_view()),
+  # This url is important to avoid triggering the views.index() view for requests to get
+  # favicon.ico. We need to link this to an icon file when we work on:
+  # https://github.com/hadithhouse/hadithhouse/issues/148
+  url(r'^favicon.ico$', page_not_found, {'exception': Exception('Not Found')}),
   url(r'^(?P<path>(.*))$', views.index, name='index'),
 ]
