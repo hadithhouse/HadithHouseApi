@@ -157,7 +157,7 @@ module HadithHouse.Controllers {
       } else {
         this.personExpanded = null;
       }
-      if (this.bookExpanded) {
+      if (this.entity.book) {
         this.bookExpanded = this.BookResource.get([this.entity.book]);
       } else {
         this.bookExpanded = null;

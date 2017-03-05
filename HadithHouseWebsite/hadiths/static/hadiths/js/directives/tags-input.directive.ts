@@ -65,7 +65,9 @@ module HadithHouse.Directives {
       if (!this.selectionMode) {
         this.selectionMode = 'multi';
       }
-      this.entities = [];
+      if (!this.entities) {
+        this.entities = [];
+      }
       this.$scope.$watch(() => this.text, (newText, oldText) => {
         if (this.text && this.text.length > 2) {
           this.findEntities(this.text).promise.then((result) => {
