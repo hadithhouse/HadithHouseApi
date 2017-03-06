@@ -25,15 +25,13 @@
 
 <body ng-controller="HadithHouseCtrl as ctrl" ng-cloak="">
 
-
-
 <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
           data-target="#mainNavBar" aria-controls="mainNavBar" aria-expanded="false"
           aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="navbar-brand" href="#">Hadith House</a>
+  <a class="navbar-brand" href="/">Hadith House</a>
 
   <div class="collapse navbar-collapse" id="mainNavBar">
     <ul class="navbar-nav mr-auto">
@@ -74,10 +72,10 @@
 {% verbatim %}
 <div class="jumbotron" ng-if="ctrl.selected" style="padding: 3rem 1rem 1rem 1rem;">
   <div class="container">
-    <h3 class="display-4" style="float: right;">
+    <h3 class="display-5" style="float: right;">
       <i class="fa fa-spin fa-spinner" aria-hidden="true" ng-show="pendingRequests > 0"></i>
     </h3>
-    <h3 class="display-4">
+    <h3 class="display-5">
       {{ ctrl.selected.name }}
     </h3>
     <p ng-if="ctrl.selected.description">{{ ctrl.selected.description }}</p>

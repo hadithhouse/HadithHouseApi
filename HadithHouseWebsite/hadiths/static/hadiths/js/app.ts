@@ -199,7 +199,6 @@ module HadithHouse {
 
       // Load all registered items
       ctrl.menuItems = [
-        {name: 'Home', urlPath: '', selected: false},
         {name: 'Hadiths', urlPath: 'hadiths', selected: false},
         {name: 'Books', urlPath: 'books', selected: false},
         {
