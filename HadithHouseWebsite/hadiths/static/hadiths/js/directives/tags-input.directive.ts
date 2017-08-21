@@ -71,7 +71,7 @@ module HadithHouse.Directives {
       this.$scope.$watch(() => this.text, (newText, oldText) => {
         if (this.text && this.text.length > 2) {
           this.findEntities(this.text).promise.then((result) => {
-            this.showAutoComplete(result);
+            this.showAutoComplete(result, this.text);
           });
         } else {
           this.hideAutoComplete();
@@ -106,6 +106,21 @@ module HadithHouse.Directives {
     }
 
     public addEntity(entity: any) {
+      if (entity.id == 'create-entity') {
+        switch (this.type.toLowerCase()) {
+          case 'hadithtag':
+            let newEntity : HadithTag = <HadithTag>this.EntityResource.create();
+            newEntity.name = entity.name;
+            newEntity.save().then(() => {
+              this.addEntity(newEntity);
+            });
+            break;
+
+          default:
+            toastr.error('Not implemented yet :(');
+        }
+        return;
+      }
       if (this.selectionMode === 'single') {
         this.entities = [entity];
         this.text = '';
@@ -142,8 +157,18 @@ module HadithHouse.Directives {
       return this.EntityResource.query({search: query});
     }
 
-    private showAutoComplete(entities) {
-      this.autoCompleteEntries = entities;
+    private showAutoComplete(entities, originalQuery) {
+      if (entities.length > 1) {
+        this.autoCompleteEntries = entities;
+      } else {
+        this.autoCompleteEntries = [{
+          id: 'create-entity',
+          name: originalQuery,
+          toString: function() {
+            return `Create: ${originalQuery}`;
+          }
+        }];
+      }
       let input = this.$element.find('input');
       let pos = input.offset();
       pos.top += input.height();
