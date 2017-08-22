@@ -39,6 +39,7 @@ module HadithHouse.Directives {
   import User = HadithHouse.Resources.User;
   import ILocationProvider = angular.ILocationProvider;
   import Entity = HadithHouse.Resources.Entity;
+  import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
 
   export class TagsInputCtrl {
     public onAdd: any;
@@ -153,21 +154,30 @@ module HadithHouse.Directives {
       }
     }
 
-    private findEntities(query) {
+    private findEntities(query):ObjectWithPromise<Entity<number>[]>  {
       return this.EntityResource.query({search: query});
     }
 
-    private showAutoComplete(entities, originalQuery) {
-      if (entities.length > 1) {
-        this.autoCompleteEntries = entities;
-      } else {
-        this.autoCompleteEntries = [{
+    private autoCompleteSuggestionsContains(entities:Entity<number>[], query) {
+      switch (this.type.toLowerCase()) {
+        case 'hadithtag':
+          return _.some(entities.map(e => (<HadithTag>e).name), name => name == query);
+
+        default:
+          toastr.error('Not implemented yet :(');
+      }
+    }
+
+    private showAutoComplete(entities:Entity<number>[], originalQuery) {
+      this.autoCompleteEntries = entities;
+      if (this.autoCompleteEntries.length == 0 || !this.autoCompleteSuggestionsContains(entities, originalQuery)) {
+        this.autoCompleteEntries.push({
           id: 'create-entity',
           name: originalQuery,
           toString: function() {
             return `Create: ${originalQuery}`;
           }
-        }];
+        });
       }
       let input = this.$element.find('input');
       let pos = input.offset();
