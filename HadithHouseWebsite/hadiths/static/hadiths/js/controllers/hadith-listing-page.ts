@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../node_modules/@types/lodash/index.d.ts" />
+/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="entity-listing-page.ts" />
 

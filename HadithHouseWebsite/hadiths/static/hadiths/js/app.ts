@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../TypeScriptDefs/angularjs/angular-route.d.ts" />
-/// <reference path="../../../../TypeScriptDefs/lodash/lodash.d.ts" />
+/// <reference path="../../../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../../../node_modules/@types/angular-route/index.d.ts" />
+/// <reference path="../../../../node_modules/@types/lodash/index.d.ts" />
 
 declare function getHtmlBasePath(): String;
 declare let fbFetchedLoginStatus: boolean;

@@ -1,4 +1,4 @@
-/// <reference path="../../../../../TypeScriptDefs/d3/d3.d.ts" />
+/// <reference path="../../../../../node_modules/@types/d3/index.d.ts" />
 /// <reference path="../app.ts" />
 
 module HadithHouse.Directives {
