@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
 /// <reference path="../app.ts" />
 /// <reference path="../services/services.ts" />
 /// <reference path="entity-page.ts" />

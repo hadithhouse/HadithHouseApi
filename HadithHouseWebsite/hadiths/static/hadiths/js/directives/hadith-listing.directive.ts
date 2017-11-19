@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
+/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
 /// <reference path="../resources/resources.ts" />
 
 module HadithHouse.Directives {

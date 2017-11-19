@@ -1,4 +1,7 @@
-/// <reference path="../../../../../TypeScriptDefs/moment/moment.d.ts" />
+/// <reference path="../../../../../node_modules/moment/moment.d.ts" />
+
+// TODO: This will generate invalid JS since I am not using any of RequireJS et al.
+import moment = require("moment");
 
 module HadithHouse.Caching {
   import Moment = moment.Moment;
