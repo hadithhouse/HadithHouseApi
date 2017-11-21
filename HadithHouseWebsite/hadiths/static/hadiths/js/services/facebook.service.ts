@@ -21,107 +21,103 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {fbAccessToken, HadithHouseApp} from "../app";
+import {IQService} from "angular";
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../app.ts" />
+export class FacebookService {
+  private fbUserId:number;
+  private $q:IQService;
+  private FB:any;
 
-module HadithHouse.Services {
-  import IQService = angular.IQService;
-  export class FacebookService {
-    private fbUserId:number;
-    private $q:IQService;
-    private FB:any;
-
-    constructor($q:IQService, FB:any, fbUserId:number) {
-      this.$q = $q;
-      this.FB = FB;
-      this.fbUserId = fbUserId;
-    }
-
-    public login() {
-      let deferred = this.$q.defer();
-      this.FB.login(function (response) {
-        if (response.authResponse) {
-          deferred.resolve(response);
-        } else {
-          deferred.reject('User cancelled login');
-        }
-      });
-      return deferred.promise;
-    }
-
-    public logout() {
-      let deferred = this.$q.defer();
-      this.FB.logout(function (response) {
-        deferred.resolve(response);
-      });
-      return deferred.promise;
-    }
-
-    public getLoginStatus() {
-
-      let deferred = this.$q.defer();
-      this.FB.getLoginStatus(function (response) {
-        deferred.resolve(response);
-      });
-      return deferred.promise;
-    }
-
-    /**
-     * Makes an FB request to retrieve information about the current
-     * logged in user.
-     * @returns A promise resolving to the user info object.
-     */
-    public getLoggedInUser() {
-      let deferred = this.$q.defer();
-      if (fbAccessToken === null) {
-        // No access token, so user is not logged in.
-        deferred.resolve(null);
-      }
-      this.FB.api('/me', {fields: 'link,picture'},
-        function (response) {
-          if (response.error) {
-            deferred.reject(response.error);
-          } else {
-            deferred.resolve(response);
-          }
-        }
-      );
-      return deferred.promise;
-    }
-
-    public getProfilePictureUrl(userId) {
-      let deferred = this.$q.defer();
-      this.FB.api('/' + this.fbUserId + '/picture',
-        function (response) {
-          if (response && !response.error) {
-            deferred.resolve(response.data.url);
-          } else {
-            deferred.reject(null);
-          }
-        }
-      );
-      return deferred.promise;
-    }
-
-    public getUserFriends(userId) {
-      let deferred = this.$q.defer();
-      this.FB.api('/' + this.fbUserId + '/friends',
-        function (response) {
-          if (response && !response.error) {
-            deferred.resolve(response.data.url);
-          } else {
-            deferred.reject(null);
-          }
-        }
-      );
-      return deferred.promise;
-    }
+  constructor($q:IQService, FB:any, fbUserId:number) {
+    this.$q = $q;
+    this.FB = FB;
+    this.fbUserId = fbUserId;
   }
 
-  HadithHouse.HadithHouseApp.factory('FacebookService', function ($q) {
-    let fbUserId:number = window['fbUserId'];
-    let FB:any = window['FB'];
-    return new FacebookService($q, FB, fbUserId);
-  });
+  public login() {
+    let deferred = this.$q.defer();
+    this.FB.login(function (response) {
+      if (response.authResponse) {
+        deferred.resolve(response);
+      } else {
+        deferred.reject('User cancelled login');
+      }
+    });
+    return deferred.promise;
+  }
+
+  public logout() {
+    let deferred = this.$q.defer();
+    this.FB.logout(function (response) {
+      deferred.resolve(response);
+    });
+    return deferred.promise;
+  }
+
+  public getLoginStatus() {
+
+    let deferred = this.$q.defer();
+    this.FB.getLoginStatus(function (response) {
+      deferred.resolve(response);
+    });
+    return deferred.promise;
+  }
+
+  /**
+   * Makes an FB request to retrieve information about the current
+   * logged in user.
+   * @returns A promise resolving to the user info object.
+   */
+  public getLoggedInUser() {
+    let deferred = this.$q.defer();
+    if (fbAccessToken === null) {
+      // No access token, so user is not logged in.
+      deferred.resolve(null);
+    }
+    this.FB.api('/me', {fields: 'link,picture'},
+      function (response) {
+        if (response.error) {
+          deferred.reject(response.error);
+        } else {
+          deferred.resolve(response);
+        }
+      }
+    );
+    return deferred.promise;
+  }
+
+  public getProfilePictureUrl(userId) {
+    let deferred = this.$q.defer();
+    this.FB.api('/' + this.fbUserId + '/picture',
+      function (response) {
+        if (response && !response.error) {
+          deferred.resolve(response.data.url);
+        } else {
+          deferred.reject(null);
+        }
+      }
+    );
+    return deferred.promise;
+  }
+
+  public getUserFriends(userId) {
+    let deferred = this.$q.defer();
+    this.FB.api('/' + this.fbUserId + '/friends',
+      function (response) {
+        if (response && !response.error) {
+          deferred.resolve(response.data.url);
+        } else {
+          deferred.reject(null);
+        }
+      }
+    );
+    return deferred.promise;
+  }
 }
+
+HadithHouseApp.factory('FacebookService', function ($q) {
+  let fbUserId:number = window['fbUserId'];
+  let FB:any = window['FB'];
+  return new FacebookService($q, FB, fbUserId);
+});

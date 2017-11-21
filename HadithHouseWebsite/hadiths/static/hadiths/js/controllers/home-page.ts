@@ -22,34 +22,30 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="../resources/resources.ts" />
+import {HadithHouseApp} from "../app";
+import {Hadith} from "../resources/resources";
+import {IHttpService} from "angular";
 
-module HadithHouse.Controllers {
-  import Hadith = HadithHouse.Resources.Hadith;
+export class HomePageCtrl {
+  private randomHadith: Hadith;
+  private randomUntaggedHadith: Hadith;
 
-  export class HomePageCtrl {
-    private randomHadith: Hadith;
-    private randomUntaggedHadith: Hadith;
-
-    constructor(private $http: ng.IHttpService) {
-      this.loadRandomHadith();
-      this.loadRandomUntaggedHadith();
-    }
-
-    public loadRandomHadith() {
-      this.randomHadith = new Hadith(this.$http, '/apis/hadiths', 'random');
-    }
-
-    public loadRandomUntaggedHadith() {
-      this.randomUntaggedHadith = new Hadith(this.$http, '/apis/hadiths', 'randomuntagged');
-
-    }
+  constructor(private $http: IHttpService) {
+    this.loadRandomHadith();
+    this.loadRandomUntaggedHadith();
   }
 
-  HadithHouse.HadithHouseApp.controller('HomePageCtrl',
-    function ($http) {
-      return new HomePageCtrl($http);
-    });
+  public loadRandomHadith() {
+    this.randomHadith = new Hadith(this.$http, '/apis/hadiths', 'random');
+  }
+
+  public loadRandomUntaggedHadith() {
+    this.randomUntaggedHadith = new Hadith(this.$http, '/apis/hadiths', 'randomuntagged');
+
+  }
 }
+
+HadithHouseApp.controller('HomePageCtrl',
+  function ($http) {
+    return new HomePageCtrl($http);
+  });

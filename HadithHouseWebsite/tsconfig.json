@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "system",
+    "moduleResolution": "node",
+    "baseUrl": "./hadiths/static/hadiths/js",
+    "paths": {
+      "moment": [
+        "node_modules/moment/moment.d.ts"
+      ]
+    },
+    "types": [
+      "angular",
+      "angular-material",
+      "angular-resource",
+      "angular-route",
+      "bootstrap",
+      "d3",
+      "jquery",
+      "lodash",
+      "systemjs",
+      "toastr"
+    ]
+  },
+  "include": [
+    "hadiths/static/hadiths/js/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}

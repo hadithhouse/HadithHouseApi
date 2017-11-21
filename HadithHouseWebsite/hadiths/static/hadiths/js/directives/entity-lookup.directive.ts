@@ -21,122 +21,109 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/angular-resource/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/lodash/index.d.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="../resources/resources.ts" />
+import {Book, CacheableResource, Entity, HadithTag, Person, User} from "../resources/resources";
+import {IAugmentedJQuery, IScope} from "angular";
+import * as angular from "angular"
+import {getHtmlBasePath, HadithHouseApp} from "../app";
 
 declare let Bloodhound: any;
 
-module HadithHouse.Directives {
-  import IScope = angular.IScope;
-  import CacheableResource = HadithHouse.Resources.CacheableResource;
-  import Entity = HadithHouse.Resources.Entity;
-  import Person = HadithHouse.Resources.Person;
-  import Book = HadithHouse.Resources.Book;
-  import HadithTag = HadithHouse.Resources.HadithTag;
-  import User = HadithHouse.Resources.User;
-  import IAugmentedJQuery = angular.IAugmentedJQuery;
+export class EntityLookupCtrl {
+  public type: string;
+  public callback: any;
+  private EntityResource: CacheableResource<Entity<number>, number>;
 
-  export class EntityLookupCtrl {
-    public type: string;
-    public callback: any;
-    private EntityResource: CacheableResource<Entity<number>, number>;
-
-    constructor(private $scope: IScope,
-                private PersonResource: CacheableResource<Person, number>,
-                private BookResource: CacheableResource<Book, number>,
-                private HadithTagResource: CacheableResource<HadithTag, number>,
-                private UserResource: CacheableResource<User, number>) {
-      // Prior to v1.5, we need to call `$onInit()` manually.
-      // (Bindings will always be pre-assigned in these versions.)
-      if (angular.version.major === 1 && angular.version.minor < 5) {
-        this.$onInit();
-      }
-    }
-
-    public $onInit = () => {
-
-      if (!this.type || typeof(this.type) !== 'string') {
-        throw 'hh-entity-lookup must have its type attribute set to a string.';
-      }
-      if (!this.callback) {
-        throw 'hh-entity-lookup elector must have its callback attribute set.';
-      }
-
-      switch (this.type.toLowerCase()) {
-        case 'person':
-          this.EntityResource = this.PersonResource;
-          break;
-
-        case 'book':
-          this.EntityResource = this.BookResource;
-          break;
-
-        case 'hadithtag':
-          this.EntityResource = this.HadithTagResource;
-          break;
-
-        case 'user':
-          this.EntityResource = this.UserResource;
-          break;
-
-        default:
-          throw 'Invalid type for hh-entity-lookup.';
-      }
-    };
-
-
-    public onSelect(entity) {
-      this.callback({entity: entity});
-    }
-
-    public findEntities(query) {
-      return this.EntityResource.query({search: query});
+  constructor(private $scope: IScope,
+              private PersonResource: CacheableResource<Person, number>,
+              private BookResource: CacheableResource<Book, number>,
+              private HadithTagResource: CacheableResource<HadithTag, number>,
+              private UserResource: CacheableResource<User, number>) {
+    // Prior to v1.5, we need to call `$onInit()` manually.
+    // (Bindings will always be pre-assigned in these versions.)
+    if (angular.version.major === 1 && angular.version.minor < 5) {
+      this.$onInit();
     }
   }
 
-  HadithHouseApp.controller('EntityLookupCtrl',
-    ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityLookupCtrl]);
+  public $onInit = () => {
 
-  HadithHouseApp.directive('hhEntityLookup', function () {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: getHtmlBasePath() + 'directives/entity-lookup.directive.html',
-      controller: 'EntityLookupCtrl',
-      controllerAs: 'ctrl',
-      bindToController: true,
-      scope: {
-        callback: '&',
-        type: '@'
-      },
-      link: function (scope: IScope & {ctrl: EntityLookupCtrl}, element: IAugmentedJQuery) {
-        let input: any = element.find('input');
+    if (!this.type || typeof(this.type) !== 'string') {
+      throw 'hh-entity-lookup must have its type attribute set to a string.';
+    }
+    if (!this.callback) {
+      throw 'hh-entity-lookup elector must have its callback attribute set.';
+    }
 
-        input.bind('typeahead:select', function (event, entity) {
-          scope.ctrl.onSelect(entity);
-        });
+    switch (this.type.toLowerCase()) {
+      case 'person':
+        this.EntityResource = this.PersonResource;
+        break;
 
-        input.typeahead({
-          highlight: true
-        }, {
-          display: function (entity) {
-            if (!entity) {
-              return '';
-            }
-            return entity.toString();
-          },
-          source: function (query, syncResults, asyncResults) {
-            // TODO: Should we add onError() and show an error message?
-            scope.ctrl.findEntities(query).promise.then(function onSuccess(result) {
-              asyncResults(result);
-            });
-          },
-        });
-      }
-    };
-  });
+      case 'book':
+        this.EntityResource = this.BookResource;
+        break;
+
+      case 'hadithtag':
+        this.EntityResource = this.HadithTagResource;
+        break;
+
+      case 'user':
+        this.EntityResource = this.UserResource;
+        break;
+
+      default:
+        throw 'Invalid type for hh-entity-lookup.';
+    }
+  };
+
+
+  public onSelect(entity) {
+    this.callback({entity: entity});
+  }
+
+  public findEntities(query) {
+    return this.EntityResource.query({search: query});
+  }
 }
+
+HadithHouseApp.controller('EntityLookupCtrl',
+  ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityLookupCtrl]);
+
+HadithHouseApp.directive('hhEntityLookup', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: getHtmlBasePath() + 'directives/entity-lookup.directive.html',
+    controller: 'EntityLookupCtrl',
+    controllerAs: 'ctrl',
+    bindToController: true,
+    scope: {
+      callback: '&',
+      type: '@'
+    },
+    link: function (scope: IScope & {ctrl: EntityLookupCtrl}, element: IAugmentedJQuery) {
+      let input: any = element.find('input');
+
+      input.bind('typeahead:select', function (event, entity) {
+        scope.ctrl.onSelect(entity);
+      });
+
+      input.typeahead({
+        highlight: true
+      }, {
+        display: function (entity) {
+          if (!entity) {
+            return '';
+          }
+          return entity.toString();
+        },
+        source: function (query, syncResults, asyncResults) {
+          // TODO: Should we add onError() and show an error message?
+          scope.ctrl.findEntities(query).promise.then(function onSuccess(result) {
+            asyncResults(result);
+          });
+        },
+      });
+    }
+  };
+});

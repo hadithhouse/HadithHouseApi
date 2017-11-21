@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,77 +22,73 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="entity-page.ts" />
+import {ILocationService, IScope} from "angular";
+import {User, CacheableResource} from "../resources/resources";
+import {EntityPageCtrl} from "./entity-page";
+import {HadithHouseApp} from "../app";
+import * as _ from "lodash"
 
-module HadithHouse.Controllers {
-  import User = HadithHouse.Resources.User;
+export class UserPageCtrl extends EntityPageCtrl<User> {
+  private UserResource: CacheableResource<User, number>;
+  private permissions: {};
+  private permissionGroups: String[];
+  private permissionsNameMap: {};
 
-  export class UserPageCtrl extends EntityPageCtrl<User> {
-    private UserResource:Resources.CacheableResource<User, number>;
-    private permissions:{};
-    private permissionGroups:String[];
-    private permissionsNameMap:{};
-
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $location:ng.ILocationService,
-                $routeParams:any,
-                UserResource:Resources.CacheableResource<User, number>) {
-      super($scope, $rootScope, $location, $routeParams, UserResource);
-      this.UserResource = UserResource;
-    }
-
-    protected getEntityPath(id: number) {
-      return 'user/' + id;
-    }
-
-    protected onEntityLoaded() {
-      this.entity.permissionsOrdered = _.sortBy<string>(this.entity.permissions, (a) => {
-        let parts = a.split('_');
-        return `${parts[1]}_${parts[0]}`;
-      });
-
-      let permissions = {};
-      let permissionGroups:String[] = [];
-      _.each(this.entity.permissions, (a) => {
-        let parts = a.split('_');
-        let group = parts[1];
-        let type = parts[0];
-        if (!permissions[group]) {
-          permissions[group] = [];
-          permissionGroups.push(group);
-        }
-        permissions[group].push(type);
-      });
-      _.each(permissions, (value, key) => {
-        permissions[key] = _.sortBy<String>(permissions[key]);
-      });
-      this.permissions = permissions;
-      this.permissionGroups = _.sortBy<String>(permissionGroups, p => p);
-      this.permissionsNameMap = {
-        'book': 'Book',
-        'bookchapter': 'Book Chapter',
-        'bookvolume': 'Book Volume',
-        'booksection': 'Book Section',
-        'chain': 'Chain',
-        'chainpersonrel': 'Chain-Person Relation',
-        'hadith': 'Hadith',
-        'hadithtag': 'Hadith Tag',
-        'hadithtagrel': 'Hadith-Tag Relation',
-        'person': 'Person',
-      };
-    }
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $location: ILocationService,
+              $routeParams: any,
+              UserResource: CacheableResource<User, number>) {
+    super($scope, $rootScope, $location, $routeParams, UserResource);
+    this.UserResource = UserResource;
   }
 
-  HadithHouse.HadithHouseApp.controller('UserPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, UserResource) {
-      let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource);
-      ctrl.initialize();
-      return ctrl;
+  protected getEntityPath(id: number) {
+    return 'user/' + id;
+  }
+
+  protected onEntityLoaded() {
+    this.entity.permissionsOrdered = _.sortBy<string>(this.entity.permissions, (a) => {
+      let parts = a.split('_');
+      return `${parts[1]}_${parts[0]}`;
     });
+
+    let permissions = {};
+    let permissionGroups: String[] = [];
+    _.each(this.entity.permissions, (a) => {
+      let parts = a.split('_');
+      let group = parts[1];
+      let type = parts[0];
+      if (!permissions[group]) {
+        permissions[group] = [];
+        permissionGroups.push(group);
+      }
+      permissions[group].push(type);
+    });
+    _.each(permissions, (value, key) => {
+      permissions[key] = _.sortBy<String>(permissions[key]);
+    });
+    this.permissions = permissions;
+    this.permissionGroups = _.sortBy<String>(permissionGroups, p => p);
+    this.permissionsNameMap = {
+      'book': 'Book',
+      'bookchapter': 'Book Chapter',
+      'bookvolume': 'Book Volume',
+      'booksection': 'Book Section',
+      'chain': 'Chain',
+      'chainpersonrel': 'Chain-Person Relation',
+      'hadith': 'Hadith',
+      'hadithtag': 'Hadith Tag',
+      'hadithtagrel': 'Hadith-Tag Relation',
+      'person': 'Person',
+    };
+  }
 }
+
+HadithHouseApp.controller('UserPageCtrl',
+  function ($scope, $rootScope, $location, $routeParams, UserResource) {
+    let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource);
+    ctrl.initialize();
+    return ctrl;
+  });
 
