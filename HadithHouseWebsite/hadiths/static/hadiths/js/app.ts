@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,230 +22,226 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../node_modules/@types/angular-route/index.d.ts" />
-/// <reference path="../../../../node_modules/@types/lodash/index.d.ts" />
+import * as angular from "angular";
+import * as _ from "lodash";
+import * as toastr from "toastr";
+import IRouteProvider = angular.route.IRouteProvider;
 
-declare function getHtmlBasePath(): String;
-declare let fbFetchedLoginStatus: boolean;
-declare let fbAccessToken: String;
-// TODO: Reference toastr`s TypeScrpt definition and use `import` keyword:
-// https://github.com/hadithhouse/hadithhouse/issues/268
-declare let toastr: any;
+// TODO: Should these be defined and exported here, or in a separate file?
+export declare function getHtmlBasePath(): String;
+export declare let fbFetchedLoginStatus: boolean;
+export declare let fbAccessToken: String;
 
-module HadithHouse {
-  export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
+export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
 
-  HadithHouseApp.config(function ($httpProvider: ng.IHttpProvider,
-                                  $routeProvider: ng.route.IRouteProvider,
-                                  $locationProvider: ng.ILocationProvider) {
-    $locationProvider.html5Mode({
-      enabled: true,
-      requireBase: false
-    });
-    $routeProvider.when('/', {
-      templateUrl: getHtmlBasePath() + 'home-page.html',
-      controller: 'HomePageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/hadiths', {
-      templateUrl: getHtmlBasePath() + 'hadiths.html',
-      controller: 'HadithListingPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/hadith/:id', {
-      templateUrl: getHtmlBasePath() + 'hadith.html',
-      controller: 'HadithPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/books', {
-      templateUrl: getHtmlBasePath() + 'books.html',
-      controller: 'BookListingPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/book/:id', {
-      templateUrl: getHtmlBasePath() + 'book.html',
-      controller: 'BookPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/persons', {
-      templateUrl: getHtmlBasePath() + 'persons.html',
-      controller: 'PersonListingPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/person/:id', {
-      templateUrl: getHtmlBasePath() + 'person.html',
-      controller: 'PersonPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/hadithtags', {
-      templateUrl: getHtmlBasePath() + 'hadithtags.html',
-      controller: 'HadithTagListingPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/hadithtag/:id', {
-      templateUrl: getHtmlBasePath() + 'hadithtag.html',
-      controller: 'HadithTagPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/users', {
-      templateUrl: getHtmlBasePath() + 'users.html',
-      controller: 'UserListingPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).when('/user/:id', {
-      templateUrl: getHtmlBasePath() + 'user.html',
-      controller: 'UserPageCtrl',
-      controllerAs: 'ctrl',
-      reloadOnSearch: false
-    }).otherwise({redirectTo: '/'});
+HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
+                                $routeProvider: IRouteProvider,
+                                $locationProvider: angular.ILocationProvider) {
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false
+  });
+  $routeProvider.when('/', {
+    templateUrl: getHtmlBasePath() + 'home-page.html',
+    controller: 'HomePageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/hadiths', {
+    templateUrl: getHtmlBasePath() + 'hadiths.html',
+    controller: 'HadithListingPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/hadith/:id', {
+    templateUrl: getHtmlBasePath() + 'hadith.html',
+    controller: 'HadithPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/books', {
+    templateUrl: getHtmlBasePath() + 'books.html',
+    controller: 'BookListingPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/book/:id', {
+    templateUrl: getHtmlBasePath() + 'book.html',
+    controller: 'BookPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/persons', {
+    templateUrl: getHtmlBasePath() + 'persons.html',
+    controller: 'PersonListingPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/person/:id', {
+    templateUrl: getHtmlBasePath() + 'person.html',
+    controller: 'PersonPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/hadithtags', {
+    templateUrl: getHtmlBasePath() + 'hadithtags.html',
+    controller: 'HadithTagListingPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/hadithtag/:id', {
+    templateUrl: getHtmlBasePath() + 'hadithtag.html',
+    controller: 'HadithTagPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/users', {
+    templateUrl: getHtmlBasePath() + 'users.html',
+    controller: 'UserListingPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).when('/user/:id', {
+    templateUrl: getHtmlBasePath() + 'user.html',
+    controller: 'UserPageCtrl',
+    controllerAs: 'ctrl',
+    reloadOnSearch: false
+  }).otherwise({redirectTo: '/'});
 
-    $httpProvider.interceptors.push(['$q', '$rootScope', function ($q: ng.IQService, $rootScope: ng.IScope) {
-      return {
-        'request': function (config: any) {
-          // To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
-          if (!config.headers.hasOwnProperty('X-global')) {
-            $rootScope['pendingRequests']++;
-          }
-          // If this is a request to the API, appends Facebook authentication token.
-          if (config.url.startsWith('/apis/') && $rootScope['fbAccessToken'] !== null) {
-            config.params = config.params || {};
-            config.params['fb_token'] = $rootScope['fbAccessToken'];
-          }
-          return config || $q.when(config);
-        },
-        'requestError': function (rejection) {
-          if ($rootScope['pendingRequests'] >= 1) {
-            $rootScope['pendingRequests']--;
-          }
-          return $q.reject(rejection);
-        },
-        'response': function (response) {
-          if ($rootScope['pendingRequests'] >= 1) {
-            $rootScope['pendingRequests']--;
-          }
-          return response || $q.when(response);
-        },
-        'responseError': function (rejection) {
-          if ($rootScope['pendingRequests'] >= 1) {
-            $rootScope['pendingRequests']--;
-          }
-          return $q.reject(rejection);
+  $httpProvider.interceptors.push(['$q', '$rootScope', function ($q: angular.IQService, $rootScope: angular.IScope) {
+    return {
+      'request': function (config: any) {
+        // To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
+        if (!config.headers.hasOwnProperty('X-global')) {
+          $rootScope['pendingRequests']++;
         }
-      };
-    }
-    ]);
-  }).run(['$rootScope', function ($rootScope) {
-    $rootScope['pendingRequests'] = 0;
-  }]);
+        // If this is a request to the API, appends Facebook authentication token.
+        if (config.url.startsWith('/apis/') && $rootScope['fbAccessToken'] !== null) {
+          config.params = config.params || {};
+          config.params['fb_token'] = $rootScope['fbAccessToken'];
+        }
+        return config || $q.when(config);
+      },
+      'requestError': function (rejection) {
+        if ($rootScope['pendingRequests'] >= 1) {
+          $rootScope['pendingRequests']--;
+        }
+        return $q.reject(rejection);
+      },
+      'response': function (response) {
+        if ($rootScope['pendingRequests'] >= 1) {
+          $rootScope['pendingRequests']--;
+        }
+        return response || $q.when(response);
+      },
+      'responseError': function (rejection) {
+        if ($rootScope['pendingRequests'] >= 1) {
+          $rootScope['pendingRequests']--;
+        }
+        return $q.reject(rejection);
+      }
+    };
+  }
+  ]);
+}).run(['$rootScope', function ($rootScope) {
+  $rootScope['pendingRequests'] = 0;
+}]);
 
 
-  HadithHouseApp.controller('HadithHouseCtrl',
-    function ($scope, $rootScope, $location, FacebookService, UserResourceClass) {
-      let ctrl = this;
+HadithHouseApp.controller('HadithHouseCtrl',
+  function ($scope, $rootScope, $location, FacebookService, UserResourceClass) {
+    let ctrl = this;
 
-      $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
-      $rootScope.fbUser = null;
-      $rootScope.fbAccessToken = fbAccessToken;
+    $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
+    $rootScope.fbUser = null;
+    $rootScope.fbAccessToken = fbAccessToken;
 
-      ctrl.fbLogin = function () {
-        FacebookService.login().then(function (response) {
-          if (response.status === 'connected') {
-            $rootScope.fbAccessToken = fbAccessToken = response.authResponse.accessToken;
-            ctrl.getUserInfo();
-          }
-        });
-      };
+    ctrl.fbLogin = function () {
+      FacebookService.login().then(function (response) {
+        if (response.status === 'connected') {
+          $rootScope.fbAccessToken = fbAccessToken = response.authResponse.accessToken;
+          ctrl.getUserInfo();
+        }
+      });
+    };
 
-      ctrl.fbLogout = function () {
-        FacebookService.logout().then(function (/*response*/) {
+    ctrl.fbLogout = function () {
+      FacebookService.logout().then(function (/*response*/) {
+        $rootScope.fbUser = null;
+        $rootScope.fbAccessToken = null;
+      });
+    };
+
+    ctrl.getUserInfo = function () {
+      FacebookService.getLoggedInUser().then(function (user) {
+        $rootScope.fetchedLoginStatus = true;
+        if (user === null) {
           $rootScope.fbUser = null;
-          $rootScope.fbAccessToken = null;
-        });
-      };
-
-      ctrl.getUserInfo = function () {
-        FacebookService.getLoggedInUser().then(function (user) {
-          $rootScope.fetchedLoginStatus = true;
-          if (user === null) {
-            $rootScope.fbUser = null;
-          } else {
-            $rootScope.fbUser = {
-              id: user.id,
-              link: user.link,
-              profilePicUrl: user.picture.data.url
-            };
-          }
-        }, function onError(reason) {
-          toastr.error('Failed to fetch logged in user.');
-        });
-        UserResourceClass.get({id: 'current'}, function onSuccess(user) {
-          let perms = {};
-          for (let i in user.permissions) {
-            if (user.permissions.hasOwnProperty(i)) {
-              perms[user.permissions[i]] = true;
-            }
-          }
-          user.permissions = perms;
-          $rootScope.user = user;
-        });
-      };
-
-      ctrl.getUserInfo();
-
-      ctrl.search = function () {
-        toastr.warning('Search is not implemented yet!');
-      };
-
-      // Load all registered items
-      ctrl.menuItems = [
-        {name: 'Hadiths', urlPath: 'hadiths', selected: false},
-        {name: 'Books', urlPath: 'books', selected: false},
-        {
-          name: 'Persons',
-          urlPath: 'persons',
-          selected: false,
-          description: 'This page contains a listing of all the persons added to the database of Hadith House.'
-        },
-        {name: 'Tags', urlPath: 'hadithtags', selected: false},
-        {name: 'Users', urlPath: 'users', selected: false}
-      ];
-
-      let path = $location.path() ? $location.path().substr(1) : null;
-      if (path) {
-        for (let i = 0; i < ctrl.menuItems.length; i++) {
-          if (ctrl.menuItems[i].urlPath === path) {
-            ctrl.selected = ctrl.menuItems[i];
-            break;
+        } else {
+          $rootScope.fbUser = {
+            id: user.id,
+            link: user.link,
+            profilePicUrl: user.picture.data.url
+          };
+        }
+      }, function onError(/*reason*/) {
+        toastr.error('Failed to fetch logged in user.');
+      });
+      UserResourceClass.get({id: 'current'}, function onSuccess(user) {
+        let perms = {};
+        for (let i in user.permissions) {
+          if (user.permissions.hasOwnProperty(i)) {
+            perms[user.permissions[i]] = true;
           }
         }
-      }
-      if (!ctrl.selected) {
-        ctrl.selected = ctrl.menuItems[0];
-      }
+        user.permissions = perms;
+        $rootScope.user = user;
+      });
+    };
 
-      ctrl.selectMenuItem = function (item) {
-        _.each(ctrl.menuItems, (i) => i.selected = false);
-        ctrl.selected = angular.isNumber(item) ? ctrl.menuItems[item] : item;
-        $location.url(ctrl.selected.urlPath);
-      };
-    });
+    ctrl.getUserInfo();
 
-  toastr.options = {
-    'closeButton': true,
-    'debug': false,
-    'newestOnTop': true,
-    'progressBar': false,
-    'positionClass': 'toast-bottom-full-width',
-    'preventDuplicates': false,
-    'showDuration': 300,
-    'hideDuration': 1000,
-    'timeOut': 5000,
-    'extendedTimeOut': 1000,
-    'showEasing': 'swing',
-    'hideEasing': 'linear',
-    'showMethod': 'fadeIn',
-    'hideMethod': 'fadeOut'
-  };
-}
+    ctrl.search = function () {
+      toastr.warning('Search is not implemented yet!');
+    };
+
+    // Load all registered items
+    ctrl.menuItems = [
+      {name: 'Hadiths', urlPath: 'hadiths', selected: false},
+      {name: 'Books', urlPath: 'books', selected: false},
+      {
+        name: 'Persons',
+        urlPath: 'persons',
+        selected: false,
+        description: 'This page contains a listing of all the persons added to the database of Hadith House.'
+      },
+      {name: 'Tags', urlPath: 'hadithtags', selected: false},
+      {name: 'Users', urlPath: 'users', selected: false}
+    ];
+
+    let path = $location.path() ? $location.path().substr(1) : null;
+    if (path) {
+      for (let i = 0; i < ctrl.menuItems.length; i++) {
+        if (ctrl.menuItems[i].urlPath === path) {
+          ctrl.selected = ctrl.menuItems[i];
+          break;
+        }
+      }
+    }
+    if (!ctrl.selected) {
+      ctrl.selected = ctrl.menuItems[0];
+    }
+
+    ctrl.selectMenuItem = function (item) {
+      _.each(ctrl.menuItems, (i) => i.selected = false);
+      ctrl.selected = angular.isNumber(item) ? ctrl.menuItems[item] : item;
+      $location.url(ctrl.selected.urlPath);
+    };
+  });
+
+toastr.options.closeButton = true;
+toastr.options.closeButton = true;
+toastr.options.debug = false;
+toastr.options.newestOnTop = true;
+toastr.options.progressBar = false;
+toastr.options.positionClass = 'toast-bottom-full-width';
+toastr.options.preventDuplicates = false;
+toastr.options.showDuration = 300;
+toastr.options.hideDuration = 1000;
+toastr.options.timeOut = 5000;
+toastr.options.extendedTimeOut = 1000;
+toastr.options.showEasing = 'swing';
+toastr.options.hideEasing = 'linear';
+toastr.options.showMethod = 'fadeIn';
+toastr.options.hideMethod = 'fadeOut';
 

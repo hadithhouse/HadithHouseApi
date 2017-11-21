@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,37 +22,32 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="entity-page.ts" />
+import {ILocationService, IScope} from "angular";
+import {HadithTag, CacheableResource} from "../resources/resources";
+import {EntityPageCtrl} from "./entity-page";
+import {HadithHouseApp} from "../app";
 
-module HadithHouse.Controllers {
-  import HadithTag = HadithHouse.Resources.HadithTag;
+export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
+  private HadithTagResource:CacheableResource<HadithTag, number>;
 
-  export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
-    private HadithTagResource:Resources.CacheableResource<HadithTag, number>;
-
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $location:ng.ILocationService,
-                $routeParams:any,
-                HadithTagResource:Resources.CacheableResource<HadithTag, number>) {
-      super($scope, $rootScope, $location, $routeParams, HadithTagResource);
-      this.HadithTagResource = HadithTagResource;
-    }
-
-    protected getEntityPath(id: number) {
-      return 'hadithtag/' + id;
-    }
+  constructor($scope:IScope,
+              $rootScope:IScope,
+              $location:ILocationService,
+              $routeParams:any,
+              HadithTagResource:CacheableResource<HadithTag, number>) {
+    super($scope, $rootScope, $location, $routeParams, HadithTagResource);
+    this.HadithTagResource = HadithTagResource;
   }
 
-  HadithHouse.HadithHouseApp.controller('HadithTagPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, HadithTagResource) {
-      let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource);
-      ctrl.initialize();
-      return ctrl;
-    });
+  protected getEntityPath(id: number) {
+    return 'hadithtag/' + id;
+  }
 }
+
+HadithHouseApp.controller('HadithTagPageCtrl',
+  function ($scope, $rootScope, $location, $routeParams, HadithTagResource) {
+    let ctrl = new HadithTagPageCtrl($scope, $rootScope, $location, $routeParams, HadithTagResource);
+    ctrl.initialize();
+    return ctrl;
+  });
 

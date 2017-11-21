@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,23 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="entity-listing-page.ts" />
+import {ILocationService, IScope, ITimeoutService} from "angular";
+import {EntityListingPageCtrl} from "./entity-listing-page";
+import {Book, CacheableResource} from "../resources/resources";
+import {HadithHouseApp} from "../app";
 
-  module HadithHouse.Controllers {
-    import Book = HadithHouse.Resources.Book;
-
-    export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
-      constructor($scope:ng.IScope,
-                  $rootScope:ng.IScope,
-                  $timeout:ng.ITimeoutService,
-                  $location:ng.ILocationService,
-                  private BookResource:Resources.CacheableResource<Book, number>) {
-        super($scope, $rootScope, $timeout, $location, BookResource, 'book');
-      }
-    }
-
-    HadithHouse.HadithHouseApp.controller('BookListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, BookResource) {
-        return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
-      });
+export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $timeout: ITimeoutService,
+              $location: ILocationService,
+              private BookResource: CacheableResource<Book, number>) {
+    super($scope, $rootScope, $timeout, $location, BookResource, 'book');
   }
+}
+
+HadithHouseApp.controller('BookListingPageCtrl',
+  function ($scope, $rootScope, $timeout, $location, BookResource) {
+    return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
+  });
 

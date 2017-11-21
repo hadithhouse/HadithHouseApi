@@ -22,145 +22,132 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/angular-resource/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/lodash/index.d.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="../resources/resources.ts" />
+import {Book, CacheableResource, Entity, HadithTag, Person, User} from "../resources/resources";
+import {ILocationService, IScope} from "angular";
+import {getHtmlBasePath, HadithHouseApp} from "../app";
+import * as angular from "angular"
 
+export class EntityCtrl {
+  public entityId: string = null;
+  public entity: Entity<number> = null;
+  public type: string;
+  public mode: string;
+  public normalisedMode: string|boolean;
+  public clickCallback: any;
+  public firstLoad = true;
+  private EntityResource: CacheableResource<Entity<number>, number>;
 
-module HadithHouse.Directives {
-  import IScope = angular.IScope;
-  import CacheableResource = HadithHouse.Resources.CacheableResource;
-  import Entity = HadithHouse.Resources.Entity;
-  import Person = HadithHouse.Resources.Person;
-  import Book = HadithHouse.Resources.Book;
-  import HadithTag = HadithHouse.Resources.HadithTag;
-  import User = HadithHouse.Resources.User;
-  import ILocationService = angular.ILocationService;
-
-  export class EntityCtrl {
-    public entityId: string = null;
-    public entity: Entity<number> = null;
-    public type: string;
-    public mode: string;
-    public normalisedMode: string|boolean;
-    public clickCallback: any;
-    public firstLoad = true;
-    private EntityResource: CacheableResource<Entity<number>, number>;
-
-    constructor(private $scope: IScope,
-                private $location: ILocationService,
-                private PersonResource: CacheableResource<Person, number>,
-                private BookResource: CacheableResource<Book, number>,
-                private HadithTagResource: CacheableResource<HadithTag, number>,
-                private UserResource: CacheableResource<User, number>) {
-      // Prior to v1.5, we need to call `$onInit()` manually.
-      // (Bindings will always be pre-assigned in these versions.)
-      if (angular.version.major === 1 && angular.version.minor < 5) {
-        this.$onInit();
-      }
+  constructor(private $scope: IScope,
+              private $location: ILocationService,
+              private PersonResource: CacheableResource<Person, number>,
+              private BookResource: CacheableResource<Book, number>,
+              private HadithTagResource: CacheableResource<HadithTag, number>,
+              private UserResource: CacheableResource<User, number>) {
+    // Prior to v1.5, we need to call `$onInit()` manually.
+    // (Bindings will always be pre-assigned in these versions.)
+    if (angular.version.major === 1 && angular.version.minor < 5) {
+      this.$onInit();
     }
-
-    public $onInit = () => {
-      switch (this.mode.toLowerCase()) {
-        case 'text':
-          this.normalisedMode = 'text';
-          break;
-        case 'link':
-          this.normalisedMode = 'link';
-          break;
-        case 'button':
-          this.normalisedMode = 'button';
-          break;
-        case 'badge':
-          this.normalisedMode = 'badge';
-          break;
-        case 'clickable-badge':
-          this.normalisedMode = 'clickable-badge';
-          break;
-        default:
-          throw 'Invalid type for hh-entity element.';
-      }
-
-      if (!this.type || typeof(this.type) !== 'string') {
-        throw 'hh-entity element must have its type attribute set to a string.';
-      }
-
-      switch (this.type.toLowerCase()) {
-        case 'person':
-          this.EntityResource = this.PersonResource;
-          break;
-        case 'book':
-          this.EntityResource = this.BookResource;
-          break;
-        case 'hadithtag':
-          this.EntityResource = this.HadithTagResource;
-          break;
-        case 'user':
-          this.EntityResource = this.UserResource;
-          break;
-        default:
-          throw 'Invalid type for hh-entity element.';
-      }
-
-      this.$scope.$watch('ctrl.entityId', this.onIdChanged);
-    };
-
-    public onClick() {
-      if (this.normalisedMode === 'text') {
-        return;
-      }
-      if (this.clickCallback) {
-        this.clickCallback({entity: this.entity});
-      } else {
-        this.$location.path(`/${this.type}/${this.entity.id}`);
-      }
-    }
-
-    public getEntityTitle(): string {
-      if (!this.entity) {
-        return '';
-      }
-      return this.entity.toString();
-    }
-
-    public getEntityLink(): string {
-      return `/${this.type}/${this.entity.id}`;
-    }
-
-    private onIdChanged = (newValue, oldValue) => {
-      if (newValue && this.firstLoad) {
-        // An ID(s) was(were) passed to the entity and this.entity have not been set yet, so we set it.
-        this.firstLoad = false;
-      } else {
-        // The entity has already been loaded, so we just check whether we have
-        // changes in the ID that we need to refresh
-        if (newValue !== oldValue) {
-          return;
-        }
-      }
-      if (this.entityId !== null && this.entityId !== '' && typeof(this.entityId) !== 'undefined') {
-        this.entity = this.EntityResource.get(parseInt(this.entityId));
-      } else {
-        this.entity = null;
-      }
-    };
   }
 
-  HadithHouseApp.controller('EntityCtrl',
-    ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityCtrl]);
-
-  // TODO: Consider creating a class for this.
-  HadithHouseApp.component('hhEntity', {
-    templateUrl: getHtmlBasePath() + 'directives/entity.directive.html',
-    controller: 'EntityCtrl',
-    controllerAs: 'ctrl',
-    bindings: {
-      clickCallback: '&?',
-      mode: '@',
-      entityId: '@',
-      type: '@'
+  public $onInit = () => {
+    switch (this.mode.toLowerCase()) {
+      case 'text':
+        this.normalisedMode = 'text';
+        break;
+      case 'link':
+        this.normalisedMode = 'link';
+        break;
+      case 'button':
+        this.normalisedMode = 'button';
+        break;
+      case 'badge':
+        this.normalisedMode = 'badge';
+        break;
+      case 'clickable-badge':
+        this.normalisedMode = 'clickable-badge';
+        break;
+      default:
+        throw 'Invalid type for hh-entity element.';
     }
-  });
+
+    if (!this.type || typeof(this.type) !== 'string') {
+      throw 'hh-entity element must have its type attribute set to a string.';
+    }
+
+    switch (this.type.toLowerCase()) {
+      case 'person':
+        this.EntityResource = this.PersonResource;
+        break;
+      case 'book':
+        this.EntityResource = this.BookResource;
+        break;
+      case 'hadithtag':
+        this.EntityResource = this.HadithTagResource;
+        break;
+      case 'user':
+        this.EntityResource = this.UserResource;
+        break;
+      default:
+        throw 'Invalid type for hh-entity element.';
+    }
+
+    this.$scope.$watch('ctrl.entityId', this.onIdChanged);
+  };
+
+  public onClick() {
+    if (this.normalisedMode === 'text') {
+      return;
+    }
+    if (this.clickCallback) {
+      this.clickCallback({entity: this.entity});
+    } else {
+      this.$location.path(`/${this.type}/${this.entity.id}`);
+    }
+  }
+
+  public getEntityTitle(): string {
+    if (!this.entity) {
+      return '';
+    }
+    return this.entity.toString();
+  }
+
+  public getEntityLink(): string {
+    return `/${this.type}/${this.entity.id}`;
+  }
+
+  private onIdChanged = (newValue, oldValue) => {
+    if (newValue && this.firstLoad) {
+      // An ID(s) was(were) passed to the entity and this.entity have not been set yet, so we set it.
+      this.firstLoad = false;
+    } else {
+      // The entity has already been loaded, so we just check whether we have
+      // changes in the ID that we need to refresh
+      if (newValue !== oldValue) {
+        return;
+      }
+    }
+    if (this.entityId !== null && this.entityId !== '' && typeof(this.entityId) !== 'undefined') {
+      this.entity = this.EntityResource.get(parseInt(this.entityId));
+    } else {
+      this.entity = null;
+    }
+  };
 }
+
+HadithHouseApp.controller('EntityCtrl',
+  ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityCtrl]);
+
+// TODO: Consider creating a class for this.
+HadithHouseApp.component('hhEntity', {
+  templateUrl: getHtmlBasePath() + 'directives/entity.directive.html',
+  controller: 'EntityCtrl',
+  controllerAs: 'ctrl',
+  bindings: {
+    clickCallback: '&?',
+    mode: '@',
+    entityId: '@',
+    type: '@'
+  }
+});

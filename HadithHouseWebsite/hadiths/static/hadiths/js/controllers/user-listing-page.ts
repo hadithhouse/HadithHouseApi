@@ -21,28 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {HadithHouseApp} from "../app";
+import {EntityListingPageCtrl} from "./entity-listing-page";
+import {CacheableResource, User} from "../resources/resources";
+import {ILocationService, IScope, ITimeoutService} from "angular";
 
-/// <reference path="../../../../../node_modules/@types/angular/index.d.ts" />
-/// <reference path="../../../../../node_modules/@types/angular-material/index.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="entity-listing-page.ts" />
-
-  module HadithHouse.Controllers {
-    import User = HadithHouse.Resources.User;
-
-    export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
-      constructor($scope:ng.IScope,
-                  $rootScope:ng.IScope,
-                  $timeout:ng.ITimeoutService,
-                  $location:ng.ILocationService,
-                  private UserResource:Resources.CacheableResource<User, number>) {
-        super($scope, $rootScope, $timeout, $location, UserResource, 'user');
-      }
-    }
-
-    HadithHouse.HadithHouseApp.controller('UserListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, UserResource) {
-        return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, UserResource);
-      });
+export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $timeout: ITimeoutService,
+              $location: ILocationService,
+              private UserResource: CacheableResource<User, number>) {
+    super($scope, $rootScope, $timeout, $location, UserResource, 'user');
   }
+}
+
+HadithHouseApp.controller('UserListingPageCtrl',
+  function ($scope, $rootScope, $timeout, $location, UserResource) {
+    return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, UserResource);
+  });
 
