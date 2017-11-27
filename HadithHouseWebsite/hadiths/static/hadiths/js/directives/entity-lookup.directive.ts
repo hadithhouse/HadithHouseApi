@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {Book, CacheableResource, Entity, HadithTag, Person, User} from "../resources/resources";
+import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {IAugmentedJQuery, IScope} from "angular";
 import * as angular from "angular"
-import {getHtmlBasePath, HadithHouseApp} from "../app";
+import {getHtmlBasePath, HadithHouseApp} from "app";
 
 declare let Bloodhound: any;
 

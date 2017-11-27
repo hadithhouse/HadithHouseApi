@@ -23,7 +23,7 @@
  */
 
 import * as _ from "lodash"
-import {CacheableResource, Entity} from "../resources/resources";
+import {CacheableResource, Entity} from "resources/resources";
 import {ILocationService, IScope} from "angular";
 
 export abstract class EntityPageCtrl<TEntity extends Entity<number | string>> {

@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {CacheableResource, Hadith, ObjectWithPromise, PagedResults} from "../resources/resources";
+import {CacheableResource, Hadith, ObjectWithPromise, PagedResults} from "resources/resources";
 import {IScope} from "angular";
-import {getHtmlBasePath, HadithHouseApp} from "../app";
+import {getHtmlBasePath, HadithHouseApp} from "app";
 
 export class HadithListingCtrl {
   public pagedEntities: ObjectWithPromise<PagedResults<Hadith>>;

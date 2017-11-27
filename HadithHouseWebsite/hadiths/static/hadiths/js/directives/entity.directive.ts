@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-import {Book, CacheableResource, Entity, HadithTag, Person, User} from "../resources/resources";
+import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
-import {getHtmlBasePath, HadithHouseApp} from "../app";
+import {getHtmlBasePath, HadithHouseApp} from "app";
 import * as angular from "angular"
 
 export class EntityCtrl {

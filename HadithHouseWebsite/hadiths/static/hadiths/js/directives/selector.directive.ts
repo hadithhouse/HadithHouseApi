@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {Book, CacheableResource, Entity, HadithTag, Person, User} from "../resources/resources";
+import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
 import * as angular from "angular"
 import * as _ from "lodash"
-import {getHtmlBasePath, HadithHouseApp} from "../app";
+import {getHtmlBasePath, HadithHouseApp} from "app";
 
 export class SelectorCtrl {
   public addingEntitiesEnabled:string;

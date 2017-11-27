@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {HadithHouseApp} from "../app";
+import {HadithHouseApp} from "app";
 import {
   Book, CacheableResource, Chain, Hadith, HadithTag, ObjectWithPromise, PagedResults,
   Person

@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {EntityListingPageCtrl} from "./entity-listing-page";
+import {EntityListingPageCtrl} from "controllers/entity-listing-page";
 import {CacheableResource, HadithTag} from "resources/resources";
 import {ILocationService, IScope, ITimeoutService} from "angular";
-import {HadithHouseApp} from "../app";
+import {HadithHouseApp} from "app";
 
 export class HadithTagListingPageCtrl extends EntityListingPageCtrl<HadithTag> {
   constructor($scope: IScope,

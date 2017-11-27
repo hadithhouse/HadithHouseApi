@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import {HadithHouseApp} from "../app";
+import {HadithHouseApp} from "app";
 import {IQService} from "angular";
 
 export class FacebookOfflineService {
