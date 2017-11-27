@@ -288,10 +288,12 @@ export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
   }
 }
 
-HadithHouseApp.controller('HadithPageCtrl',
-  function ($scope, $rootScope, $location, $routeParams, HadithResource, HadithTagResource, BookResource, PersonResource, ChainResource) {
-    let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams,
-      HadithResource, HadithTagResource, BookResource, PersonResource, ChainResource);
-    ctrl.initialize();
-    return ctrl;
-  });
+export function HadithPageCtrlCreator($scope, $rootScope, $location, $routeParams, HadithResource, HadithTagResource,
+                                      BookResource, PersonResource, ChainResource) {
+  let ctrl = new HadithPageCtrl($scope, $rootScope, $location, $routeParams,
+    HadithResource, HadithTagResource, BookResource, PersonResource, ChainResource);
+  ctrl.initialize();
+  return ctrl;
+}
+
+HadithHouseApp.controller('HadithPageCtrl', HadithPageCtrlCreator);

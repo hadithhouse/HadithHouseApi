@@ -37,8 +37,9 @@ export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
   }
 }
 
-HadithHouseApp.controller('BookListingPageCtrl',
-  function ($scope, $rootScope, $timeout, $location, BookResource) {
-    return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
-  });
+export function BookListingPageCtrlCreator($scope, $rootScope, $timeout, $location, BookResource) {
+  return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
+}
+
+HadithHouseApp.controller('BookListingPageCtrl', BookListingPageCtrlCreator);
 

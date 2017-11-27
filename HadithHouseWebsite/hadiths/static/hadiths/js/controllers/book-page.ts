@@ -46,9 +46,10 @@ export class BookPageCtrl extends EntityPageCtrl<Book> {
   }
 }
 
-HadithHouseApp.controller('BookPageCtrl',
-  function ($scope, $rootScope, $location, $routeParams, BookResource) {
-    let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
-    ctrl.initialize();
-    return ctrl;
-  });
+export function BookPageCtrlCreator($scope, $rootScope, $location, $routeParams, BookResource) {
+  let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
+  ctrl.initialize();
+  return ctrl;
+}
+
+HadithHouseApp.controller('BookPageCtrl', BookPageCtrlCreator);

@@ -44,9 +44,10 @@ export class PersonPageCtrl extends EntityPageCtrl<Person> {
   }
 }
 
-HadithHouseApp.controller('PersonPageCtrl',
-  function ($scope, $rootScope, $location, $routeParams, PersonResource) {
-    let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource);
-    ctrl.initialize();
-    return ctrl;
-  });
+export function PersonPageCtrlCreator($scope, $rootScope, $location, $routeParams, PersonResource) {
+  let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource);
+  ctrl.initialize();
+  return ctrl;
+}
+
+HadithHouseApp.controller('PersonPageCtrl', PersonPageCtrlCreator);

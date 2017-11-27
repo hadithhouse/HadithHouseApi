@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  */
 
-import {HadithHouseApp} from "../app";
-import {Hadith} from "../resources/resources";
+import {HadithHouseApp} from "app";
+import {Hadith} from "resources/resources";
 import {IHttpService} from "angular";
 
 export class HomePageCtrl {
@@ -45,7 +45,8 @@ export class HomePageCtrl {
   }
 }
 
-HadithHouseApp.controller('HomePageCtrl',
-  function ($http) {
-    return new HomePageCtrl($http);
-  });
+export function HomePageCtrlCreator($http) {
+  return new HomePageCtrl($http);
+}
+
+HadithHouseApp.controller('HomePageCtrl', HomePageCtrlCreator);

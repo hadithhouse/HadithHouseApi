@@ -129,8 +129,10 @@ export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
   }
 }
 
-HadithHouseApp.controller('HadithListingPageCtrl',
-  function ($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource, BookResource, PersonResource) {
-    return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource,
-      BookResource, PersonResource);
-  });
+export function HadithListingPageCtrlCreator($scope, $rootScope, $timeout, $location, HadithResource,
+                                             HadithTagResource, BookResource, PersonResource) {
+  return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource,
+    BookResource, PersonResource);
+}
+
+HadithHouseApp.controller('HadithListingPageCtrl', HadithListingPageCtrlCreator);

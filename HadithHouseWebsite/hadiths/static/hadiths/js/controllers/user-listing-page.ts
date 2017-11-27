@@ -36,8 +36,9 @@ export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
   }
 }
 
-HadithHouseApp.controller('UserListingPageCtrl',
-  function ($scope, $rootScope, $timeout, $location, UserResource) {
-    return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, UserResource);
-  });
+export function UserListingPageCtrlCreator($scope, $rootScope, $timeout, $location, UserResource) {
+  return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, UserResource);
+}
+
+HadithHouseApp.controller('UserListingPageCtrl', UserListingPageCtrlCreator);
 
