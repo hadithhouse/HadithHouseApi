@@ -87,37 +87,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
-
-<!-- jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-<!-- Tether -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.1/js/tether.min.js"></script>
-
-<!-- Bootstrap -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min.js"></script>
-
-<!-- Angular -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-route.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-animate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-aria.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-resource.min.js"></script>
-
-<!-- Lo-Dash -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
-
-<!-- MomentJS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js"></script>
-
-<!-- Toastr -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js"></script>
-
-
-
-<!-- D3.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+<script src="{% static 'hadiths/js/systemjs.config.js' %}"></script>
 
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script>
@@ -160,41 +130,11 @@
 
 {% if environment == 'production' %}
   <link rel="stylesheet" href="{% static 'hadiths/css/all.css' %}?{{ all_css_hash }}">
+  <!-- In production, pre-load all modules to avoid dynamic module loading (via SystemJS) which is slow. -->
   <script src="{% static 'hadiths/js/all.js' %}?{{ all_js_hash }}"></script>
 {% else %}
   <link rel="stylesheet" href="{% static 'hadiths/css/typeaheadjs.css' %}">
   <link rel="stylesheet" href="{% static 'hadiths/css/styles.css' %}">
-
-  <script src="{% static 'hadiths/js/app.js' %}"></script>
-
-  <!-- Services -->
-  <script src="{% static 'hadiths/js/services/facebook.service.js' %}"></script>
-  <script src="{% static 'hadiths/js/services/services.js' %}"></script>
-  <script src="{% static 'hadiths/js/caching/cache.js' %}"></script>
-  <script src="{% static 'hadiths/js/resources/resources.js' %}"></script>
-
-  <!-- Controllers -->
-  <script src="{% static 'hadiths/js/controllers/entity-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/entity-listing-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/book-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/book-listing-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/hadith-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/hadith-listing-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/hadithtag-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/hadithtag-listing-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/home-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/person-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/person-listing-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/user-page.js' %}"></script>
-  <script src="{% static 'hadiths/js/controllers/user-listing-page.js' %}"></script>
-
-  <!-- Directives -->
-  <script src="{% static 'hadiths/js/directives/entity.directive.js' %}"></script>
-  <script src="{% static 'hadiths/js/directives/entity-lookup.directive.js' %}"></script>
-  <script src="{% static 'hadiths/js/directives/hadith-listing.directive.js' %}"></script>
-  <script src="{% static 'hadiths/js/directives/selector.directive.js' %}"></script>
-  <script src="{% static 'hadiths/js/directives/tags-input.directive.js' %}"></script>
-  <script src="{% static 'hadiths/js/directives/tree.directive.js' %}"></script>
 {% endif %}
 
 <!-- Facebook Authentication -->
@@ -227,7 +167,9 @@
         fbAccessToken = null;
       }
 
-      angular.bootstrap(document.body, ['HadithHouseApp']);
+      SystemJS.import('app').then(function() {
+        angular.bootstrap(document.body, ['HadithHouseApp']);
+      });
     });
   };
 

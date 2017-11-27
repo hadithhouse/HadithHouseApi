@@ -85,10 +85,11 @@ export class UserPageCtrl extends EntityPageCtrl<User> {
   }
 }
 
-HadithHouseApp.controller('UserPageCtrl',
-  function ($scope, $rootScope, $location, $routeParams, UserResource) {
-    let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource);
-    ctrl.initialize();
-    return ctrl;
-  });
+export function UserPageCtrlCreator($scope, $rootScope, $location, $routeParams, UserResource) {
+  let ctrl = new UserPageCtrl($scope, $rootScope, $location, $routeParams, UserResource);
+  ctrl.initialize();
+  return ctrl;
+}
+
+HadithHouseApp.controller('UserPageCtrl', UserPageCtrlCreator);
 

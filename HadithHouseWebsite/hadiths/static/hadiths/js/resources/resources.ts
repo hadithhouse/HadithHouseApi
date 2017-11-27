@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 
-import {Cache} from "../caching/cache"
+import {Cache} from "caching/cache"
 import * as _ from "lodash";
 import {IHttpService, IQService, IHttpPromise, IPromise} from "angular";
-import {HadithHouseApp} from "../app";
+import {HadithHouseApp} from "app";
 
 function getRestfulUrl<TId>(baseUrl: string, idOrIds?: TId | TId[]): string {
   if (!idOrIds) {

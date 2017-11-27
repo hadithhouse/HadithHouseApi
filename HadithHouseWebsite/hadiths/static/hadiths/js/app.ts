@@ -27,8 +27,21 @@ import * as _ from "lodash";
 import * as toastr from "toastr";
 import IRouteProvider = angular.route.IRouteProvider;
 
+import {HomePageCtrlCreator} from "controllers/home-page";
+import {HadithListingPageCtrlCreator} from "controllers/hadith-listing-page";
+import {HadithPageCtrlCreator} from "controllers/hadith-page";
+import {BookListingPageCtrlCreator} from "controllers/book-listing-page";
+import {BookPageCtrlCreator} from "controllers/book-page";
+import {PersonListingPageCtrlCreator} from "controllers/person-listing-page";
+import {PersonPageCtrlCreator} from "controllers/person-page";
+import {HadithTagListingPageCtrlCreator} from "controllers/hadithtag-listing-page";
+import {HadithTagPageCtrlCreator} from "controllers/hadithtag-page";
+import {UserListingPageCtrlCreator} from "controllers/user-listing-page";
+import {UserPageCtrlCreator} from "controllers/user-page";
+
 // TODO: Should these be defined and exported here, or in a separate file?
 export declare function getHtmlBasePath(): String;
+
 export declare let fbFetchedLoginStatus: boolean;
 export declare let fbAccessToken: String;
 
@@ -43,57 +56,57 @@ HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
   });
   $routeProvider.when('/', {
     templateUrl: getHtmlBasePath() + 'home-page.html',
-    controller: 'HomePageCtrl',
+    controller: HomePageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/hadiths', {
     templateUrl: getHtmlBasePath() + 'hadiths.html',
-    controller: 'HadithListingPageCtrl',
+    controller: HadithListingPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/hadith/:id', {
     templateUrl: getHtmlBasePath() + 'hadith.html',
-    controller: 'HadithPageCtrl',
+    controller: HadithPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/books', {
     templateUrl: getHtmlBasePath() + 'books.html',
-    controller: 'BookListingPageCtrl',
+    controller: BookListingPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/book/:id', {
     templateUrl: getHtmlBasePath() + 'book.html',
-    controller: 'BookPageCtrl',
+    controller: BookPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/persons', {
     templateUrl: getHtmlBasePath() + 'persons.html',
-    controller: 'PersonListingPageCtrl',
+    controller: PersonListingPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/person/:id', {
     templateUrl: getHtmlBasePath() + 'person.html',
-    controller: 'PersonPageCtrl',
+    controller: PersonPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/hadithtags', {
     templateUrl: getHtmlBasePath() + 'hadithtags.html',
-    controller: 'HadithTagListingPageCtrl',
+    controller: HadithTagListingPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/hadithtag/:id', {
     templateUrl: getHtmlBasePath() + 'hadithtag.html',
-    controller: 'HadithTagPageCtrl',
+    controller: HadithTagPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/users', {
     templateUrl: getHtmlBasePath() + 'users.html',
-    controller: 'UserListingPageCtrl',
+    controller: UserListingPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).when('/user/:id', {
     templateUrl: getHtmlBasePath() + 'user.html',
-    controller: 'UserPageCtrl',
+    controller: UserPageCtrlCreator,
     controllerAs: 'ctrl',
     reloadOnSearch: false
   }).otherwise({redirectTo: '/'});
@@ -229,19 +242,21 @@ HadithHouseApp.controller('HadithHouseCtrl',
     };
   });
 
-toastr.options.closeButton = true;
-toastr.options.closeButton = true;
-toastr.options.debug = false;
-toastr.options.newestOnTop = true;
-toastr.options.progressBar = false;
-toastr.options.positionClass = 'toast-bottom-full-width';
-toastr.options.preventDuplicates = false;
-toastr.options.showDuration = 300;
-toastr.options.hideDuration = 1000;
-toastr.options.timeOut = 5000;
-toastr.options.extendedTimeOut = 1000;
-toastr.options.showEasing = 'swing';
-toastr.options.hideEasing = 'linear';
-toastr.options.showMethod = 'fadeIn';
-toastr.options.hideMethod = 'fadeOut';
+(function setToastrOptions() {
+  toastr.options.closeButton = true;
+  toastr.options.closeButton = true;
+  toastr.options.debug = false;
+  toastr.options.newestOnTop = true;
+  toastr.options.progressBar = false;
+  toastr.options.positionClass = 'toast-bottom-full-width';
+  toastr.options.preventDuplicates = false;
+  toastr.options.showDuration = 300;
+  toastr.options.hideDuration = 1000;
+  toastr.options.timeOut = 5000;
+  toastr.options.extendedTimeOut = 1000;
+  toastr.options.showEasing = 'swing';
+  toastr.options.hideEasing = 'linear';
+  toastr.options.showMethod = 'fadeIn';
+  toastr.options.hideMethod = 'fadeOut';
+})();
 
