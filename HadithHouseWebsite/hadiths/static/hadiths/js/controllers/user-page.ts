@@ -23,9 +23,9 @@
  */
 
 import {ILocationService, IScope} from "angular";
-import {User, CacheableResource} from "../resources/resources";
-import {EntityPageCtrl} from "./entity-page";
-import {HadithHouseApp} from "../app";
+import {User, CacheableResource} from "resources/resources";
+import {EntityPageCtrl} from "controllers/entity-page";
+import {HadithHouseApp} from "app";
 import * as _ from "lodash"
 
 export class UserPageCtrl extends EntityPageCtrl<User> {

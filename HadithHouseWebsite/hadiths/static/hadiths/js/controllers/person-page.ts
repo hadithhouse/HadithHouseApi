@@ -23,9 +23,9 @@
  */
 
 import {ILocationService, IScope} from "angular";
-import {Person, CacheableResource} from "../resources/resources";
-import {EntityPageCtrl} from "./entity-page";
-import {HadithHouseApp} from "../app";
+import {Person, CacheableResource} from "resources/resources";
+import {EntityPageCtrl} from "controllers/entity-page";
+import {HadithHouseApp} from "app";
 
 export class PersonPageCtrl extends EntityPageCtrl<Person> {
   private PersonResource: CacheableResource<Person, number>;

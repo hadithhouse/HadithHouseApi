@@ -23,9 +23,9 @@
  */
 
 import {ILocationService, IScope} from "angular";
-import {HadithTag, CacheableResource} from "../resources/resources";
-import {EntityPageCtrl} from "./entity-page";
-import {HadithHouseApp} from "../app";
+import {HadithTag, CacheableResource} from "resources/resources";
+import {EntityPageCtrl} from "controllers/entity-page";
+import {HadithHouseApp} from "app";
 
 export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
   private HadithTagResource:CacheableResource<HadithTag, number>;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {fbAccessToken, HadithHouseApp} from "../app";
+import {fbAccessToken, HadithHouseApp} from "app";
 import {IQService} from "angular";
 
 export class FacebookService {

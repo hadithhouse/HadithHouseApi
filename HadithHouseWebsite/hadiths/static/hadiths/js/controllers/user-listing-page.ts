@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {HadithHouseApp} from "../app";
-import {EntityListingPageCtrl} from "./entity-listing-page";
-import {CacheableResource, User} from "../resources/resources";
+import {HadithHouseApp} from "app";
+import {EntityListingPageCtrl} from "controllers/entity-listing-page";
+import {CacheableResource, User} from "resources/resources";
 import {ILocationService, IScope, ITimeoutService} from "angular";
 
 export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
