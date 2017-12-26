@@ -23,10 +23,10 @@
  */
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {IAugmentedJQuery, IScope} from "angular";
-import * as angular from "angular"
-import {getHtmlBasePath, HadithHouseApp} from "app";
+import angular from "angular"
+import {HadithHouseApp} from "app-def";
 
-declare let Bloodhound: any;
+declare function getHtmlBasePath(): String;
 
 export class EntityLookupCtrl {
   public type: string;
@@ -101,7 +101,7 @@ HadithHouseApp.directive('hhEntityLookup', function () {
       callback: '&',
       type: '@'
     },
-    link: function (scope: IScope & {ctrl: EntityLookupCtrl}, element: IAugmentedJQuery) {
+    link: function (scope: IScope & { ctrl: EntityLookupCtrl }, element: IAugmentedJQuery) {
       let input: any = element.find('input');
 
       input.bind('typeahead:select', function (event, entity) {

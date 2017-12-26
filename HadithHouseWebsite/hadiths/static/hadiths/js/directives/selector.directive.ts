@@ -23,9 +23,11 @@
  */
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
-import * as angular from "angular"
-import * as _ from "lodash"
-import {getHtmlBasePath, HadithHouseApp} from "app";
+import angular from "angular"
+import _ from "lodash"
+import {HadithHouseApp} from "app-def";
+
+declare function getHtmlBasePath(): String;
 
 export class SelectorCtrl {
   public addingEntitiesEnabled:string;

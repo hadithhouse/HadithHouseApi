@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import {HadithHouseApp} from "app";
+import {HadithHouseApp} from "app-def";
 import {Hadith} from "resources/resources";
 import {IHttpService} from "angular";
 

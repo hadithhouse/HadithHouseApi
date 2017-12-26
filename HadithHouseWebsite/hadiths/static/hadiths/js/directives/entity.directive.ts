@@ -24,15 +24,17 @@
 
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
-import {getHtmlBasePath, HadithHouseApp} from "app";
-import * as angular from "angular"
+import {HadithHouseApp} from "app-def";
+import angular from "angular"
+
+declare function getHtmlBasePath(): String;
 
 export class EntityCtrl {
   public entityId: string = null;
   public entity: Entity<number> = null;
   public type: string;
   public mode: string;
-  public normalisedMode: string|boolean;
+  public normalisedMode: string | boolean;
   public clickCallback: any;
   public firstLoad = true;
   private EntityResource: CacheableResource<Entity<number>, number>;

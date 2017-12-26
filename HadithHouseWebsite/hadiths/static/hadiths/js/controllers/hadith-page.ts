@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {HadithHouseApp} from "app";
+import {HadithHouseApp} from "app-def";
 import {
   Book, CacheableResource, Chain, Hadith, HadithTag, ObjectWithPromise, PagedResults,
   Person
 } from "../resources/resources";
 import {EntityPageCtrl} from "./entity-page";
-import * as _ from "lodash"
+import _ from "lodash"
 import {ILocationService, IScope} from "angular";
 import {ITreeNode} from "../directives/tree.directive";
 

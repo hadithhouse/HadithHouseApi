@@ -24,7 +24,7 @@
 import {EntityListingPageCtrl} from "controllers/entity-listing-page";
 import {CacheableResource, HadithTag} from "resources/resources";
 import {ILocationService, IScope, ITimeoutService} from "angular";
-import {HadithHouseApp} from "app";
+import {HadithHouseApp} from "app-def";
 
 export class HadithTagListingPageCtrl extends EntityListingPageCtrl<HadithTag> {
   constructor($scope: IScope,

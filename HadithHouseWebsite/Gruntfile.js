@@ -4,6 +4,9 @@ module.exports = function (grunt) {
       default: {
         tsconfig: {
           tsconfig: 'tsconfig.json'
+        },
+        options: {
+          sourceMap: false
         }
       }
     },

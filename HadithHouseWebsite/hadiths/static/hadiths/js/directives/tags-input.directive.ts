@@ -22,9 +22,11 @@
  * THE SOFTWARE.
  */
 
-import {getHtmlBasePath, HadithHouseApp} from "app";
+import {HadithHouseApp} from "app-def";
 import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
+
+declare function getHtmlBasePath(): String;
 
 export class TagsInputCtrl {
   public onAdd: any;
