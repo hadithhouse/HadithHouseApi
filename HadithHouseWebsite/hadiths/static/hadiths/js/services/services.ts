@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {HadithHouseApp} from "app";
-import * as angular from "angular"
+
+import angular from "angular"
 
 export interface IEntity {
   id:number;
@@ -61,22 +61,6 @@ export interface IHadithResourceClass extends IEntityResourceClass<IHadithResour
 
 }
 
-HadithHouseApp.factory('HadithResourceClass', ($resource:angular.resource.IResourceService):IHadithResourceClass => {
-  return <IHadithResourceClass>$resource<IHadithResource, IHadithResourceClass>('/apis/hadiths/:id', {id: '@id'}, {
-    'query': {
-      method: 'GET',
-      isArray: true,
-      transformResponse: function (data) {
-        return JSON.parse(data).results;
-      }
-    },
-    'pagedQuery': {
-      method: 'GET',
-      isArray: false,
-    }
-  });
-});
-
 export interface IPersonResource extends IEntity, angular.resource.IResource<IPersonResource> {
   title:string;
   display_name:string;
@@ -94,22 +78,6 @@ export interface IPersonResourceClass extends IEntityResourceClass<IPersonResour
 
 }
 
-HadithHouseApp.factory('PersonResourceClass', ($resource:angular.resource.IResourceService):IPersonResourceClass => {
-  return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id?id=:ids', {id: '@id'}, {
-    'query': {
-      method: 'GET',
-      isArray: true,
-      transformResponse: function (data) {
-        return JSON.parse(data).results;
-      }
-    },
-    'pagedQuery': {
-      method: 'GET',
-      isArray: false,
-    }
-  });
-});
-
 export interface IBookResource extends IEntity, angular.resource.IResource<IBookResource> {
   title:string;
   brief_desc:string;
@@ -120,22 +88,6 @@ export interface IBookResourceClass extends IEntityResourceClass<IBookResource>,
 
 }
 
-HadithHouseApp.factory('BookResourceClass', ($resource:angular.resource.IResourceService):IBookResourceClass => {
-  return <IBookResourceClass>$resource<IBookResource, IBookResourceClass>('/apis/books/:id', {id: '@id'}, {
-    'query': {
-      method: 'GET',
-      isArray: true,
-      transformResponse: function (data) {
-        return JSON.parse(data).results;
-      }
-    },
-    'pagedQuery': {
-      method: 'GET',
-      isArray: false,
-    }
-  });
-});
-
 export interface IHadithTagResource extends IEntity, angular.resource.IResource<IHadithTagResource> {
   name:string;
 }
@@ -143,22 +95,6 @@ export interface IHadithTagResource extends IEntity, angular.resource.IResource<
 export interface IHadithTagResourceClass extends IEntityResourceClass<IHadithTagResource>, angular.resource.IResourceClass<IHadithTagResource> {
 
 }
-
-HadithHouseApp.factory('HadithTagResourceClass', ($resource:angular.resource.IResourceService):IHadithTagResourceClass => {
-  return <IHadithTagResourceClass>$resource<IHadithTagResource, IHadithTagResourceClass>('/apis/hadithtags/:id', {id: '@id'}, {
-    'query': {
-      method: 'GET',
-      isArray: true,
-      transformResponse: function (data) {
-        return JSON.parse(data).results;
-      }
-    },
-    'pagedQuery': {
-      method: 'GET',
-      isArray: false,
-    }
-  });
-});
 
 export interface IChainResource extends IEntity, angular.resource.IResource<IChainResource> {
   hadith:number;
@@ -170,22 +106,6 @@ export interface IChainResource extends IEntity, angular.resource.IResource<ICha
 export interface IChainResourceClass extends IEntityResourceClass<IChainResource>, angular.resource.IResourceClass<IChainResource> {
 
 }
-
-HadithHouseApp.factory('ChainResourceClass', ($resource:angular.resource.IResourceService):IChainResourceClass => {
-  return <IChainResourceClass>$resource<IChainResource, IChainResourceClass>('/apis/chains/:id', {id: '@id'}, {
-    'query': {
-      method: 'GET',
-      isArray: true,
-      transformResponse: function (data) {
-        return JSON.parse(data).results;
-      }
-    },
-    'pagedQuery': {
-      method: 'GET',
-      isArray: false,
-    }
-  });
-});
 
 export interface IUserResource extends IEntity, angular.resource.IResource<IUserResource> {
   first_name:string;
@@ -201,18 +121,3 @@ export interface IUserResource extends IEntity, angular.resource.IResource<IUser
 export interface IUserResourceClass extends IEntityResourceClass<IUserResource>, angular.resource.IResourceClass<IUserResource> {
 }
 
-HadithHouseApp.factory('UserResourceClass', ($resource:angular.resource.IResourceService):IUserResourceClass => {
-  return <IUserResourceClass>$resource<IUserResource, IUserResourceClass>('/apis/users/:id', {id: '@id'}, {
-    'query': {
-      method: 'GET',
-      isArray: true,
-      transformResponse: function (data) {
-        return JSON.parse(data).results;
-      }
-    },
-    'pagedQuery': {
-      method: 'GET',
-      isArray: false,
-    }
-  });
-});

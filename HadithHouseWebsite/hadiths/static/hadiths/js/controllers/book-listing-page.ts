@@ -25,7 +25,7 @@
 import {ILocationService, IScope, ITimeoutService} from "angular";
 import {EntityListingPageCtrl} from "./entity-listing-page";
 import {Book, CacheableResource} from "../resources/resources";
-import {HadithHouseApp} from "../app";
+import {HadithHouseApp} from "app-def";
 
 export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
   constructor($scope: IScope,

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {fbAccessToken, HadithHouseApp} from "app";
-import {IQService} from "angular";
+
+import {IPromise, IQService} from "angular";
+
+declare function getFbAccessToken(): String;
+
+export class FacebookUser {
+  public id: Number;
+  public link: String;
+  public picture: { data: { url: String } };
+}
 
 export class FacebookService {
-  private fbUserId:number;
-  private $q:IQService;
-  private FB:any;
+  private fbUserId: number;
+  private $q: IQService;
+  private FB: any;
 
-  constructor($q:IQService, FB:any, fbUserId:number) {
+  static $inject = ['$q'];
+
+  constructor($q: IQService) {
     this.$q = $q;
-    this.FB = FB;
-    this.fbUserId = fbUserId;
+    this.FB = window['FB'];
+    this.fbUserId = window['fbUserId'];
   }
 
-  public login() {
+  public login(): any {
     let deferred = this.$q.defer();
     this.FB.login(function (response) {
       if (response.authResponse) {
@@ -69,9 +79,9 @@ export class FacebookService {
    * logged in user.
    * @returns A promise resolving to the user info object.
    */
-  public getLoggedInUser() {
+  public getLoggedInUser(): IPromise<FacebookUser> {
     let deferred = this.$q.defer();
-    if (fbAccessToken === null) {
+    if (getFbAccessToken === null) {
       // No access token, so user is not logged in.
       deferred.resolve(null);
     }
@@ -84,7 +94,7 @@ export class FacebookService {
         }
       }
     );
-    return deferred.promise;
+    return <IPromise<FacebookUser>>deferred.promise;
   }
 
   public getProfilePictureUrl(userId) {
@@ -116,8 +126,3 @@ export class FacebookService {
   }
 }
 
-HadithHouseApp.factory('FacebookService', function ($q) {
-  let fbUserId:number = window['fbUserId'];
-  let FB:any = window['FB'];
-  return new FacebookService($q, FB, fbUserId);
-});

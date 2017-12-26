@@ -24,7 +24,7 @@
 
 import * as d3 from "d3"
 import {IAttributes, IAugmentedJQuery, IScope} from "angular";
-import {HadithHouseApp} from "../app";
+import {HadithHouseApp} from "app-def";
 
 export interface ITreeNode extends d3.layout.tree.Node {
   id: string;

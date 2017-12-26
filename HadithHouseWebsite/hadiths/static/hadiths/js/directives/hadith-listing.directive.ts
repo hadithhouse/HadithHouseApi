@@ -23,7 +23,9 @@
  */
 import {CacheableResource, Hadith, ObjectWithPromise, PagedResults} from "resources/resources";
 import {IScope} from "angular";
-import {getHtmlBasePath, HadithHouseApp} from "app";
+import {HadithHouseApp} from "app-def";
+
+declare function getHtmlBasePath(): String;
 
 export class HadithListingCtrl {
   public pagedEntities: ObjectWithPromise<PagedResults<Hadith>>;

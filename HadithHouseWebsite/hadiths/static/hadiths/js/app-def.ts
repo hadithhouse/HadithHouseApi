@@ -22,34 +22,8 @@
  * THE SOFTWARE.
  */
 
-import {ILocationService, IScope} from "angular";
-import {Book, CacheableResource} from "../resources/resources";
-import {EntityPageCtrl} from "./entity-page";
-import {HadithHouseApp} from "app-def";
+import angular from "angular";
+import "angular-resource";
+import "angular-route";
 
-export class BookPageCtrl extends EntityPageCtrl<Book> {
-  private BookResource: CacheableResource<Book, number>;
-  private activeTab: number;
-
-  constructor($scope: IScope,
-              $rootScope: IScope,
-              $location: ILocationService,
-              $routeParams: any,
-              BookResource: CacheableResource<Book, number>) {
-    super($scope, $rootScope, $location, $routeParams, BookResource);
-    this.BookResource = BookResource;
-    this.activeTab = 1;
-  }
-
-  protected getEntityPath(id: number) {
-    return 'book/' + id;
-  }
-}
-
-export function BookPageCtrlCreator($scope, $rootScope, $location, $routeParams, BookResource) {
-  let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
-  ctrl.initialize();
-  return ctrl;
-}
-
-HadithHouseApp.controller('BookPageCtrl', BookPageCtrlCreator);
+export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);

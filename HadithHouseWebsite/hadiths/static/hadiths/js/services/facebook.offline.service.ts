@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 
-import {HadithHouseApp} from "app";
 import {IQService} from "angular";
 
 export class FacebookOfflineService {
@@ -80,6 +79,3 @@ export class FacebookOfflineService {
   }
 }
 
-HadithHouseApp.factory('FacebookService', function ($q) {
-  return new FacebookOfflineService($q);
-});

@@ -2,9 +2,11 @@
   "compilerOptions": {
     "target": "es5",
     "module": "system",
-    "moduleResolution": "classic",
+    "moduleResolution": "node",
     "baseUrl": "hadiths/static/hadiths/js",
-    "typeRoots": ["node_modules/@types/"],
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
     "types": [
       "angular",
       "angular-material",

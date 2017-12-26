@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  */
 
-import * as angular from "angular";
-import * as _ from "lodash";
-import * as toastr from "toastr";
-import IRouteProvider = angular.route.IRouteProvider;
+import _ from "lodash";
+import toastr from "toastr";
+import angular, {ILocationService, IScope} from "angular";
 
 import {HomePageCtrlCreator} from "controllers/home-page";
 import {HadithListingPageCtrlCreator} from "controllers/hadith-listing-page";
@@ -38,17 +37,28 @@ import {HadithTagListingPageCtrlCreator} from "controllers/hadithtag-listing-pag
 import {HadithTagPageCtrlCreator} from "controllers/hadithtag-page";
 import {UserListingPageCtrlCreator} from "controllers/user-listing-page";
 import {UserPageCtrlCreator} from "controllers/user-page";
+import {HadithHouseApp} from "app-def";
+import "services/facebook.service"; // Necessary to force tsc to import the module.
+import {FacebookService} from "services/facebook.service";
+import {
+  IBookResource,
+  IBookResourceClass, IChainResource, IChainResourceClass, IHadithResource, IHadithResourceClass, IHadithTagResource,
+  IHadithTagResourceClass,
+  IPersonResource,
+  IPersonResourceClass, IUserResource,
+  IUserResourceClass
+} from "services/services";
 
-// TODO: Should these be defined and exported here, or in a separate file?
-export declare function getHtmlBasePath(): String;
+declare function getHtmlBasePath(): String;
 
-export declare let fbFetchedLoginStatus: boolean;
-export declare let fbAccessToken: String;
+declare function fbFetchedLoginStatus(): boolean;
 
-export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
+declare function getFbAccessToken(): String;
+
+declare function setFbAccessToken(token: String);
 
 HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
-                                $routeProvider: IRouteProvider,
+                                $routeProvider: any,
                                 $locationProvider: angular.ILocationProvider) {
   $locationProvider.html5Mode({
     enabled: true,
@@ -112,37 +122,45 @@ HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
   }).otherwise({redirectTo: '/'});
 
   $httpProvider.interceptors.push(['$q', '$rootScope', function ($q: angular.IQService, $rootScope: angular.IScope) {
-    return {
-      'request': function (config: any) {
-        // To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
-        if (!config.headers.hasOwnProperty('X-global')) {
-          $rootScope['pendingRequests']++;
-        }
-        // If this is a request to the API, appends Facebook authentication token.
-        if (config.url.startsWith('/apis/') && $rootScope['fbAccessToken'] !== null) {
-          config.params = config.params || {};
-          config.params['fb_token'] = $rootScope['fbAccessToken'];
-        }
-        return config || $q.when(config);
-      },
-      'requestError': function (rejection) {
-        if ($rootScope['pendingRequests'] >= 1) {
-          $rootScope['pendingRequests']--;
-        }
-        return $q.reject(rejection);
-      },
-      'response': function (response) {
-        if ($rootScope['pendingRequests'] >= 1) {
-          $rootScope['pendingRequests']--;
-        }
-        return response || $q.when(response);
-      },
-      'responseError': function (rejection) {
-        if ($rootScope['pendingRequests'] >= 1) {
-          $rootScope['pendingRequests']--;
-        }
-        return $q.reject(rejection);
+    function requestInterceptor(config: any) {
+      // To be reviewed, added a custom header to disable loading dialog e.g.: type-aheads
+      if (!config.headers.hasOwnProperty('X-global')) {
+        $rootScope['pendingRequests']++;
       }
+      // If this is a request to the API, appends Facebook authentication token.
+      if (config.url.startsWith('/apis/') && $rootScope['fbAccessToken'] !== null) {
+        config.params = config.params || {};
+        config.params['fb_token'] = $rootScope['fbAccessToken'];
+      }
+      return config || $q.when(config);
+    }
+
+    function requestErrorInterceptor(rejection: any) {
+      if ($rootScope['pendingRequests'] >= 1) {
+        $rootScope['pendingRequests']--;
+      }
+      return $q.reject(rejection);
+    }
+
+    function responseInterceptor(response) {
+      if ($rootScope['pendingRequests'] >= 1) {
+        $rootScope['pendingRequests']--;
+      }
+      return response || $q.when(response);
+    }
+
+    function responseErrorInterceptor(rejection: any) {
+      if ($rootScope['pendingRequests'] >= 1) {
+        $rootScope['pendingRequests']--;
+      }
+      return $q.reject(rejection);
+    }
+
+    return {
+      'request': requestInterceptor,
+      'requestError': requestErrorInterceptor,
+      'response': responseInterceptor,
+      'responseError': responseErrorInterceptor
     };
   }
   ]);
@@ -150,19 +168,60 @@ HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
   $rootScope['pendingRequests'] = 0;
 }]);
 
+HadithHouseApp.service({
+  FacebookService // In offline mode, you should use FacebookOfflineService instead.
+});
+
+// Register resource factories.
+let resourceParseConfig = {
+  'query': {
+    method: 'GET',
+    isArray: true,
+    transformResponse: function (data) {
+      return JSON.parse(data).results;
+    }
+  },
+  'pagedQuery': {
+    method: 'GET',
+    isArray: false,
+  }
+};
+HadithHouseApp.factory('HadithResourceClass', ($resource: angular.resource.IResourceService): IHadithResourceClass => {
+  return <IHadithResourceClass>$resource<IHadithResource, IHadithResourceClass>('/apis/hadiths/:id', {id: '@id'}, resourceParseConfig);
+});
+HadithHouseApp.factory('PersonResourceClass', ($resource: angular.resource.IResourceService): IPersonResourceClass => {
+  return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id?id=:ids', {id: '@id'}, resourceParseConfig);
+});
+HadithHouseApp.factory('BookResourceClass', ($resource: angular.resource.IResourceService): IBookResourceClass => {
+  return <IBookResourceClass>$resource<IBookResource, IBookResourceClass>('/apis/books/:id', {id: '@id'}, resourceParseConfig);
+});
+HadithHouseApp.factory('HadithTagResourceClass', ($resource: angular.resource.IResourceService): IHadithTagResourceClass => {
+  return <IHadithTagResourceClass>$resource<IHadithTagResource, IHadithTagResourceClass>('/apis/hadithtags/:id', {id: '@id'}, resourceParseConfig);
+});
+HadithHouseApp.factory('ChainResourceClass', ($resource: angular.resource.IResourceService): IChainResourceClass => {
+  return <IChainResourceClass>$resource<IChainResource, IChainResourceClass>('/apis/chains/:id', {id: '@id'}, resourceParseConfig);
+});
+HadithHouseApp.factory('UserResourceClass', ($resource: angular.resource.IResourceService): IUserResourceClass => {
+  return <IUserResourceClass>$resource<IUserResource, IUserResourceClass>('/apis/users/:id', {id: '@id'}, resourceParseConfig);
+});
 
 HadithHouseApp.controller('HadithHouseCtrl',
-  function ($scope, $rootScope, $location, FacebookService, UserResourceClass) {
+  function ($scope: IScope,
+            $rootScope: any,
+            $location: ILocationService,
+            FacebookService: FacebookService,
+            UserResourceClass: IUserResourceClass) {
     let ctrl = this;
 
     $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
     $rootScope.fbUser = null;
-    $rootScope.fbAccessToken = fbAccessToken;
+    $rootScope.fbAccessToken = getFbAccessToken();
 
     ctrl.fbLogin = function () {
       FacebookService.login().then(function (response) {
         if (response.status === 'connected') {
-          $rootScope.fbAccessToken = fbAccessToken = response.authResponse.accessToken;
+          $rootScope.fbAccessToken = response.authResponse.accessToken;
+          setFbAccessToken(response.authResponse.accessToken);
           ctrl.getUserInfo();
         }
       });
@@ -242,7 +301,8 @@ HadithHouseApp.controller('HadithHouseCtrl',
     };
   });
 
-(function setToastrOptions() {
+// Set Tosatr options.
+(function () {
   toastr.options.closeButton = true;
   toastr.options.closeButton = true;
   toastr.options.debug = false;

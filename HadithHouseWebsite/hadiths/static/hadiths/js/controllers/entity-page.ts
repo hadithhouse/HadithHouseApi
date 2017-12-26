@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import * as _ from "lodash"
+import _ from "lodash"
 import {CacheableResource, Entity} from "resources/resources";
 import {ILocationService, IScope} from "angular";
 

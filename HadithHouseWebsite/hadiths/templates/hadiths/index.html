@@ -143,6 +143,22 @@
   var fbAccessToken = null;
   var fbFetchedLoginStatus = false;
 
+  function setFbAccessToken(token) {
+    fbAccessToken = token;
+  }
+
+  function getFbAccessToken() {
+    return fbAccessToken;
+  }
+
+  function setFbLoginFetchStatus() {
+    fbFetchedLoginStatus = true;
+  }
+
+  function isFbLoginStatusFetched() {
+    return fbFetchedLoginStatus;
+  }
+
   window.fbAsyncInit = function () {
     FB.init({
       appId: '{{ appId }}',
@@ -153,18 +169,18 @@
     fbApiInit = true;
 
     FB.getLoginStatus(function (response) {
-      fbFetchedLoginStatus = true;
+      setFbLoginFetchStatus(true);
       if (response.status === 'connected') {
         // The user is logged in to Facebook and has authenticated
         // the application.
-        fbAccessToken = response.authResponse.accessToken;
+        setFbAccessToken(response.authResponse.accessToken);
       } else if (response.status === 'not_authorized') {
         // The user is logged in to Facebook, but has not authenticated
         // the application.
-        fbAccessToken = null;
+        setFbAccessToken(null);
       } else {
         // The user isn't logged in to Facebook.
-        fbAccessToken = null;
+        setFbAccessToken(null);
       }
 
       SystemJS.import('app').then(function() {
