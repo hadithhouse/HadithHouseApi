@@ -31,7 +31,7 @@ import _ from "lodash"
 export class UserPageCtrl extends EntityPageCtrl<User> {
   private UserResource: CacheableResource<User, number>;
   private permissions: {};
-  private permissionGroups: String[];
+  private permissionGroups: string[];
   private permissionsNameMap: {};
 
   constructor($scope: IScope,
@@ -54,7 +54,7 @@ export class UserPageCtrl extends EntityPageCtrl<User> {
     });
 
     let permissions = {};
-    let permissionGroups: String[] = [];
+    let permissionGroups: string[] = [];
     _.each(this.entity.permissions, (a) => {
       let parts = a.split('_');
       let group = parts[1];
@@ -66,10 +66,10 @@ export class UserPageCtrl extends EntityPageCtrl<User> {
       permissions[group].push(type);
     });
     _.each(permissions, (value, key) => {
-      permissions[key] = _.sortBy<String>(permissions[key]);
+      permissions[key] = _.sortBy<string>(permissions[key]);
     });
     this.permissions = permissions;
-    this.permissionGroups = _.sortBy<String>(permissionGroups, p => p);
+    this.permissionGroups = _.sortBy<string>(permissionGroups, p => p);
     this.permissionsNameMap = {
       'book': 'Book',
       'bookchapter': 'Book Chapter',
