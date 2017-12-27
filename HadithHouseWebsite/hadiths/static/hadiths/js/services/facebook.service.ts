@@ -24,12 +24,12 @@
 
 import {IPromise, IQService} from "angular";
 
-declare function getFbAccessToken(): String;
+declare function getFbAccessToken(): string;
 
 export class FacebookUser {
   public id: Number;
-  public link: String;
-  public picture: { data: { url: String } };
+  public link: string;
+  public picture: { data: { url: string } };
 }
 
 export class FacebookService {

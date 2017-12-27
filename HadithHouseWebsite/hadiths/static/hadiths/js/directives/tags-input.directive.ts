@@ -27,7 +27,7 @@ import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import "bootstrap"
 
-declare function getHtmlBasePath(): String;
+declare function getHtmlBasePath(): string;
 
 export class TagsInputCtrl {
   public onAdd: any;

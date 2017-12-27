@@ -29,7 +29,7 @@ import {ILocationService, IScope} from "angular";
 import angular from "angular"
 import {HadithHouseApp} from "app-def";
 
-declare function getHtmlBasePath(): String;
+declare function getHtmlBasePath(): string;
 
 export class SelectorCtrl {
   public addingEntitiesEnabled:string;

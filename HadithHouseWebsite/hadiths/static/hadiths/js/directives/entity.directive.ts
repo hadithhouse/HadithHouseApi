@@ -27,7 +27,7 @@ import {ILocationService, IScope} from "angular";
 import {HadithHouseApp} from "app-def";
 import angular from "angular"
 
-declare function getHtmlBasePath(): String;
+declare function getHtmlBasePath(): string;
 
 export class EntityCtrl {
   public entityId: string = null;

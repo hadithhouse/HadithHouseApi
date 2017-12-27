@@ -61,13 +61,13 @@ import "directives/selector.directive"
 import "directives/tags-input.directive"
 import "directives/tree.directive"
 
-declare function getHtmlBasePath(): String;
+declare function getHtmlBasePath(): string;
 
 declare function fbFetchedLoginStatus(): boolean;
 
-declare function getFbAccessToken(): String;
+declare function getFbAccessToken(): string;
 
-declare function setFbAccessToken(token: String);
+declare function setFbAccessToken(token: string);
 
 HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
                                 $routeProvider: any,
