@@ -22,7 +22,13 @@ SystemJS.config({
     'angular-route': {
       format: 'global',
       deps: ['angular']
-
+    },
+    'bootstrap': {
+      format: 'global',
+      deps: ['tether']
+    },
+    'tether': {
+      format: 'global'
     },
     'jquery': {
       format: 'global',
@@ -40,6 +46,7 @@ SystemJS.config({
     'angular-resource': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-resource.js',
     'angular-route': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-route.js',
     'bootstrap': 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.js',
+    'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js',
     'jquery': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js',
     'lodash': 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js',
     'moment': 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.js',

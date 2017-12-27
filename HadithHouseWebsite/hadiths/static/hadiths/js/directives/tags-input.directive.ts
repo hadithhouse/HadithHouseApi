@@ -25,6 +25,7 @@
 import {HadithHouseApp} from "app-def";
 import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
+import "bootstrap"
 
 declare function getHtmlBasePath(): String;
 
