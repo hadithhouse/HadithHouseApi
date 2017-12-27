@@ -24,7 +24,7 @@
 
 import _ from "lodash";
 import toastr from "toastr";
-import angular, {ILocationService, IScope} from "angular";
+import angular, {IHttpService, ILocationService, IQService, IScope} from "angular";
 
 import {HomePageCtrlCreator} from "controllers/home-page";
 import {HadithListingPageCtrlCreator} from "controllers/hadith-listing-page";
@@ -60,6 +60,7 @@ import "directives/hadith-listing.directive"
 import "directives/selector.directive"
 import "directives/tags-input.directive"
 import "directives/tree.directive"
+import {Book, CacheableResource, Chain, Hadith, HadithTag, Person, User} from "./resources/resources";
 
 declare function getHtmlBasePath(): string;
 
@@ -216,6 +217,35 @@ HadithHouseApp.factory('ChainResourceClass', ($resource: angular.resource.IResou
 HadithHouseApp.factory('UserResourceClass', ($resource: angular.resource.IResourceService): IUserResourceClass => {
   return <IUserResourceClass>$resource<IUserResource, IUserResourceClass>('/apis/users/:id', {id: '@id'}, resourceParseConfig);
 });
+
+// Register cacheable resources.
+// TODO: Perhaps we should only keep those, as I cannot think of anything that the above do
+// that this doesn't. See:
+// https://github.com/hadithhouse/hadithhouse/issues/331
+HadithHouseApp.factory('HadithResource',
+  ($http: IHttpService, $q: IQService): CacheableResource<Hadith, number | string> => {
+    return new CacheableResource<Hadith, number | string>(Hadith, '/apis/hadiths', $http, $q);
+  });
+HadithHouseApp.factory('PersonResource',
+  ($http: IHttpService, $q: IQService): CacheableResource<Person, number> => {
+    return new CacheableResource<Person, number>(Person, '/apis/persons', $http, $q);
+  });
+HadithHouseApp.factory('BookResource',
+  ($http: IHttpService, $q: IQService): CacheableResource<Book, number> => {
+    return new CacheableResource<Book, number>(Book, '/apis/books', $http, $q);
+  });
+HadithHouseApp.factory('HadithTagResource',
+  ($http: IHttpService, $q: IQService): CacheableResource<HadithTag, number> => {
+    return new CacheableResource<HadithTag, number>(HadithTag, '/apis/hadithtags', $http, $q);
+  });
+HadithHouseApp.factory('ChainResource',
+  ($http: IHttpService, $q: IQService): CacheableResource<Chain, number> => {
+    return new CacheableResource<Chain, number>(Chain, '/apis/chains', $http, $q);
+  });
+HadithHouseApp.factory('UserResource',
+  ($http: IHttpService, $q: IQService): CacheableResource<User, number> => {
+    return new CacheableResource<User, number>(User, '/apis/users', $http, $q);
+  });
 
 HadithHouseApp.controller('HadithHouseCtrl',
   function ($scope: IScope,
