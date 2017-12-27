@@ -26,7 +26,6 @@ import $ from "jquery";
 import _ from "lodash";
 import {Cache} from "caching/cache"
 import {IHttpService, IQService, IHttpPromise, IPromise} from "angular";
-import {HadithHouseApp} from "app-def";
 
 function getRestfulUrl<TId>(baseUrl: string, idOrIds?: TId | TId[]): string {
   if (!idOrIds) {
@@ -195,7 +194,17 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     return new this.TEntityClass(this.$http, this.baseUrl);
   }
 
-  public query(query: { [key: string]: string }, useCache = true): ObjectWithPromise<TEntity[]> {
+  /**
+   * Executes a query on this resource.
+   * @param {{[p: string]: string}} query A dictionary specifying the query. Each key-value pair of this dictionary
+   * is a filter to be applied on the retrieved query. For example, if the user wants to filter by a field called
+   * 'status', then the query should be something like {status: 'my status'}.
+   * @param {boolean} cacheResults If true, the returned results will also be stored in the cache so that they can
+   * be quickly obtained using the {@link get} method.
+   * @returns {ObjectWithPromise<TEntity[]>} An array containing the entities matching the given query. The returned
+   * array contains an additional field 'promise' which can be used to know when the results are retrieved.
+   */
+  public query(query: { [key: string]: string }, cacheResults = true): ObjectWithPromise<TEntity[]> {
     let queryParams = $.param(query);
     let entities: ObjectWithPromise<TEntity[]> = [];
     let httpPromise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -207,12 +216,12 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         // NOTE: If there is an object in the cache already, don't overwrite it,
         // update it. This way other code parts which reference it will
         // automatically get the updated values.
-        let entityInCache = useCache ? this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
+        let entityInCache = cacheResults ? this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
         if (!entityInCache) {
           entityInCache = this.create();
         }
         entityInCache.set(entity);
-        if (useCache) {
+        if (cacheResults) {
           this.cache.put(entity.id.toString(), entityInCache);
         }
       }
@@ -224,7 +233,18 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     return entities;
   }
 
-  public pagedQuery(query: { [key: string]: string }, useCache = true): ObjectWithPromise<PagedResults<TEntity>> {
+  /**
+   * Executes a query on this resource. The difference between this and {@link query} is that this method returns
+   *
+   * @param {{[p: string]: string}} query A dictionary specifying the query. Each key-value pair of this dictionary
+   * is a filter to be applied on the retrieved query. For example, if the user wants to filter by a field called
+   * 'status', then the query should be something like {status: 'my status'}.
+   * @param {boolean} cacheResults If true, the returned results will also be stored in the cache so that they can
+   * be quickly obtained using the {@link get} method.
+   * @returns {ObjectWithPromise<TEntity[]>} An array containing the entities matching the given query. The returned
+   * array contains an additional field 'promise' which can be used to know when the results are retrieved.
+   */
+  public pagedQuery(query: { [key: string]: string }, cacheResults = true): ObjectWithPromise<PagedResults<TEntity>> {
     let queryParams = $.param(query);
     let pagedEntities: ObjectWithPromise<PagedResults<TEntity>> = new PagedResults<TEntity>();
     let promise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -239,12 +259,12 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         // NOTE: If there is an object in the cache already, don't overwrite it,
         // update it. This way other code parts which reference it will
         // automatically get the updated values.
-        let entityInCache = useCache ? this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
+        let entityInCache = cacheResults ? this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
         if (!entityInCache) {
           entityInCache = this.create();
         }
         entityInCache.set(entity);
-        if (useCache) {
+        if (cacheResults) {
           this.cache.put(entity.id.toString(), entityInCache);
         }
       }
@@ -253,35 +273,105 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     return pagedEntities;
   }
 
+  /**
+   * Retrieves the entity having the given ID.
+   * @param {TId} id The ID of the entity to retrieve.
+   * @param {boolean} useCache Whether to use the cache for this request. If this is true, the cache will first be
+   * inspected. If it contains the entity, it is returned straight away. Otherwise, a request is made to retrieve the
+   * entity. Additionally, if this flag is true, the cached entity will be updated with the result of the HTTP request
+   * (if one is made.)
+   * @returns {TEntity} The entity. This is returned straight away, but it is only a stub that gets filled when the
+   * HTTP request returns successfully. To watch the request, you can use the 'promise' field, which gets resolved
+   * when the request returns.
+   */
   public get(id: TId, useCache?: boolean): TEntity;
+
+  /**
+   * Retrieves the entities having the given IDs.
+   * @param {TId[]} ids The IDs of the entities to retrieve.
+   * @param {boolean} useCache Whether to use the cache for this request. If this is true, the cache will first be
+   * inspected for every ID. Those entities which are already in the cached will be retrieved right away. The rest are
+   * requested. Additionally, if this flag is true, the cached entities will be updated with the result of the HTTP
+   * request (if one is made.)
+   * @returns {ObjectWithPromise<TEntity[]>} An array containing the entities. This is returned straight away, but
+   * it only contains stubs that gets filled when the HTTP request returns successfully. To watch the HTTP request,
+   * you can use the 'promise' field of the array, which gets resolved when the request returns.
+   */
   public get(ids: TId[], useCache?: boolean): ObjectWithPromise<TEntity[]>;
+
   public get(idOrIds: TId | TId[], useCache = true): TEntity | ObjectWithPromise<TEntity[]> {
     if (Array.isArray(idOrIds)) {
       // An array of IDs.
-      return this.getByMultipleIds(<TId[]>idOrIds, useCache);
+      if (useCache) {
+        return this.getByMultipleIdsWithCache(<TId[]>idOrIds);
+      } else {
+        return this.getByMultipleIds(<TId[]>idOrIds);
+      }
     } else {
       // A single ID.
-      return this.getBySingleId(<TId>idOrIds, useCache);
+      if (useCache) {
+        return this.getBySingleIdUseCache(<TId>idOrIds);
+      } else {
+        return this.getBySingleId(<TId>idOrIds);
+      }
     }
   }
 
-  private getBySingleId(id: TId, useCache = true): TEntity {
-    return this.getByMultipleIds([id], useCache)[0];
+  /**
+   * Retrieves a single entity by ID. Retrieve from the cache if the entity is already loaded and not expired.
+   * @param {TId} id The ID of the entity to retrieve.
+   * @returns {TEntity} The entity.
+   */
+  private getBySingleIdUseCache(id: TId): TEntity {
+    let entity = this.cache.get(id.toString());
+    if (entity !== null) {
+      // Create a promise object in the entity in case the user wants to
+      // get notified when the object is loaded or an error happens. Here,
+      // though, we resolve it immediately because we already have it in
+      // the cache.
+      let deferred = this.$q.defer<TEntity>();
+      entity.promise = deferred.promise;
+      deferred.resolve(entity);
+    } else {
+      entity = this.getBySingleId(id);
+      // TODO: If the given ID is a special ID, e.g. 'current', 'random', etc., the result will not be cached
+      // under the right ID. Not sure, though, how to solve this problem, because we want to put the object in the
+      // cache right away, so next fetches of the same ID return the same object even before the request returns.
+      this.cache.put(id.toString(), entity);
+    }
+    return entity;
   }
 
-  private getByMultipleIds(ids: TId[], useCache = true): ObjectWithPromise<TEntity[]> {
-    // Which objects do we already have in the cache?
+  /**
+   * Retrieves a single entity by ID. A request is always made by this method, even if a cached version already exists.
+   * @param {TId} id The ID of the entity to retrieve.
+   * @returns {TEntity} The entity.
+   */
+  private getBySingleId(id: TId): TEntity {
+    let entity = this.create();
+    let deferred = this.$q.defer<TEntity>();
+    entity.promise = deferred.promise;
+    this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, id)).then((response) => {
+      entity.set(response.data);
+      deferred.resolve(entity);
+    }, (reason) => {
+      deferred.resolve(reason);
+    });
+    return entity;
+  }
+
+  private getByMultipleIdsWithCache(ids: TId[]): ObjectWithPromise<TEntity[]> {
     let entities: ObjectWithPromise<TEntity[]> = [];
     let idsOfEntitiesToFetch: TId[] = [];
 
-    // Remove duplicated IDs before starting.
+    // Remove duplicated IDs before making the request.
     ids = _.uniq(ids);
 
     // Check the cache to see which entities we already have and which ones
     // we need to fetch from the cache.
     let deferredsToResolve = {};
     for (let id of ids) {
-      let entity = useCache ? this.cache.get(id.toString()) : null;
+      let entity = this.cache.get(id.toString());
       if (entity != null) {
         entities.push(entity);
 
@@ -299,9 +389,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         // for the same object won't have to go to the RESTful API again.
         entity = this.create();
         entity.id = id;
-        if (useCache) {
-          this.cache.put(id.toString(), entity);
-        }
+        this.cache.put(entity.toString(), entity);
         idsOfEntitiesToFetch.push(id);
         entities.push(entity);
 
@@ -314,6 +402,90 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         // when we get the response.
         deferredsToResolve[id.toString()] = deferred;
       }
+    }
+
+    // Requests the entities we don't have from the RESTful API.
+    if (idsOfEntitiesToFetch.length > 1) {
+      let httpPromise = this.$http.get<{ results: TEntity[] }>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+      let entitiesDeferred = this.$q.defer<TEntity[]>();
+      httpPromise.then((response) => {
+        // Now that we receive the data from the server, start filling in the
+        // entities we returned to the user and resolving their promises.
+        for (let entity of response.data.results) {
+          _.each(_.filter(entities, (e) => e.id === entity.id), (e) => {
+            e.set(entity);
+          });
+          // Resolve the promise object of the entity.
+          deferredsToResolve[entity.id.toString()].resolve(entity);
+        }
+        entitiesDeferred.resolve(entities);
+      }, (reason) => {
+        for (let entity of entities) {
+          // Rejects the promise object of the entity.
+          deferredsToResolve[entity.id.toString()].reject(reason);
+        }
+        entitiesDeferred.reject(reason);
+      });
+      entities.promise = entitiesDeferred.promise;
+    } else if (idsOfEntitiesToFetch.length === 1) {
+      // Cannot use the same variable name as above with different type :-S
+      // How is let useful over var then?
+      let httpPromise2 = this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+      let entitiesDeferred = this.$q.defer<TEntity[]>();
+      httpPromise2.then((response) => {
+        let entity = response.data;
+        _.each(_.filter(entities, (e) => e.id === entity.id), (e) => {
+          e.set(entity);
+        });
+
+        // Resolve the promise object of the entity.
+        deferredsToResolve[entity.id.toString()].resolve(entity);
+        entitiesDeferred.resolve(entities);
+      }, (reason) => {
+        for (let entity of entities) {
+          // Rejects the promise object of the entity.
+          deferredsToResolve[entity.id.toString()].reject(reason);
+        }
+        entitiesDeferred.reject(reason);
+      });
+      entities.promise = entitiesDeferred.promise;
+    } else {
+      // Nothing to fetch, so create promise object that resolves immediately.
+      let deferred = this.$q.defer<TEntity[]>();
+      entities.promise = deferred.promise;
+      deferred.resolve(entities);
+    }
+
+    return entities;
+  }
+
+  private getByMultipleIds(ids: TId[]): ObjectWithPromise<TEntity[]> {
+    let entities: ObjectWithPromise<TEntity[]> = [];
+    let idsOfEntitiesToFetch: TId[] = [];
+
+    // Remove duplicated IDs before making the request.
+    ids = _.uniq(ids);
+
+    // Check the cache to see which entities we already have and which ones
+    // we need to fetch from the cache.
+    let deferredsToResolve = {};
+    for (let id of ids) {
+      // Create a stub for the entity to fill in later when we receives
+      // the response from the RESTful API. Also cache it so next requests
+      // for the same object won't have to go to the RESTful API again.
+      let entity = this.create();
+      entity.id = id;
+      idsOfEntitiesToFetch.push(id);
+      entities.push(entity);
+
+      // Create a promise object in the entity in case the user wants to
+      // get notified when the object is loaded or an error happens.
+      let deferred = this.$q.defer<TEntity>();
+      entity.promise = deferred.promise;
+
+      // Save an instance of the deferred so we could resolve it later
+      // when we get the response.
+      deferredsToResolve[id.toString()] = deferred;
     }
 
     // Requests the entities we don't have from the RESTful API.

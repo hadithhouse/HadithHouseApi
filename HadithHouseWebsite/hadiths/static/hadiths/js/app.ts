@@ -40,20 +40,6 @@ import {UserPageCtrlCreator} from "controllers/user-page";
 import {HadithHouseApp} from "app-def";
 import "services/facebook.service"; // Necessary to force tsc to import the module.
 import {FacebookService} from "services/facebook.service";
-import {
-  IBookResource,
-  IBookResourceClass,
-  IChainResource,
-  IChainResourceClass,
-  IHadithResource,
-  IHadithResourceClass,
-  IHadithTagResource,
-  IHadithTagResourceClass,
-  IPersonResource,
-  IPersonResourceClass,
-  IUserResource,
-  IUserResourceClass
-} from "services/services";
 import "directives/entity.directive"
 import "directives/entity-lookup.directive"
 import "directives/hadith-listing.directive"
@@ -199,29 +185,8 @@ let resourceParseConfig = {
     isArray: false,
   }
 };
-HadithHouseApp.factory('HadithResourceClass', ($resource: angular.resource.IResourceService): IHadithResourceClass => {
-  return <IHadithResourceClass>$resource<IHadithResource, IHadithResourceClass>('/apis/hadiths/:id', {id: '@id'}, resourceParseConfig);
-});
-HadithHouseApp.factory('PersonResourceClass', ($resource: angular.resource.IResourceService): IPersonResourceClass => {
-  return <IPersonResourceClass>$resource<IPersonResource, IPersonResourceClass>('/apis/persons/:id?id=:ids', {id: '@id'}, resourceParseConfig);
-});
-HadithHouseApp.factory('BookResourceClass', ($resource: angular.resource.IResourceService): IBookResourceClass => {
-  return <IBookResourceClass>$resource<IBookResource, IBookResourceClass>('/apis/books/:id', {id: '@id'}, resourceParseConfig);
-});
-HadithHouseApp.factory('HadithTagResourceClass', ($resource: angular.resource.IResourceService): IHadithTagResourceClass => {
-  return <IHadithTagResourceClass>$resource<IHadithTagResource, IHadithTagResourceClass>('/apis/hadithtags/:id', {id: '@id'}, resourceParseConfig);
-});
-HadithHouseApp.factory('ChainResourceClass', ($resource: angular.resource.IResourceService): IChainResourceClass => {
-  return <IChainResourceClass>$resource<IChainResource, IChainResourceClass>('/apis/chains/:id', {id: '@id'}, resourceParseConfig);
-});
-HadithHouseApp.factory('UserResourceClass', ($resource: angular.resource.IResourceService): IUserResourceClass => {
-  return <IUserResourceClass>$resource<IUserResource, IUserResourceClass>('/apis/users/:id', {id: '@id'}, resourceParseConfig);
-});
 
 // Register cacheable resources.
-// TODO: Perhaps we should only keep those, as I cannot think of anything that the above do
-// that this doesn't. See:
-// https://github.com/hadithhouse/hadithhouse/issues/331
 HadithHouseApp.factory('HadithResource',
   ($http: IHttpService, $q: IQService): CacheableResource<Hadith, number | string> => {
     return new CacheableResource<Hadith, number | string>(Hadith, '/apis/hadiths', $http, $q);
@@ -252,7 +217,7 @@ HadithHouseApp.controller('HadithHouseCtrl',
             $rootScope: any,
             $location: ILocationService,
             FacebookService: FacebookService,
-            UserResourceClass: IUserResourceClass) {
+            UserResource: CacheableResource<User, number | string>) {
     let ctrl = this;
 
     $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
@@ -291,13 +256,16 @@ HadithHouseApp.controller('HadithHouseCtrl',
       }, function onError(/*reason*/) {
         toastr.error('Failed to fetch logged in user.');
       });
-      UserResourceClass.get({id: 'current'}, function onSuccess(user) {
+      let currentUser = UserResource.get('current', true);
+      currentUser.promise.then(() => {
         let perms = {};
-        for (let i in user.permissions) {
-          if (user.permissions.hasOwnProperty(i)) {
-            perms[user.permissions[i]] = true;
+        for (let i in currentUser.permissions) {
+          if (currentUser.permissions.hasOwnProperty(i)) {
+            perms[currentUser.permissions[i]] = true;
           }
         }
+        let user:any = {};
+        angular.copy(currentUser, user);
         user.permissions = perms;
         $rootScope.user = user;
       });
