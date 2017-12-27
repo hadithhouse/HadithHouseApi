@@ -25,15 +25,7 @@ trap 'error ${LINENO}' ERR
 echo "Copy server settings  from $SERVER_SETTINGS_PATH to `pwd`/HadithHouseWebsite/server_settings.py ..."
 cp "${SERVER_SETTINGS_PATH}" "HadithHouseWebsite/server_settings.py"
 
-# Restore TypeScript definition files as they are required during
-# TypeScript compilation
-echo "Restore TypeScript definition files as they are required during TypeScript compilation..."
-cd TypeScriptDefs
-chmod u+x restore.sh
-./restore.sh
-cd ..
-
-# Install Nodejs modules.
+# Install NodeJS modules.
 echo "Install NodeJS modules..."
 npm install
 
