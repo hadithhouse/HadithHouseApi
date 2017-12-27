@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+import toastr from "toastr";
 import {ILocationService, IPromise, IScope, ITimeoutService} from "angular"
 import {Entity, PagedResults, ObjectWithPromise, CacheableResource} from "../resources/resources";
 

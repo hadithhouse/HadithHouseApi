@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-import {Cache} from "caching/cache"
+import $ from "jquery";
 import _ from "lodash";
+import {Cache} from "caching/cache"
 import {IHttpService, IQService, IHttpPromise, IPromise} from "angular";
 import {HadithHouseApp} from "app-def";
 

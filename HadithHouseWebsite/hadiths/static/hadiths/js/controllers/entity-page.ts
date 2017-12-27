@@ -23,6 +23,7 @@
  */
 
 import _ from "lodash"
+import toastr from "toastr"
 import {CacheableResource, Entity} from "resources/resources";
 import {ILocationService, IScope} from "angular";
 
