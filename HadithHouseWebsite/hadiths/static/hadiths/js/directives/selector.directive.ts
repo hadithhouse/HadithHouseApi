@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+import _ from "lodash"
+import toastr from "toastr";
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
 import angular from "angular"
-import _ from "lodash"
 import {HadithHouseApp} from "app-def";
 
 declare function getHtmlBasePath(): String;
