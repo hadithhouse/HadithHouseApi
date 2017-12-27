@@ -42,12 +42,24 @@ import "services/facebook.service"; // Necessary to force tsc to import the modu
 import {FacebookService} from "services/facebook.service";
 import {
   IBookResource,
-  IBookResourceClass, IChainResource, IChainResourceClass, IHadithResource, IHadithResourceClass, IHadithTagResource,
+  IBookResourceClass,
+  IChainResource,
+  IChainResourceClass,
+  IHadithResource,
+  IHadithResourceClass,
+  IHadithTagResource,
   IHadithTagResourceClass,
   IPersonResource,
-  IPersonResourceClass, IUserResource,
+  IPersonResourceClass,
+  IUserResource,
   IUserResourceClass
 } from "services/services";
+import "directives/entity.directive"
+import "directives/entity-lookup.directive"
+import "directives/hadith-listing.directive"
+import "directives/selector.directive"
+import "directives/tags-input.directive"
+import "directives/tree.directive"
 
 declare function getHtmlBasePath(): String;
 
