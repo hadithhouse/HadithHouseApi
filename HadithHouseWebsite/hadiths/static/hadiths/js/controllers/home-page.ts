@@ -41,7 +41,6 @@ export class HomePageCtrl {
 
   public loadRandomUntaggedHadith() {
     this.randomUntaggedHadith = new Hadith(this.$http, '/apis/hadiths', 'randomuntagged');
-
   }
 }
 

@@ -51,6 +51,7 @@ export class Entity<TId> {
   public updated_by: number;
   public added_on: string;
   public updated_on: string;
+  public valid: boolean = null;
   public promise: IPromise<Entity<TId>>;
 
   /**
@@ -126,7 +127,14 @@ export class Entity<TId> {
    */
   private load(id: TId) {
     this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then((result) => {
-      this.set(result.data);
+      if (result.status == 200) {
+        this.set(result.data);
+        this.valid = true;
+      } else {
+        this.valid = false;
+      }
+    }, (reason) => {
+      this.valid = false;
     });
   }
 }
