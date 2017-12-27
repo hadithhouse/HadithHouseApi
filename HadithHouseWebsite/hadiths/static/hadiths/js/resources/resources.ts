@@ -78,13 +78,13 @@ export class Entity<TId> {
    */
   constructor($http: IHttpService, baseUrl: string, object: Entity<TId>);
 
-  constructor(private $http: IHttpService, private baseUrl: string, idOrObject?: any) {
+  constructor(private $http: IHttpService, private baseUrl: string, idOrObject?: TId | Entity<TId>) {
     if (!idOrObject) {
       return;
     } else if (typeof(idOrObject) === 'object') {
-      this.set(idOrObject);
+      this.set(<Entity<TId>>idOrObject);
     } else {
-      this.load(idOrObject);
+      this.load(<TId>idOrObject);
     }
   }
 
@@ -100,7 +100,28 @@ export class Entity<TId> {
     this.updated_on = entity.updated_on;
   }
 
-  public save() {
+  /**
+   * Loads the entity having the given ID.
+   * @param id The ID of the entity to load.
+   */
+  private load(id: TId): void {
+    this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then((result) => {
+      if (result.status == 200) {
+        this.set(result.data);
+        this.valid = true;
+      } else {
+        this.valid = false;
+      }
+    }, (reason) => {
+      this.valid = false;
+    });
+  }
+
+  /**
+   * Saves the entity.
+   * @returns {angular.IHttpPromise<Entity<TId>>}
+   */
+  public save(): IHttpPromise<Entity<TId>> {
     let url = getRestfulUrl(this.baseUrl, this.id);
     if (!this.id) {
       let promise = this.$http.post<Entity<TId>>(url, this);
@@ -117,42 +138,53 @@ export class Entity<TId> {
   /**
    * Delete the object.
    */
-  public delete() {
+  public delete(): IHttpPromise<Entity<TId>> {
     let url = getRestfulUrl(this.baseUrl, this.id);
     return this.$http.delete(url);
   }
-
-  /**
-   * Loads the entity having the given ID.
-   * @param id The ID of the entity to load.
-   */
-  private load(id: TId) {
-    this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then((result) => {
-      if (result.status == 200) {
-        this.set(result.data);
-        this.valid = true;
-      } else {
-        this.valid = false;
-      }
-    }, (reason) => {
-      this.valid = false;
-    });
-  }
 }
 
+/**
+ * Data contract for paged results returned from Hadith House API (Django).
+ */
 export class PagedResults<TEntity> {
+  /**
+   * The total number of results.
+   */
   public count: number;
+
+  /**
+   * The URL to retrieve the next set of results.
+   */
   public next: string;
+
+  /**
+   * The URL to retrieve the previous set of results.
+   */
   public previous: string;
+
+  /**
+   * An array containing the results.
+   */
   public results: TEntity[];
 }
 
+/**
+ * A type that extends a certain type with a promise field.
+ */
 export type ObjectWithPromise<TObject> = TObject & { promise?: IPromise<TObject> };
 
+/**
+ * A resource that employs caching to avoid loading the same object(s) multiple times, and thus reduce
+ * HTTP requests.
+ */
 export class CacheableResource<TEntity extends Entity<TId>, TId> {
+  /**
+   * The cache used to store loaded entities.
+   */
   private cache: Cache<TEntity>;
 
-  constructor(private TEntityClass: any,
+  constructor(private TEntityClass: new(...params: any[]) => TEntity,
               private baseUrl: string,
               private $http: IHttpService,
               private $q: IQService) {
@@ -163,7 +195,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     return new this.TEntityClass(this.$http, this.baseUrl);
   }
 
-  public query(query: any, useCache = true): ObjectWithPromise<TEntity[]> {
+  public query(query: { [key: string]: string }, useCache = true): ObjectWithPromise<TEntity[]> {
     let queryParams = $.param(query);
     let entities: ObjectWithPromise<TEntity[]> = [];
     let httpPromise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -192,7 +224,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     return entities;
   }
 
-  public pagedQuery(query: any, useCache = true): ObjectWithPromise<PagedResults<TEntity>> {
+  public pagedQuery(query: { [key: string]: string }, useCache = true): ObjectWithPromise<PagedResults<TEntity>> {
     let queryParams = $.param(query);
     let pagedEntities: ObjectWithPromise<PagedResults<TEntity>> = new PagedResults<TEntity>();
     let promise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
@@ -365,11 +397,6 @@ export class Hadith extends Entity<number | string> {
   }
 }
 
-HadithHouseApp.factory('HadithResource',
-  ($http: IHttpService, $q: IQService): CacheableResource<Hadith, number | string> => {
-    return new CacheableResource<Hadith, number | string>(Hadith, '/apis/hadiths', $http, $q);
-  });
-
 ///===========================================================================
 /// Person Resource
 ///===========================================================================
@@ -408,11 +435,6 @@ export class Person extends Entity<number> {
   }
 }
 
-HadithHouseApp.factory('PersonResource',
-  ($http: IHttpService, $q: IQService): CacheableResource<Person, number> => {
-    return new CacheableResource<Person, number>(Person, '/apis/persons', $http, $q);
-  });
-
 ///===========================================================================
 /// Book Resource
 ///===========================================================================
@@ -437,11 +459,6 @@ export class Book extends Entity<number> {
   }
 }
 
-HadithHouseApp.factory('BookResource',
-  ($http: IHttpService, $q: IQService): CacheableResource<Book, number> => {
-    return new CacheableResource<Book, number>(Book, '/apis/books', $http, $q);
-  });
-
 ///===========================================================================
 /// HadithTag Resource
 ///===========================================================================
@@ -462,11 +479,6 @@ export class HadithTag extends Entity<number> {
   }
 }
 
-HadithHouseApp.factory('HadithTagResource',
-  ($http: IHttpService, $q: IQService): CacheableResource<HadithTag, number> => {
-    return new CacheableResource<HadithTag, number>(HadithTag, '/apis/hadithtags', $http, $q);
-  });
-
 ///===========================================================================
 /// Chain Resource
 ///===========================================================================
@@ -485,11 +497,6 @@ export class Chain extends Entity<number> {
     this.isAddingNew = (<Chain>entity).isAddingNew;
   }
 }
-
-HadithHouseApp.factory('ChainResource',
-  ($http: IHttpService, $q: IQService): CacheableResource<Chain, number> => {
-    return new CacheableResource<Chain, number>(Chain, '/apis/chains', $http, $q);
-  });
 
 ///===========================================================================
 /// User Resource
@@ -531,7 +538,3 @@ export class User extends Entity<number> {
   }
 }
 
-HadithHouseApp.factory('UserResource',
-  ($http: IHttpService, $q: IQService): CacheableResource<User, number> => {
-    return new CacheableResource<User, number>(User, '/apis/users', $http, $q);
-  });

@@ -173,7 +173,7 @@ export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
     super.setOpeningExistingEntityMode(id);
     // TODO: Use query() instead, as we always want to get all lists of chains and display them, because
     // I don't think there is going to be a very large number of chains for hadiths.
-    this.pagedChains = this.ChainResource.pagedQuery({hadith: id});
+    this.pagedChains = this.ChainResource.pagedQuery({hadith: id.toString()});
     this.pagedChains.promise.then(() => {
       this.pagedChains.results.forEach((c) => {
         c.isEditing = false;
