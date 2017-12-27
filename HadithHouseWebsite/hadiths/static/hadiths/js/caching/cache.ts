@@ -24,17 +24,15 @@
 
 import moment from "moment";
 
-import Moment = moment.Moment;
-
 /**
  * Used by Cache class to cache objects.
  */
-export class CacheEntry<TObject, TKey> {
-  public expiryTime:Moment;
-  public key:TKey;
-  public object:TObject;
+export class CacheEntry<TObject> {
+  public expiryTime: moment.Moment;
+  public key: string;
+  public object: TObject;
 
-  public isExpired():boolean {
+  public isExpired(): boolean {
     let now = moment();
     return this.expiryTime.isBefore(now);
   }
@@ -43,8 +41,8 @@ export class CacheEntry<TObject, TKey> {
 /**
  * Supports caching object for specified periods of time.
  */
-export class Cache<TObject, TKey> {
-  private objectDict:any;
+export class Cache<TObject> {
+  private objectDict: { [key: string]: CacheEntry<TObject> };
 
   /**
    * Constructs a new cache object.
@@ -58,11 +56,11 @@ export class Cache<TObject, TKey> {
    * Put an object into the cache.
    * @param key The key of the object.
    * @param object The object.
-   * @param cachingPeriod The
+   * @param cachingPeriod The caching period in minutes.
    */
-  public put(key:TKey, object:TObject, cachingPeriod:number = this.defaultCachingPeriod) {
-    let entry = new CacheEntry<TObject, TKey>();
-    entry.key = key;
+  public put(key: string, object: TObject, cachingPeriod: number = this.defaultCachingPeriod) {
+    let entry = new CacheEntry<TObject>();
+    entry.key = key.toString();
     entry.expiryTime = moment().add(cachingPeriod, 'minutes');
     entry.object = object;
     this.objectDict[key.toString()] = entry;
@@ -75,7 +73,7 @@ export class Cache<TObject, TKey> {
    * @returns The cached object or null if no object with the given key is
    * cached or it has expired.
    */
-  public get(key:TKey, returnsExpired = true):TObject {
+  public get(key: string, returnsExpired = true): TObject {
     let entry = this.objectDict[key.toString()];
     if (!entry || (entry.isExpired() && !returnsExpired)) {
       return null;

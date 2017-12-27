@@ -150,13 +150,13 @@ export class PagedResults<TEntity> {
 export type ObjectWithPromise<TObject> = TObject & { promise?: IPromise<TObject> };
 
 export class CacheableResource<TEntity extends Entity<TId>, TId> {
-  private cache: Cache<TEntity, string>;
+  private cache: Cache<TEntity>;
 
   constructor(private TEntityClass: any,
               private baseUrl: string,
               private $http: IHttpService,
               private $q: IQService) {
-    this.cache = new Cache<TEntity, string>();
+    this.cache = new Cache<TEntity>();
   }
 
   public create(): TEntity {
