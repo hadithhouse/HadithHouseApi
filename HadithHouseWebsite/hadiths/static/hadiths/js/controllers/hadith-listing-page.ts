@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,125 +21,118 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {HadithHouseApp} from "app-def";
+import {Book, CacheableResource, Hadith, HadithTag, Person} from "resources/resources";
+import {EntityListingPageCtrl} from "controllers/entity-listing-page";
+import {ILocationService, IScope, ITimeoutService} from "angular";
 
-/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="entity-listing-page.ts" />
+export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
+  private tagsFilter: HadithTag[];
+  private booksFilter: Book[];
+  private personsFilter: Person[];
 
-module HadithHouse.Controllers {
-  import Hadith = HadithHouse.Resources.Hadith;
-  import HadithTag = HadithHouse.Resources.HadithTag;
-  import Book = HadithHouse.Resources.Book;
-  import Person = HadithHouse.Resources.Person;
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $timeout: ITimeoutService,
+              $location: ILocationService,
+              private HadithResource: CacheableResource<Hadith, number|string>,
+              private HadithTagResource: CacheableResource<HadithTag, number>,
+              private BookResource: CacheableResource<Book, number>,
+              private PersonResource: CacheableResource<Person, number>) {
+    super($scope, $rootScope, $timeout, $location, HadithResource, 'hadith');
 
-  export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
-    private tagsFilter: HadithTag[];
-    private booksFilter: Book[];
-    private personsFilter: Person[];
+    $scope.$watch(() => this.tagsFilter, (newValue, oldValue) => {
+      this.loadEntities();
+    });
+    $scope.$watchCollection(() => this.tagsFilter, (newValue, oldValue) => {
+      this.loadEntities();
+    });
 
-    constructor($scope: ng.IScope,
-                $rootScope: ng.IScope,
-                $timeout: ng.ITimeoutService,
-                $location: ng.ILocationService,
-                private HadithResource: Resources.CacheableResource<Hadith, number|string>,
-                private HadithTagResource: Resources.CacheableResource<HadithTag, number>,
-                private BookResource: Resources.CacheableResource<Book, number>,
-                private PersonResource: Resources.CacheableResource<Person, number>) {
-      super($scope, $rootScope, $timeout, $location, HadithResource, 'hadith');
+    $scope.$watch(() => this.booksFilter, (newValue, oldValue) => {
+      this.loadEntities();
+    });
+    $scope.$watchCollection(() => this.booksFilter, (newValue, oldValue) => {
+      this.loadEntities();
+    });
 
-      $scope.$watch(() => this.tagsFilter, (newValue, oldValue) => {
-        this.loadEntities();
-      });
-      $scope.$watchCollection(() => this.tagsFilter, (newValue, oldValue) => {
-        this.loadEntities();
-      });
+    $scope.$watch(() => this.personsFilter, (newValue, oldValue) => {
+      this.loadEntities();
+    });
+    $scope.$watchCollection(() => this.personsFilter, (newValue, oldValue) => {
+      this.loadEntities();
+    });
+  }
 
-      $scope.$watch(() => this.booksFilter, (newValue, oldValue) => {
-        this.loadEntities();
-      });
-      $scope.$watchCollection(() => this.booksFilter, (newValue, oldValue) => {
-        this.loadEntities();
-      });
+  public onHadithTagClicked(tag) {
+    this.tagsFilter = [tag];
+  }
 
-      $scope.$watch(() => this.personsFilter, (newValue, oldValue) => {
-        this.loadEntities();
-      });
-      $scope.$watchCollection(() => this.personsFilter, (newValue, oldValue) => {
-        this.loadEntities();
-      });
+  protected readUrlParams() {
+    super.readUrlParams();
+    let urlParams = this.$location.search();
+
+    try {
+      let tagIds: number[] = urlParams['tags'].split(',').map((t) => parseInt(t));
+      this.tagsFilter = this.HadithTagResource.get(tagIds);
+    } catch (e) {
+      this.tagsFilter = [];
     }
 
-    public onHadithTagClicked(tag) {
-      this.tagsFilter = [tag];
+    try {
+      let bookIds: number[] = urlParams['book'].split(',').map((t) => parseInt(t));
+      this.booksFilter = this.BookResource.get(bookIds);
+    } catch (e) {
+      this.booksFilter = [];
     }
 
-    protected readUrlParams() {
-      super.readUrlParams();
-      let urlParams = this.$location.search();
-
-      try {
-        let tagIds: number[] = urlParams['tags'].split(',').map((t) => parseInt(t));
-        this.tagsFilter = this.HadithTagResource.get(tagIds);
-      } catch (e) {
-        this.tagsFilter = [];
-      }
-
-      try {
-        let bookIds: number[] = urlParams['book'].split(',').map((t) => parseInt(t));
-        this.booksFilter = this.BookResource.get(bookIds);
-      } catch (e) {
-        this.booksFilter = [];
-      }
-
-      try {
-        let personIds: number[] = urlParams['person'].split(',').map((t) => parseInt(t));
-        this.personsFilter = this.PersonResource.get(personIds);
-      } catch (e) {
-        this.personsFilter = [];
-      }
-    }
-
-    protected updateUrlParams() {
-      super.updateUrlParams();
-      if (this.tagsFilter && this.tagsFilter.length > 0) {
-        this.$location.search('tags', this.tagsFilter.map(t => t.id).join(','));
-      } else {
-        this.$location.search('tags', null);
-      }
-
-      if (this.booksFilter && this.booksFilter.length > 0) {
-        this.$location.search('book', this.booksFilter.map(t => t.id).join(','));
-      } else {
-        this.$location.search('book', null);
-      }
-
-      if (this.personsFilter && this.personsFilter.length > 0) {
-        this.$location.search('persons', this.personsFilter.map(t => t.id).join(','));
-      } else {
-        this.$location.search('persons', null);
-      }
-    }
-
-    protected getQueryParams(): {} {
-      let queryParams = super.getQueryParams();
-      if (this.tagsFilter && this.tagsFilter.length > 0) {
-        queryParams['tags'] = this.tagsFilter.map(t => t.id).join(',');
-      }
-      if (this.booksFilter && this.booksFilter.length > 0) {
-        queryParams['book'] = this.booksFilter[0].id;
-      }
-      if (this.personsFilter && this.personsFilter.length > 0) {
-        queryParams['person'] = this.personsFilter[0].id;
-      }
-      return queryParams;
+    try {
+      let personIds: number[] = urlParams['person'].split(',').map((t) => parseInt(t));
+      this.personsFilter = this.PersonResource.get(personIds);
+    } catch (e) {
+      this.personsFilter = [];
     }
   }
 
-  HadithHouse.HadithHouseApp.controller('HadithListingPageCtrl',
-    function ($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource, BookResource, PersonResource) {
-      return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource,
-        BookResource, PersonResource);
-    });
+  protected updateUrlParams() {
+    super.updateUrlParams();
+    if (this.tagsFilter && this.tagsFilter.length > 0) {
+      this.$location.search('tags', this.tagsFilter.map(t => t.id).join(','));
+    } else {
+      this.$location.search('tags', null);
+    }
+
+    if (this.booksFilter && this.booksFilter.length > 0) {
+      this.$location.search('book', this.booksFilter.map(t => t.id).join(','));
+    } else {
+      this.$location.search('book', null);
+    }
+
+    if (this.personsFilter && this.personsFilter.length > 0) {
+      this.$location.search('persons', this.personsFilter.map(t => t.id).join(','));
+    } else {
+      this.$location.search('persons', null);
+    }
+  }
+
+  protected getQueryParams(): {} {
+    let queryParams = super.getQueryParams();
+    if (this.tagsFilter && this.tagsFilter.length > 0) {
+      queryParams['tags'] = this.tagsFilter.map(t => t.id).join(',');
+    }
+    if (this.booksFilter && this.booksFilter.length > 0) {
+      queryParams['book'] = this.booksFilter[0].id;
+    }
+    if (this.personsFilter && this.personsFilter.length > 0) {
+      queryParams['person'] = this.personsFilter[0].id;
+    }
+    return queryParams;
+  }
 }
+
+export function HadithListingPageCtrlCreator($scope, $rootScope, $timeout, $location, HadithResource,
+                                             HadithTagResource, BookResource, PersonResource) {
+  return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource,
+    BookResource, PersonResource);
+}
+
+HadithHouseApp.controller('HadithListingPageCtrl', HadithListingPageCtrlCreator);

@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {HadithHouseApp} from "app-def";
+import {EntityListingPageCtrl} from "controllers/entity-listing-page";
+import {CacheableResource, User} from "resources/resources";
+import {ILocationService, IScope, ITimeoutService} from "angular";
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="entity-listing-page.ts" />
-
-  module HadithHouse.Controllers {
-    import User = HadithHouse.Resources.User;
-
-    export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
-      constructor($scope:ng.IScope,
-                  $rootScope:ng.IScope,
-                  $timeout:ng.ITimeoutService,
-                  $location:ng.ILocationService,
-                  private UserResource:Resources.CacheableResource<User, number>) {
-        super($scope, $rootScope, $timeout, $location, UserResource, 'user');
-      }
-    }
-
-    HadithHouse.HadithHouseApp.controller('UserListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, UserResource) {
-        return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, UserResource);
-      });
+export class UserListingPageCtrl extends EntityListingPageCtrl<User> {
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $timeout: ITimeoutService,
+              $location: ILocationService,
+              private UserResource: CacheableResource<User, number>) {
+    super($scope, $rootScope, $timeout, $location, UserResource, 'user');
   }
+}
+
+export function UserListingPageCtrlCreator($scope, $rootScope, $timeout, $location, UserResource) {
+  return new UserListingPageCtrl($scope, $rootScope, $timeout, $location, UserResource);
+}
+
+HadithHouseApp.controller('UserListingPageCtrl', UserListingPageCtrlCreator);
 

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,32 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="entity-page.ts" />
+import {ILocationService, IScope} from "angular";
+import {Person, CacheableResource} from "resources/resources";
+import {EntityPageCtrl} from "controllers/entity-page";
+import {HadithHouseApp} from "app-def";
 
-module HadithHouse.Controllers {
-  import Person = HadithHouse.Resources.Person;
+export class PersonPageCtrl extends EntityPageCtrl<Person> {
+  private PersonResource: CacheableResource<Person, number>;
 
-  export class PersonPageCtrl extends EntityPageCtrl<Person> {
-    private PersonResource:Resources.CacheableResource<Person, number>;
-
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $location:ng.ILocationService,
-                $routeParams:any,
-                PersonResource:Resources.CacheableResource<Person, number>) {
-      super($scope, $rootScope, $location, $routeParams, PersonResource);
-      this.PersonResource = PersonResource;
-    }
-
-    protected getEntityPath(id: number) {
-      return 'person/' + id;
-    }
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $location: ILocationService,
+              $routeParams: any,
+              PersonResource: CacheableResource<Person, number>) {
+    super($scope, $rootScope, $location, $routeParams, PersonResource);
+    this.PersonResource = PersonResource;
   }
 
-  HadithHouse.HadithHouseApp.controller('PersonPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, PersonResource) {
-      let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource);
-      ctrl.initialize();
-      return ctrl;
-    });
+  protected getEntityPath(id: number) {
+    return 'person/' + id;
+  }
 }
+
+export function PersonPageCtrlCreator($scope, $rootScope, $location, $routeParams, PersonResource) {
+  let ctrl = new PersonPageCtrl($scope, $rootScope, $location, $routeParams, PersonResource);
+  ctrl.initialize();
+  return ctrl;
+}
+
+HadithHouseApp.controller('PersonPageCtrl', PersonPageCtrlCreator);

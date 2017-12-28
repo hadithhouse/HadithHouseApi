@@ -1,50 +1,31 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   grunt.initConfig({
     ts: {
-      default : {
-        src: ['hadiths/static/hadiths/js/**/*.ts']
+      default: {
+        tsconfig: {
+          tsconfig: 'tsconfig.json'
+        },
+        options: {
+          sourceMap: false
+        }
       }
     },
-    uglify: {
+    systemjs: {
       options: {
-        mangle: false,
-        preserveComments: false,
-        sourceMap: true,
-        sourceMapIncludeSources: true,
-        compress: false
+        sfx: false,
+        baseURL: "hadiths/static/hadiths/js",
+        configFile: "hadiths/static/hadiths/js/systemjs.config.js",
+        minify: false,
+        build: {
+          mangle: false
+        }
       },
-      all: {
-        files: [
-          {
-            'hadiths/static/hadiths/js/all.js': [
-              'hadiths/static/hadiths/js/app.js',
-              'hadiths/static/hadiths/js/services/facebook.service.js',
-              'hadiths/static/hadiths/js/services/services.js',
-              'hadiths/static/hadiths/js/caching/cache.js',
-              'hadiths/static/hadiths/js/resources/resources.js',
-              'hadiths/static/hadiths/js/controllers/entity-page.js',
-              'hadiths/static/hadiths/js/controllers/entity-listing-page.js',
-              'hadiths/static/hadiths/js/controllers/book-page.js',
-              'hadiths/static/hadiths/js/controllers/book-listing-page.js',
-              'hadiths/static/hadiths/js/controllers/hadith-page.js',
-              'hadiths/static/hadiths/js/controllers/hadith-listing-page.js',
-              'hadiths/static/hadiths/js/controllers/hadithtag-page.js',
-              'hadiths/static/hadiths/js/controllers/hadithtag-listing-page.js',
-              'hadiths/static/hadiths/js/controllers/home-page.js',
-              'hadiths/static/hadiths/js/controllers/person-page.js',
-              'hadiths/static/hadiths/js/controllers/person-listing-page.js',
-              'hadiths/static/hadiths/js/controllers/user-page.js',
-              'hadiths/static/hadiths/js/controllers/user-listing-page.js',
-              'hadiths/static/hadiths/js/directives/entity.directive.js',
-              'hadiths/static/hadiths/js/directives/entity-lookup.directive.js',
-              'hadiths/static/hadiths/js/directives/hadith-listing.directive.js',
-              'hadiths/static/hadiths/js/directives/selector.directive.js',
-              'hadiths/static/hadiths/js/directives/tags-input.directive.js',
-              'hadiths/static/hadiths/js/directives/tree.directive.js'
-            ]
-          }
-        ]
-      },
+      dist: {
+        files: [{
+          "src": "app.js",
+          "dest": "hadiths/static/hadiths/js/all.js"
+        }]
+      }
     },
     cssmin: {
       options: {
@@ -64,11 +45,20 @@ module.exports = function(grunt) {
           }
         ]
       },
+    },
+    clean: {
+      generated_js_files: [
+        'hadiths/static/hadiths/js/**/*.js',
+        'hadiths/static/hadiths/js/**/*.js.map',
+        '!hadiths/static/hadiths/js/systemjs.config.js'
+      ]
     }
   });
   grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-systemjs-builder');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('default', ['ts', 'uglify', 'cssmin']);
+  grunt.registerTask('default', ['ts', 'systemjs', 'cssmin']);
 };

@@ -22,211 +22,199 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular-resource.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/lodash/lodash.d.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="../resources/resources.ts" />
+import _ from "lodash";
+import {HadithHouseApp} from "app-def";
+import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
+import {Book, CacheableResource, Entity, HadithTag, ObjectWithPromise, Person, User} from "resources/resources";
+import "bootstrap"
 
+declare function getHtmlBasePath(): string;
 
-module HadithHouse.Directives {
-  import IScope = angular.IScope;
-  import IAugmentedJQuery = angular.IAugmentedJQuery;
-  import CacheableResource = HadithHouse.Resources.CacheableResource;
-  import Person = HadithHouse.Resources.Person;
-  import Book = HadithHouse.Resources.Book;
-  import HadithTag = HadithHouse.Resources.HadithTag;
-  import User = HadithHouse.Resources.User;
-  import ILocationProvider = angular.ILocationProvider;
-  import Entity = HadithHouse.Resources.Entity;
-  import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
+export class TagsInputCtrl {
+  public onAdd: any;
+  public type: string;
+  public selectionMode: string;
+  public text: string;
+  public entities: Entity<number>[];
+  public autoCompleteEntries: any[];
+  private EntityResource: CacheableResource<Entity<number>, number>;
 
-  export class TagsInputCtrl {
-    public onAdd: any;
-    public type: string;
-    public selectionMode: string;
-    public text: string;
-    public entities: Entity<number>[];
-    public autoCompleteEntries: any[];
-    private EntityResource: CacheableResource<Entity<number>, number>;
+  constructor(private $scope: IScope,
+              private $element: IAugmentedJQuery,
+              private $location: ILocationProvider,
+              private PersonResource: CacheableResource<Person, number>,
+              private BookResource: CacheableResource<Book, number>,
+              private HadithTagResource: CacheableResource<HadithTag, number>,
+              private UserResource: CacheableResource<User, number>) {
+  }
 
-    constructor(private $scope: IScope,
-                private $element: IAugmentedJQuery,
-                private $location: ILocationProvider,
-                private PersonResource: CacheableResource<Person, number>,
-                private BookResource: CacheableResource<Book, number>,
-                private HadithTagResource: CacheableResource<HadithTag, number>,
-                private UserResource: CacheableResource<User, number>) {
+  public $onInit() {
+    if (!this.type || typeof(this.type) !== 'string') {
+      throw 'hh-entity-lookup must have its type attribute set to a string.';
     }
-
-    public $onInit() {
-      if (!this.type || typeof(this.type) !== 'string') {
-        throw 'hh-entity-lookup must have its type attribute set to a string.';
-      }
-      if (!this.selectionMode) {
-        this.selectionMode = 'multi';
-      }
-      if (!this.entities) {
-        this.entities = [];
-      }
-      this.$scope.$watch(() => this.text, (newText, oldText) => {
-        if (this.text && this.text.length > 2) {
-          this.findEntities(this.text).promise.then((result) => {
-            this.showAutoComplete(result, this.text);
-          });
-        } else {
-          this.hideAutoComplete();
-        }
-      });
-      this.setEntityResource();
+    if (!this.selectionMode) {
+      this.selectionMode = 'multi';
     }
-
-    public onKey($event) {
-      switch ($event.which) {
-        case 8:
-          this.onBackspace();
-          break;
-
-        case 13:
-          this.onEnter();
-          break;
-      }
+    if (!this.entities) {
+      this.entities = [];
     }
-
-    public deleteEntity(index: number) {
-      if (typeof(index) !== 'number') {
-        throw 'Index must be a number.';
-      }
-      if (index < 0) {
-        throw 'Index must not be negative.';
-      }
-      if (index >= this.entities.length) {
-        throw 'Index out of range.';
-      }
-      this.entities.splice(index, 1);
-    }
-
-    public addEntity(entity: any) {
-      if (entity.id == 'create-entity') {
-        switch (this.type.toLowerCase()) {
-          case 'hadithtag':
-            let newEntity : HadithTag = <HadithTag>this.EntityResource.create();
-            newEntity.name = entity.name;
-            newEntity.save().then(() => {
-              this.addEntity(newEntity);
-            });
-            break;
-
-          default:
-            toastr.error('Not implemented yet :(');
-        }
-        return;
-      }
-      if (this.selectionMode === 'single') {
-        this.entities = [entity];
-        this.text = '';
+    this.$scope.$watch(() => this.text, (newText, oldText) => {
+      if (this.text && this.text.length > 2) {
+        this.findEntities(this.text).promise.then((result) => {
+          this.showAutoComplete(result, this.text);
+        });
       } else {
-        this.entities.push(entity);
-        this.text = '';
+        this.hideAutoComplete();
       }
-    }
+    });
+    this.setEntityResource();
+  }
 
-    private setEntityResource() {
+  public onKey($event) {
+    switch ($event.which) {
+      case 8:
+        this.onBackspace();
+        break;
+
+      case 13:
+        this.onEnter();
+        break;
+    }
+  }
+
+  public deleteEntity(index: number) {
+    if (typeof(index) !== 'number') {
+      throw 'Index must be a number.';
+    }
+    if (index < 0) {
+      throw 'Index must not be negative.';
+    }
+    if (index >= this.entities.length) {
+      throw 'Index out of range.';
+    }
+    this.entities.splice(index, 1);
+  }
+
+  public addEntity(entity: any) {
+    if (entity.id == 'create-entity') {
       switch (this.type.toLowerCase()) {
-        case 'person':
-          this.EntityResource = this.PersonResource;
-          break;
-
-        case 'book':
-          this.EntityResource = this.BookResource;
-          break;
-
         case 'hadithtag':
-          this.EntityResource = this.HadithTagResource;
+          let newEntity : HadithTag = <HadithTag>this.EntityResource.create();
+          newEntity.name = entity.name;
+          newEntity.save().then(() => {
+            this.addEntity(newEntity);
+          });
           break;
-
-        case 'user':
-          this.EntityResource = this.UserResource;
-          break;
-
-        default:
-          throw 'Invalid type for hh-entity-lookup.';
-      }
-    }
-
-    private findEntities(query):ObjectWithPromise<Entity<number>[]>  {
-      return this.EntityResource.query({search: query});
-    }
-
-    private autoCompleteSuggestionsContains(entities:Entity<number>[], query) {
-      switch (this.type.toLowerCase()) {
-        case 'hadithtag':
-          return _.some(entities.map(e => (<HadithTag>e).name), name => name == query);
 
         default:
           toastr.error('Not implemented yet :(');
       }
+      return;
     }
-
-    private showAutoComplete(entities:Entity<number>[], originalQuery) {
-      this.autoCompleteEntries = entities;
-      if (this.autoCompleteEntries.length == 0 || !this.autoCompleteSuggestionsContains(entities, originalQuery)) {
-        this.autoCompleteEntries.push({
-          id: 'create-entity',
-          name: originalQuery,
-          toString: function() {
-            return `Create: ${originalQuery}`;
-          }
-        });
-      }
-      let input = this.$element.find('input');
-      let pos = input.offset();
-      pos.top += input.height();
-      let dropdown: any = this.$element.find('.dropdown-menu');
-      dropdown.dropdown('toggle');
-      dropdown.show();
-      dropdown.offset(pos);
-    }
-
-    private hideAutoComplete() {
-      this.$element.find('.dropdown-menu').hide();
-    }
-
-    private isInputEmpty(): boolean {
-      return typeof(this.text) === 'undefined' || this.text === null || this.text === '';
-    }
-
-    private onBackspace() {
-      if (this.isInputEmpty() && this.entities.length > 0) {
-        this.entities.pop();
-      }
-    }
-
-    private onEnter() {
-      if (typeof(this.text) !== 'undefined' && this.text !== null && this.text !== '') {
-        this.addEntity(this.text);
-      }
+    if (this.selectionMode === 'single') {
+      this.entities = [entity];
+      this.text = '';
+    } else {
+      this.entities.push(entity);
+      this.text = '';
     }
   }
 
-  HadithHouseApp.controller('TagsInputCtrl',
-    ['$scope', '$element', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
-      TagsInputCtrl]);
+  private setEntityResource() {
+    switch (this.type.toLowerCase()) {
+      case 'person':
+        this.EntityResource = this.PersonResource;
+        break;
 
-  HadithHouseApp.directive('hhTagsInput', function () {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: getHtmlBasePath() + 'directives/tags-input.directive.html',
-      controller: 'TagsInputCtrl',
-      controllerAs: 'ctrl',
-      bindToController: true,
-      scope: {
-        onAdd: '&?',
-        type: '@',
-        selectionMode: '@',
-        entities: '='
-      }
-    };
-  });
+      case 'book':
+        this.EntityResource = this.BookResource;
+        break;
+
+      case 'hadithtag':
+        this.EntityResource = this.HadithTagResource;
+        break;
+
+      case 'user':
+        this.EntityResource = this.UserResource;
+        break;
+
+      default:
+        throw 'Invalid type for hh-entity-lookup.';
+    }
+  }
+
+  private findEntities(query):ObjectWithPromise<Entity<number>[]>  {
+    return this.EntityResource.query({search: query});
+  }
+
+  private autoCompleteSuggestionsContains(entities:Entity<number>[], query) {
+    switch (this.type.toLowerCase()) {
+      case 'hadithtag':
+        return _.some(entities.map(e => (<HadithTag>e).name), name => name == query);
+
+      default:
+        toastr.error('Not implemented yet :(');
+    }
+  }
+
+  private showAutoComplete(entities:Entity<number>[], originalQuery) {
+    this.autoCompleteEntries = entities;
+    if (this.autoCompleteEntries.length == 0 || !this.autoCompleteSuggestionsContains(entities, originalQuery)) {
+      this.autoCompleteEntries.push({
+        id: 'create-entity',
+        name: originalQuery,
+        toString: function() {
+          return `Create: ${originalQuery}`;
+        }
+      });
+    }
+    let input = this.$element.find('input');
+    let pos = input.offset();
+    pos.top += input.height();
+    let dropdown: any = this.$element.find('.dropdown-menu');
+    dropdown.dropdown('toggle');
+    dropdown.show();
+    dropdown.offset(pos);
+  }
+
+  private hideAutoComplete() {
+    this.$element.find('.dropdown-menu').hide();
+  }
+
+  private isInputEmpty(): boolean {
+    return typeof(this.text) === 'undefined' || this.text === null || this.text === '';
+  }
+
+  private onBackspace() {
+    if (this.isInputEmpty() && this.entities.length > 0) {
+      this.entities.pop();
+    }
+  }
+
+  private onEnter() {
+    if (typeof(this.text) !== 'undefined' && this.text !== null && this.text !== '') {
+      this.addEntity(this.text);
+    }
+  }
 }
+
+HadithHouseApp.controller('TagsInputCtrl',
+  ['$scope', '$element', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
+    TagsInputCtrl]);
+
+HadithHouseApp.directive('hhTagsInput', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: getHtmlBasePath() + 'directives/tags-input.directive.html',
+    controller: 'TagsInputCtrl',
+    controllerAs: 'ctrl',
+    bindToController: true,
+    scope: {
+      onAdd: '&?',
+      type: '@',
+      selectionMode: '@',
+      entities: '='
+    }
+  };
+});

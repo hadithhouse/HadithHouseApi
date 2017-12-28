@@ -21,134 +21,128 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {CacheableResource, Hadith, ObjectWithPromise, PagedResults} from "resources/resources";
+import {IScope} from "angular";
+import {HadithHouseApp} from "app-def";
 
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../resources/resources.ts" />
+declare function getHtmlBasePath(): string;
 
-module HadithHouse.Directives {
-  import IScope = angular.IScope;
-  import CacheableResource = HadithHouse.Resources.CacheableResource;
-  import Hadith = HadithHouse.Resources.Hadith;
-  import ObjectWithPromise = HadithHouse.Resources.ObjectWithPromise;
-  import PagedResults = HadithHouse.Resources.PagedResults;
+export class HadithListingCtrl {
+  public pagedEntities: ObjectWithPromise<PagedResults<Hadith>>;
+  public bookId: number;
+  public page: number = 1;
+  public pageSize: number = 10;
 
-  export class HadithListingCtrl {
-    public pagedEntities: ObjectWithPromise<PagedResults<Hadith>>;
-    public bookId: number;
-    public page: number = 1;
-    public pageSize: number = 10;
+  constructor(private $scope: IScope,
+              private HadithResource: CacheableResource<Hadith, number|string>) {
+    $scope.$watch('ctrl.bookId', this.onBookIdChanged);
+    $scope.$watch('ctrl.page', this.onPageChanged);
+  }
 
-    constructor(private $scope: IScope,
-                private HadithResource: CacheableResource<Hadith, number|string>) {
-      $scope.$watch('ctrl.bookId', this.onBookIdChanged);
-      $scope.$watch('ctrl.page', this.onPageChanged);
+  public pageRange(): number[] {
+    let res: number[] = [];
+    let start = Math.max(this.page - 3, 0);
+    let end = Math.min(start + 4, this.getPageCount() - 1);
+    for (let i = start; i <= end; i++) {
+      res.push(i + 1);
     }
+    return res;
+  }
 
-    public pageRange(): number[] {
-      let res: number[] = [];
-      let start = Math.max(this.page - 3, 0);
-      let end = Math.min(start + 4, this.getPageCount() - 1);
-      for (let i = start; i <= end; i++) {
-        res.push(i + 1);
-      }
-      return res;
+  public getPageCount() {
+    if (this.pagedEntities) {
+      return Math.ceil(this.pagedEntities.count / this.pageSize);
     }
+    return 0;
+  }
 
-    public getPageCount() {
-      if (this.pagedEntities) {
-        return Math.ceil(this.pagedEntities.count / this.pageSize);
-      }
-      return 0;
+  public setPage(page: number) {
+    this.page = page;
+    if (this.page < 1) {
+      this.page = 1;
     }
-
-    public setPage(page: number) {
-      this.page = page;
-      if (this.page < 1) {
-        this.page = 1;
-      }
-      if (this.page > this.getPageCount()) {
-        this.page = this.getPageCount();
-      }
-    }
-
-    public isFirstPage(): boolean {
-      return this.page <= 1;
-    }
-
-    public isLastPage(): boolean {
-      return this.page >= this.getPageCount();
-    }
-
-    protected getQueryParams(): {} {
-      return {
-        book: this.bookId,
-        limit: this.pageSize,
-        offset: (this.page - 1) * this.pageSize
-      };
-    }
-
-    public deleteEntity = (event: any, entity: Hadith) => {
-      // FIXME: Use Bootstrap dialog.
-      /*let confirm = this.$mdDialog.confirm()
-       .title('Confirm')
-       .textContent('Are you sure you want to delete the entity?')
-       .ok('Yes')
-       .cancel('No')
-       .targetEvent(event);
-       this.$mdDialog.show(confirm).then(() => {
-       entity.delete().then(() => {
-       this.ToastService.show('Successfully deleted');
-       this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
-       return e.id !== entity.id;
-       });
-       }, (result) => {
-       if (result.data && result.data.detail) {
-       this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
-       } else if (result.data) {
-       this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
-       } else {
-       this.ToastService.show('Failed to delete entity. Please try again!');
-       }
-       });
-       });*/
-    };
-
-    private onPageChanged = (newPage: number, oldPage: number) => {
-      if (!newPage) {
-        return;
-      }
-      this.loadEntities();
-    };
-
-    private onBookIdChanged = (newId: number, oldId: number) => {
-      if (!newId) {
-        // TODO: Empty the pagedEntities variable.
-        return;
-      }
-
-      this.loadEntities();
-    };
-
-    private loadEntities() {
-      this.pagedEntities = this.HadithResource.pagedQuery(this.getQueryParams());
+    if (this.page > this.getPageCount()) {
+      this.page = this.getPageCount();
     }
   }
 
+  public isFirstPage(): boolean {
+    return this.page <= 1;
+  }
 
-  HadithHouseApp.controller('HadithListingCtrl', ['$scope', 'HadithResource', HadithListingCtrl]);
+  public isLastPage(): boolean {
+    return this.page >= this.getPageCount();
+  }
 
-  // TODO: Consider creating a class for this.
-  HadithHouseApp.directive('hhHadithListing', function () {
+  protected getQueryParams(): {} {
     return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: getHtmlBasePath() + 'directives/hadith-listing.directive.html',
-      controller: 'HadithListingCtrl',
-      controllerAs: 'ctrl',
-      bindToController: true,
-      scope: {
-        bookId: '='
-      }
+      book: this.bookId,
+      limit: this.pageSize,
+      offset: (this.page - 1) * this.pageSize
     };
-  });
+  }
+
+  public deleteEntity = (event: any, entity: Hadith) => {
+    // FIXME: Use Bootstrap dialog.
+    /*let confirm = this.$mdDialog.confirm()
+     .title('Confirm')
+     .textContent('Are you sure you want to delete the entity?')
+     .ok('Yes')
+     .cancel('No')
+     .targetEvent(event);
+     this.$mdDialog.show(confirm).then(() => {
+     entity.delete().then(() => {
+     this.ToastService.show('Successfully deleted');
+     this.pagedEntities.results = this.pagedEntities.results.filter((e) => {
+     return e.id !== entity.id;
+     });
+     }, (result) => {
+     if (result.data && result.data.detail) {
+     this.ToastService.show('Failed to delete entity. Error was: ' + result.data.detail);
+     } else if (result.data) {
+     this.ToastService.show('Failed to delete entity. Error was: ' + result.data);
+     } else {
+     this.ToastService.show('Failed to delete entity. Please try again!');
+     }
+     });
+     });*/
+  };
+
+  private onPageChanged = (newPage: number, oldPage: number) => {
+    if (!newPage) {
+      return;
+    }
+    this.loadEntities();
+  };
+
+  private onBookIdChanged = (newId: number, oldId: number) => {
+    if (!newId) {
+      // TODO: Empty the pagedEntities variable.
+      return;
+    }
+
+    this.loadEntities();
+  };
+
+  private loadEntities() {
+    this.pagedEntities = this.HadithResource.pagedQuery(this.getQueryParams());
+  }
 }
+
+
+HadithHouseApp.controller('HadithListingCtrl', ['$scope', 'HadithResource', HadithListingCtrl]);
+
+// TODO: Consider creating a class for this.
+HadithHouseApp.directive('hhHadithListing', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: getHtmlBasePath() + 'directives/hadith-listing.directive.html',
+    controller: 'HadithListingCtrl',
+    controllerAs: 'ctrl',
+    bindToController: true,
+    scope: {
+      bookId: '='
+    }
+  };
+});

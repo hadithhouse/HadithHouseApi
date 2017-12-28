@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {EntityListingPageCtrl} from "controllers/entity-listing-page";
+import {CacheableResource, HadithTag} from "resources/resources";
+import {ILocationService, IScope, ITimeoutService} from "angular";
+import {HadithHouseApp} from "app-def";
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="entity-listing-page.ts" />
-
-  module HadithHouse.Controllers {
-    import HadithTag = HadithHouse.Resources.HadithTag;
-
-    export class HadithTagListingPageCtrl extends EntityListingPageCtrl<HadithTag> {
-      constructor($scope:ng.IScope,
-                  $rootScope:ng.IScope,
-                  $timeout:ng.ITimeoutService,
-                  $location:ng.ILocationService,
-                  private HadithTagResource:Resources.CacheableResource<HadithTag, number>) {
-        super($scope, $rootScope, $timeout, $location, HadithTagResource, 'hadithtag');
-      }
-    }
-
-    HadithHouse.HadithHouseApp.controller('HadithTagListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, HadithTagResource) {
-        return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, HadithTagResource);
-      });
+export class HadithTagListingPageCtrl extends EntityListingPageCtrl<HadithTag> {
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $timeout: ITimeoutService,
+              $location: ILocationService,
+              private HadithTagResource: CacheableResource<HadithTag, number>) {
+    super($scope, $rootScope, $timeout, $location, HadithTagResource, 'hadithtag');
   }
+}
+
+export function HadithTagListingPageCtrlCreator($scope, $rootScope, $timeout, $location, HadithTagResource) {
+  return new HadithTagListingPageCtrl($scope, $rootScope, $timeout, $location, HadithTagResource);
+}
+
+HadithHouseApp.controller('HadithTagListingPageCtrl', HadithTagListingPageCtrlCreator);
 

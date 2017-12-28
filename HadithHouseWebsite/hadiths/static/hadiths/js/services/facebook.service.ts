@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,106 +22,107 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../app.ts" />
+import {IPromise, IQService} from "angular";
 
-module HadithHouse.Services {
-  import IQService = angular.IQService;
-  export class FacebookService {
-    private fbUserId:number;
-    private $q:IQService;
-    private FB:any;
+declare function getFbAccessToken(): string;
 
-    constructor($q:IQService, FB:any, fbUserId:number) {
-      this.$q = $q;
-      this.FB = FB;
-      this.fbUserId = fbUserId;
-    }
+export class FacebookUser {
+  public id: Number;
+  public link: string;
+  public picture: { data: { url: string } };
+}
 
-    public login() {
-      let deferred = this.$q.defer();
-      this.FB.login(function (response) {
-        if (response.authResponse) {
-          deferred.resolve(response);
-        } else {
-          deferred.reject('User cancelled login');
-        }
-      });
-      return deferred.promise;
-    }
+export class FacebookService {
+  private fbUserId: number;
+  private $q: IQService;
+  private FB: any;
 
-    public logout() {
-      let deferred = this.$q.defer();
-      this.FB.logout(function (response) {
-        deferred.resolve(response);
-      });
-      return deferred.promise;
-    }
+  static $inject = ['$q'];
 
-    public getLoginStatus() {
-
-      let deferred = this.$q.defer();
-      this.FB.getLoginStatus(function (response) {
-        deferred.resolve(response);
-      });
-      return deferred.promise;
-    }
-
-    /**
-     * Makes an FB request to retrieve information about the current
-     * logged in user.
-     * @returns A promise resolving to the user info object.
-     */
-    public getLoggedInUser() {
-      let deferred = this.$q.defer();
-      if (fbAccessToken === null) {
-        // No access token, so user is not logged in.
-        deferred.resolve(null);
-      }
-      this.FB.api('/me', {fields: 'link,picture'},
-        function (response) {
-          if (response.error) {
-            deferred.reject(response.error);
-          } else {
-            deferred.resolve(response);
-          }
-        }
-      );
-      return deferred.promise;
-    }
-
-    public getProfilePictureUrl(userId) {
-      let deferred = this.$q.defer();
-      this.FB.api('/' + this.fbUserId + '/picture',
-        function (response) {
-          if (response && !response.error) {
-            deferred.resolve(response.data.url);
-          } else {
-            deferred.reject(null);
-          }
-        }
-      );
-      return deferred.promise;
-    }
-
-    public getUserFriends(userId) {
-      let deferred = this.$q.defer();
-      this.FB.api('/' + this.fbUserId + '/friends',
-        function (response) {
-          if (response && !response.error) {
-            deferred.resolve(response.data.url);
-          } else {
-            deferred.reject(null);
-          }
-        }
-      );
-      return deferred.promise;
-    }
+  constructor($q: IQService) {
+    this.$q = $q;
+    this.FB = window['FB'];
+    this.fbUserId = window['fbUserId'];
   }
 
-  HadithHouse.HadithHouseApp.factory('FacebookService', function ($q) {
-    let fbUserId:number = window['fbUserId'];
-    let FB:any = window['FB'];
-    return new FacebookService($q, FB, fbUserId);
-  });
+  public login(): any {
+    let deferred = this.$q.defer();
+    this.FB.login(function (response) {
+      if (response.authResponse) {
+        deferred.resolve(response);
+      } else {
+        deferred.reject('User cancelled login');
+      }
+    });
+    return deferred.promise;
+  }
+
+  public logout() {
+    let deferred = this.$q.defer();
+    this.FB.logout(function (response) {
+      deferred.resolve(response);
+    });
+    return deferred.promise;
+  }
+
+  public getLoginStatus() {
+
+    let deferred = this.$q.defer();
+    this.FB.getLoginStatus(function (response) {
+      deferred.resolve(response);
+    });
+    return deferred.promise;
+  }
+
+  /**
+   * Makes an FB request to retrieve information about the current
+   * logged in user.
+   * @returns A promise resolving to the user info object.
+   */
+  public getLoggedInUser(): IPromise<FacebookUser> {
+    let deferred = this.$q.defer();
+    if (getFbAccessToken === null) {
+      // No access token, so user is not logged in.
+      deferred.resolve(null);
+    }
+    this.FB.api('/me', {fields: 'link,picture'},
+      function (response) {
+        if (response.error) {
+          deferred.reject(response.error);
+        } else {
+          deferred.resolve(response);
+        }
+      }
+    );
+    return <IPromise<FacebookUser>>deferred.promise;
+  }
+
+  public getProfilePictureUrl(userId) {
+    let deferred = this.$q.defer();
+    this.FB.api('/' + this.fbUserId + '/picture',
+      function (response) {
+        if (response && !response.error) {
+          deferred.resolve(response.data.url);
+        } else {
+          deferred.reject(null);
+        }
+      }
+    );
+    return deferred.promise;
+  }
+
+  public getUserFriends(userId) {
+    let deferred = this.$q.defer();
+    this.FB.api('/' + this.fbUserId + '/friends',
+      function (response) {
+        if (response && !response.error) {
+          deferred.resolve(response.data.url);
+        } else {
+          deferred.reject(null);
+        }
+      }
+    );
+    return deferred.promise;
+  }
 }
+

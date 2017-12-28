@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,38 +22,34 @@
  * THE SOFTWARE.
  */
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="../services/services.ts" />
-/// <reference path="entity-page.ts" />
+import {ILocationService, IScope} from "angular";
+import {Book, CacheableResource} from "../resources/resources";
+import {EntityPageCtrl} from "./entity-page";
+import {HadithHouseApp} from "app-def";
 
-module HadithHouse.Controllers {
-  import Book = HadithHouse.Resources.Book;
+export class BookPageCtrl extends EntityPageCtrl<Book> {
+  private BookResource: CacheableResource<Book, number>;
+  private activeTab: number;
 
-  export class BookPageCtrl extends EntityPageCtrl<Book> {
-    private BookResource:Resources.CacheableResource<Book, number>;
-    private activeTab:number;
-
-    constructor($scope:ng.IScope,
-                $rootScope:ng.IScope,
-                $location:ng.ILocationService,
-                $routeParams:any,
-                BookResource:Resources.CacheableResource<Book, number>) {
-      super($scope, $rootScope, $location, $routeParams, BookResource);
-      this.BookResource = BookResource;
-      this.activeTab = 1;
-    }
-
-    protected getEntityPath(id: number) {
-      return 'book/' + id;
-    }
+  constructor($scope: IScope,
+              $rootScope: IScope,
+              $location: ILocationService,
+              $routeParams: any,
+              BookResource: CacheableResource<Book, number>) {
+    super($scope, $rootScope, $location, $routeParams, BookResource);
+    this.BookResource = BookResource;
+    this.activeTab = 1;
   }
 
-  HadithHouse.HadithHouseApp.controller('BookPageCtrl',
-    function ($scope, $rootScope, $location, $routeParams, BookResource) {
-      let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
-      ctrl.initialize();
-      return ctrl;
-    });
+  protected getEntityPath(id: number) {
+    return 'book/' + id;
+  }
 }
+
+export function BookPageCtrlCreator($scope, $rootScope, $location, $routeParams, BookResource) {
+  let ctrl = new BookPageCtrl($scope, $rootScope, $location, $routeParams, BookResource);
+  ctrl.initialize();
+  return ctrl;
+}
+
+HadithHouseApp.controller('BookPageCtrl', BookPageCtrlCreator);

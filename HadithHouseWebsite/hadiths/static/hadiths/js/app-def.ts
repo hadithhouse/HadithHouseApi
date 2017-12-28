@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +22,8 @@
  * THE SOFTWARE.
  */
 
-import {HadithHouseApp} from "app-def";
-import {Hadith} from "resources/resources";
-import {IHttpService} from "angular";
+import angular from "angular";
+import "angular-resource";
+import "angular-route";
 
-export class HomePageCtrl {
-  private randomHadith: Hadith;
-  private randomUntaggedHadith: Hadith;
-
-  constructor(private $http: IHttpService) {
-    this.loadRandomHadith();
-    this.loadRandomUntaggedHadith();
-  }
-
-  public loadRandomHadith() {
-    this.randomHadith = new Hadith(this.$http, '/apis/hadiths', 'random');
-  }
-
-  public loadRandomUntaggedHadith() {
-    this.randomUntaggedHadith = new Hadith(this.$http, '/apis/hadiths', 'randomuntagged');
-  }
-}
-
-export function HomePageCtrlCreator($http) {
-  return new HomePageCtrl($http);
-}
-
-HadithHouseApp.controller('HomePageCtrl', HomePageCtrlCreator);
+export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);

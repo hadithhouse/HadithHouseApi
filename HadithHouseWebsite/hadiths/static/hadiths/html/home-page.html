@@ -10,7 +10,7 @@
 
 <a href="" ng-href="/hadith/{{ ctrl.randomHadith.id }}">Go to hadith page</a>
 
-<div ng-if="ctrl.randomUntaggedHadith" style="margin-top: 30px;">
+<div ng-if="ctrl.randomUntaggedHadith && ctrl.randomUntaggedHadith.valid === true" style="margin-top: 30px;">
   <h4>
     Random Untagged Hadith
     <button class="btn btn-secondary btn-sm fa fa-refresh" aria-hidden="true"
