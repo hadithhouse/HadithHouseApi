@@ -36,7 +36,7 @@ def index(request, path):
   # application is restarted?
   # https://github.com/hadithhouse/hadithhouse/issues/307
   global all_js_hash
-  if all_js_hash is None:
+  if all_js_hash is None and settings.get_environment() == 'production':
     all_js_hash = md5(finders.find('hadiths/js/all.js'))
 
   # Find the MD5 hash of all.css. This is used in index.html for cache busting.
@@ -44,7 +44,7 @@ def index(request, path):
   # application is restarted?
   # https://github.com/hadithhouse/hadithhouse/issues/307
   global all_css_hash
-  if all_css_hash is None:
+  if all_css_hash is None and settings.get_environment() == 'production':
     all_css_hash = md5(finders.find('hadiths/css/all.css'))
 
   context = {

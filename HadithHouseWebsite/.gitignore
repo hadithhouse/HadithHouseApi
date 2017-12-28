@@ -18,6 +18,7 @@ HadithHouseWebsite/server_settings.py
 
 # Ignore generated JS and JS map files.
 /hadiths/static/hadiths/js/**/*.js
+!/hadiths/static/hadiths/js/systemjs.config.js
 /hadiths/static/hadiths/js/**/*.js.map
 
 # Ignore minified CSS file.

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "system",
+    "moduleResolution": "node",
+    "baseUrl": "hadiths/static/hadiths/js",
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
+    "types": [
+      "angular",
+      "angular-material",
+      "angular-resource",
+      "angular-route",
+      "bootstrap",
+      "d3",
+      "jquery",
+      "lodash",
+      "moment",
+      "systemjs",
+      "toastr"
+    ],
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.iterable"
+    ]
+  },
+  "include": [
+    "hadiths/static/hadiths/js/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}

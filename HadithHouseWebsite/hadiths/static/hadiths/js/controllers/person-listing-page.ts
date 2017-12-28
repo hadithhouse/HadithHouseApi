@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import {HadithHouseApp} from "app-def";
+import {CacheableResource, Person} from "resources/resources";
+import {EntityListingPageCtrl} from "controllers/entity-listing-page";
+import {ILocationService, IScope, ITimeoutService} from "angular";
 
-/// <reference path="../../../../../TypeScriptDefs/angularjs/angular.d.ts" />
-/// <reference path="../../../../../TypeScriptDefs/angular-material/angular-material.d.ts" />
-/// <reference path="../app.ts" />
-/// <reference path="entity-listing-page.ts" />
-
-  module HadithHouse.Controllers {
-    import Person = HadithHouse.Resources.Person;
-
-    export class PersonListingPageCtrl extends EntityListingPageCtrl<Person> {
-      constructor($scope:ng.IScope,
-                  $rootScope:ng.IScope,
-                  $timeout:ng.ITimeoutService,
-                  $location:ng.ILocationService,
-                  private PersonResource:Resources.CacheableResource<Person, number>) {
-        super($scope, $rootScope, $timeout, $location, PersonResource, 'person');
-      }
-    }
-
-    HadithHouse.HadithHouseApp.controller('PersonListingPageCtrl',
-      function ($scope, $rootScope, $timeout, $location, PersonResource) {
-        return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, PersonResource);
-      });
+export class PersonListingPageCtrl extends EntityListingPageCtrl<Person> {
+  constructor($scope:IScope,
+              $rootScope:IScope,
+              $timeout:ITimeoutService,
+              $location:ILocationService,
+              private PersonResource:CacheableResource<Person, number>) {
+    super($scope, $rootScope, $timeout, $location, PersonResource, 'person');
   }
+}
+
+export function PersonListingPageCtrlCreator($scope, $rootScope, $timeout, $location, PersonResource) {
+  return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, PersonResource);
+}
+
+HadithHouseApp.controller('PersonListingPageCtrl', PersonListingPageCtrlCreator);
