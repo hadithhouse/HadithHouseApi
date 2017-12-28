@@ -1,14 +1,14 @@
 #!/bin/bash
 
 log_error() {
-  local msg=$1
+  local msg="$1"
   RED='\033[0;31m'
   NC='\033[0m' # No Color
   echo -e "${RED}${msg}${NC}"
 }
 
 log() {
-  local msg=$1
+  local msg="$1"
   echo "${msg}"
 }
 
@@ -49,6 +49,9 @@ npm install
 # MomentJS does not have a @types module which is required by TypeScript, because the definition file
 # is included with the package itself, so we create a folder for moment under @types and copy
 # the definitions file to it, after renaming it to index.d.ts.
+if [[ -d node_modules/@types/moment ]]; then
+  rm -rf node_modules/@types/moment
+fi
 mkdir node_modules/@types/moment
 cp node_modules/moment/moment.d.ts node_modules/@types/moment/index.d.ts
 

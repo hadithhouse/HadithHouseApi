@@ -22,9 +22,10 @@
  * THE SOFTWARE.
  */
 
+import _ from "lodash";
 import {HadithHouseApp} from "app-def";
 import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
-import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
+import {Book, CacheableResource, Entity, HadithTag, ObjectWithPromise, Person, User} from "resources/resources";
 import "bootstrap"
 
 declare function getHtmlBasePath(): string;
@@ -60,7 +61,7 @@ export class TagsInputCtrl {
     this.$scope.$watch(() => this.text, (newText, oldText) => {
       if (this.text && this.text.length > 2) {
         this.findEntities(this.text).promise.then((result) => {
-          this.showAutoComplete(result);
+          this.showAutoComplete(result, this.text);
         });
       } else {
         this.hideAutoComplete();
