@@ -389,7 +389,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         // for the same object won't have to go to the RESTful API again.
         entity = this.create();
         entity.id = id;
-        this.cache.put(entity.toString(), entity);
+        this.cache.put(entity.id.toString(), entity);
         idsOfEntitiesToFetch.push(id);
         entities.push(entity);
 
