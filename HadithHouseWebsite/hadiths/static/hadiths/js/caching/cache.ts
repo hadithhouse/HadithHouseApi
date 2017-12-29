@@ -59,6 +59,9 @@ export class Cache<TObject> {
    * @param cachingPeriod The caching period in minutes.
    */
   public put(key: string, object: TObject, cachingPeriod: number = this.defaultCachingPeriod) {
+    if (key === null || typeof(key) === 'undefined') {
+      throw "Parameter 'key' cannot be null or undefined.";
+    }
     let entry = new CacheEntry<TObject>();
     entry.key = key.toString();
     entry.expiryTime = moment().add(cachingPeriod, 'minutes');
@@ -74,8 +77,11 @@ export class Cache<TObject> {
    * cached or it has expired.
    */
   public get(key: string, returnsExpired = true): TObject {
+    if (key === null || typeof(key) === 'undefined') {
+      throw "Parameter 'key' cannot be null or undefined.";
+    }
     let entry = this.objectDict[key.toString()];
-    if (!entry || (entry.isExpired() && !returnsExpired)) {
+    if (!entry || (entry.isExpired() && returnsExpired !== true)) {
       return null;
     }
     return entry.object;
