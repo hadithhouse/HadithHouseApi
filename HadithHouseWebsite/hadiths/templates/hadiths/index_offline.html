@@ -27,7 +27,6 @@
 
 <!-- Facebook Authentication -->
 <script>
-  var fbApiInit = true;
   var fbAccessToken = 'any';
   var fbFetchedLoginStatus = true;
 </script>
@@ -55,10 +54,10 @@
     </form>
     <ul class="navbar-nav">
       {% verbatim %}
-      <li class="nav-item" ng-if="fetchedLoginStatus && fbUser === null">
+      <li class="nav-item" ng-if="isFbLoginStatusFetched && fbUser === null">
         <a class="nav-link" href="#" ng-click="ctrl.fbLogin()">Login with Facebook</a>
       </li>
-      <li class="nav-item dropdown" ng-if="fetchedLoginStatus && fbUser !== null">
+      <li class="nav-item dropdown" ng-if="isFbLoginStatusFetched && fbUser !== null">
         <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
           <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}"

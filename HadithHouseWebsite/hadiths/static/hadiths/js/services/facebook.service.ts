@@ -26,6 +26,8 @@ import {IPromise, IQService} from "angular";
 
 declare function getFbAccessToken(): string;
 
+declare function isFbSdkLoaded(): boolean;
+
 export class FacebookUser {
   public id: Number;
   public link: string;
@@ -41,11 +43,26 @@ export class FacebookService {
 
   constructor($q: IQService) {
     this.$q = $q;
-    this.FB = window['FB'];
-    this.fbUserId = window['fbUserId'];
+    if (isFbSdkLoaded()) {
+      this.FB = window['FB'];
+      this.fbUserId = window['fbUserId'];
+    } else {
+      this.FB = null;
+      this.fbUserId = null;
+    }
+  }
+
+  private static verifyFacebookSdkLoaded(): void {
+    if (!isFbSdkLoaded()) {
+      throw "Cannot login because Facebook SDK couldn't be loaded. This is most probably due to a plugin " +
+      "in your browser, e.g. AdBlocker or Ghostery, blocking requests to social websites. Disable blocking for " +
+      "this website and try again.";
+    }
   }
 
   public login(): any {
+    FacebookService.verifyFacebookSdkLoaded();
+
     let deferred = this.$q.defer();
     this.FB.login(function (response) {
       if (response.authResponse) {
@@ -53,11 +70,15 @@ export class FacebookService {
       } else {
         deferred.reject('User cancelled login');
       }
+    }, function (reason) {
+      deferred.reject(reason);
     });
     return deferred.promise;
   }
 
   public logout() {
+    FacebookService.verifyFacebookSdkLoaded();
+
     let deferred = this.$q.defer();
     this.FB.logout(function (response) {
       deferred.resolve(response);
@@ -66,6 +87,7 @@ export class FacebookService {
   }
 
   public getLoginStatus() {
+    FacebookService.verifyFacebookSdkLoaded();
 
     let deferred = this.$q.defer();
     this.FB.getLoginStatus(function (response) {
@@ -80,10 +102,13 @@ export class FacebookService {
    * @returns A promise resolving to the user info object.
    */
   public getLoggedInUser(): IPromise<FacebookUser> {
+    FacebookService.verifyFacebookSdkLoaded();
+
     let deferred = this.$q.defer();
-    if (getFbAccessToken === null) {
+    if (getFbAccessToken() === null) {
       // No access token, so user is not logged in.
       deferred.resolve(null);
+      return <IPromise<FacebookUser>>deferred.promise;
     }
     this.FB.api('/me', {fields: 'link,picture'},
       function (response) {
@@ -98,6 +123,8 @@ export class FacebookService {
   }
 
   public getProfilePictureUrl(userId) {
+    FacebookService.verifyFacebookSdkLoaded();
+
     let deferred = this.$q.defer();
     this.FB.api('/' + this.fbUserId + '/picture',
       function (response) {
@@ -112,6 +139,8 @@ export class FacebookService {
   }
 
   public getUserFriends(userId) {
+    FacebookService.verifyFacebookSdkLoaded();
+
     let deferred = this.$q.defer();
     this.FB.api('/' + this.fbUserId + '/friends',
       function (response) {
