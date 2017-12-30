@@ -49,10 +49,10 @@
     </form>
     <ul class="navbar-nav">
       {% verbatim %}
-      <li class="nav-item" ng-if="fetchedLoginStatus && fbUser === null">
+      <li class="nav-item" ng-if="isFbLoginStatusFetched && fbUser === null">
         <a class="nav-link" href="#" ng-click="ctrl.fbLogin()">Login with Facebook</a>
       </li>
-      <li class="nav-item dropdown" ng-if="fetchedLoginStatus && fbUser !== null">
+      <li class="nav-item dropdown" ng-if="isFbLoginStatusFetched && fbUser !== null">
         <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
           <img ng-if="fbUser.profilePicUrl" ng-src="{{ fbUser.profilePicUrl }}"
@@ -139,24 +139,56 @@
 
 <!-- Facebook Authentication -->
 <script>
-  var fbApiInit = false;
   var fbAccessToken = null;
   var fbFetchedLoginStatus = false;
+  var fbSdkLoaded = false;
 
   function setFbAccessToken(token) {
     fbAccessToken = token;
   }
 
+  // This function is used in TypeScript code.
+  /**
+   * Returns the Facebook access token for the current user.
+   * @returns {string} The Facebook acess tokne for the current user or null.
+   */
   function getFbAccessToken() {
     return fbAccessToken;
   }
 
-  function setFbLoginFetchStatus() {
-    fbFetchedLoginStatus = true;
+  /**
+   * Sets a flag indicating the status of fetching the login status. This is either true or false, true indicating
+   * that we succeeded in fetching the login user, false otherwise.
+   * @param {boolean} status The status fetching the login user.
+   */
+  function setFbLoginFetchStatus(status) {
+    fbFetchedLoginStatus = status;
   }
 
+  // This function is used in TypeScript code.
+  /**
+   * Returns a flag indicating the status of fetching the login status. This is either true or false, true indicating
+   * that we succeeded in fetching the login user, false otherwise.
+   * @returns {boolean} A true/false flag indicating the status of fetching the login status.
+   */
   function isFbLoginStatusFetched() {
     return fbFetchedLoginStatus;
+  }
+
+  /**
+   * Sets a flag indicating whether FB SDK was loaded successfully or not.
+   * @param loaded True or false.
+   */
+  function setFbSdkLoaded(loaded) {
+    fbSdkLoaded = loaded;
+  }
+
+  /**
+   * Returns a flag indicating whethre fB SDK was loaded successfully or not.
+   * @returns {boolean} True or false.
+   */
+  function isFbSdkLoaded() {
+    return fbSdkLoaded;
   }
 
   window.fbAsyncInit = function () {
@@ -166,7 +198,11 @@
       version: 'v2.4'
     });
 
-    fbApiInit = true;
+    fbSdkLoadingSucceeded();
+  };
+
+  function fbSdkLoadingSucceeded() {
+    setFbSdkLoaded(true);
 
     FB.getLoginStatus(function (response) {
       setFbLoginFetchStatus(true);
@@ -183,11 +219,22 @@
         setFbAccessToken(null);
       }
 
-      SystemJS.import('app').then(function() {
+      SystemJS.import('app').then(function () {
         angular.bootstrap(document.body, ['HadithHouseApp']);
       });
     });
-  };
+  }
+
+  function fbSdkLoadingFailed() {
+    // We failed to load Facebook's SDK
+    setFbSdkLoaded(false);
+
+    setFbLoginFetchStatus(false);
+    setFbAccessToken(null);
+    SystemJS.import('app').then(function () {
+      angular.bootstrap(document.body, ['HadithHouseApp']);
+    });
+  }
 
   (function (d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
@@ -197,6 +244,9 @@
     js = d.createElement(s);
     js.id = id;
     js.src = "https://connect.facebook.net/en_US/sdk.js";
+    js.onerror = function () {
+      fbSdkLoadingFailed();
+    };
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 </script>
