@@ -7,13 +7,14 @@
         <option name="settingsModule" value="HadithHouseWebsite/settings.py" />
         <option name="manageScript" value="manage.py" />
         <option name="environment" value="&lt;map/&gt;" />
-        <option name="commandsToSkip" value="" />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 3.4.4 virtualenv at C:\Users\rabdullah\Workspace\HadithHouse\HadithHouseWebsite\venv" jdkType="Python SDK" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/static" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 3.6.3 virtualenv at ~/PersonalWorkspace/hadithhouse/HadithHouseWebsite/venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="angular" level="application" />
     <orderEntry type="library" name="d3" level="application" />

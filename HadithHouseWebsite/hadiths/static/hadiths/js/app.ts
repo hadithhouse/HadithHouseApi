@@ -50,11 +50,13 @@ import {Book, CacheableResource, Chain, Hadith, HadithTag, Person, User} from ".
 
 declare function getHtmlBasePath(): string;
 
-declare function fbFetchedLoginStatus(): boolean;
+declare function isFbLoginStatusFetched(): boolean;
 
 declare function getFbAccessToken(): string;
 
 declare function setFbAccessToken(token: string);
+
+declare function isFbSdkLoaded(): boolean;
 
 HadithHouseApp.config(function ($httpProvider: angular.IHttpProvider,
                                 $routeProvider: any,
@@ -220,17 +222,25 @@ HadithHouseApp.controller('HadithHouseCtrl',
             UserResource: CacheableResource<User, number | string>) {
     let ctrl = this;
 
-    $rootScope.fetchedLoginStatus = fbFetchedLoginStatus;
+    $rootScope.isFbLoginStatusFetched = isFbLoginStatusFetched;
     $rootScope.fbUser = null;
     $rootScope.fbAccessToken = getFbAccessToken();
 
     ctrl.fbLogin = function () {
+      if (!isFbSdkLoaded()) {
+        toastr.error("Cannot login because Facebook SDK couldn't be loaded. This is most probably due to a plugin " +
+          "in your browser, e.g. AdBlocker or Ghostery, blocking requests to social websites. Disable blocking for " +
+          "this website and try again.");
+        return;
+      }
       FacebookService.login().then(function (response) {
         if (response.status === 'connected') {
           $rootScope.fbAccessToken = response.authResponse.accessToken;
           setFbAccessToken(response.authResponse.accessToken);
           ctrl.getUserInfo();
         }
+      }, function (reason) {
+        console.error('Failed to login to Facebook. Reason: ' + reason)
       });
     };
 
@@ -242,8 +252,13 @@ HadithHouseApp.controller('HadithHouseCtrl',
     };
 
     ctrl.getUserInfo = function () {
+      if (!isFbSdkLoaded()) {
+        // Facebook SDK couldn't be loaded, so we set the fbUser to null.
+        $rootScope.fbUser = null;
+        return;
+      }
       FacebookService.getLoggedInUser().then(function (user) {
-        $rootScope.fetchedLoginStatus = true;
+        $rootScope.isFbLoginStatusFetched = true;
         if (user === null) {
           $rootScope.fbUser = null;
         } else {
@@ -253,8 +268,8 @@ HadithHouseApp.controller('HadithHouseCtrl',
             profilePicUrl: user.picture.data.url
           };
         }
-      }, function onError(/*reason*/) {
-        toastr.error('Failed to fetch logged in user.');
+      }, function onError(reason) {
+        console.error("Failed to fetch logged in user. Reason: " + JSON.stringify(reason));
       });
       let currentUser = UserResource.get('current', true);
       currentUser.promise.then(() => {
@@ -264,7 +279,7 @@ HadithHouseApp.controller('HadithHouseCtrl',
             perms[currentUser.permissions[i]] = true;
           }
         }
-        let user:any = {};
+        let user: any = {};
         angular.copy(currentUser, user);
         user.permissions = perms;
         $rootScope.user = user;
