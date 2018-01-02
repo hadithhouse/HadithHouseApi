@@ -9,10 +9,8 @@
     ],
     "types": [
       "angular",
-      "angular-material",
       "angular-resource",
       "angular-route",
-      "bootstrap",
       "d3",
       "jquery",
       "lodash",
