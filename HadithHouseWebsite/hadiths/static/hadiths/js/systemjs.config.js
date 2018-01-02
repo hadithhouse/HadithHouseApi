@@ -25,7 +25,7 @@ SystemJS.config({
     },
     'bootstrap': {
       format: 'global',
-      deps: ['popper']
+      deps: ['tether']
     },
     'jquery': {
       format: 'global',
@@ -35,7 +35,14 @@ SystemJS.config({
       format: 'global',
       exports: '_'
     },
-    'popper': {
+    'tether': {
+      format: 'global'
+    },
+    'typeahead': {
+      format: 'global',
+      deps: ['bloodhound']
+    },
+    'bloodhound': {
       format: 'global'
     }
   },
@@ -46,13 +53,14 @@ SystemJS.config({
     'angular-resource': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-resource.js',
     'angular-route': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-route.js',
     'bootstrap': 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.js',
-    'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js',
+    'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js',
     'jquery': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js',
     'lodash': 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js',
     'moment': 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.js',
-    'popper': 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.0.1/popper.js',
-    'toastr': 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js',
-    'typeahead': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.js'
+    'tether': 'https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.3/js/tether.js',
+    'toastr': 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.js',
+    'typeahead': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.js',
+    'bloodhound': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.js'
   },
   packages: {
     '/': {

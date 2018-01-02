@@ -25,6 +25,7 @@ import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resource
 import {IAugmentedJQuery, IScope} from "angular";
 import angular from "angular"
 import {HadithHouseApp} from "app-def";
+import "typeahead"
 
 declare function getHtmlBasePath(): string;
 
