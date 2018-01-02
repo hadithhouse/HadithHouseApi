@@ -30,21 +30,9 @@ set -e
 set -o pipefail
 trap 'on_error ${LINENO}' ERR
 
-# Copy server settings file into the build directory.
-# The SERVER_SETTINGS_FILE environment variable should be defined in Jenkins
-# after uploading the settings file using the Config File Provider plugin:
-# https://wiki.jenkins-ci.org/display/JENKINS/Config+File+Provider+Plugin
-if [[ -z ${SERVER_SETTINGS_PATH} ]]; then
-  log_error 'Environment variable SERVER_SETTINGS_PATH is not defined.'
-  exit 1
-fi
-
-log "Copy server settings from ${SERVER_SETTINGS_PATH} to `pwd`/HadithHouseWebsite/server_settings.py ..."
-cp "${SERVER_SETTINGS_PATH}" "HadithHouseWebsite/server_settings.py"
-
 # Install NodeJS modules.
 log "Install NodeJS modules..."
-npm install --production
+npm install
 
 # MomentJS does not have a @types module which is required by TypeScript, because the definition file
 # is included with the package itself, so we create a folder for moment under @types and copy
@@ -55,16 +43,37 @@ fi
 mkdir node_modules/@types/moment
 cp node_modules/moment/moment.d.ts node_modules/@types/moment/index.d.ts
 
+third_party_dir="hadiths/static/hadiths/third-party"
+if [[ -d ${third_party_dir} ]]; then
+  rm -rf ${third_party_dir}
+fi
+mkdir ${third_party_dir}
+cp node_modules/angular/angular.js ${third_party_dir}
+cp node_modules/angular-animate/angular-animate.js ${third_party_dir}
+cp node_modules/angular-aria/angular-aria.js ${third_party_dir}
+cp node_modules/angular-resource/angular-resource.js ${third_party_dir}
+cp node_modules/angular-route/angular-route.js ${third_party_dir}
+cp node_modules/bootstrap/dist/js/bootstrap.js ${third_party_dir}
+cp node_modules/bootstrap/dist/css/bootstrap.css ${third_party_dir}
+cp node_modules/d3/d3.js ${third_party_dir}
+cp node_modules/jquery/dist/jquery.js ${third_party_dir}
+cp node_modules/lodash/lodash.js ${third_party_dir}
+cp node_modules/moment/moment.js ${third_party_dir}
+cp node_modules/tether/dist/css/tether.css ${third_party_dir}
+cp node_modules/tether/dist/js/tether.js ${third_party_dir}
+cp node_modules/toastr/build/toastr.css ${third_party_dir}
+cp node_modules/toastr/toastr.js ${third_party_dir}
+cp node_modules/typeahead.js/dist/typeahead.jquery.js ${third_party_dir}
+cp node_modules/typeahead.js/dist/bloodhound.js ${third_party_dir}
+cp node_modules/systemjs/dist/system.js ${third_party_dir}
+
+exit 0
+
 # Run grunt
 log "Run Grunt..."
 ./node_modules/.bin/grunt
 
-# Remove Node modules and delete TypeScript cache (.tscache)
-log "Remove NodeJS modules and delete TypeScript cache (.tscache)..."
-rm -rf node_modules/
-rm -rf .tscache/
-
-# Install and activate a Python virtual environment.
+# Install activate a Python virtual environment.
 log "Install and activate a Python virtual environment..."
 virtualenv --python=python3.6 venv
 source venv/bin/activate
@@ -72,14 +81,5 @@ source venv/bin/activate
 log "Install Python packages in requirements.txt..."
 pip install -r requirements.txt
 
-# Collect Django's static files.
-log "Running 'manage.py collectstatic' to collect static files."
-python manage.py collectstatic --noinput
-
-# Running tests...
-log "Running tests..."
-python manage.py test
-
-log "Deactivate Python's virtual environment and delete it..."
+log "Deactivate Python's virtual environment..."
 deactivate
-rm -rf venv

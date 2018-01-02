@@ -10,14 +10,17 @@
 
   <title>Hadith House</title>
 
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-
-  <!-- Toastr -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.css">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+  <!-- CSS for Bootstrap, Toastr, and Font Awesome. -->
+  {% if offline_mode %}
+    <link rel="stylesheet" href="{% static 'hadiths/third-party/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'hadiths/third-party/tether.css' %}">
+    <link rel="stylesheet" href="{% static 'hadiths/third-party/toastr.css' %}">
+  {% else %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.3/js/tether.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+  {% endif %}
 
   <style>
   </style>
@@ -86,8 +89,13 @@
 <div class="container" ng-view>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
-<script src="{% static 'hadiths/js/systemjs.config.js' %}"></script>
+{% if offline_mode %}
+  <script src="{% static 'hadiths/third-party/system.js' %}"></script>
+  <script src="{% static 'hadiths/js/systemjs-offline.config.js' %}"></script>
+{% else %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.19/system.js"></script>
+  <script src="{% static 'hadiths/js/systemjs.config.js' %}"></script>
+{% endif %}
 
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script>
