@@ -46,6 +46,7 @@ SystemJS.config({
       format: 'global'
     }
   },
+  '//': 'When you add more modules, make sure to update systemjs-offline.config.js and prepare-offline.sh files.',
   map: {
     'angular': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular.js',
     'angular-animate': 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.6/angular-animate.js',
