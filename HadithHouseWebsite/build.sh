@@ -44,7 +44,7 @@ cp "${SERVER_SETTINGS_PATH}" "HadithHouseWebsite/server_settings.py"
 
 # Install NodeJS modules.
 log "Install NodeJS modules..."
-npm install
+npm install --production
 
 # MomentJS does not have a @types module which is required by TypeScript, because the definition file
 # is included with the package itself, so we create a folder for moment under @types and copy

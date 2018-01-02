@@ -107,11 +107,15 @@ export class EntityListingPageCtrl<TEntity extends Entity<number | string>> {
 
   public showDeleteDialog = (entity: TEntity) => {
     this.entityToDelete = entity;
-    $('#deleteConfirmDialog').modal('show');
+    // modal() is defined in bootstrap but I don't have @types for it so costing to type 'any' to stop
+    // tsc compiler errors.
+    (<any>$('#deleteConfirmDialog')).modal('show');
   };
 
   public deleteEntity = () => {
-    $('#deleteConfirmDialog').modal('hide');
+    // modal() is defined in bootstrap but I don't have @types for it so costing to type 'any' to stop
+    // tsc compiler errors.
+    (<any>$('#deleteConfirmDialog')).modal('hide');
     this.entityToDelete.delete().then(() => {
       toastr.success('Entity deleted');
       this.pagedEntities.results = this.pagedEntities.results.filter((e) => {

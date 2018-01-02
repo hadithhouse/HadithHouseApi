@@ -239,11 +239,15 @@ export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
 
   public showDeleteChainDialog = (chain: Chain) => {
     this.chainToDelete = chain;
-    $('#deleteChainConfirmDialog').modal('show');
+    // modal() is defined in bootstrap but I don't have @types for it so costing to type 'any' to stop
+    // tsc compiler errors.
+    (<any>$('#deleteChainConfirmDialog')).modal('show');
   };
 
   public deleteChain = () => {
-    $('#deleteChainConfirmDialog').modal('hide');
+    // modal() is defined in bootstrap but I don't have @types for it so costing to type 'any' to stop
+    // tsc compiler errors.
+    (<any>$('#deleteChainConfirmDialog')).modal('hide');
     this.chainToDelete.delete().then(() => {
       toastr.success('Chain deleted');
       this.pagedChains.results = this.pagedChains.results.filter((e) => {
