@@ -38,6 +38,9 @@ __pycache__
 # Log files
 /logs
 
+# Offline-mode SQLite3 database.
+/HadithHouse-OfflineMode.db
+
 # The section below was taken from:
 # https://github.com/github/gitignore/blob/2141c82/Global/JetBrains.gitignore
 # ==============================================================================
