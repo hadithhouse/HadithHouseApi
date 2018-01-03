@@ -2,13 +2,15 @@ import sys
 
 from django.db import migrations
 
+from HadithHouseWebsite import settings
+
 
 class Migration(migrations.Migration):
   dependencies = [
     ('hadiths', '0004_add_first_hadiths'),
   ]
 
-  if len({'test'} & set(sys.argv)) > 0:
+  if settings.is_test_mode() > 0 or settings.is_offline_mode():
     operations = ()
   else:
     operations = [
