@@ -18,6 +18,7 @@ from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_a
 
 test_mode = 'test' in sys.argv
 collectstatic_mode = 'collectstatic' in sys.argv
+OFFLINE_MODE = False
 
 
 def is_test_mode():
@@ -27,6 +28,10 @@ def is_test_mode():
   :return: True or false.
   """
   return test_mode
+
+
+def is_offline_mode():
+  return OFFLINE_MODE
 
 
 def is_collectstatic_mode():
@@ -122,11 +127,18 @@ ADMINS = (
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 # This
-if 'test' in sys.argv:
+if is_test_mode():
   DATABASES = {
     'default': {
       'ENGINE': 'django.db.backends.sqlite3',
-      'NAME': os.path.join(BASE_DIR, 'HadithHouse'),
+      'NAME': os.path.join(BASE_DIR, 'HadithHouse-Test.db'),
+    }
+  }
+elif is_offline_mode():
+  DATABASES = {
+    'default': {
+      'ENGINE': 'django.db.backends.sqlite3',
+      'NAME': os.path.join(BASE_DIR, 'HadithHouse-OfflineMode.db'),
     }
   }
 else:
@@ -266,8 +278,6 @@ REST_FRAMEWORK = {
   ),
   'EXCEPTION_HANDLER': 'HadithHouseWebsite.exception_handler.hadithhouse_exception_handler'
 }
-
-OFFLINE_MODE = False
 
 if OFFLINE_MODE:
   REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = ('hadiths.auth.FacebookOfflineAuthentication',)
