@@ -66,6 +66,9 @@ cp node_modules/toastr/toastr.js ${third_party_dir}
 cp node_modules/typeahead.js/dist/typeahead.jquery.js ${third_party_dir}
 cp node_modules/typeahead.js/dist/bloodhound.js ${third_party_dir}
 cp node_modules/systemjs/dist/system.js ${third_party_dir}
+mkdir ${third_party_dir}/font-awesome
+cp -r node_modules/font-awesome/css ${third_party_dir}/font-awesome/
+cp -r node_modules/font-awesome/fonts ${third_party_dir}/font-awesome/
 
 exit 0
 
