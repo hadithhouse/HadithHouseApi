@@ -128,6 +128,11 @@ export abstract class EntityPageCtrl<TEntity extends Entity<number | string>> {
    * Called when the user clicks on the save icon to save the changes made.
    */
   private finishEditing = () => {
+    if (this.entity.equals(this.entityCopy)) {
+      this.isEditing = false;
+      this.isAddingNew = false;
+      return;
+    }
     if (!this.beforeSave()) {
       return;
     }

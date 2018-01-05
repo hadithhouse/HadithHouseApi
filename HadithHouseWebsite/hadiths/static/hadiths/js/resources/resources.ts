@@ -100,6 +100,22 @@ export class Entity<TId> {
   }
 
   /**
+   * Base function for comparing an entity against another one.
+   *
+   * When overriding this function make sure you also check the id which is defined in this class, i.e. the base
+   * Entity class. The reason it is not compared here is we want to make sure this function returns false by
+   * default. Otherwise, if an entity class misses the implementation of this function, it will always return
+   * true when the user edits an element, making it impossible to save an entity because it will be considered
+   * unchanged.
+   *
+   * @param {Entity<TId>} entity The entity to compare against.
+   * @returns {boolean} True or false depending on the comparison result.
+   */
+  public equals(entity: Entity<TId>): boolean {
+    return false;
+  }
+
+  /**
    * Loads the entity having the given ID.
    * @param id The ID of the entity to load.
    */
@@ -559,13 +575,26 @@ export class Hadith extends Entity<number | string> {
 
   public set(entity: Entity<number | string>) {
     super.set(entity);
-    this.text = (<Hadith>entity).text;
-    this.person = (<Hadith>entity).person;
-    this.book = (<Hadith>entity).book;
-    this.volume = (<Hadith>entity).volume;
-    this.chapter = (<Hadith>entity).chapter;
-    this.section = (<Hadith>entity).section;
-    this.tags = (<Hadith>entity).tags.slice();
+    let casted = <Hadith>entity;
+    this.text = casted.text;
+    this.person = casted.person;
+    this.book = casted.book;
+    this.volume = casted.volume;
+    this.chapter = casted.chapter;
+    this.section = casted.section;
+    this.tags = casted.tags.slice();
+  }
+
+  public equals(entity: Entity<number | string>): boolean {
+    let casted = <Hadith>entity;
+    return this.id == casted.id &&
+      this.text === casted.text &&
+      this.person === casted.person &&
+      this.book === casted.book &&
+      this.volume === casted.volume &&
+      this.chapter === casted.chapter &&
+      this.section === casted.section &&
+      _.isEqual(this.tags.slice().sort(), casted.tags.slice().sort());
   }
 }
 
@@ -587,16 +616,32 @@ export class Person extends Entity<number> {
 
   public set(entity: Entity<number>) {
     super.set(entity);
-    this.title = (<Person>entity).title;
-    this.display_name = (<Person>entity).display_name;
-    this.full_name = (<Person>entity).full_name;
-    this.brief_desc = (<Person>entity).brief_desc;
-    this.birth_year = (<Person>entity).birth_year;
-    this.birth_month = (<Person>entity).birth_month;
-    this.birth_day = (<Person>entity).birth_day;
-    this.death_year = (<Person>entity).death_year;
-    this.death_month = (<Person>entity).death_month;
-    this.death_day = (<Person>entity).death_day;
+    let casted = <Person>entity;
+    this.title = casted.title;
+    this.display_name = casted.display_name;
+    this.full_name = casted.full_name;
+    this.brief_desc = casted.brief_desc;
+    this.birth_year = casted.birth_year;
+    this.birth_month = casted.birth_month;
+    this.birth_day = casted.birth_day;
+    this.death_year = casted.death_year;
+    this.death_month = casted.death_month;
+    this.death_day = casted.death_day;
+  }
+
+  public equals(entity: Entity<number>): boolean {
+    let casted = <Person>entity;
+    return this.id === casted.id &&
+      this.title === casted.title &&
+      this.display_name === casted.display_name &&
+      this.full_name === casted.full_name &&
+      this.brief_desc === casted.brief_desc &&
+      this.birth_year === casted.birth_year &&
+      this.birth_month === casted.birth_month &&
+      this.birth_day === casted.birth_day &&
+      this.death_year === casted.death_year &&
+      this.death_month === casted.death_month &&
+      this.death_day === casted.death_day;
   }
 
   public toString(): string {
@@ -618,9 +663,18 @@ export class Book extends Entity<number> {
 
   public set(entity: Entity<number>) {
     super.set(entity);
-    this.title = (<Book>entity).title;
-    this.brief_desc = (<Book>entity).brief_desc;
-    this.pub_year = (<Book>entity).pub_year;
+    let casted = <Book>entity;
+    this.title = casted.title;
+    this.brief_desc = casted.brief_desc;
+    this.pub_year = casted.pub_year;
+  }
+
+  public equals(entity: Entity<number>) {
+    let casted = <Book>entity;
+    return this.id === casted.id &&
+      this.title === casted.title &&
+      this.brief_desc === casted.brief_desc &&
+      this.pub_year === casted.pub_year;
   }
 
   public toString(): string {
@@ -641,6 +695,12 @@ export class HadithTag extends Entity<number> {
   public set(entity: Entity<number>) {
     super.set(entity);
     this.name = (<HadithTag>entity).name;
+  }
+
+  public equals(entity: Entity<number>) {
+    let casted = <HadithTag>entity;
+    return this.id === casted.id &&
+      this.name === casted.name;
   }
 
   public toString(): string {
