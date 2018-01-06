@@ -1,7 +1,7 @@
-Django==1.10.3
-django-crispy-forms==1.6.1
-django-filter==0.15.3
-djangorestframework==3.5.3
+Django==2.0.1
+django-crispy-forms==1.7.0
+django-filter==1.1.0
+djangorestframework==3.7.7
 mock==2.0.0
 psycopg2==2.6.2
 sqlparse==0.2.2
