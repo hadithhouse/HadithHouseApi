@@ -1,9 +1,9 @@
 from random import randint
 
 from django.db.models import ProtectedError, Count
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.filters import DjangoFilterBackend, SearchFilter
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
 
