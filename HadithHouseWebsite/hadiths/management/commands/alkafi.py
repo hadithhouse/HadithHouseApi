@@ -7,7 +7,7 @@ import re
 
 from HadithHouseWebsite import settings
 from hadiths import initial_data
-from hadiths.models import Book, Hadith, BookChapter, BookVolume
+from hadiths.models import Book, Hadith, BookChapter, BookVolume, BookSection
 from textprocessing.generic import reformat_text
 from textprocessing.regex import DocScanner
 
@@ -166,47 +166,70 @@ def import_alkafi_volume(command, volume_no: int):
 
     content_len = len(content)
     hadiths = []
-    chapter = None
+    chapter, prev_chapter = None, None
     chapter_no = 1
+    section, prev_section = None, None
+    section_no = 1
     percentage, prev_percentage = 0, 0
 
     def callback(type, prev_type, match, prev_match, doc, context):
-        nonlocal content_len, hadiths, chapter, chapter_no, percentage, \
-            prev_percentage
+        nonlocal content_len, hadiths, chapter, prev_chapter, chapter_no, \
+            section, prev_section, section_no, percentage, prev_percentage
         if type == 'kitab':
-            ignore = 'كِتَابُ هِشَامِ بْنِ عَبْدِ الْمَلِكِ'
-            kitab = reformat_text(doc[match.start():match.end()])
-            if not kitab.startswith(ignore):
-                hadith_info['kitab'] = kitab
+            # Found a 'kitab' which we treat as a chapter.
+            special_case = 'كِتَابُ هِشَامِ بْنِ عَبْدِ الْمَلِكِ'
+            chapter_title = reformat_text(doc[match.start():match.end()])
+            if not chapter_title.startswith(special_case):
+                chapter_title = reformat_text(
+                    doc[match.start():match.end()])
+                prev_chapter = chapter
+                chapter, ignored = BookChapter.objects.get_or_create(
+                    book=alkafi,
+                    volume=volume,
+                    title=chapter_title,
+                    number=chapter_no)
+                chapter_no += 1
+                section = None
+                section_no = 1
         elif type == 'bab':
-            hadith_info['bab'] = reformat_text(
+            # Found a 'bab' which we treat as a section.
+            section_title = reformat_text(
                 doc[match.start():match.end()])
-            chapter, chapter_created = BookChapter.objects.get_or_create(
+            prev_section = section
+            section, ignored = BookSection.objects.get_or_create(
                 book=alkafi,
-                volume=volume,
-                title=volume_title,
-                number=chapter_no)
-            chapter_no += 1
+                chapter=chapter,
+                title=section_title,
+                number=section_no)
+            section_no += 1
         elif type == 'eof':
             percentage = 100
         if prev_type == 'hadith_num':
-            hadith_info['hadith'] = reformat_text(
-                doc[prev_match.end():match.start()])
-            hadith_info['num'] = int(
+            # If the current type is 'kitab', it means we reached a new chapter
+            # so we use the previous chapter (prev_chapter) for the hadith.
+            # Same applies for section (type 'bab').
+            hadith_chapter = prev_chapter if type == 'kitab' else chapter
+            hadith_section = prev_section if type == 'bab' else section
+            hadith_text = reformat_text(doc[prev_match.end():match.start()])
+            hadith_num = int(
                 doc[prev_match.start():prev_match.end() - 1])
 
             Hadith.objects.get_or_create(
-                text=hadith_info['hadith'],
+                text=hadith_text,
                 book=alkafi,
                 volume=volume,
-                chapter=chapter,
-                number=hadith_info['num'])
+                chapter=hadith_chapter,
+                section=hadith_section,
+                number=hadith_num)
             hadiths.append({
-                'text': hadith_info['hadith'],
+                'text': hadith_text,
                 'book': alkafi.title,
                 'volume': volume.title,
-                'chapter': chapter.title,
-                'number': hadith_info['num']
+                'chapter': hadith_chapter.title if hadith_chapter is not None
+                else None,
+                'section': hadith_section.title if hadith_section is not None
+                else None,
+                'number': hadith_num
             })
 
             # Calculate the percentage of completion.
