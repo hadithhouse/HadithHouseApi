@@ -98,7 +98,9 @@ def filter_header_lines(content: str, volume_no: int) -> str:
     text = [
         u'الكافي : المجلد الأول',
         u'الكافي : المجلد الثاني',
-        u' ?الكافي : المجلد الثالث'
+        u' ?الكافي : المجلد الثالث',
+        u'الكافي : المجلد الرابع',
+        u'الكافي : المجلد الخامس'
     ]
     return filter_lines(content, u'^' + text[volume_no - 1] + u'.*$')
 
@@ -120,7 +122,9 @@ def filter_volume_end(content: str, volume_no: int) -> str:
     text = [
         u"كَمَلَ الْجُزْءُ الثَّانِي",
         u"تَمَّ كِتَابُ الْعِشْرَة",
-        u"تَمَّ الْمُجَلَّدُ الثَّالِث"
+        u"تَمَّ الْمُجَلَّدُ الثَّالِث",
+        u"تَمَّ كِتَابُ الْحَجِّ",
+        u"تَمَّ كِتَابُ النِّكَاحِ",
     ]
     return filter_lines(content, text[volume_no - 1] + u'.*\Z',
                         re.MULTILINE | re.DOTALL)

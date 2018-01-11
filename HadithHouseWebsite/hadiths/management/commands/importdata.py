@@ -22,5 +22,9 @@ class Command(BaseCommand):
             import_alkafi_volume(self, 2)
         elif data_name == 'alkafi-v3':
             import_alkafi_volume(self, 3)
+        elif data_name == 'alkafi-v4':
+            import_alkafi_volume(self, 4)
+        elif data_name == 'alkafi-v5':
+            import_alkafi_volume(self, 5)
         else:
             raise CommandError('Invalid data name specified: ' + data_name)
