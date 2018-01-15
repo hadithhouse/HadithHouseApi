@@ -19,6 +19,7 @@ def get_book_path(sub_path: str):
 def filter_lines(text: str, regex: str, flags=re.MULTILINE) -> str:
     """
     Removes lines matching a certain regular expression from a text.
+    :param flags: Indicate the flags to use with the regex.
     :param text: A string containing the text.
     :param regex: The regular expression of the lines to be removed. This
     should start with '^' and end with '%'.
@@ -153,11 +154,6 @@ def import_alkafi_volume(command, volume_no: int):
     content = filter_volume_end(content, volume_no)
     content = content.strip()
 
-    hadith_info = {
-        'kitab': None,
-        'bab': None,
-    }
-
     volume_titles = [
         u"الكافي - الجزء الأول",
         u"الكافي - الجزء الثاني",
@@ -182,7 +178,7 @@ def import_alkafi_volume(command, volume_no: int):
     section_no = 1
     percentage, prev_percentage = 0, 0
 
-    def callback(type, prev_type, match, prev_match, doc, context):
+    def callback(type, prev_type, match, prev_match, doc, _context):
         nonlocal content_len, hadiths, chapter, prev_chapter, chapter_no, \
             section, prev_section, section_no, percentage, prev_percentage
         if type == 'kitab':
