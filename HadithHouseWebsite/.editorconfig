@@ -1,0 +1,26 @@
+root = true
+
+[**]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_spaces = true
+trim_trailing_whitespace = true
+
+# trailing spaces in markdown indicate word wrap
+[**.md]
+trim_trailing_spaces = false
+max_line_length = 80
+
+[**.py]
+max_line_length = 79
+indent_size = 4
+
+[**.html]
+indent_size = 2
+
+[**.{ts,json,js}]
+indent_size = 2
+
