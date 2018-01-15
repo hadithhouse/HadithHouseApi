@@ -37,7 +37,7 @@ all_css_hash = None
 def md5(file_name):
     """
     Find the MD5 hash of the given file.
-    Taken from: http://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
+    Taken from: http://stackoverflow.com/q/3431825
 
     :param file_name: The name of the file
     :return: The MD5 hash
@@ -50,9 +50,9 @@ def md5(file_name):
 
 
 def set_all_js_hash():
-    # Find the MD5 hash of all.js. This is used in index.html for cache busting.
-    # TODO: Perhaps consider saving it to file to avoid re-calculating it every time the
-    # application is restarted?
+    # Find the hash of all.js, which is used in index.html for cache busting.
+    # TODO: Perhaps consider saving it to file to avoid re-calculating it every
+    # time the application is restarted?
     # https://github.com/hadithhouse/hadithhouse/issues/307
     global all_js_hash
     if all_js_hash is None and settings.get_environment() == 'production':
@@ -60,9 +60,9 @@ def set_all_js_hash():
 
 
 def set_all_css_hash():
-    # Find the MD5 hash of all.css. This is used in index.html for cache busting.
-    # TODO: Perhaps consider saving it to file to avoid re-calculating it every time the
-    # application is restarted?
+    # Find the hash of all.css, which is used in index.html for cache busting.
+    # TODO: Perhaps consider saving it to file to avoid re-calculating it every
+    # time the application is restarted?
     # https://github.com/hadithhouse/hadithhouse/issues/307
     global all_css_hash
     if all_css_hash is None and settings.get_environment() == 'production':
