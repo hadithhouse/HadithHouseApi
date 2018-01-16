@@ -1,56 +1,84 @@
+"""
+Contain API views that facilitate dealing with Facebook authentication.
+"""
+
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import generics
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 
 
-def raise_auth_error():
-  raise NotAuthenticated("Couldn't authenticate user.")
+class APIViewPermissionMixin:
+    """
+    A mixin for API views that provides a method for verifying permissions
+    on different request types on the API view.
+    """
+
+    @staticmethod
+    def raise_auth_error() -> None:
+        """
+        Raise an exception that indicates the user couldn't be authenticated.
+        """
+        raise NotAuthenticated("Couldn't authenticate user.")
+
+    @staticmethod
+    def raise_permission_error() -> None:
+        """
+        Raise an exception that indicates the user doesn't have permission for
+        the requested operation.
+        """
+        raise PermissionDenied("User doesn't have permission for this action.")
+
+    def verify_permission(self, user, request_type):
+        """
+        Checks whether a user has the permission to perform a request of
+        certain type on this API view.
+
+        :param user: The user.
+        :param request_type: The type of the request: post, put, etc.
+        """
+        perm_code = getattr(self, request_type.lower() + '_perm_code')
+        if perm_code is not None:
+            if user is None or isinstance(user, AnonymousUser):
+                self.raise_auth_error()
+            if not user.has_perm(perm_code):
+                self.raise_permission_error()
 
 
-def raise_permission_error():
-  raise PermissionDenied("User doesn't have permission for this action.")
+class FBAuthListCreateAPIView(generics.ListCreateAPIView,
+                              APIViewPermissionMixin):
+    def get(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'get')
+        return super(FBAuthListCreateAPIView, self).get(
+            request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'post')
+        return super(FBAuthListCreateAPIView, self).post(
+            request, *args, **kwargs)
 
 
-class FBAuthListCreateAPIView(generics.ListCreateAPIView):
-  def get(self, request, *args, **kwargs):
-    return super(FBAuthListCreateAPIView, self).get(request, *args, **kwargs)
+class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView,
+                                         APIViewPermissionMixin):
+    def get(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'get')
+        return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(
+            request, *args, **kwargs)
 
-  def post(self, request, *args, **kwargs):
-    if self.post_perm_code is not None and (request.user is None or isinstance(request.user, AnonymousUser)):
-      raise_auth_error()
-    if self.post_perm_code is not None and not request.user.has_perm(self.post_perm_code):
-      raise_permission_error()
-    return super(FBAuthListCreateAPIView, self).post(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'post')
+        return self.put(request, *args, **kwargs)
 
+    def put(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'put')
+        return super(FBAuthRetrieveUpdateDestroyAPIView, self).put(
+            request, *args, **kwargs)
 
-class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-  def get(self, request, *args, **kwargs):
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(request, *args, **kwargs)
+    def patch(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'patch')
+        return super(FBAuthRetrieveUpdateDestroyAPIView, self).patch(
+            request, *args, **kwargs)
 
-  def post(self, request, *args, **kwargs):
-    if self.post_perm_code is not None and (request.user is None or isinstance(request.user, AnonymousUser)):
-      raise_auth_error()
-    if self.post_perm_code is not None and not request.user.has_perm(self.post_perm_code):
-      raise_permission_error()
-    return self.put(request, *args, **kwargs)
-
-  def put(self, request, *args, **kwargs):
-    if self.put_perm_code is not None and (request.user is None or isinstance(request.user, AnonymousUser)):
-      raise_auth_error()
-    if self.put_perm_code is not None and not request.user.has_perm(self.put_perm_code):
-      raise_permission_error()
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).put(request, *args, **kwargs)
-
-  def patch(self, request, *args, **kwargs):
-    if self.patch_perm_code is not None and (request.user is None or isinstance(request.user, AnonymousUser)):
-      raise_auth_error()
-    if self.patch_perm_code is not None and not request.user.has_perm(self.patch_perm_code):
-      raise_permission_error()
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).patch(request, *args, **kwargs)
-
-  def delete(self, request, *args, **kwargs):
-    if self.delete_perm_code is not None and (request.user is None or isinstance(request.user, AnonymousUser)):
-      raise_auth_error()
-    if self.delete_perm_code is not None and not request.user.has_perm(self.delete_perm_code):
-      raise_permission_error()
-    return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(request, *args, **kwargs)
+    def delete(self, request, *args, **kwargs):
+        self.verify_permission(request.user, 'delete')
+        return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(
+            request, *args, **kwargs)
