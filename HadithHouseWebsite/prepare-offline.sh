@@ -70,13 +70,11 @@ mkdir ${third_party_dir}/font-awesome
 cp -r node_modules/font-awesome/css ${third_party_dir}/font-awesome/
 cp -r node_modules/font-awesome/fonts ${third_party_dir}/font-awesome/
 
-exit 0
-
 # Run grunt
 log "Run Grunt..."
 ./node_modules/.bin/grunt
 
-# Install activate a Python virtual environment.
+# Install and activate a Python virtual environment.
 log "Install and activate a Python virtual environment..."
 virtualenv --python=python3.6 venv
 source venv/bin/activate
