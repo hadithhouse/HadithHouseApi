@@ -24,7 +24,7 @@ SystemJS.config({
     },
     'bootstrap': {
       format: 'global',
-      deps: ['tether']
+      deps: ['popper.js']
     },
     'jquery': {
       format: 'global',
@@ -34,8 +34,9 @@ SystemJS.config({
       format: 'global',
       exports: '_'
     },
-    'tether': {
-      format: 'global'
+    'popper.js': {
+      format: 'global',
+      exports: 'Popper'
     },
     'typeahead': {
       format: 'global',
@@ -56,7 +57,7 @@ SystemJS.config({
     'jquery': '/static/hadiths/third-party/jquery.js',
     'lodash': '/static/hadiths/third-party/lodash.js',
     'moment': '/static/hadiths/third-party/moment.js',
-    'tether': '/static/hadiths/third-party/tether.js',
+    'popper.js': '/static/hadiths/third-party/popper.js',
     'toastr': '/static/hadiths/third-party/toastr.js',
     'typeahead': '/static/hadiths/third-party/typeahead.jquery.js',
     'bloodhound': '/static/hadiths/third-party/bloodhound.js'
