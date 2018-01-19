@@ -25,7 +25,7 @@ SystemJS.config({
     },
     'bootstrap': {
       format: 'global',
-      deps: ['tether']
+      deps: ['popper.js']
     },
     'jquery': {
       format: 'global',
@@ -35,7 +35,7 @@ SystemJS.config({
       format: 'global',
       exports: '_'
     },
-    'tether': {
+    'popper.js': {
       format: 'global'
     },
     'typeahead': {
@@ -58,7 +58,7 @@ SystemJS.config({
     'jquery': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js',
     'lodash': 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js',
     'moment': 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.js',
-    'tether': 'https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.3/js/tether.js',
+    'popper.js': 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js',
     'toastr': 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js',
     'typeahead': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.js',
     'bloodhound': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.js'

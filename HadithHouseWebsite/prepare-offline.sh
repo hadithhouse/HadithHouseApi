@@ -59,8 +59,7 @@ cp node_modules/d3/d3.js ${third_party_dir}
 cp node_modules/jquery/dist/jquery.js ${third_party_dir}
 cp node_modules/lodash/lodash.js ${third_party_dir}
 cp node_modules/moment/moment.js ${third_party_dir}
-cp node_modules/tether/dist/css/tether.css ${third_party_dir}
-cp node_modules/tether/dist/js/tether.js ${third_party_dir}
+cp node_modules/popper.js/dist/umd/popper.js ${third_party_dir}
 cp node_modules/toastr/build/toastr.css ${third_party_dir}
 cp node_modules/toastr/toastr.js ${third_party_dir}
 cp node_modules/typeahead.js/dist/typeahead.jquery.js ${third_party_dir}
