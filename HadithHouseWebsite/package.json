@@ -13,11 +13,17 @@
     "url": "https://github.com/hadithhouse/hadithhouse.git"
   },
   "//": [
-    "- The packages below are used only during local development to help with offline development.",
-    "- The versions of @types/angular* don't necessarily match the packages versions, apparently because ",
-    "  some versions don't necessarily contain changes in syntax.",
-    "- While I am using d3 version 3.5.16, I couldn't find the same versions for @types/d3 so I used 3.5.34 instead.",
-    "The package 'moment' in dependencies is not needed itself, but its @types is neeeded."
+    "- The packages below are used only during local development to help with ",
+    "  offline development.",
+    "- The versions of @types/angular* don't necessarily match the packages ",
+    "  versions, apparently because some versions don't necessarily contain ",
+    "  changes in syntax.",
+    "- While I am using bootstrap version 4.0.0-beta.3, the latest version I ",
+    "  could find for @types/bootstrap is 3.3.36 so I didn't install it.",
+    "- While I am using d3 version 3.5.16, I couldn't find the same version ",
+    "  for @types/d3 so I used 3.5.34 instead.",
+    "- The package 'moment' in dependencies is not needed itself, but its ",
+    "  @types is neeeded."
   ],
   "devDependencies": {
     "angular": "^1.6.8",
@@ -25,24 +31,17 @@
     "angular-aria": "^1.6.8",
     "angular-resource": "^1.6.8",
     "angular-route": "^1.6.8",
-    "bootstrap": "4.0.0-alpha.6",
+    "bootstrap": "4.0.0-beta.3",
     "d3": "^3.5.16",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
     "lodash": "^4.14.85",
+    "popper.js": "^1.12.9",
     "systemjs": "^0.20.19",
-    "tether": "^1.4.3",
     "toastr": "^2.1.3",
     "typeahead.js": "^0.11.1"
   },
   "dependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-clean": "^1.1.0",
-    "grunt-contrib-cssmin": "^1.0.2",
-    "grunt-contrib-uglify": "^2.0.0",
-    "grunt-systemjs-builder": "^1.0.0",
-    "grunt-ts": "6.0.0-beta.17",
-    "typescript": "^2.6.1",
     "@types/angular": "^1.6.40",
     "@types/angular-animate": "^1.5.9",
     "@types/angular-resource": "^1.5.14",
@@ -50,8 +49,16 @@
     "@types/d3": "^3.5.34",
     "@types/jquery": "^3.2.1",
     "@types/lodash": "^4.14.85",
+    "@types/popper.js": "^1.11.0",
     "@types/systemjs": "^0.20.6",
     "@types/toastr": "^2.1.30",
-    "moment": "^2.19.2"
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-cssmin": "^1.0.2",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-systemjs-builder": "^1.0.0",
+    "grunt-ts": "6.0.0-beta.17",
+    "moment": "^2.19.2",
+    "typescript": "^2.6.1"
   }
 }
