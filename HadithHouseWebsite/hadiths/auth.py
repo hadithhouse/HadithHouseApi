@@ -1,3 +1,8 @@
+"""
+Contains Facebook-based authentication classes. These classes automatically
+reads the tokens in the request and authenticate a Facebook user.
+"""
+
 from django.contrib.auth.models import User
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import NotAuthenticated
@@ -21,7 +26,7 @@ class FacebookAuthentication(BaseAuthentication):
         :return: The user or None.
         """
         if request.method == 'GET' and request.path != '/apis/users/current':
-            # We don't authenticate GET requsets since our data are open to
+            # We don't authenticate GET requests since our data are open to
             # everyone. An exception to that is when we need to get the
             # current user.
             return None
@@ -55,7 +60,7 @@ class FacebookOfflineAuthentication(BaseAuthentication):
         :return: The user or None.
         """
         if request.method == 'GET' and request.path != '/apis/users/current':
-            # We don't authenticate GET requsets since our data are open to
+            # We don't authenticate GET requests since our data are open to
             # everyone. An exception to that is when we need to get the
             # current user.
             return None
