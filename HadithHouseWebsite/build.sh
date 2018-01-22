@@ -82,7 +82,10 @@ python manage.py test
 
 # Pylint
 log "Running pylint to ensure code quality..."
-pylint --load-plugins pylint_django hadiths/models.py
+pylint --load-plugins pylint_django \
+  hadiths/exceptions.py \
+  hadiths/fbapi.py \
+  hadiths/models.py
 
 log "Deactivate Python's virtual environment and delete it..."
 deactivate
