@@ -44,41 +44,77 @@ class APIViewPermissionMixin:
                 self.raise_permission_error()
 
 
+# pylint: disable=too-many-ancestors
 class FBAuthListCreateAPIView(generics.ListCreateAPIView,
                               APIViewPermissionMixin):
+    """
+    A list and create API view with Facebook authentication enabled on
+    requests.
+    """
+
     def get(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP GET request.
+        """
         self.verify_permission(request.user, 'get')
         return super(FBAuthListCreateAPIView, self).get(
             request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP POST request.
+        """
         self.verify_permission(request.user, 'post')
         return super(FBAuthListCreateAPIView, self).post(
             request, *args, **kwargs)
 
 
+# pylint: enable=too-many-ancestors
+
+# pylint: disable=too-many-ancestors
 class FBAuthRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView,
                                          APIViewPermissionMixin):
+    """
+    A retrieve, update, and destroy API view with Facebook authentication
+    enabled on requests.
+    """
+
     def get(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP GET request.
+        """
         self.verify_permission(request.user, 'get')
         return super(FBAuthRetrieveUpdateDestroyAPIView, self).get(
             request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP POST request.
+        """
         self.verify_permission(request.user, 'post')
         return self.put(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP PUT request.
+        """
         self.verify_permission(request.user, 'put')
         return super(FBAuthRetrieveUpdateDestroyAPIView, self).put(
             request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP PATCH request.
+        """
         self.verify_permission(request.user, 'patch')
         return super(FBAuthRetrieveUpdateDestroyAPIView, self).patch(
             request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        """
+        Implementation of HTTP DELETE request.
+        """
         self.verify_permission(request.user, 'delete')
         return super(FBAuthRetrieveUpdateDestroyAPIView, self).delete(
             request, *args, **kwargs)
+# pylint: enable=too-many-ancestors
