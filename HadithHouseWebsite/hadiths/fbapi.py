@@ -1,3 +1,7 @@
+"""
+Contains functions for making requests to Facebook Graph API.
+"""
+
 import json
 
 import urlfetch
@@ -9,6 +13,14 @@ GRAPH_API_URL = 'https://graph.facebook.com'
 
 
 def get_fb_graph_url(api, access_token):
+    """
+    Given a certain FB API and an access token, this function returns
+    the URL to be used.
+
+    :param api: The API to be called, i.e. its path, for example /me
+    :param access_token: The access token of the user.
+    :return: The URL to be used.
+    """
     return '%(graph_url)s/%(path)s?access_token=%(access_token)s' % {
         'graph_url': GRAPH_API_URL,
         'path': api,
