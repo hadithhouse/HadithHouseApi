@@ -60,7 +60,7 @@ class Person(models.Model):
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True, related_name='+')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.display_name or self.full_name
 
 
@@ -87,7 +87,7 @@ class Book(models.Model):
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True, related_name='+')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title[:50] + '...' if len(self.title) > 50 else self.title
 
 
@@ -193,7 +193,7 @@ class HadithTag(models.Model):
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True, related_name='+')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -233,7 +233,7 @@ class Hadith(models.Model):
                                    on_delete=models.SET_NULL,
                                    null=True, blank=True, related_name='+')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text[:100] + '...' if len(self.text) > 100 else self.text
 
 

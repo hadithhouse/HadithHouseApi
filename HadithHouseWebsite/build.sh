@@ -31,7 +31,7 @@ set -o pipefail
 trap 'on_error ${LINENO}' ERR
 
 # Copy server settings file into the build directory.
-# The SERVER_SETTINGS_FILE environment variable should be defined in Jenkins
+# The SERVER_SETTINGS_PATH environment variable should be defined in Jenkins
 # after uploading the settings file using the Config File Provider plugin:
 # https://wiki.jenkins-ci.org/display/JENKINS/Config+File+Provider+Plugin
 if [[ -z ${SERVER_SETTINGS_PATH} ]]; then
@@ -79,6 +79,10 @@ python manage.py collectstatic --noinput
 # Running tests...
 log "Running tests..."
 python manage.py test
+
+# Pylint
+log "Running pylint to ensure code quality..."
+pylint --load-plugins pylint_django hadiths/models.py
 
 log "Deactivate Python's virtual environment and delete it..."
 deactivate
