@@ -197,6 +197,7 @@ class HadithTag(models.Model):
         return self.name
 
 
+# pylint: disable=too-many-instance-attributes
 class Hadith(models.Model):
     """
     A model representing a hadith.
@@ -235,6 +236,9 @@ class Hadith(models.Model):
 
     def __str__(self):
         return self.text[:100] + '...' if len(self.text) > 100 else self.text
+
+
+# pylint: disable=too-many-instance-attributes
 
 
 class HadithTagRel(models.Model):
