@@ -26,4 +26,5 @@ import angular from "angular";
 import "angular-resource";
 import "angular-route";
 
-export let HadithHouseApp = angular.module('HadithHouseApp', ['ngResource', 'ngRoute']);
+export let HadithHouseApp = angular.module("HadithHouseApp",
+  ["ngResource", "ngRoute"]);

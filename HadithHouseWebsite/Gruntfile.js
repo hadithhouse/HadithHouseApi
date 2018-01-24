@@ -1,5 +1,18 @@
 module.exports = function (grunt) {
   grunt.initConfig({
+    tslint: {
+      options: {
+        configuration: "tslint.json",
+        force: false,
+        fix: false
+      },
+      files: {
+        src: [
+          "hadiths/static/hadiths/js/controllers/hadith-house.ts",
+          "hadiths/static/hadiths/js/app.ts",
+        ]
+      }
+    },
     ts: {
       default: {
         tsconfig: {
@@ -55,10 +68,11 @@ module.exports = function (grunt) {
     }
   });
   grunt.loadNpmTasks('grunt-ts');
+  grunt.loadNpmTasks("grunt-tslint");
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-systemjs-builder');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('default', ['ts', 'systemjs', 'cssmin']);
+  grunt.registerTask('default', ['tslint', 'ts', 'systemjs', 'cssmin']);
 };
