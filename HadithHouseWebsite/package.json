@@ -58,7 +58,10 @@
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-systemjs-builder": "^1.0.0",
     "grunt-ts": "6.0.0-beta.17",
+    "grunt-tslint": "^5.0.1",
     "moment": "^2.19.2",
+    "tslint": "^5.9.1",
+    "tslint-microsoft-contrib": "^5.0.2",
     "typescript": "^2.6.1"
   }
 }
