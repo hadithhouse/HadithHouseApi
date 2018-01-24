@@ -39,7 +39,7 @@ export class FacebookService {
   private $q: IQService;
   private FB: any;
 
-  static $inject = ['$q'];
+  static $inject = ["$q"];
 
   constructor($q: IQService) {
     this.$q = $q;

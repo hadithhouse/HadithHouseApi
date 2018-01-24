@@ -770,3 +770,10 @@ export class User extends Entity<number> {
   }
 }
 
+export type HadithResource = CacheableResource<Hadith, number | string>;
+export type PersonResource = CacheableResource<Person, number>;
+export type BookResource = CacheableResource<Book, number>;
+export type HadithTagResource = CacheableResource<HadithTag, number>;
+export type ChainResource = CacheableResource<Chain, number>;
+export type UserResource = CacheableResource<User, number | string>;
+
