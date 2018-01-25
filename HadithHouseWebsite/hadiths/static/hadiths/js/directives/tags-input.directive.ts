@@ -23,10 +23,10 @@
  */
 
 import _ from "lodash";
-import {HadithHouseApp} from "app-def";
 import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
 import {Book, CacheableResource, Entity, HadithTag, ObjectWithPromise, Person, User} from "resources/resources";
 import "bootstrap"
+import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
 
@@ -198,11 +198,11 @@ export class TagsInputCtrl {
   }
 }
 
-HadithHouseApp.controller('TagsInputCtrl',
+getApp().controller('TagsInputCtrl',
   ['$scope', '$element', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
     TagsInputCtrl]);
 
-HadithHouseApp.directive('hhTagsInput', function () {
+getApp().directive('hhTagsInput', function () {
   return {
     restrict: 'E',
     replace: true,

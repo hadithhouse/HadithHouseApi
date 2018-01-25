@@ -25,7 +25,7 @@
 import {ILocationService, IScope} from "angular";
 import {HadithTag, CacheableResource} from "resources/resources";
 import {EntityPageCtrl} from "controllers/entity-page";
-import {HadithHouseApp} from "app-def";
+import { getApp } from "../app-def";
 
 export class HadithTagPageCtrl extends EntityPageCtrl<HadithTag> {
   private HadithTagResource:CacheableResource<HadithTag, number>;
@@ -50,5 +50,5 @@ export function HadithTagPageCtrlCreator($scope, $rootScope, $location, $routePa
   return ctrl;
 }
 
-HadithHouseApp.controller('HadithTagPageCtrl', HadithTagPageCtrlCreator);
+getApp().controller('HadithTagPageCtrl', HadithTagPageCtrlCreator);
 

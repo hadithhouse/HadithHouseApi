@@ -22,15 +22,15 @@
  * THE SOFTWARE.
  */
 
-import _ from "lodash"
+import _ from "lodash";
 import toastr from "toastr";
-import {HadithHouseApp} from "app-def";
 import {
   Book, CacheableResource, Chain, Hadith, HadithTag, ObjectWithPromise, PagedResults, Person
 } from "../resources/resources";
 import {EntityPageCtrl} from "./entity-page";
 import {ILocationService, IScope} from "angular";
 import {ITreeNode} from "../directives/tree.directive";
+import { getApp } from "../app-def";
 
 class ChainTreeNode {
   public id: string;
@@ -207,8 +207,9 @@ export class HadithPageCtrl extends EntityPageCtrl<Hadith> {
     this.copyChain(chain);
   }
 
-  // TODO: Either add the personsExpanded field to the Chain class, or -better- make the necessary changes to
-  // hh-tags-input such that it requires only IDs so we don't have to expand it ourselves.
+  // TODO: Either add the personsExpanded field to the Chain class, or -better-
+  // make the necessary changes to hh-tags-input such that it requires only IDs
+  // so we don't have to expand it ourselves.
   public saveChain(chain: Chain & { personsExpanded: any }) {
     chain.persons = chain.personsExpanded.map(t => t.id);
     chain.save().then(() => {
@@ -301,4 +302,4 @@ export function HadithPageCtrlCreator($scope, $rootScope, $location, $routeParam
   return ctrl;
 }
 
-HadithHouseApp.controller('HadithPageCtrl', HadithPageCtrlCreator);
+getApp().controller('HadithPageCtrl', HadithPageCtrlCreator);

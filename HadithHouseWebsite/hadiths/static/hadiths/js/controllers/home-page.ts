@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-import {HadithHouseApp} from "app-def";
 import {Hadith} from "resources/resources";
 import {IHttpService} from "angular";
+import { getApp } from "../app-def";
 
 export class HomePageCtrl {
   private randomHadith: Hadith;
@@ -48,4 +48,4 @@ export function HomePageCtrlCreator($http) {
   return new HomePageCtrl($http);
 }
 
-HadithHouseApp.controller('HomePageCtrl', HomePageCtrlCreator);
+getApp().controller('HomePageCtrl', HomePageCtrlCreator);
