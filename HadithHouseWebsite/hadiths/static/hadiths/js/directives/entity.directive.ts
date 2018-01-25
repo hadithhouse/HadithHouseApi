@@ -24,8 +24,8 @@
 
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
-import {HadithHouseApp} from "app-def";
 import angular from "angular"
+import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
 
@@ -138,11 +138,11 @@ export class EntityCtrl {
   };
 }
 
-HadithHouseApp.controller('EntityCtrl',
+getApp().controller('EntityCtrl',
   ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityCtrl]);
 
 // TODO: Consider creating a class for this.
-HadithHouseApp.component('hhEntity', {
+getApp().component('hhEntity', {
   templateUrl: getHtmlBasePath() + 'directives/entity.directive.html',
   controller: 'EntityCtrl',
   controllerAs: 'ctrl',

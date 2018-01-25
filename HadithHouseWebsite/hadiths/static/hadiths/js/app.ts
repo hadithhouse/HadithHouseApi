@@ -41,7 +41,6 @@ import { HadithTagListingPageCtrlCreator } from "controllers/hadithtag-listing-p
 import { HadithTagPageCtrlCreator } from "controllers/hadithtag-page";
 import { UserListingPageCtrlCreator } from "controllers/user-listing-page";
 import { UserPageCtrlCreator } from "controllers/user-page";
-import { HadithHouseApp } from "app-def";
 import { FacebookService } from "services/facebook.service";
 import "directives/entity.directive";
 import "directives/entity-lookup.directive";
@@ -59,6 +58,7 @@ import {
   User, UserResource
 } from "./resources/resources";
 import { HadithHouseCtrl } from "./controllers/hadith-house";
+import { getApp } from "./app-def";
 
 declare function getHtmlBasePath(): string;
 
@@ -68,9 +68,9 @@ interface IHadithHouseRootScope extends IScope {
   fbUser: any;
 }
 
-HadithHouseApp.config(($httpProvider: angular.IHttpProvider,
-                       $routeProvider: any,
-                       $locationProvider: angular.ILocationProvider) => {
+getApp().config(($httpProvider: angular.IHttpProvider,
+                 $routeProvider: any,
+                 $locationProvider: angular.ILocationProvider) => {
   $locationProvider.html5Mode({
     enabled: true,
     requireBase: false
@@ -184,44 +184,44 @@ HadithHouseApp.config(($httpProvider: angular.IHttpProvider,
 }]);
 
 // In offline mode, FacebookOfflineService should be used instead.
-HadithHouseApp.service({
+getApp().service({
   FacebookService
 });
 
 // Register cacheable resources.
-HadithHouseApp.factory("HadithResource",
+getApp().factory("HadithResource",
   ($http: IHttpService, $q: IQService): HadithResource => {
     return new CacheableResource<Hadith, number | string>(
       Hadith, "/apis/hadiths", $http, $q);
   });
-HadithHouseApp.factory("PersonResource",
+getApp().factory("PersonResource",
   ($http: IHttpService, $q: IQService): PersonResource => {
     return new CacheableResource<Person, number>(
       Person, "/apis/persons", $http, $q);
   });
-HadithHouseApp.factory("BookResource",
+getApp().factory("BookResource",
   ($http: IHttpService, $q: IQService): BookResource => {
     return new CacheableResource<Book, number>(
       Book, "/apis/books", $http, $q);
   });
-HadithHouseApp.factory("HadithTagResource",
+getApp().factory("HadithTagResource",
   ($http: IHttpService, $q: IQService): HadithTagResource => {
     return new CacheableResource<HadithTag, number>(
       HadithTag, "/apis/hadithtags", $http, $q);
   });
-HadithHouseApp.factory("ChainResource",
+getApp().factory("ChainResource",
   ($http: IHttpService, $q: IQService): ChainResource => {
     return new CacheableResource<Chain, number>(
       Chain, "/apis/chains", $http, $q);
   });
-HadithHouseApp.factory("UserResource",
+getApp().factory("UserResource",
   ($http: IHttpService, $q: IQService): UserResource => {
     return new CacheableResource<User, number>(
       User, "/apis/users", $http, $q);
   });
 
 
-HadithHouseApp.controller("HadithHouseCtrl", HadithHouseCtrl);
+getApp().controller("HadithHouseCtrl", HadithHouseCtrl);
 
 // Set Toastr options.
 (() => {

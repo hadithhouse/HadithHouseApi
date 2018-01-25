@@ -25,8 +25,8 @@
 import {ILocationService, IScope} from "angular";
 import {User, CacheableResource} from "resources/resources";
 import {EntityPageCtrl} from "controllers/entity-page";
-import {HadithHouseApp} from "app-def";
 import _ from "lodash"
+import { getApp } from "../app-def";
 
 export class UserPageCtrl extends EntityPageCtrl<User> {
   private UserResource: CacheableResource<User, number>;
@@ -91,5 +91,5 @@ export function UserPageCtrlCreator($scope, $rootScope, $location, $routeParams,
   return ctrl;
 }
 
-HadithHouseApp.controller('UserPageCtrl', UserPageCtrlCreator);
+getApp().controller('UserPageCtrl', UserPageCtrlCreator);
 

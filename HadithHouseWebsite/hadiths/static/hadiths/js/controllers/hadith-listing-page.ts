@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {HadithHouseApp} from "app-def";
-import {Book, CacheableResource, Hadith, HadithTag, Person} from "resources/resources";
-import {EntityListingPageCtrl} from "controllers/entity-listing-page";
-import {ILocationService, IScope, ITimeoutService} from "angular";
+
+import {
+  Book,
+  CacheableResource,
+  Hadith,
+  HadithTag,
+  Person
+} from "resources/resources";
+import { EntityListingPageCtrl } from "controllers/entity-listing-page";
+import { ILocationService, IScope, ITimeoutService } from "angular";
+import { getApp } from "../app-def";
 
 export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
   private tagsFilter: HadithTag[];
@@ -35,7 +42,7 @@ export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
               $rootScope: IScope,
               $timeout: ITimeoutService,
               $location: ILocationService,
-              private HadithResource: CacheableResource<Hadith, number|string>,
+              private HadithResource: CacheableResource<Hadith, number | string>,
               private HadithTagResource: CacheableResource<HadithTag, number>,
               private BookResource: CacheableResource<Book, number>,
               private PersonResource: CacheableResource<Person, number>) {
@@ -135,4 +142,4 @@ export function HadithListingPageCtrlCreator($scope, $rootScope, $timeout, $loca
     BookResource, PersonResource);
 }
 
-HadithHouseApp.controller('HadithListingPageCtrl', HadithListingPageCtrlCreator);
+getApp().controller('HadithListingPageCtrl', HadithListingPageCtrlCreator);

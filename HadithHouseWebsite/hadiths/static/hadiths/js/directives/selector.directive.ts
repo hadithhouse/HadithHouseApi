@@ -27,7 +27,7 @@ import toastr from "toastr";
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {ILocationService, IScope} from "angular";
 import angular from "angular"
-import {HadithHouseApp} from "app-def";
+import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
 
@@ -219,12 +219,12 @@ export class SelectorCtrl {
   };
 }
 
-HadithHouseApp.controller('SelectorCtrl',
+getApp().controller('SelectorCtrl',
   ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
     SelectorCtrl]);
 
 // TODO: Consider creating a class for this.
-HadithHouseApp.directive('hhSelector', function () {
+getApp().directive('hhSelector', function () {
   return {
     restrict: 'E',
     replace: true,
