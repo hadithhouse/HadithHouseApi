@@ -22,9 +22,9 @@
  * THE SOFTWARE.
  */
 
-import * as d3 from "d3"
+import * as d3 from "d3";
 import {IAttributes, IAugmentedJQuery, IScope} from "angular";
-import {HadithHouseApp} from "app-def";
+import { getApp } from "../app-def";
 
 export interface ITreeNode extends d3.layout.tree.Node {
   id: string;
@@ -233,7 +233,7 @@ class Tree {
   }
 }
 
-HadithHouseApp.directive('hhTree', function () {
+getApp().directive('hhTree', function () {
   return {
     replace: true,
     restrict: 'E',

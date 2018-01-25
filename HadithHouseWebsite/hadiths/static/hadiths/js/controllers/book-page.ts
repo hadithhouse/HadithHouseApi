@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 
-import {ILocationService, IScope} from "angular";
-import {Book, CacheableResource} from "../resources/resources";
-import {EntityPageCtrl} from "./entity-page";
-import {HadithHouseApp} from "app-def";
+import { ILocationService, IScope } from "angular";
+import { Book, CacheableResource } from "../resources/resources";
+import { EntityPageCtrl } from "./entity-page";
+import { getApp } from "../app-def";
 
 export class BookPageCtrl extends EntityPageCtrl<Book> {
   private BookResource: CacheableResource<Book, number>;
@@ -52,4 +52,4 @@ export function BookPageCtrlCreator($scope, $rootScope, $location, $routeParams,
   return ctrl;
 }
 
-HadithHouseApp.controller('BookPageCtrl', BookPageCtrlCreator);
+getApp().controller('BookPageCtrl', BookPageCtrlCreator);

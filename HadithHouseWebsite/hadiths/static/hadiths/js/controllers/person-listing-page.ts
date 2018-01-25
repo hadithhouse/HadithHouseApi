@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import {HadithHouseApp} from "app-def";
 import {CacheableResource, Person} from "resources/resources";
 import {EntityListingPageCtrl} from "controllers/entity-listing-page";
 import {ILocationService, IScope, ITimeoutService} from "angular";
+import { getApp } from "../app-def";
 
 export class PersonListingPageCtrl extends EntityListingPageCtrl<Person> {
   constructor($scope:IScope,
@@ -40,4 +40,4 @@ export function PersonListingPageCtrlCreator($scope, $rootScope, $timeout, $loca
   return new PersonListingPageCtrl($scope, $rootScope, $timeout, $location, PersonResource);
 }
 
-HadithHouseApp.controller('PersonListingPageCtrl', PersonListingPageCtrlCreator);
+getApp().controller('PersonListingPageCtrl', PersonListingPageCtrlCreator);
