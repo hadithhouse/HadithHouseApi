@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,29 @@
  * THE SOFTWARE.
  */
 
-import {IQService} from "angular";
+import { IQService } from "angular";
 
 export class FacebookOfflineService {
-  private $q:IQService;
+  private $q: IQService;
 
-  constructor($q:IQService) {
+  constructor($q: IQService) {
     this.$q = $q;
   }
 
   public login() {
-    let deferred = this.$q.defer();
-    deferred.reject('Not supported while offline');
+    const deferred = this.$q.defer();
+    deferred.reject("Not supported while offline");
     return deferred.promise;
   }
 
   public logout() {
-    let deferred = this.$q.defer();
-    deferred.reject('Not supported while offline');
+    const deferred = this.$q.defer();
+    deferred.reject("Not supported while offline");
     return deferred.promise;
   }
 
   public getLoginStatus() {
-    throw 'Not implemented in the offline version of Facebook service';
+    throw new Error("Not implemented in the offline version of Facebook service");
   }
 
   /**
@@ -53,29 +53,34 @@ export class FacebookOfflineService {
    * @returns A promise resolving to the user info object.
    */
   public getLoggedInUser() {
-    let deferred = this.$q.defer();
-    let user = {
-      'link': 'https://www.facebook.com/app_scoped_user_id/10152863219036905/',
-      'picture': {
-        'data': {
-          'is_silhouette': false,
-          'url': 'https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E'
+    const deferred = this.$q.defer();
+    const user = {
+      link: "https://www.facebook.com/app_scoped_user_id/10152863219036905/",
+      picture: {
+        data: {
+          is_silhouette: false,
+          url: "https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/" +
+          "c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?" +
+          "oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E"
         }
       },
-      'id': '10152863219036905'
+      id: "10152863219036905"
     };
     deferred.resolve(user);
     return deferred.promise;
   }
 
   public getProfilePictureUrl(userId) {
-    let deferred = this.$q.defer();
-    deferred.resolve('https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E');
+    const deferred = this.$q.defer();
+    deferred.resolve("https://scontent.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/" +
+      "c12.0.50.50/p57x57/114…_8891337119643731696_n.jpg?" +
+      "oh=4541774c11459787bb5d9ad23d059770&oe=5798CB9E");
     return deferred.promise;
   }
 
   public getUserFriends(userId) {
-    throw 'Not implemented in the offline version of Facebook service';
+    throw new Error("Not implemented in the offline version of Facebook " +
+      "service");
   }
 }
 
