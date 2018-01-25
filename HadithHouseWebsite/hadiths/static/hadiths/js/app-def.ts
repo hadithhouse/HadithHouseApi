@@ -22,9 +22,13 @@
  * THE SOFTWARE.
  */
 
-import angular from "angular";
+import angular, { IModule } from "angular";
 import "angular-resource";
 import "angular-route";
 
-export let HadithHouseApp = angular.module("HadithHouseApp",
+const hadithHouseApp = angular.module("HadithHouseApp",
   ["ngResource", "ngRoute"]);
+
+export function getApp(): IModule {
+  return hadithHouseApp;
+}

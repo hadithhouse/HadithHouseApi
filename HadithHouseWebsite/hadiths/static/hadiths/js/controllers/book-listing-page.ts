@@ -22,10 +22,10 @@
  * THE SOFTWARE.
  */
 
-import {ILocationService, IScope, ITimeoutService} from "angular";
-import {EntityListingPageCtrl} from "./entity-listing-page";
-import {Book, CacheableResource} from "../resources/resources";
-import {HadithHouseApp} from "app-def";
+import { ILocationService, IScope, ITimeoutService } from "angular";
+import { EntityListingPageCtrl } from "./entity-listing-page";
+import { Book, CacheableResource } from "../resources/resources";
+import { getApp } from "../app-def";
 
 export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
   constructor($scope: IScope,
@@ -41,5 +41,5 @@ export function BookListingPageCtrlCreator($scope, $rootScope, $timeout, $locati
   return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
 }
 
-HadithHouseApp.controller('BookListingPageCtrl', BookListingPageCtrlCreator);
+getApp().controller('BookListingPageCtrl', BookListingPageCtrlCreator);
 

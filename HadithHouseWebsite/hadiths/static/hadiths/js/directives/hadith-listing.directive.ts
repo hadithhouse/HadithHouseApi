@@ -23,7 +23,7 @@
  */
 import {CacheableResource, Hadith, ObjectWithPromise, PagedResults} from "resources/resources";
 import {IScope} from "angular";
-import {HadithHouseApp} from "app-def";
+import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
 
@@ -130,10 +130,10 @@ export class HadithListingCtrl {
 }
 
 
-HadithHouseApp.controller('HadithListingCtrl', ['$scope', 'HadithResource', HadithListingCtrl]);
+getApp().controller('HadithListingCtrl', ['$scope', 'HadithResource', HadithListingCtrl]);
 
 // TODO: Consider creating a class for this.
-HadithHouseApp.directive('hhHadithListing', function () {
+getApp().directive('hhHadithListing', function () {
   return {
     restrict: 'E',
     replace: true,

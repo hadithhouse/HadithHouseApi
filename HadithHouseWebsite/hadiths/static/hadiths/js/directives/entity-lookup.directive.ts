@@ -24,8 +24,8 @@
 import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
 import {IAugmentedJQuery, IScope} from "angular";
 import angular from "angular"
-import {HadithHouseApp} from "app-def";
 import "typeahead"
+import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
 
@@ -87,10 +87,10 @@ export class EntityLookupCtrl {
   }
 }
 
-HadithHouseApp.controller('EntityLookupCtrl',
+getApp().controller('EntityLookupCtrl',
   ['$scope', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityLookupCtrl]);
 
-HadithHouseApp.directive('hhEntityLookup', function () {
+getApp().directive('hhEntityLookup', function () {
   return {
     restrict: 'E',
     replace: true,
