@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,19 @@
  * THE SOFTWARE.
  */
 
-import {IPromise, IQService} from "angular";
+import { IPromise, IQService } from "angular";
 
 declare function getFbAccessToken(): string;
 
 declare function isFbSdkLoaded(): boolean;
+
+declare global {
+  // tslint:disable-next-line:interface-name
+  interface Window {
+    FB: any;
+    fbUserId: any;
+  }
+}
 
 export class FacebookUser {
   public id: Number;
@@ -44,8 +52,8 @@ export class FacebookService {
   constructor($q: IQService) {
     this.$q = $q;
     if (isFbSdkLoaded()) {
-      this.FB = window['FB'];
-      this.fbUserId = window['fbUserId'];
+      this.FB = window.FB;
+      this.fbUserId = window.fbUserId;
     } else {
       this.FB = null;
       this.fbUserId = null;
@@ -54,23 +62,24 @@ export class FacebookService {
 
   private static verifyFacebookSdkLoaded(): void {
     if (!isFbSdkLoaded()) {
-      throw "Cannot login because Facebook SDK couldn't be loaded. This is most probably due to a plugin " +
-      "in your browser, e.g. AdBlocker or Ghostery, blocking requests to social websites. Disable blocking for " +
-      "this website and try again.";
+      throw new Error("Cannot login because Facebook SDK couldn't be loaded. " +
+        "This is most probably due to a plugin in your browser, e.g. " +
+        "AdBlocker or Ghostery, blocking requests to social websites. " +
+        "Disable blocking for this website and try again.");
     }
   }
 
   public login(): any {
     FacebookService.verifyFacebookSdkLoaded();
 
-    let deferred = this.$q.defer();
-    this.FB.login(function (response) {
+    const deferred = this.$q.defer();
+    this.FB.login((response) => {
       if (response.authResponse) {
         deferred.resolve(response);
       } else {
-        deferred.reject('User cancelled login');
+        deferred.reject("User cancelled login");
       }
-    }, function (reason) {
+    }, (reason) => {
       deferred.reject(reason);
     });
     return deferred.promise;
@@ -79,8 +88,8 @@ export class FacebookService {
   public logout() {
     FacebookService.verifyFacebookSdkLoaded();
 
-    let deferred = this.$q.defer();
-    this.FB.logout(function (response) {
+    const deferred = this.$q.defer();
+    this.FB.logout((response) => {
       deferred.resolve(response);
     });
     return deferred.promise;
@@ -89,8 +98,8 @@ export class FacebookService {
   public getLoginStatus() {
     FacebookService.verifyFacebookSdkLoaded();
 
-    let deferred = this.$q.defer();
-    this.FB.getLoginStatus(function (response) {
+    const deferred = this.$q.defer();
+    this.FB.getLoginStatus((response) => {
       deferred.resolve(response);
     });
     return deferred.promise;
@@ -104,14 +113,14 @@ export class FacebookService {
   public getLoggedInUser(): IPromise<FacebookUser> {
     FacebookService.verifyFacebookSdkLoaded();
 
-    let deferred = this.$q.defer();
+    const deferred = this.$q.defer();
     if (getFbAccessToken() === null) {
       // No access token, so user is not logged in.
       deferred.resolve(null);
       return <IPromise<FacebookUser>>deferred.promise;
     }
-    this.FB.api('/me', {fields: 'link,picture'},
-      function (response) {
+    this.FB.api("/me", {fields: "link,picture"},
+      (response) => {
         if (response.error) {
           deferred.reject(response.error);
         } else {
@@ -125,9 +134,9 @@ export class FacebookService {
   public getProfilePictureUrl(userId) {
     FacebookService.verifyFacebookSdkLoaded();
 
-    let deferred = this.$q.defer();
-    this.FB.api('/' + this.fbUserId + '/picture',
-      function (response) {
+    const deferred = this.$q.defer();
+    this.FB.api("/" + this.fbUserId + "/picture",
+      (response) => {
         if (response && !response.error) {
           deferred.resolve(response.data.url);
         } else {
@@ -141,9 +150,9 @@ export class FacebookService {
   public getUserFriends(userId) {
     FacebookService.verifyFacebookSdkLoaded();
 
-    let deferred = this.$q.defer();
-    this.FB.api('/' + this.fbUserId + '/friends',
-      function (response) {
+    const deferred = this.$q.defer();
+    this.FB.api("/" + this.fbUserId + "/friends",
+      (response) => {
         if (response && !response.error) {
           deferred.resolve(response.data.url);
         } else {
