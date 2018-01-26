@@ -10,6 +10,7 @@ module.exports = function (grunt) {
         src: [
           "hadiths/static/hadiths/js/controllers/hadith-house.ts",
           "hadiths/static/hadiths/js/services/*.ts",
+          "hadiths/static/hadiths/js/resources/*.ts",
           "hadiths/static/hadiths/js/app.ts",
           "hadiths/static/hadiths/js/app-def.ts"
         ]
