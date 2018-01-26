@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 
 import $ from "jquery";
 import _ from "lodash";
-import {Cache} from "caching/cache"
-import {IHttpService, IQService, IHttpPromise, IPromise} from "angular";
+import { Cache } from "caching/cache";
+import { IHttpService, IQService, IHttpPromise, IPromise } from "angular";
 
 function getRestfulUrl<TId>(baseUrl: string, idOrIds?: TId | TId[]): string {
   if (!idOrIds) {
@@ -39,13 +39,14 @@ function getRestfulUrl<TId>(baseUrl: string, idOrIds?: TId | TId[]): string {
       // users/current.
       return `${baseUrl}/${idOrIds}`;
     } else {
-      let ids = (<TId[]>idOrIds).join(',');
+      const ids = (<TId[]>idOrIds).join(",");
       return `${baseUrl}?id=${ids}`;
     }
   }
 }
 
 export class Entity<TId> {
+  // tslint:disable:variable-name
   public id: TId;
   public added_by: number;
   public updated_by: number;
@@ -53,6 +54,8 @@ export class Entity<TId> {
   public updated_on: string;
   public valid: boolean = null;
   public promise: IPromise<Entity<TId>>;
+
+  // tslint:enable:variable-name
 
   /**
    * Constructs a new entity.
@@ -62,25 +65,19 @@ export class Entity<TId> {
   constructor($http: IHttpService, baseUrl: string);
 
   /**
-   * Loads the entity having the given ID.
-   * @param $http Angular's HTTP module.
-   * @param baseUrl The base URL for doing CRUD operations on this entity.
-   * @param id The ID of the entity to load.
-   */
-  constructor($http: IHttpService, baseUrl: string, id: TId);
-
-  /**
    * Constructs a wrapper entity for the given object.
    * @param $http Angular's HTTP module.
    * @param baseUrl The base URL for doing CRUD operations on this entity.
-   * @param object The object to wrap.
+   * @param idOrObject The ID of the entity to load or the object to wrap.
    */
-  constructor($http: IHttpService, baseUrl: string, object: Entity<TId>);
+  constructor($http: IHttpService, baseUrl: string,
+              idOrObject: TId | Entity<TId>);
 
-  constructor(private $http: IHttpService, private baseUrl: string, idOrObject?: TId | Entity<TId>) {
+  constructor(private $http: IHttpService, private baseUrl: string,
+              idOrObject?: TId | Entity<TId>) {
     if (!idOrObject) {
       return;
-    } else if (typeof(idOrObject) === 'object') {
+    } else if (typeof(idOrObject) === "object") {
       this.set(<Entity<TId>>idOrObject);
     } else {
       this.load(<TId>idOrObject);
@@ -102,14 +99,17 @@ export class Entity<TId> {
   /**
    * Base function for comparing an entity against another one.
    *
-   * When overriding this function make sure you also check the id which is defined in this class, i.e. the base
-   * Entity class. The reason it is not compared here is we want to make sure this function returns false by
-   * default. Otherwise, if an entity class misses the implementation of this function, it will always return
-   * true when the user edits an element, making it impossible to save an entity because it will be considered
+   * When overriding this function make sure you also check the id which is
+   * defined in this class, i.e. the base Entity class. The reason it is not
+   * compared here is we want to make sure this function returns false by
+   * default. Otherwise, if an entity class misses the implementation of this
+   * function, it will always return true when the user edits an element,
+   * making it impossible to save an entity because it will be considered
    * unchanged.
    *
-   * @param {Entity<TId>} entity The entity to compare against.
+   * @param entity The entity to compare against.
    * @returns {boolean} True or false depending on the comparison result.
+   * @template TId The type of the ID.
    */
   public equals(entity: Entity<TId>): boolean {
     return false;
@@ -120,28 +120,30 @@ export class Entity<TId> {
    * @param id The ID of the entity to load.
    */
   private load(id: TId): void {
-    this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then((result) => {
-      if (result.status == 200) {
-        this.set(result.data);
-        this.valid = true;
-      } else {
+    this.$http.get<Entity<TId>>(getRestfulUrl(this.baseUrl, id)).then(
+      (result) => {
+        if (result.status === 200) {
+          this.set(result.data);
+          this.valid = true;
+        } else {
+          this.valid = false;
+        }
+      }, (/*reason*/) => {
         this.valid = false;
-      }
-    }, (reason) => {
-      this.valid = false;
-    });
+      });
   }
 
   /**
    * Saves the entity.
-   * @returns {angular.IHttpPromise<Entity<TId>>}
+   * @returns The promise for the save request.
    */
   public save(): IHttpPromise<Entity<TId>> {
-    let url = getRestfulUrl(this.baseUrl, this.id);
+    const url = getRestfulUrl(this.baseUrl, this.id);
     if (!this.id) {
-      let promise = this.$http.post<Entity<TId>>(url, this);
+      const promise = this.$http.post<Entity<TId>>(url, this);
       promise.then((response) => {
-        // TODO: We should copy all the object to save other auto-generated TODO.
+        // TODO: We should copy all the object to save other auto-generated or
+        // auto-updated values.
         this.id = response.data.id;
       });
       return promise;
@@ -154,7 +156,7 @@ export class Entity<TId> {
    * Delete the object.
    */
   public delete(): IHttpPromise<Entity<TId>> {
-    let url = getRestfulUrl(this.baseUrl, this.id);
+    const url = getRestfulUrl(this.baseUrl, this.id);
     return this.$http.delete(url);
   }
 }
@@ -187,11 +189,16 @@ export class PagedResults<TEntity> {
 /**
  * A type that extends a certain type with a promise field.
  */
-export type ObjectWithPromise<TObject> = TObject & { promise?: IPromise<TObject> };
+export type ObjectWithPromise<TObject> =
+  TObject
+  & { promise?: IPromise<TObject> };
+
+type QueryResponse<T> = ObjectWithPromise<T[]>;
+type PagedQueryResponse<T> = ObjectWithPromise<PagedResults<T>>;
 
 /**
- * A resource that employs caching to avoid loading the same object(s) multiple times, and thus reduce
- * HTTP requests.
+ * A resource that employs caching to avoid loading the same object(s) multiple
+ * times, and thus reduce HTTP requests.
  */
 export class CacheableResource<TEntity extends Entity<TId>, TId> {
   /**
@@ -199,6 +206,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
    */
   private cache: Cache<TEntity>;
 
+  // tslint:disable-next-line:variable-name
   constructor(private TEntityClass: new(...params: any[]) => TEntity,
               private baseUrl: string,
               private $http: IHttpService,
@@ -212,27 +220,33 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
 
   /**
    * Executes a query on this resource.
-   * @param {{[p: string]: string}} query A dictionary specifying the query. Each key-value pair of this dictionary
-   * is a filter to be applied on the retrieved query. For example, if the user wants to filter by a field called
-   * 'status', then the query should be something like {status: 'my status'}.
-   * @param {boolean} cacheResults If true, the returned results will also be stored in the cache so that they can
-   * be quickly obtained using the {@link get} method.
-   * @returns {ObjectWithPromise<TEntity[]>} An array containing the entities matching the given query. The returned
-   * array contains an additional field 'promise' which can be used to know when the results are retrieved.
+   * @param query A dictionary specifying the query. Each key-value pair of
+   * this dictionary is a filter to be applied on the retrieved query. For
+   * example, if the user wants to filter by a field called 'status', then
+   * the query should be something like {status: 'my status'}.
+   * @param {boolean} cacheResults If true, the returned results will also be
+   * stored in the cache so that they can be quickly obtained using the
+   * {@link get} method.
+   * @returns An array containing the entities matching the given query. The
+   * returned array contains an additional field 'promise' which can be used
+   * to know when the results are retrieved.
    */
-  public query(query: { [key: string]: string }, cacheResults = true): ObjectWithPromise<TEntity[]> {
-    let queryParams = $.param(query);
-    let entities: ObjectWithPromise<TEntity[]> = [];
-    let httpPromise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
-    let queryDeferred = this.$q.defer<TEntity[]>();
+  public query(query: { [key: string]: string },
+               cacheResults = true): QueryResponse<TEntity> {
+    const queryParams = $.param(query);
+    const entities: ObjectWithPromise<TEntity[]> = [];
+    const httpPromise = this.$http.get<PagedResults<TEntity>>(
+      getRestfulUrl(this.baseUrl) + "?" + queryParams);
+    const queryDeferred = this.$q.defer<TEntity[]>();
     httpPromise.then((response) => {
-      for (let entity of response.data.results) {
+      for (const entity of response.data.results) {
         entities.push(new this.TEntityClass(this.$http, this.baseUrl, entity));
         // Since we already get some entities back, we might as well cache them.
         // NOTE: If there is an object in the cache already, don't overwrite it,
         // update it. This way other code parts which reference it will
         // automatically get the updated values.
-        let entityInCache = cacheResults ? this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
+        let entityInCache = cacheResults ? this.cache.get(entity.id.toString(),
+          true /* Returns expired */) : null;
         if (!entityInCache) {
           entityInCache = this.create();
         }
@@ -250,32 +264,42 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
   }
 
   /**
-   * Executes a query on this resource. The difference between this and {@link query} is that this method returns
+   * Executes a query on this resource. The difference between this and
+   * {@link query} is that this method returns a paged query; one which contains
+   * result count and links to the next and previous pages.
    *
-   * @param {{[p: string]: string}} query A dictionary specifying the query. Each key-value pair of this dictionary
-   * is a filter to be applied on the retrieved query. For example, if the user wants to filter by a field called
-   * 'status', then the query should be something like {status: 'my status'}.
-   * @param {boolean} cacheResults If true, the returned results will also be stored in the cache so that they can
-   * be quickly obtained using the {@link get} method.
-   * @returns {ObjectWithPromise<TEntity[]>} An array containing the entities matching the given query. The returned
-   * array contains an additional field 'promise' which can be used to know when the results are retrieved.
+   * @param query A dictionary specifying the query. Each key-value pair of this
+   * dictionary is a filter to be applied on the retrieved query. For example,
+   * if the user wants to filter by a field called 'status', then the query
+   * should be something like {status: 'my status'}.
+   * @param {boolean} cacheResults If true, the returned results will also be
+   * stored in the cache so that they can be quickly obtained using the
+   * {@link get} method.
+   * @returns An array containing the entities matching the given query. The
+   * returned array contains an additional field 'promise' which can be used
+   * to know when the results are retrieved.
    */
-  public pagedQuery(query: { [key: string]: string }, cacheResults = true): ObjectWithPromise<PagedResults<TEntity>> {
-    let queryParams = $.param(query);
-    let pagedEntities: ObjectWithPromise<PagedResults<TEntity>> = new PagedResults<TEntity>();
-    let promise = this.$http.get<PagedResults<TEntity>>(getRestfulUrl(this.baseUrl) + '?' + queryParams);
+  public pagedQuery(query: { [key: string]: string },
+                    cacheResults = true): PagedQueryResponse<TEntity> {
+    const queryParams = $.param(query);
+    const pagedEntities: ObjectWithPromise<PagedResults<TEntity>> =
+      new PagedResults<TEntity>();
+    const promise = this.$http.get<PagedResults<TEntity>>(
+      getRestfulUrl(this.baseUrl) + "?" + queryParams);
     promise.then((response) => {
       pagedEntities.count = response.data.count;
       pagedEntities.next = response.data.next;
       pagedEntities.previous = response.data.previous;
       pagedEntities.results = [];
-      for (let entity of response.data.results) {
-        pagedEntities.results.push(new this.TEntityClass(this.$http, this.baseUrl, entity));
+      for (const entity of response.data.results) {
+        pagedEntities.results.push(new this.TEntityClass(this.$http,
+          this.baseUrl, entity));
         // Since we already get some entities back, we might as well cache them.
         // NOTE: If there is an object in the cache already, don't overwrite it,
         // update it. This way other code parts which reference it will
         // automatically get the updated values.
-        let entityInCache = cacheResults ? this.cache.get(entity.id.toString(), true /* Returns expired */) : null;
+        let entityInCache = cacheResults ? this.cache.get(entity.id.toString(),
+          true /* Returns expired */) : null;
         if (!entityInCache) {
           entityInCache = this.create();
         }
@@ -291,31 +315,39 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
 
   /**
    * Retrieves the entity having the given ID.
-   * @param {TId} id The ID of the entity to retrieve.
-   * @param {boolean} useCache Whether to use the cache for this request. If this is true, the cache will first be
-   * inspected. If it contains the entity, it is returned straight away. Otherwise, a request is made to retrieve the
-   * entity. Additionally, if this flag is true, the cached entity will be updated with the result of the HTTP request
-   * (if one is made.)
-   * @returns {TEntity} The entity. This is returned straight away, but it is only a stub that gets filled when the
-   * HTTP request returns successfully. To watch the request, you can use the 'promise' field, which gets resolved
-   * when the request returns.
+   * @param id The ID of the entity to retrieve.
+   * @param {boolean} useCache Whether to use the cache for this request. If
+   * this is true, the cache will first be inspected. If it contains the
+   * entity, it is returned straight away. Otherwise, a request is made to
+   * retrieve the entity. Additionally, if this flag is true, the cached entity
+   * will be updated with the result of the HTTP request (if one is made.)
+   * @returns The entity. This is returned straight away, but it is only a stub
+   * that gets filled when the HTTP request returns successfully. To watch the
+   * request, you can use the 'promise' field, which gets resolved when the
+   * request returns.
+   * @template TId The type of the ID
+   * @template TEntity The type of the entity.
    */
   public get(id: TId, useCache?: boolean): TEntity;
 
   /**
    * Retrieves the entities having the given IDs.
-   * @param {TId[]} ids The IDs of the entities to retrieve.
-   * @param {boolean} useCache Whether to use the cache for this request. If this is true, the cache will first be
-   * inspected for every ID. Those entities which are already in the cached will be retrieved right away. The rest are
-   * requested. Additionally, if this flag is true, the cached entities will be updated with the result of the HTTP
-   * request (if one is made.)
-   * @returns {ObjectWithPromise<TEntity[]>} An array containing the entities. This is returned straight away, but
-   * it only contains stubs that gets filled when the HTTP request returns successfully. To watch the HTTP request,
-   * you can use the 'promise' field of the array, which gets resolved when the request returns.
+   * @param ids The IDs of the entities to retrieve.
+   * @param {boolean} useCache Whether to use the cache for this request. If
+   * this is true, the cache will first be inspected for every ID. Those
+   * entities which are already in the cached will be retrieved right away. The
+   * rest are requested. Additionally, if this flag is true, the cached
+   * entities will be updated with the result of the HTTP request (if one is
+   * made.)
+   * @returns An array containing the entities. This is returned straight away,
+   * but it only contains stubs that gets filled when the HTTP request returns
+   * successfully. To watch the HTTP request, you can use the 'promise' field
+   * of the array, which gets resolved when the request returns.
    */
   public get(ids: TId[], useCache?: boolean): ObjectWithPromise<TEntity[]>;
 
-  public get(idOrIds: TId | TId[], useCache = true): TEntity | ObjectWithPromise<TEntity[]> {
+  public get(idOrIds: TId | TId[],
+             useCache = true): TEntity | ObjectWithPromise<TEntity[]> {
     if (Array.isArray(idOrIds)) {
       // An array of IDs.
       if (useCache) {
@@ -334,9 +366,10 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
   }
 
   /**
-   * Retrieves a single entity by ID. Retrieve from the cache if the entity is already loaded and not expired.
-   * @param {TId} id The ID of the entity to retrieve.
-   * @returns {TEntity} The entity.
+   * Retrieves a single entity by ID. Retrieve from the cache if the entity is
+   * already loaded and not expired.
+   * @param id The ID of the entity to retrieve.
+   * @returns The entity.
    */
   private getBySingleIdUseCache(id: TId): TEntity {
     let entity = this.cache.get(id.toString());
@@ -345,57 +378,61 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
       // get notified when the object is loaded or an error happens. Here,
       // though, we resolve it immediately because we already have it in
       // the cache.
-      let deferred = this.$q.defer<TEntity>();
+      const deferred = this.$q.defer<TEntity>();
       entity.promise = deferred.promise;
       deferred.resolve(entity);
     } else {
       entity = this.getBySingleId(id);
-      // TODO: If the given ID is a special ID, e.g. 'current', 'random', etc., the result will not be cached
-      // under the right ID. Not sure, though, how to solve this problem, because we want to put the object in the
-      // cache right away, so next fetches of the same ID return the same object even before the request returns.
+      // TODO: If the given ID is a special ID, e.g. 'current', 'random', etc.,
+      // the result will not be cached under the right ID. Not sure, though,
+      // how to solve this problem, because we want to put the object in the
+      // cache right away, so next fetches of the same ID return the same
+      // object even before the request returns.
       this.cache.put(id.toString(), entity);
     }
     return entity;
   }
 
   /**
-   * Retrieves a single entity by ID. A request is always made by this method, even if a cached version already exists.
-   * @param {TId} id The ID of the entity to retrieve.
-   * @returns {TEntity} The entity.
+   * Retrieves a single entity by ID. A request is always made by this method,
+   * even if a cached version already exists.
+   * @param id The ID of the entity to retrieve.
+   * @returns The entity.
    */
   private getBySingleId(id: TId): TEntity {
-    let entity = this.create();
-    let deferred = this.$q.defer<TEntity>();
+    const entity = this.create();
+    const deferred = this.$q.defer<TEntity>();
     entity.promise = deferred.promise;
-    this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, id)).then((response) => {
-      entity.set(response.data);
-      deferred.resolve(entity);
-    }, (reason) => {
-      deferred.resolve(reason);
-    });
+    this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, id)).then(
+      (response) => {
+        entity.set(response.data);
+        deferred.resolve(entity);
+      }, (reason) => {
+        deferred.resolve(reason);
+      });
     return entity;
   }
 
   private getByMultipleIdsWithCache(ids: TId[]): ObjectWithPromise<TEntity[]> {
-    let entities: ObjectWithPromise<TEntity[]> = [];
-    let idsOfEntitiesToFetch: TId[] = [];
+    const entities: ObjectWithPromise<TEntity[]> = [];
+    const idsOfEntitiesToFetch: TId[] = [];
 
     // Remove duplicated IDs before making the request.
     ids = _.uniq(ids);
 
     // Check the cache to see which entities we already have and which ones
     // we need to fetch from the cache.
-    let deferredsToResolve = {};
-    for (let id of ids) {
+    const deferredsToResolve = {};
+    for (const id of ids) {
       let entity = this.cache.get(id.toString());
-      if (entity != null) {
+      if (entity !== null) {
         entities.push(entity);
 
         // Create a promise object in the entity in case the user wants to
         // get notified when the object is loaded or an error happens. Here,
         // though, we resolve it immediately because we already have it in
         // the cache.
-        let deferred = this.$q.defer<TEntity>();
+        const deferred = this.$q.defer<TEntity>();
         entity.promise = deferred.promise;
 
         deferred.resolve(entity);
@@ -411,7 +448,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
 
         // Create a promise object in the entity in case the user wants to
         // get notified when the object is loaded or an error happens.
-        let deferred = this.$q.defer<TEntity>();
+        const deferred = this.$q.defer<TEntity>();
         entity.promise = deferred.promise;
 
         // Save an instance of the deferred so we could resolve it later
@@ -422,12 +459,13 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
 
     // Requests the entities we don't have from the RESTful API.
     if (idsOfEntitiesToFetch.length > 1) {
-      let httpPromise = this.$http.get<{ results: TEntity[] }>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
-      let entitiesDeferred = this.$q.defer<TEntity[]>();
+      const httpPromise = this.$http.get<{ results: TEntity[] }>(
+        getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+      const entitiesDeferred = this.$q.defer<TEntity[]>();
       httpPromise.then((response) => {
         // Now that we receive the data from the server, start filling in the
         // entities we returned to the user and resolving their promises.
-        for (let entity of response.data.results) {
+        for (const entity of response.data.results) {
           _.each(_.filter(entities, (e) => e.id === entity.id), (e) => {
             e.set(entity);
           });
@@ -436,7 +474,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         }
         entitiesDeferred.resolve(entities);
       }, (reason) => {
-        for (let entity of entities) {
+        for (const entity of entities) {
           // Rejects the promise object of the entity.
           deferredsToResolve[entity.id.toString()].reject(reason);
         }
@@ -446,10 +484,11 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     } else if (idsOfEntitiesToFetch.length === 1) {
       // Cannot use the same variable name as above with different type :-S
       // How is let useful over var then?
-      let httpPromise2 = this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
-      let entitiesDeferred = this.$q.defer<TEntity[]>();
+      const httpPromise2 = this.$http.get<TEntity>(
+        getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+      const entitiesDeferred = this.$q.defer<TEntity[]>();
       httpPromise2.then((response) => {
-        let entity = response.data;
+        const entity = response.data;
         _.each(_.filter(entities, (e) => e.id === entity.id), (e) => {
           e.set(entity);
         });
@@ -458,7 +497,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         deferredsToResolve[entity.id.toString()].resolve(entity);
         entitiesDeferred.resolve(entities);
       }, (reason) => {
-        for (let entity of entities) {
+        for (const entity of entities) {
           // Rejects the promise object of the entity.
           deferredsToResolve[entity.id.toString()].reject(reason);
         }
@@ -467,7 +506,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
       entities.promise = entitiesDeferred.promise;
     } else {
       // Nothing to fetch, so create promise object that resolves immediately.
-      let deferred = this.$q.defer<TEntity[]>();
+      const deferred = this.$q.defer<TEntity[]>();
       entities.promise = deferred.promise;
       deferred.resolve(entities);
     }
@@ -476,27 +515,27 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
   }
 
   private getByMultipleIds(ids: TId[]): ObjectWithPromise<TEntity[]> {
-    let entities: ObjectWithPromise<TEntity[]> = [];
-    let idsOfEntitiesToFetch: TId[] = [];
+    const entities: ObjectWithPromise<TEntity[]> = [];
+    const idsOfEntitiesToFetch: TId[] = [];
 
     // Remove duplicated IDs before making the request.
     ids = _.uniq(ids);
 
     // Check the cache to see which entities we already have and which ones
     // we need to fetch from the cache.
-    let deferredsToResolve = {};
-    for (let id of ids) {
+    const deferredsToResolve = {};
+    for (const id of ids) {
       // Create a stub for the entity to fill in later when we receives
       // the response from the RESTful API. Also cache it so next requests
       // for the same object won't have to go to the RESTful API again.
-      let entity = this.create();
+      const entity = this.create();
       entity.id = id;
       idsOfEntitiesToFetch.push(id);
       entities.push(entity);
 
       // Create a promise object in the entity in case the user wants to
       // get notified when the object is loaded or an error happens.
-      let deferred = this.$q.defer<TEntity>();
+      const deferred = this.$q.defer<TEntity>();
       entity.promise = deferred.promise;
 
       // Save an instance of the deferred so we could resolve it later
@@ -506,12 +545,13 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
 
     // Requests the entities we don't have from the RESTful API.
     if (idsOfEntitiesToFetch.length > 1) {
-      let httpPromise = this.$http.get<{ results: TEntity[] }>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
-      let entitiesDeferred = this.$q.defer<TEntity[]>();
+      const httpPromise = this.$http.get<{ results: TEntity[] }>(
+        getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+      const entitiesDeferred = this.$q.defer<TEntity[]>();
       httpPromise.then((response) => {
         // Now that we receive the data from the server, start filling in the
         // entities we returned to the user and resolving their promises.
-        for (let entity of response.data.results) {
+        for (const entity of response.data.results) {
           _.each(_.filter(entities, (e) => e.id === entity.id), (e) => {
             e.set(entity);
           });
@@ -520,7 +560,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         }
         entitiesDeferred.resolve(entities);
       }, (reason) => {
-        for (let entity of entities) {
+        for (const entity of entities) {
           // Rejects the promise object of the entity.
           deferredsToResolve[entity.id.toString()].reject(reason);
         }
@@ -530,10 +570,11 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     } else if (idsOfEntitiesToFetch.length === 1) {
       // Cannot use the same variable name as above with different type :-S
       // How is let useful over var then?
-      let httpPromise2 = this.$http.get<TEntity>(getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
-      let entitiesDeferred = this.$q.defer<TEntity[]>();
+      const httpPromise2 = this.$http.get<TEntity>(
+        getRestfulUrl(this.baseUrl, idsOfEntitiesToFetch));
+      const entitiesDeferred = this.$q.defer<TEntity[]>();
       httpPromise2.then((response) => {
-        let entity = response.data;
+        const entity = response.data;
         _.each(_.filter(entities, (e) => e.id === entity.id), (e) => {
           e.set(entity);
         });
@@ -542,7 +583,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
         deferredsToResolve[entity.id.toString()].resolve(entity);
         entitiesDeferred.resolve(entities);
       }, (reason) => {
-        for (let entity of entities) {
+        for (const entity of entities) {
           // Rejects the promise object of the entity.
           deferredsToResolve[entity.id.toString()].reject(reason);
         }
@@ -551,7 +592,7 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
       entities.promise = entitiesDeferred.promise;
     } else {
       // Nothing to fetch, so create promise object that resolves immediately.
-      let deferred = this.$q.defer<TEntity[]>();
+      const deferred = this.$q.defer<TEntity[]>();
       entities.promise = deferred.promise;
       deferred.resolve(entities);
     }
@@ -559,10 +600,6 @@ export class CacheableResource<TEntity extends Entity<TId>, TId> {
     return entities;
   }
 }
-
-///===========================================================================
-/// Hadith Resource
-///===========================================================================
 
 export class Hadith extends Entity<number | string> {
   public text: string;
@@ -575,7 +612,7 @@ export class Hadith extends Entity<number | string> {
 
   public set(entity: Entity<number | string>) {
     super.set(entity);
-    let casted = <Hadith>entity;
+    const casted = <Hadith>entity;
     this.text = casted.text;
     this.person = casted.person;
     this.book = casted.book;
@@ -586,8 +623,8 @@ export class Hadith extends Entity<number | string> {
   }
 
   public equals(entity: Entity<number | string>): boolean {
-    let casted = <Hadith>entity;
-    return this.id == casted.id &&
+    const casted = <Hadith>entity;
+    return this.id === casted.id &&
       this.text === casted.text &&
       this.person === casted.person &&
       this.book === casted.book &&
@@ -598,11 +635,8 @@ export class Hadith extends Entity<number | string> {
   }
 }
 
-///===========================================================================
-/// Person Resource
-///===========================================================================
-
 export class Person extends Entity<number> {
+// tslint:disable:variable-name
   public title: string;
   public display_name: string;
   public full_name: string;
@@ -614,9 +648,11 @@ export class Person extends Entity<number> {
   public death_month: number;
   public death_day: number;
 
+// tslint:enable:variable-name
+
   public set(entity: Entity<number>) {
     super.set(entity);
-    let casted = <Person>entity;
+    const casted = <Person>entity;
     this.title = casted.title;
     this.display_name = casted.display_name;
     this.full_name = casted.full_name;
@@ -630,7 +666,7 @@ export class Person extends Entity<number> {
   }
 
   public equals(entity: Entity<number>): boolean {
-    let casted = <Person>entity;
+    const casted = <Person>entity;
     return this.id === casted.id &&
       this.title === casted.title &&
       this.display_name === casted.display_name &&
@@ -652,25 +688,24 @@ export class Person extends Entity<number> {
   }
 }
 
-///===========================================================================
-/// Book Resource
-///===========================================================================
-
 export class Book extends Entity<number> {
+// tslint:disable:variable-name
   public title: string;
   public brief_desc: string;
   public pub_year: number;
 
+// tslint:enable:variable-name
+
   public set(entity: Entity<number>) {
     super.set(entity);
-    let casted = <Book>entity;
+    const casted = <Book>entity;
     this.title = casted.title;
     this.brief_desc = casted.brief_desc;
     this.pub_year = casted.pub_year;
   }
 
   public equals(entity: Entity<number>) {
-    let casted = <Book>entity;
+    const casted = <Book>entity;
     return this.id === casted.id &&
       this.title === casted.title &&
       this.brief_desc === casted.brief_desc &&
@@ -685,10 +720,6 @@ export class Book extends Entity<number> {
   }
 }
 
-///===========================================================================
-/// HadithTag Resource
-///===========================================================================
-
 export class HadithTag extends Entity<number> {
   public name: string;
 
@@ -698,7 +729,7 @@ export class HadithTag extends Entity<number> {
   }
 
   public equals(entity: Entity<number>) {
-    let casted = <HadithTag>entity;
+    const casted = <HadithTag>entity;
     return this.id === casted.id &&
       this.name === casted.name;
   }
@@ -711,13 +742,9 @@ export class HadithTag extends Entity<number> {
   }
 }
 
-///===========================================================================
-/// Chain Resource
-///===========================================================================
-
 export class Chain extends Entity<number> {
   public hadith: number | string;
-  public persons: Array<number>;
+  public persons: number[];
   public isEditing: boolean;
   public isAddingNew: boolean;
 
@@ -730,19 +757,18 @@ export class Chain extends Entity<number> {
   }
 }
 
-///===========================================================================
-/// User Resource
-///===========================================================================
-
 export class User extends Entity<number> {
+// tslint:disable:variable-name
   public first_name: string;
   public last_name: string;
   public is_superuser: boolean;
   public is_staff: boolean;
   public username: string;
   public date_joined: string;
-  public permissions: Array<string>;
-  public permissionsOrdered: Array<string>;
+  public permissions: string[];
+  public permissionsOrdered: string[];
+
+// tslint:enable:variable-name
 
   public set(entity: Entity<number>) {
     super.set(entity);
@@ -753,7 +779,7 @@ export class User extends Entity<number> {
     this.username = (<User>entity).username;
     this.date_joined = (<User>entity).date_joined;
     this.permissions = (<User>entity).permissions.slice();
-    this.permissionsOrdered = ((<User>entity).permissionsOrdered != null)
+    this.permissionsOrdered = ((<User>entity).permissionsOrdered !== null)
       ? (<User>entity).permissionsOrdered.slice()
       : null;
   }
