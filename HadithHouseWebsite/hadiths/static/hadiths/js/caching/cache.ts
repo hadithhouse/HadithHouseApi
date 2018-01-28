@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ export class CacheEntry<TObject> {
   public object: TObject;
 
   public isExpired(): boolean {
-    let now = moment();
+    const now = moment();
     return this.expiryTime.isBefore(now);
   }
 }
@@ -58,13 +58,14 @@ export class Cache<TObject> {
    * @param object The object.
    * @param cachingPeriod The caching period in minutes.
    */
-  public put(key: string, object: TObject, cachingPeriod: number = this.defaultCachingPeriod) {
-    if (key === null || typeof(key) === 'undefined') {
-      throw "Parameter 'key' cannot be null or undefined.";
+  public put(key: string, object: TObject,
+             cachingPeriod: number = this.defaultCachingPeriod) {
+    if (key === null || typeof(key) === "undefined") {
+      throw new Error("Parameter 'key' cannot be null or undefined.");
     }
-    let entry = new CacheEntry<TObject>();
+    const entry = new CacheEntry<TObject>();
     entry.key = key.toString();
-    entry.expiryTime = moment().add(cachingPeriod, 'minutes');
+    entry.expiryTime = moment().add(cachingPeriod, "minutes");
     entry.object = object;
     this.objectDict[key.toString()] = entry;
   }
@@ -72,15 +73,16 @@ export class Cache<TObject> {
   /**
    * Retrieves an object from the cache.
    * @param key The key of the object.
-   * @param returnsExpired Set to true if you want to retrieve expired entries as well.
+   * @param returnsExpired Set to true if you want to retrieve expired entries
+   * as well.
    * @returns The cached object or null if no object with the given key is
    * cached or it has expired.
    */
   public get(key: string, returnsExpired = true): TObject {
-    if (key === null || typeof(key) === 'undefined') {
-      throw "Parameter 'key' cannot be null or undefined.";
+    if (key === null || typeof(key) === "undefined") {
+      throw new Error("Parameter 'key' cannot be null or undefined.");
     }
-    let entry = this.objectDict[key.toString()];
+    const entry = this.objectDict[key.toString()];
     if (!entry || (entry.isExpired() && returnsExpired !== true)) {
       return null;
     }
