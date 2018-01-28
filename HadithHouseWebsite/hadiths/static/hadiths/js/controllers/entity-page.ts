@@ -63,7 +63,6 @@ export abstract class EntityPageCtrl<TEntity extends Entity<number | string>> {
 
   protected onKeyUp = (e: any) => {
     if (e.keyCode === 27) {
-      console.log('test');
       this.cancelEditing();
       this.$scope.$apply();
     }
