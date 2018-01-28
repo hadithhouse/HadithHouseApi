@@ -16,17 +16,6 @@ HadithHouseWebsite/server_settings.py
 # TypeScript cache
 /.tscache
 
-# Ignore generated JS and JS map files.
-# TODO: Consider creating a .gitignore file under js/ folder so each folder decides which of its files to ignore.
-/hadiths/static/hadiths/js/**/*.js
-!/hadiths/static/hadiths/js/systemjs.config.js
-!/hadiths/static/hadiths/js/systemjs-offline.config.js
-/hadiths/static/hadiths/js/**/*.js.map
-
-# Ignore minified CSS file.
-/hadiths/static/hadiths/css/all.css
-/hadiths/static/hadiths/css/all.css.map
-
 # PyCharm files
 /.idea/workspace.xml
 /.idea/libraries

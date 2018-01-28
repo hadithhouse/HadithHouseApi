@@ -1,1 +1,18 @@
 third-party/
+
+# Ignore generated JS and JS map files, but exclude SystemJS files.
+js/**/*.js
+js/**/*.js.map
+!js/systemjs.config.js
+!js/systemjs-offline.config.js
+
+# Ignore generated JS and JS map files for ReactJS, but exclude SystemJS files.
+js-reactjs/**/*.js
+js-reactjs/**/*.js.map
+!js-reactjs/systemjs.config.js
+!js-reactjs/systemjs-offline.config.js
+
+# Ignore minified CSS file.
+css/all.css
+css/all.css.map
+
