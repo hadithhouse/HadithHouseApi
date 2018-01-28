@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,18 @@
  */
 
 import _ from "lodash";
-import {IAugmentedJQuery, ILocationProvider, IScope} from "angular";
-import {Book, CacheableResource, Entity, HadithTag, ObjectWithPromise, Person, User} from "resources/resources";
-import "bootstrap"
+import toastr from "toastr";
+import { IAugmentedJQuery, ILocationProvider, IScope } from "angular";
+import {
+  Book,
+  CacheableResource,
+  Entity,
+  HadithTag,
+  ObjectWithPromise,
+  Person,
+  User
+} from "resources/resources";
+import "bootstrap";
 import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
@@ -37,28 +46,31 @@ export class TagsInputCtrl {
   public text: string;
   public entities: Entity<number>[];
   public autoCompleteEntries: any[];
-  private EntityResource: CacheableResource<Entity<number>, number>;
+  private entityResource: CacheableResource<Entity<number>, number>;
+  static $inject = ["$scope", "$element", "$location", "PersonResource",
+    "BookResource", "HadithTagResource", "UserResource"];
 
   constructor(private $scope: IScope,
               private $element: IAugmentedJQuery,
               private $location: ILocationProvider,
-              private PersonResource: CacheableResource<Person, number>,
-              private BookResource: CacheableResource<Book, number>,
-              private HadithTagResource: CacheableResource<HadithTag, number>,
-              private UserResource: CacheableResource<User, number>) {
+              private personResource: CacheableResource<Person, number>,
+              private bookResource: CacheableResource<Book, number>,
+              private hadithTagResource: CacheableResource<HadithTag, number>,
+              private userResource: CacheableResource<User, number>) {
   }
 
   public $onInit() {
-    if (!this.type || typeof(this.type) !== 'string') {
-      throw 'hh-entity-lookup must have its type attribute set to a string.';
+    if (!this.type || typeof(this.type) !== "string") {
+      throw new Error("hh-tags-input must have its type attribute set " +
+        "to a string.");
     }
     if (!this.selectionMode) {
-      this.selectionMode = 'multi';
+      this.selectionMode = "multi";
     }
     if (!this.entities) {
       this.entities = [];
     }
-    this.$scope.$watch(() => this.text, (newText, oldText) => {
+    this.$scope.$watch(() => this.text, (/*newText, oldText*/) => {
       if (this.text && this.text.length > 2) {
         this.findEntities(this.text).promise.then((result) => {
           this.showAutoComplete(result, this.text);
@@ -83,23 +95,23 @@ export class TagsInputCtrl {
   }
 
   public deleteEntity(index: number) {
-    if (typeof(index) !== 'number') {
-      throw 'Index must be a number.';
+    if (typeof(index) !== "number") {
+      throw new Error("Index must be a number.");
     }
     if (index < 0) {
-      throw 'Index must not be negative.';
+      throw new Error("Index must not be negative.");
     }
     if (index >= this.entities.length) {
-      throw 'Index out of range.';
+      throw new Error("Index out of range.");
     }
     this.entities.splice(index, 1);
   }
 
   public addEntity(entity: any) {
-    if (entity.id == 'create-entity') {
+    if (entity.id === "create-entity") {
       switch (this.type.toLowerCase()) {
-        case 'hadithtag':
-          let newEntity : HadithTag = <HadithTag>this.EntityResource.create();
+        case "hadithtag":
+          const newEntity: HadithTag = <HadithTag>this.entityResource.create();
           newEntity.name = entity.name;
           newEntity.save().then(() => {
             this.addEntity(newEntity);
@@ -107,82 +119,87 @@ export class TagsInputCtrl {
           break;
 
         default:
-          toastr.error('Not implemented yet :(');
+          debugger;
+          toastr.error("Not implemented yet :(");
       }
       return;
     }
-    if (this.selectionMode === 'single') {
+    if (this.selectionMode === "single") {
       this.entities = [entity];
-      this.text = '';
+      this.text = "";
     } else {
       this.entities.push(entity);
-      this.text = '';
+      this.text = "";
     }
   }
 
   private setEntityResource() {
     switch (this.type.toLowerCase()) {
-      case 'person':
-        this.EntityResource = this.PersonResource;
+      case "person":
+        this.entityResource = this.personResource;
         break;
 
-      case 'book':
-        this.EntityResource = this.BookResource;
+      case "book":
+        this.entityResource = this.bookResource;
         break;
 
-      case 'hadithtag':
-        this.EntityResource = this.HadithTagResource;
+      case "hadithtag":
+        this.entityResource = this.hadithTagResource;
         break;
 
-      case 'user':
-        this.EntityResource = this.UserResource;
+      case "user":
+        this.entityResource = this.userResource;
         break;
 
       default:
-        throw 'Invalid type for hh-entity-lookup.';
+        throw new Error("Invalid type for hh-tags-input.");
     }
   }
 
-  private findEntities(query):ObjectWithPromise<Entity<number>[]>  {
-    return this.EntityResource.query({search: query});
+  private findEntities(query): ObjectWithPromise<Entity<number>[]> {
+    return this.entityResource.query({search: query});
   }
 
-  private autoCompleteSuggestionsContains(entities:Entity<number>[], query) {
+  private autoCompleteSuggestionsContains(entities: Entity<number>[], query) {
     switch (this.type.toLowerCase()) {
-      case 'hadithtag':
-        return _.some(entities.map(e => (<HadithTag>e).name), name => name == query);
+      case "hadithtag":
+        return _.some(entities.map(e => (<HadithTag>e).name),
+          name => name === query);
 
       default:
-        toastr.error('Not implemented yet :(');
+        debugger;
+        toastr.error("Not implemented yet :(");
     }
   }
 
-  private showAutoComplete(entities:Entity<number>[], originalQuery) {
+  private showAutoComplete(entities: Entity<number>[], originalQuery) {
     this.autoCompleteEntries = entities;
-    if (this.autoCompleteEntries.length == 0 || !this.autoCompleteSuggestionsContains(entities, originalQuery)) {
+    if (this.autoCompleteEntries.length === 0 ||
+      !this.autoCompleteSuggestionsContains(entities, originalQuery)) {
       this.autoCompleteEntries.push({
-        id: 'create-entity',
+        id: "create-entity",
         name: originalQuery,
-        toString: function() {
+        toString: () => {
           return `Create: ${originalQuery}`;
         }
       });
     }
-    let input = this.$element.find('input');
-    let pos = input.offset();
+    const input = this.$element.find("input");
+    const pos = input.offset();
     pos.top += input.height();
-    let dropdown: any = this.$element.find('.dropdown-menu');
-    dropdown.dropdown('toggle');
+    const dropdown: any = this.$element.find(".dropdown-menu");
+    dropdown.dropdown("toggle");
     dropdown.show();
     dropdown.offset(pos);
   }
 
   private hideAutoComplete() {
-    this.$element.find('.dropdown-menu').hide();
+    this.$element.find(".dropdown-menu").hide();
   }
 
   private isInputEmpty(): boolean {
-    return typeof(this.text) === 'undefined' || this.text === null || this.text === '';
+    return typeof(this.text) === "undefined" || this.text === null ||
+      this.text === "";
   }
 
   private onBackspace() {
@@ -192,29 +209,28 @@ export class TagsInputCtrl {
   }
 
   private onEnter() {
-    if (typeof(this.text) !== 'undefined' && this.text !== null && this.text !== '') {
+    if (typeof(this.text) !== "undefined" && this.text !== null &&
+      this.text !== "") {
       this.addEntity(this.text);
     }
   }
 }
 
-getApp().controller('TagsInputCtrl',
-  ['$scope', '$element', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource',
-    TagsInputCtrl]);
+getApp().controller("TagsInputCtrl", TagsInputCtrl);
 
-getApp().directive('hhTagsInput', function () {
+getApp().directive("hhTagsInput", () => {
   return {
-    restrict: 'E',
+    restrict: "E",
     replace: true,
-    templateUrl: getHtmlBasePath() + 'directives/tags-input.directive.html',
-    controller: 'TagsInputCtrl',
-    controllerAs: 'ctrl',
+    templateUrl: getHtmlBasePath() + "directives/tags-input.directive.html",
+    controller: "TagsInputCtrl",
+    controllerAs: "ctrl",
     bindToController: true,
     scope: {
-      onAdd: '&?',
-      type: '@',
-      selectionMode: '@',
-      entities: '='
+      onAdd: "&?",
+      type: "@",
+      selectionMode: "@",
+      entities: "="
     }
   };
 });

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,15 @@
  * THE SOFTWARE.
  */
 
-import {Book, CacheableResource, Entity, HadithTag, Person, User} from "resources/resources";
-import {ILocationService, IScope} from "angular";
-import angular from "angular"
+import {
+  Book,
+  CacheableResource,
+  Entity,
+  HadithTag,
+  Person,
+  User
+} from "resources/resources";
+import angular, { ILocationService, IScope } from "angular";
 import { getApp } from "../app-def";
 
 declare function getHtmlBasePath(): string;
@@ -37,68 +43,67 @@ export class EntityCtrl {
   public normalisedMode: string | boolean;
   public clickCallback: any;
   public firstLoad = true;
-  private EntityResource: CacheableResource<Entity<number>, number>;
+  private entityResource: CacheableResource<Entity<number>, number>;
+  static $inject = ["$scope", "$location", "PersonResource", "BookResource",
+    "HadithTagResource", "UserResource"];
 
   constructor(private $scope: IScope,
               private $location: ILocationService,
-              private PersonResource: CacheableResource<Person, number>,
-              private BookResource: CacheableResource<Book, number>,
-              private HadithTagResource: CacheableResource<HadithTag, number>,
-              private UserResource: CacheableResource<User, number>) {
-    // Prior to v1.5, we need to call `$onInit()` manually.
-    // (Bindings will always be pre-assigned in these versions.)
-    if (angular.version.major === 1 && angular.version.minor < 5) {
-      this.$onInit();
-    }
+              private personResource: CacheableResource<Person, number>,
+              private bookResource: CacheableResource<Book, number>,
+              private hadithTagResource: CacheableResource<HadithTag, number>,
+              private userResource: CacheableResource<User, number>) {
+
   }
 
   public $onInit = () => {
     switch (this.mode.toLowerCase()) {
-      case 'text':
-        this.normalisedMode = 'text';
+      case "text":
+        this.normalisedMode = "text";
         break;
-      case 'link':
-        this.normalisedMode = 'link';
+      case "link":
+        this.normalisedMode = "link";
         break;
-      case 'button':
-        this.normalisedMode = 'button';
+      case "button":
+        this.normalisedMode = "button";
         break;
-      case 'badge':
-        this.normalisedMode = 'badge';
+      case "badge":
+        this.normalisedMode = "badge";
         break;
-      case 'clickable-badge':
-        this.normalisedMode = 'clickable-badge';
+      case "clickable-badge":
+        this.normalisedMode = "clickable-badge";
         break;
       default:
-        throw 'Invalid type for hh-entity element.';
+        throw new Error("Invalid type for hh-entity element.");
     }
 
-    if (!this.type || typeof(this.type) !== 'string') {
-      throw 'hh-entity element must have its type attribute set to a string.';
+    if (!this.type || typeof(this.type) !== "string") {
+      throw new Error("hh-entity element must have its type attribute set " +
+        "to a string.");
     }
 
     switch (this.type.toLowerCase()) {
-      case 'person':
-        this.EntityResource = this.PersonResource;
+      case "person":
+        this.entityResource = this.personResource;
         break;
-      case 'book':
-        this.EntityResource = this.BookResource;
+      case "book":
+        this.entityResource = this.bookResource;
         break;
-      case 'hadithtag':
-        this.EntityResource = this.HadithTagResource;
+      case "hadithtag":
+        this.entityResource = this.hadithTagResource;
         break;
-      case 'user':
-        this.EntityResource = this.UserResource;
+      case "user":
+        this.entityResource = this.userResource;
         break;
       default:
-        throw 'Invalid type for hh-entity element.';
+        throw new Error("Invalid type for hh-entity element.");
     }
 
-    this.$scope.$watch('ctrl.entityId', this.onIdChanged);
+    this.$scope.$watch("ctrl.entityId", this.onIdChanged);
   };
 
   public onClick() {
-    if (this.normalisedMode === 'text') {
+    if (this.normalisedMode === "text") {
       return;
     }
     if (this.clickCallback) {
@@ -110,7 +115,7 @@ export class EntityCtrl {
 
   public getEntityTitle(): string {
     if (!this.entity) {
-      return '';
+      return "";
     }
     return this.entity.toString();
   }
@@ -121,7 +126,8 @@ export class EntityCtrl {
 
   private onIdChanged = (newValue, oldValue) => {
     if (newValue && this.firstLoad) {
-      // An ID(s) was(were) passed to the entity and this.entity have not been set yet, so we set it.
+      // An ID(s) was(were) passed to the entity and this.entity have not been
+      // set yet, so we set it.
       this.firstLoad = false;
     } else {
       // The entity has already been loaded, so we just check whether we have
@@ -130,26 +136,26 @@ export class EntityCtrl {
         return;
       }
     }
-    if (this.entityId !== null && this.entityId !== '' && typeof(this.entityId) !== 'undefined') {
-      this.entity = this.EntityResource.get(parseInt(this.entityId));
+    if (this.entityId !== null && this.entityId !== "" &&
+      typeof(this.entityId) !== "undefined") {
+      this.entity = this.entityResource.get(parseInt(this.entityId));
     } else {
       this.entity = null;
     }
   };
 }
 
-getApp().controller('EntityCtrl',
-  ['$scope', '$location', 'PersonResource', 'BookResource', 'HadithTagResource', 'UserResource', EntityCtrl]);
+getApp().controller("EntityCtrl", EntityCtrl);
 
 // TODO: Consider creating a class for this.
-getApp().component('hhEntity', {
-  templateUrl: getHtmlBasePath() + 'directives/entity.directive.html',
-  controller: 'EntityCtrl',
-  controllerAs: 'ctrl',
+getApp().component("hhEntity", {
+  templateUrl: getHtmlBasePath() + "directives/entity.directive.html",
+  controller: "EntityCtrl",
+  controllerAs: "ctrl",
   bindings: {
-    clickCallback: '&?',
-    mode: '@',
-    entityId: '@',
-    type: '@'
+    clickCallback: "&?",
+    mode: "@",
+    entityId: "@",
+    type: "@"
   }
 });

@@ -779,7 +779,7 @@ export class User extends Entity<number> {
     this.username = (<User>entity).username;
     this.date_joined = (<User>entity).date_joined;
     this.permissions = (<User>entity).permissions.slice();
-    this.permissionsOrdered = ((<User>entity).permissionsOrdered !== null)
+    this.permissionsOrdered = (<User>entity).permissionsOrdered
       ? (<User>entity).permissionsOrdered.slice()
       : null;
   }
