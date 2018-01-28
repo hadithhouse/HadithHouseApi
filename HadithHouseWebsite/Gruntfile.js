@@ -30,6 +30,14 @@ module.exports = function (grunt) {
         options: {
           sourceMap: false
         }
+      },
+      reactjs: {
+        tsconfig: {
+          tsconfig: 'hadiths/static/hadiths/js-reactjs/tsconfig.json'
+        },
+        options: {
+          sourceMap: false
+        }
       }
     },
     systemjs: {
