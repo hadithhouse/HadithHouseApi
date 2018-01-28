@@ -51,7 +51,7 @@ class MenuItem {
 }
 
 export class HadithHouseCtrl implements IController {
-  static $inject = ["$q", "$rootScope", "$location", "FacebookService",
+  static $inject = ["$scope", "$rootScope", "$location", "FacebookService",
     "UserResource"];
   private selected: MenuItem;
   private menuItems: MenuItem[];
@@ -126,7 +126,7 @@ export class HadithHouseCtrl implements IController {
       this.$rootScope.fbUser = null;
       return;
     }
-    this.facebookService.getLoggedInUser().then(function (user) {
+    this.facebookService.getLoggedInUser().then((user) => {
       this.$rootScope.isFbLoginStatusFetched = true;
       if (user === null) {
         this.$rootScope.fbUser = null;
@@ -137,7 +137,7 @@ export class HadithHouseCtrl implements IController {
           profilePicUrl: user.picture.data.url
         };
       }
-    }, function onError(reason) {
+    }, (reason) => {
       console.error("Failed to fetch logged in user. Reason: " +
         JSON.stringify(reason));
     });
@@ -157,7 +157,7 @@ export class HadithHouseCtrl implements IController {
   }
 
   public fbLogout(): void {
-    this.facebookService.logout().then(function (/*response*/) {
+    this.facebookService.logout().then((/*response*/) => {
       this.$rootScope.fbUser = null;
       this.$rootScope.fbAccessToken = null;
     });
