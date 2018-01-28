@@ -8,6 +8,9 @@ module.exports = function (grunt) {
       },
       files: {
         src: [
+          "hadiths/static/hadiths/js/directives/entity.directive.ts",
+          "hadiths/static/hadiths/js/directives/entity-lookup.directive.ts",
+          "hadiths/static/hadiths/js/directives/tags-input.directive.ts",
           "hadiths/static/hadiths/js/controllers/hadith-house.ts",
           "hadiths/static/hadiths/js/services/*.ts",
           "hadiths/static/hadiths/js/resources/*.ts",
