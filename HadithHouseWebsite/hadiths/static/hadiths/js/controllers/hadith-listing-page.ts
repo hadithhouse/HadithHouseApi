@@ -23,11 +23,10 @@
  */
 
 import {
-  Book,
-  CacheableResource,
-  Hadith,
-  HadithTag,
-  Person
+  Book, BookResource,
+  Hadith, HadithResource,
+  HadithTag, HadithTagResource,
+  Person, PersonResource
 } from "resources/resources";
 import { EntityListingPageCtrl } from "controllers/entity-listing-page";
 import { ILocationService, IScope, ITimeoutService } from "angular";
@@ -37,35 +36,35 @@ export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
   private tagsFilter: HadithTag[];
   private booksFilter: Book[];
   private personsFilter: Person[];
+  static $inject = ["$scope", "$rootScope", "$timeout", "$location",
+    "HadithResource", "HadithTagResource", "BookResource", "PersonResource"];
 
   constructor($scope: IScope,
               $rootScope: IScope,
               $timeout: ITimeoutService,
               $location: ILocationService,
-              private HadithResource: CacheableResource<Hadith, number | string>,
-              private HadithTagResource: CacheableResource<HadithTag, number>,
-              private BookResource: CacheableResource<Book, number>,
-              private PersonResource: CacheableResource<Person, number>) {
-    super($scope, $rootScope, $timeout, $location, HadithResource, 'hadith');
+              private hadithResource: HadithResource,
+              private hadithTagResource: HadithTagResource,
+              private bookResource: BookResource,
+              private personResource: PersonResource) {
+    super($scope, $rootScope, $timeout, $location, hadithResource, "hadith");
 
-    $scope.$watch(() => this.tagsFilter, (newValue, oldValue) => {
+    $scope.$watch(() => this.tagsFilter, () => {
       this.loadEntities();
     });
-    $scope.$watchCollection(() => this.tagsFilter, (newValue, oldValue) => {
+    $scope.$watchCollection(() => this.tagsFilter, () => {
       this.loadEntities();
     });
-
-    $scope.$watch(() => this.booksFilter, (newValue, oldValue) => {
+    $scope.$watch(() => this.booksFilter, () => {
       this.loadEntities();
     });
-    $scope.$watchCollection(() => this.booksFilter, (newValue, oldValue) => {
+    $scope.$watchCollection(() => this.booksFilter, () => {
       this.loadEntities();
     });
-
-    $scope.$watch(() => this.personsFilter, (newValue, oldValue) => {
+    $scope.$watch(() => this.personsFilter, () => {
       this.loadEntities();
     });
-    $scope.$watchCollection(() => this.personsFilter, (newValue, oldValue) => {
+    $scope.$watchCollection(() => this.personsFilter, () => {
       this.loadEntities();
     });
   }
@@ -76,25 +75,26 @@ export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
 
   protected readUrlParams() {
     super.readUrlParams();
-    let urlParams = this.$location.search();
+    const urlParams = this.$location.search();
 
     try {
-      let tagIds: number[] = urlParams['tags'].split(',').map((t) => parseInt(t));
-      this.tagsFilter = this.HadithTagResource.get(tagIds);
+      const tags: number[] = urlParams.tags.split(",").map((t) => parseInt(t));
+      this.tagsFilter = this.hadithTagResource.get(tags);
     } catch (e) {
       this.tagsFilter = [];
     }
 
     try {
-      let bookIds: number[] = urlParams['book'].split(',').map((t) => parseInt(t));
-      this.booksFilter = this.BookResource.get(bookIds);
+      const books: number[] = urlParams.book.split(",").map((t) => parseInt(t));
+      this.booksFilter = this.bookResource.get(books);
     } catch (e) {
       this.booksFilter = [];
     }
 
     try {
-      let personIds: number[] = urlParams['person'].split(',').map((t) => parseInt(t));
-      this.personsFilter = this.PersonResource.get(personIds);
+      const persons: number[] = urlParams.person.split(",")
+        .map((t) => parseInt(t));
+      this.personsFilter = this.personResource.get(persons);
     } catch (e) {
       this.personsFilter = [];
     }
@@ -103,43 +103,44 @@ export class HadithListingPageCtrl extends EntityListingPageCtrl<Hadith> {
   protected updateUrlParams() {
     super.updateUrlParams();
     if (this.tagsFilter && this.tagsFilter.length > 0) {
-      this.$location.search('tags', this.tagsFilter.map(t => t.id).join(','));
+      const tags = this.tagsFilter.map(t => t.id).join(",");
+      this.$location.search("tags", tags);
     } else {
-      this.$location.search('tags', null);
+      this.$location.search("tags", null);
     }
 
     if (this.booksFilter && this.booksFilter.length > 0) {
-      this.$location.search('book', this.booksFilter.map(t => t.id).join(','));
+      const books = this.booksFilter.map(t => t.id).join(",");
+      // TODO: Why is the book singular but persons below plural? Can we filter
+      // hadiths by more than one book? If yes, this should be changed to
+      // "boos", otherwise we should probably support it as it can be useful
+      // to be able to search hadiths across multiple books.
+      this.$location.search("book", books);
     } else {
-      this.$location.search('book', null);
+      this.$location.search("book", null);
     }
 
     if (this.personsFilter && this.personsFilter.length > 0) {
-      this.$location.search('persons', this.personsFilter.map(t => t.id).join(','));
+      const persons = this.personsFilter.map(t => t.id).join(",");
+      this.$location.search("persons", persons);
     } else {
-      this.$location.search('persons', null);
+      this.$location.search("persons", null);
     }
   }
 
   protected getQueryParams(): {} {
-    let queryParams = super.getQueryParams();
+    const queryParams = super.getQueryParams();
     if (this.tagsFilter && this.tagsFilter.length > 0) {
-      queryParams['tags'] = this.tagsFilter.map(t => t.id).join(',');
+      queryParams.tags = this.tagsFilter.map(t => t.id).join(",");
     }
     if (this.booksFilter && this.booksFilter.length > 0) {
-      queryParams['book'] = this.booksFilter[0].id;
+      queryParams.book = this.booksFilter[0].id;
     }
     if (this.personsFilter && this.personsFilter.length > 0) {
-      queryParams['person'] = this.personsFilter[0].id;
+      queryParams.person = this.personsFilter[0].id;
     }
     return queryParams;
   }
 }
 
-export function HadithListingPageCtrlCreator($scope, $rootScope, $timeout, $location, HadithResource,
-                                             HadithTagResource, BookResource, PersonResource) {
-  return new HadithListingPageCtrl($scope, $rootScope, $timeout, $location, HadithResource, HadithTagResource,
-    BookResource, PersonResource);
-}
-
-getApp().controller('HadithListingPageCtrl', HadithListingPageCtrlCreator);
+getApp().controller("HadithListingPageCtrl", HadithListingPageCtrl);
