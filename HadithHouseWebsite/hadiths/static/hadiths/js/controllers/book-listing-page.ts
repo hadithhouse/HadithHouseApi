@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Rafid Khalid Al-Humaimidi
+ * Copyright (c) 2018 Rafid Khalid Al-Humaimidi
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,23 +23,20 @@
  */
 
 import { ILocationService, IScope, ITimeoutService } from "angular";
-import { EntityListingPageCtrl } from "./entity-listing-page";
-import { Book, CacheableResource } from "../resources/resources";
-import { getApp } from "../app-def";
+import { EntityListingPageCtrl } from "controllers/entity-listing-page";
+import { Book, CacheableResource } from "resources/resources";
+import { getApp } from "app-def";
 
 export class BookListingPageCtrl extends EntityListingPageCtrl<Book> {
+  static $inject = ["$scope", "$rootScope", "$timeout", "$location",
+    "BookResource"];
   constructor($scope: IScope,
               $rootScope: IScope,
               $timeout: ITimeoutService,
               $location: ILocationService,
-              private BookResource: CacheableResource<Book, number>) {
-    super($scope, $rootScope, $timeout, $location, BookResource, 'book');
+              private bookResource: CacheableResource<Book, number>) {
+    super($scope, $rootScope, $timeout, $location, bookResource, "book");
   }
 }
 
-export function BookListingPageCtrlCreator($scope, $rootScope, $timeout, $location, BookResource) {
-  return new BookListingPageCtrl($scope, $rootScope, $timeout, $location, BookResource);
-}
-
-getApp().controller('BookListingPageCtrl', BookListingPageCtrlCreator);
-
+getApp().controller("BookListingPageCtrl", BookListingPageCtrl);

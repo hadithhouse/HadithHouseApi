@@ -31,9 +31,9 @@ import angular, {
 } from "angular";
 
 import { HomePageCtrlCreator } from "controllers/home-page";
-import { HadithListingPageCtrlCreator } from "controllers/hadith-listing-page";
+import { HadithListingPageCtrl } from "controllers/hadith-listing-page";
 import { HadithPageCtrlCreator } from "controllers/hadith-page";
-import { BookListingPageCtrlCreator } from "controllers/book-listing-page";
+import { BookListingPageCtrl } from "controllers/book-listing-page";
 import { BookPageCtrlCreator } from "controllers/book-page";
 import { PersonListingPageCtrlCreator } from "controllers/person-listing-page";
 import { PersonPageCtrlCreator } from "controllers/person-page";
@@ -82,7 +82,7 @@ getApp().config(($httpProvider: angular.IHttpProvider,
     reloadOnSearch: false
   }).when("/hadiths", {
     templateUrl: getHtmlBasePath() + "hadiths.html",
-    controller: HadithListingPageCtrlCreator,
+    controller: HadithListingPageCtrl,
     controllerAs: "ctrl",
     reloadOnSearch: false
   }).when("/hadith/:id", {
@@ -92,7 +92,7 @@ getApp().config(($httpProvider: angular.IHttpProvider,
     reloadOnSearch: false
   }).when("/books", {
     templateUrl: getHtmlBasePath() + "books.html",
-    controller: BookListingPageCtrlCreator,
+    controller: BookListingPageCtrl,
     controllerAs: "ctrl",
     reloadOnSearch: false
   }).when("/book/:id", {
