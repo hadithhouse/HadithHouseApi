@@ -43,6 +43,7 @@ from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_a
 test_mode = 'test' in sys.argv
 collectstatic_mode = 'collectstatic' in sys.argv
 OFFLINE_MODE = False
+REACTJS_MODE = False
 
 
 def is_test_mode():

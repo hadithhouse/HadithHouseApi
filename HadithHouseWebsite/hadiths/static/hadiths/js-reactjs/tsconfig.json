@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "system",
+    "moduleResolution": "node",
+    // The paths here are relative to Gruntfile.js.
+    "baseUrl": "hadiths/static/hadiths/js-reactjs/",
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
+    "jsx": "react",
+    "types": [
+      "react",
+      "react-dom",
+      "d3",
+      "jquery",
+      "lodash",
+      "moment",
+      "systemjs",
+      "toastr"
+    ],
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.iterable",
+      "es2015.core"
+    ]
+  },
+  "include": [
+    // The paths here are relative to the base URL defined above.
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ]
+}
