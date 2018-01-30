@@ -26,6 +26,9 @@
     "  @types is neeeded."
   ],
   "devDependencies": {
+    "@angular/core": "^5.2.2",
+    "zone.js": "^0.8.20",
+    "rxjs": "^5.5.6",
     "angular": "^1.6.8",
     "angular-animate": "^1.6.8",
     "angular-aria": "^1.6.8",
