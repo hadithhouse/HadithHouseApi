@@ -12,6 +12,12 @@ js-reactjs/**/*.js.map
 !js-reactjs/systemjs.config.js
 !js-reactjs/systemjs-offline.config.js
 
+# Ignore generated JS and JS map files for ReactJS, but exclude SystemJS files.
+js-angular/**/*.js
+js-angular/**/*.js.map
+!js-angular/systemjs.config.js
+!js-angular/systemjs-offline.config.js
+
 # Ignore minified CSS file.
 css/all.css
 css/all.css.map
