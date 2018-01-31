@@ -1,6 +1,28 @@
 SystemJS.config({
   baseURL: '/static/hadiths/js-angular',
   meta: {
+    'rxjs': {
+      format: 'global'
+    },
+    '@angular/core': {
+      format: 'global',
+      deps: ['rxjs']
+    },
+    '@angular/common': {
+      format: 'global',
+      deps: ['@angular/core']
+    },
+    '@angular/compiler': {
+      format: 'global'
+    },
+    '@angular/platform-browser': {
+      format: 'global',
+      deps: ['@angular/common', '@angular/core']
+    },
+    '@angular/platform-browser-dynamic': {
+      format: 'global',
+      deps: ['@angular/compiler', '@angular/common', '@angular/core', '@angular/platform-browser']
+    },
     'bootstrap': {
       format: 'global',
       deps: ['popper.js']
@@ -26,8 +48,12 @@ SystemJS.config({
   },
   '//': 'When you add more modules, make sure to update systemjs-offline.config.js and prepare-offline.sh files.',
   map: {
-    'react': 'https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js',
-    'react-dom': 'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.production.min.js',
+    "rxjs": "https://unpkg.com/rxjs@5.5.6/bundles/Rx.min.js",
+    "@angular/common": "https://unpkg.com/@angular/common@5.2.2/bundles/common.umd.js",
+    "@angular/compiler": "https://unpkg.com/@angular/compiler@5.2.2/bundles/compiler.umd.js",
+    '@angular/core': 'https://unpkg.com/@angular/core@5.2.2/bundles/core.umd.js',
+    '@angular/platform-browser': 'https://unpkg.com/@angular/platform-browser@5.2.2/bundles/platform-browser.umd.js',
+    '@angular/platform-browser-dynamic': 'https://unpkg.com/@angular/platform-browser-dynamic@5.2.2/bundles/platform-browser-dynamic.umd.js',
     'bootstrap': 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.js',
     'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js',
     'jquery': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js',
