@@ -37,13 +37,30 @@ import os
 import socket
 
 import sys
+from enum import Enum
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_debug, get_allowed_hosts
+from HadithHouseWebsite.server_settings import get_db_settings, get_debug, \
+    get_allowed_hosts
 
 test_mode = 'test' in sys.argv
 collectstatic_mode = 'collectstatic' in sys.argv
 OFFLINE_MODE = False
-REACTJS_MODE = False
+
+
+class JavaScriptFrameworkMode(Enum):
+    """
+    Specifies the JS framework to use. This is temporary while I try different
+    JS frameworks to replace AngularJS.
+    """
+    ANGULARJS = 0
+    REACTJS = 1
+    ANGULAR = 2
+
+    def __int__(self):
+        return self.value
+
+
+JS_FRAMEWORK_MODE = JavaScriptFrameworkMode.ANGULARJS
 
 
 def is_test_mode():
@@ -301,7 +318,8 @@ LOGGING = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.backends.DjangoFilterBackend',),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.backends.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'hadiths.pagination.DefaultPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -311,4 +329,5 @@ REST_FRAMEWORK = {
 }
 
 if OFFLINE_MODE:
-    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = ('hadiths.auth.FacebookOfflineAuthentication',)
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
+        'hadiths.auth.FacebookOfflineAuthentication',)

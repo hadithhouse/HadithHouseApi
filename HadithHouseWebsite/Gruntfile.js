@@ -18,14 +18,16 @@ module.exports = function (grunt) {
           "hadiths/static/hadiths/js/resources/*.ts",
           "hadiths/static/hadiths/js/services/*.ts",
           "hadiths/static/hadiths/js/app-def.ts",
-          "hadiths/static/hadiths/js/app.ts"
+          "hadiths/static/hadiths/js/app.ts",
+          "hadiths/static/hadiths/js-angular/**/*.ts",
+          "hadiths/static/hadiths/js-reactjs/**/*.ts"
         ]
       }
     },
     ts: {
       default: {
         tsconfig: {
-          tsconfig: 'tsconfig.json'
+          tsconfig: 'hadiths/static/hadiths/js/tsconfig.json'
         },
         options: {
           sourceMap: false
@@ -34,6 +36,14 @@ module.exports = function (grunt) {
       reactjs: {
         tsconfig: {
           tsconfig: 'hadiths/static/hadiths/js-reactjs/tsconfig.json'
+        },
+        options: {
+          sourceMap: false
+        }
+      },
+      angular: {
+        tsconfig: {
+          tsconfig: 'hadiths/static/hadiths/js-angular/tsconfig.json'
         },
         options: {
           sourceMap: false

@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es5",
+    "module": "system",
+    "moduleResolution": "node",
+    // The paths here are relative to Gruntfile.js.
+    "baseUrl": "hadiths/static/hadiths/js-angular/",
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
+    "types": [
+      "@angular/core",
+      "@angular/common",
+      "@angular/compiler",
+      "@angular/platform-browser-dynamic",
+      "@angular/platform-browser",
+      "d3",
+      "jquery",
+      "lodash",
+      "moment",
+      "rxjs",
+      "systemjs",
+      "toastr"
+    ],
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.iterable",
+      "es2015.core",
+      "es2017"
+    ]
+  },
+  "include": [
+    // The paths here are relative to the base URL defined above.
+    "**/*.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ]
+}
