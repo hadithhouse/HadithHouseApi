@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "target": "es5",
     "module": "system",
     "moduleResolution": "node",
@@ -11,12 +12,15 @@
     ],
     "types": [
       "@angular/core",
+      "@angular/common",
+      "@angular/compiler",
       "@angular/platform-browser-dynamic",
       "@angular/platform-browser",
       "d3",
       "jquery",
       "lodash",
       "moment",
+      "rxjs",
       "systemjs",
       "toastr"
     ],
@@ -24,7 +28,8 @@
       "dom",
       "es5",
       "es2015.iterable",
-      "es2015.core"
+      "es2015.core",
+      "es2017"
     ]
   },
   "include": [

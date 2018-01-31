@@ -81,8 +81,12 @@ def index(request, path):
         'all_css_hash': all_css_hash,
     }
 
-    template_name = 'hadiths/index_react.html' if settings.REACTJS_MODE else \
-        'hadiths/index.html'
+    template_names = [
+        'hadiths/index.html',
+        'hadiths/index_react.html',
+        'hadiths/index_angular.html'
+    ]
+    template_name = template_names[int(settings.JS_FRAMEWORK_MODE)]
     template = loader.get_template(template_name)
 
     return HttpResponse(template.render(context))
