@@ -1,3 +1,8 @@
+"""
+Contains filters that can be used in Django REST Framework views to filter
+by IDs or tags.
+"""
+
 from rest_framework.filters import BaseFilterBackend
 
 
@@ -11,7 +16,7 @@ class IdsFilter(BaseFilterBackend):
         if ids_str is None:
             return queryset
         ids = [int(id.strip()) for id in ids_str.split(',') if id.strip()]
-        if len(ids) == 0:
+        if not ids:
             return queryset
         filtered_queryset = queryset.filter(id__in=ids)
         return filtered_queryset
@@ -27,7 +32,7 @@ class TagsFilter(BaseFilterBackend):
         if tags_str is None:
             return queryset
         tags = [tag.strip() for tag in tags_str.split(',') if tag.strip()]
-        if len(tags) == 0:
+        if tags:
             return queryset
         filtered_queryset = queryset
         for tag in tags:
