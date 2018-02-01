@@ -88,7 +88,9 @@ pylint --load-plugins pylint_django \
   hadiths/exceptions.py \
   hadiths/fbapi.py \
   hadiths/fbauthapiviews.py \
-  hadiths/models.py
+  hadiths/filters.py \
+  hadiths/models.py \
+  hadiths/pagination.py
 
 log "Deactivate Python's virtual environment and delete it..."
 deactivate
