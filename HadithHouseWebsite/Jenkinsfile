@@ -1,0 +1,15 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        sh('''cd HadithHouseWebsite
+chmod +x build.sh
+./build.sh''')
+      }
+    }
+  }
+}
