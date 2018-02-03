@@ -4,13 +4,43 @@ pipeline {
   agent any
 
   stages {
-    stage('Build') {
+    stage('Build Dev') {
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py-Dev', variable: 'SERVER_SETTINGS_PATH')]) {
           sh('''cd HadithHouseWebsite
 chmod +x build.sh
 ./build.sh''')
         }
+        archiveArtifacts(artifacts: 'HadithHouseWebsite/**/*.*', onlyIfSuccessful: true)
+      }
+    }
+
+    stage('Deploy Dev') {
+      steps {
+        echo 'Not implemented yet.'
+      }
+    }
+
+    stage('Approve Dev') {
+      steps {
+        echo 'Not implemented yet.'
+      }
+    }
+
+    stage('Build Prod') {
+      steps {
+        configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py', variable: 'SERVER_SETTINGS_PATH')]) {
+          sh('''cd HadithHouseWebsite
+chmod +x build.sh
+./build.sh''')
+        }
+        archiveArtifacts(artifacts: 'HadithHouseWebsite/**/*.*', onlyIfSuccessful: true)
+      }
+    }
+
+    stage('Deploy Prod') {
+      steps {
+        echo 'Not implemented yet.'
       }
     }
   }
