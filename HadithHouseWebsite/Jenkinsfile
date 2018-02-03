@@ -11,13 +11,28 @@ pipeline {
 chmod +x build.sh
 ./build.sh''')
         }
-        archiveArtifacts(artifacts: 'HadithHouseWebsite/**/*.*', onlyIfSuccessful: true)
       }
     }
 
     stage('Deploy Dev') {
       steps {
-        echo 'Not implemented yet.'
+        echo('Arhive HadithHouseWebsite folder')
+        sh('zip -qr archive.zip HadithHouseWebsite/*')
+
+        echo('Copy the archive to dev.hadithhouse.net for deployment')
+        sh('scp archive.zip deployer@dev.hadithhouse.net:/tmp/archive.zip')
+
+        echo ('Unzip the archive and start the deployment.')
+        sh('''ssh deployer@dev.hadithhouse.net << EOF
+cd /tmp
+rm -rf HadithHouseWebsite
+unzip -qo /tmp/archive.zip
+cd HadithHouseWebsite
+chmod +x deploy.sh
+./deploy.sh
+cd ..
+rm -rf HadithHouseWebsite
+EOF''')
       }
     }
 
@@ -29,12 +44,7 @@ chmod +x build.sh
 
     stage('Build Prod') {
       steps {
-        configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py', variable: 'SERVER_SETTINGS_PATH')]) {
-          sh('''cd HadithHouseWebsite
-chmod +x build.sh
-./build.sh''')
-        }
-        archiveArtifacts(artifacts: 'HadithHouseWebsite/**/*.*', onlyIfSuccessful: true)
+        echo 'Not implemented yet.'
       }
     }
 
