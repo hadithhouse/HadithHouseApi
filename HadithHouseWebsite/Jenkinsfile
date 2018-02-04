@@ -4,7 +4,7 @@ pipeline {
   agent any
 
   stages {
-    /*stage('Build Dev') {
+    stage('Build Dev') {
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py-Dev', variable: 'SERVER_SETTINGS_PATH')]) {
           sh('''cd HadithHouseWebsite
@@ -42,7 +42,7 @@ EOF''')
       steps {
         echo 'Not implemented yet.'
       }
-    }*/
+    }
 
     stage('Build Prod') {
       steps {
