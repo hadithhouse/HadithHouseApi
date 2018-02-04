@@ -4,13 +4,53 @@ pipeline {
   agent any
 
   stages {
-    stage('Build') {
+    stage('Build Dev') {
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py-Dev', variable: 'SERVER_SETTINGS_PATH')]) {
           sh('''cd HadithHouseWebsite
 chmod +x build.sh
 ./build.sh''')
         }
+      }
+    }
+
+    stage('Deploy Dev') {
+      steps {
+        echo('Arhive HadithHouseWebsite folder')
+        sh('zip -qr archive.zip HadithHouseWebsite/*')
+
+        echo('Copy the archive to dev.hadithhouse.net for deployment')
+        sh('scp archive.zip deployer@dev.hadithhouse.net:/tmp/archive.zip')
+
+        echo ('Unzip the archive and start the deployment.')
+        sh('''ssh deployer@dev.hadithhouse.net << EOF
+cd /tmp
+rm -rf HadithHouseWebsite
+unzip -qo /tmp/archive.zip
+cd HadithHouseWebsite
+chmod +x deploy.sh
+./deploy.sh
+cd ..
+rm -rf HadithHouseWebsite
+EOF''')
+      }
+    }
+
+    stage('Approve Dev') {
+      steps {
+        echo 'Not implemented yet.'
+      }
+    }
+
+    stage('Build Prod') {
+      steps {
+        echo 'Not implemented yet.'
+      }
+    }
+
+    stage('Deploy Prod') {
+      steps {
+        echo 'Not implemented yet.'
       }
     }
   }
