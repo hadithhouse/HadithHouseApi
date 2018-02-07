@@ -1,3 +1,7 @@
+"""
+Contains the URL mapping.
+"""
+
 from django.conf.urls import url
 from django.contrib import admin
 from django.views.defaults import page_not_found
@@ -5,7 +9,7 @@ from django.views.defaults import page_not_found
 from hadiths import views
 from hadiths import apiviews
 
-urlpatterns = [
+urlpatterns = [ # pylint: disable=invalid-name
     url(r'^admin/',
         admin.site.urls),
     url(r'^apis/books/?$',

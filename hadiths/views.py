@@ -22,16 +22,22 @@
 # THE SOFTWARE.
 #
 
+"""
+Contains the Django views. This only contains one view which is for the index
+page.
+"""
+
+import hashlib
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.staticfiles import finders
-import hashlib
 
 from HadithHouseWebsite import settings
 from HadithHouseWebsite.server_settings import get_fb_appid
 
-all_js_hash = None
-all_css_hash = None
+
+all_js_hash = None # pylint: disable=invalid-name
+all_css_hash = None # pylint: disable=invalid-name
 
 
 def md5(file_name):
@@ -43,33 +49,56 @@ def md5(file_name):
     :return: The MD5 hash
     """
     hash_md5 = hashlib.md5()
-    with open(file_name, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
+    with open(file_name, "rb") as file:
+        for chunk in iter(lambda: file.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
 
 def set_all_js_hash():
+    """
+    Create a hash key for all.js file. The benefit of this hash code is to
+    append it in the HTML reference to make sure the file is reloaded when
+    the file changes.
+    :return: The hash code.
+    """
     # Find the hash of all.js, which is used in index.html for cache busting.
+    # pylint: disable=fixme
     # TODO: Perhaps consider saving it to file to avoid re-calculating it every
     # time the application is restarted?
+    # pylint: enable=fixme
     # https://github.com/hadithhouse/hadithhouse/issues/307
-    global all_js_hash
+    global all_js_hash # pylint: disable=global-statement,invalid-name
     if all_js_hash is None and settings.get_environment() == 'production':
         all_js_hash = md5(finders.find('hadiths/js/all.js'))
 
 
 def set_all_css_hash():
+    """
+    Create a hash key for all.css file. The benefit of this hash code is to
+    append it in the HTML reference to make sure the file is reloaded when
+    the file changes.
+    :return: The hash code.
+    """
     # Find the hash of all.css, which is used in index.html for cache busting.
+    # pylint: disable=fixme
     # TODO: Perhaps consider saving it to file to avoid re-calculating it every
     # time the application is restarted?
+    # pylint: enable=fixme
     # https://github.com/hadithhouse/hadithhouse/issues/307
-    global all_css_hash
+    global all_css_hash # pylint: disable=global-statement,invalid-name
     if all_css_hash is None and settings.get_environment() == 'production':
         all_css_hash = md5(finders.find('hadiths/css/all.css'))
 
 
-def index(request, path):
+def index(request, path): # pylint: disable=unused-argument
+    """
+    Django view handler for the index page.
+    :param request:
+    :param path: The path of the page to be reloaded. This is actually ignored
+    and handled by the JS because the website is an SPA.
+    :return:
+    """
     set_all_js_hash()
     set_all_css_hash()
 
