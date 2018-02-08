@@ -20,6 +20,10 @@ pipeline {
     }
 
     stage('Deploy Dev') {
+      when {
+        // Deploy only when the branch being built is master.
+        expression { env.BRANCH_NAME == 'master' }
+      }
       steps {
         echo('Arhive HadithHouseWebsite folder')
         sh('zip -qr /tmp/archive.zip *')
@@ -45,12 +49,20 @@ EOF''')
     }
 
     stage('Approve Dev') {
+      when {
+        // Run approval workflow only when the branch being built is master.
+        expression { env.BRANCH_NAME == 'master' }
+      }
       steps {
         echo 'Not implemented yet.'
       }
     }
 
     stage('Build Prod') {
+      when {
+        // Build prod only when the branch being built is master.
+        expression { env.BRANCH_NAME == 'master' }
+      }
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py', variable: 'SERVER_SETTINGS_PATH')]) {
           sh('''chmod +x build.sh
@@ -60,6 +72,10 @@ EOF''')
     }
 
     stage('Deploy Prod') {
+      when {
+        // Deploy prod only when the branch being built is master.
+        expression { env.BRANCH_NAME == 'master' }
+      }
       steps {
         echo('Arhive HadithHouseWebsite folder')
         sh('zip -qr /tmp/archive.zip *')
