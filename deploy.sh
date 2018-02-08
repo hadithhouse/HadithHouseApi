@@ -9,7 +9,7 @@ error() {
   else
     echo "deploy.sh experienced an error on line ${line_lo}; exiting with status ${code}"
   fi
-  
+
   exit 1
 }
 
@@ -17,7 +17,7 @@ DEPLOYMENT_PATH='/var/www/app'
 LOGS_PATH='/var/log/app'
 
 # Stops the execution of the script if any command, including pipes, fail.
-set -e 
+set -e
 set -o pipefail
 trap 'error ${LINENO}' ERR
 
@@ -55,7 +55,7 @@ source venv/bin/activate
 
 # Install Python packages in requirements.txt.
 echo "Install Python packages in requirements.txt..."
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 # Apply Django's migrations.
 echo "Running manage.py migrate to apply migrations."
