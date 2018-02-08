@@ -4,6 +4,12 @@ pipeline {
   agent any
 
   stages {
+    stage('Dump Environment Variables') {
+      steps {
+        sh('env')
+      }
+    }
+
     stage('Build Dev') {
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py-Dev', variable: 'SERVER_SETTINGS_PATH')]) {
