@@ -70,7 +70,7 @@ virtualenv --python=python3.6 venv
 source venv/bin/activate
 
 log "Install Python packages in requirements.txt..."
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 # Collect Django's static files.
 log "Running 'manage.py collectstatic' to collect static files."
