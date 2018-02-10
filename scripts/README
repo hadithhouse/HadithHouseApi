@@ -1,0 +1,3 @@
+Most if not all scripts under this folder assume the current working directory
+to be the root directory so they must be executed while being in that
+directory, e.g. ./scripts/xyz.sh.
