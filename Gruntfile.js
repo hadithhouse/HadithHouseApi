@@ -101,5 +101,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-systemjs-builder');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('default', ['tslint', 'ts', 'systemjs', 'cssmin']);
+  grunt.registerTask('default', ['ts', 'systemjs', 'cssmin']);
+  grunt.registerTask('lint', ['tslint']);
 };
