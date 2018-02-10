@@ -69,7 +69,8 @@ EOF''')
         expression { env.BRANCH_NAME == 'master' }
       }
       steps {
-        echo 'Not implemented yet.'
+        sh('''chmod +x scripts/approve.sh
+./scripts/approve.sh''')
       }
     }
 
