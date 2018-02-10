@@ -1,34 +1,6 @@
 #!/bin/bash
 
-log_error() {
-  local msg="$1"
-  RED='\033[0;31m'
-  NC='\033[0m' # No Color
-  echo -e "${RED}${msg}${NC}"
-}
-
-log() {
-  local msg="$1"
-  echo "${msg}"
-}
-
-on_error() {
-  local line_lo="$1"
-  local message="$2"
-  local code="${3:-1}"
-  if [[ -n "${message}" ]] ; then
-    log_error "build.sh experienced an error on line ${line_lo}: ${message}; exiting with status ${code}"
-  else
-    log_error "build.sh experienced an error on line ${line_lo}; exiting with status ${code}"
-  fi
-
-  exit 1
-}
-
-# Stops the execution of the script if any command, including pipes, fail.
-set -e
-set -o pipefail
-trap 'on_error ${LINENO}' ERR
+source "scripts/base.sh"
 
 # Copy server settings file into the build directory.
 # The SERVER_SETTINGS_PATH environment variable should be defined in Jenkins
@@ -59,11 +31,6 @@ cp node_modules/moment/moment.d.ts node_modules/@types/moment/index.d.ts
 log "Run Grunt..."
 ./node_modules/.bin/grunt
 
-# Remove Node modules and delete TypeScript cache (.tscache)
-log "Remove NodeJS modules and delete TypeScript cache (.tscache)..."
-rm -rf node_modules/
-rm -rf .tscache/
-
 # Install and activate a Python virtual environment.
 log "Install and activate a Python virtual environment..."
 virtualenv --python=python3.6 venv
@@ -80,11 +47,5 @@ python manage.py collectstatic --noinput
 log "Running tests..."
 python manage.py test
 
-# Pylint
-log "Running pylint to ensure code quality..."
-pylint --load-plugins pylint_django \
-  hadiths/*.py
-
 log "Deactivate Python's virtual environment and delete it..."
 deactivate
-rm -rf venv

@@ -4,18 +4,33 @@ pipeline {
   agent any
 
   stages {
-    stage('Dump Environment Variables') {
-      steps {
-        sh('env')
-      }
-    }
-
     stage('Build Dev') {
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py-Dev', variable: 'SERVER_SETTINGS_PATH')]) {
-          sh('''chmod +x build.sh
-./build.sh''')
+          sh('''chmod +x scripts/build.sh
+./scripts/build.sh''')
         }
+      }
+    }
+
+    stage('Lint Dev') {
+      steps {
+        sh('''chmod +x scripts/lint.sh
+./scripts/lint.sh''')
+      }
+    }
+
+    stage('Test Dev') {
+      steps {
+        sh('''chmod +x scripts/test.sh
+./scripts/test.sh''')
+      }
+    }
+
+    stage('Cleanup Dev Build') {
+      steps {
+        sh('''chmod +x scripts/cleanup.sh
+./scripts/cleanup.sh''')
       }
     }
 
@@ -26,7 +41,7 @@ pipeline {
       }
       steps {
         echo('Arhive HadithHouseWebsite folder')
-        sh('zip -qr /tmp/archive.zip *')
+        sh('zip -qr --exclude=venv/* /tmp/archive.zip *')
 
         echo('Copy the archive to dev.hadithhouse.net for deployment')
         sh('''scp /tmp/archive.zip deployer@dev.hadithhouse.net:/tmp/archive.zip
@@ -40,8 +55,8 @@ rm -rf HadithHouseWebsite
 mkdir HadithHouseWebsite
 unzip -qo /tmp/archive.zip -d HadithHouseWebsite
 cd HadithHouseWebsite
-chmod +x deploy.sh
-./deploy.sh
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
 cd ..
 rm -rf HadithHouseWebsite
 EOF''')
@@ -65,9 +80,20 @@ EOF''')
       }
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py', variable: 'SERVER_SETTINGS_PATH')]) {
-          sh('''chmod +x build.sh
-./build.sh''')
+          sh('''chmod +x scripts/build.sh
+./scripts/build.sh''')
         }
+      }
+    }
+
+    stage('Cleanup Prod Build') {
+      when {
+        // Build prod only when the branch being built is master.
+        expression { env.BRANCH_NAME == 'master' }
+      }
+      steps {
+        sh('''chmod +x scripts/cleanup.sh
+./scripts/cleanup.sh''')
       }
     }
 
@@ -78,7 +104,7 @@ EOF''')
       }
       steps {
         echo('Arhive HadithHouseWebsite folder')
-        sh('zip -qr /tmp/archive.zip *')
+        sh('zip -qr --exclude=venv/* /tmp/archive.zip *')
 
         echo('Copy the archive to www.hadithhouse.net for deployment')
         sh('''scp /tmp/archive.zip deployer@www.hadithhouse.net:/tmp/archive.zip
@@ -91,8 +117,8 @@ rm -rf HadithHouseWebsite
 mkdir HadithHouseWebsite
 unzip -qo /tmp/archive.zip -d HadithHouseWebsite
 cd HadithHouseWebsite
-chmod +x deploy.sh
-./deploy.sh
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
 cd ..
 rm -rf HadithHouseWebsite
 EOF''')
