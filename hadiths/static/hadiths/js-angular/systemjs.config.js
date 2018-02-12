@@ -1,54 +1,53 @@
 SystemJS.config({
   baseURL: '/static/hadiths/js-angular',
   meta: {
-    'rxjs': {
-      format: 'global'
+    'zone': {
+      format: 'cjs',
     },
     '@angular/core': {
-      format: 'global',
-      deps: ['rxjs']
+      format: 'cjs',
+      deps: ['zone']
     },
     '@angular/common': {
-      format: 'global',
+      format: 'cjs',
       deps: ['@angular/core']
     },
     '@angular/compiler': {
-      format: 'global'
+      format: 'cjs'
     },
     '@angular/platform-browser': {
-      format: 'global',
+      format: 'cjs',
       deps: ['@angular/common', '@angular/core']
     },
     '@angular/platform-browser-dynamic': {
-      format: 'global',
+      format: 'cjs',
       deps: ['@angular/compiler', '@angular/common', '@angular/core', '@angular/platform-browser']
     },
     'bootstrap': {
-      format: 'global',
+      format: 'cjs',
       deps: ['popper.js']
     },
     'jquery': {
-      format: 'global',
+      format: 'cjs',
       exports: '$'
     },
     'lodash': {
-      format: 'global',
+      format: 'cjs',
       exports: '_'
     },
     'popper.js': {
-      format: 'global'
+      format: 'cjs'
     },
     'typeahead': {
-      format: 'global',
+      format: 'cjs',
       deps: ['bloodhound']
     },
     'bloodhound': {
-      format: 'global'
+      format: 'cjs'
     }
   },
   '//': 'When you add more modules, make sure to update systemjs-offline.config.js and prepare-offline.sh files.',
   map: {
-    "rxjs": "https://unpkg.com/rxjs@5.5.6/bundles/Rx.min.js",
     "@angular/common": "https://unpkg.com/@angular/common@5.2.2/bundles/common.umd.js",
     "@angular/compiler": "https://unpkg.com/@angular/compiler@5.2.2/bundles/compiler.umd.js",
     '@angular/core': 'https://unpkg.com/@angular/core@5.2.2/bundles/core.umd.js',
@@ -62,12 +61,16 @@ SystemJS.config({
     'popper.js': 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js',
     'toastr': 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js',
     'typeahead': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.js',
-    'bloodhound': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.js'
+    'bloodhound': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.js',
+    'zone': 'https://unpkg.com/zone.js@0.8.20/dist/zone.js'
   },
   packages: {
     '/': {
       defaultExtension: 'js'
     }
+  },
+  paths: {
+    'rxjs': 'https://unpkg.com/rxjs@5.5.6/'
   }
 });
 
