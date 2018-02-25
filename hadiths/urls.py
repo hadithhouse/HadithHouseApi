@@ -9,7 +9,7 @@ from django.views.defaults import page_not_found
 from hadiths import views
 from hadiths import apiviews
 
-urlpatterns = [ # pylint: disable=invalid-name
+urlpatterns = [  # pylint: disable=invalid-name
     url(r'^admin/',
         admin.site.urls),
     url(r'^apis/books/?$',
