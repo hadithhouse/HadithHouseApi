@@ -2,7 +2,7 @@ import sys
 
 from django.db import migrations
 
-from HadithHouseWebsite import settings
+from HadithHouseApi import settings
 
 
 class Migration(migrations.Migration):

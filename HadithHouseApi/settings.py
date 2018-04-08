@@ -23,7 +23,7 @@
 #
 
 """
-Django settings for HadithHouseWebsite project.
+Django settings for HadithHouseApi project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -39,7 +39,7 @@ import socket
 import sys
 from enum import Enum
 
-from HadithHouseWebsite.server_settings import get_db_settings, get_debug, \
+from HadithHouseApi.server_settings import get_db_settings, get_debug, \
     get_allowed_hosts
 
 test_mode = 'test' in sys.argv
@@ -101,7 +101,7 @@ if is_test_mode() or is_collectstatic_mode():
     def get_log_dir():
         return tempfile.gettempdir()
 else:
-    from HadithHouseWebsite.server_settings import get_log_dir
+    from HadithHouseApi.server_settings import get_log_dir
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -162,11 +162,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'HadithHouseWebsite.urls'
+ROOT_URLCONF = 'HadithHouseApi.urls'
 
 APPEND_SLASH = False
 
-WSGI_APPLICATION = 'HadithHouseWebsite.wsgi.application'
+WSGI_APPLICATION = 'HadithHouseApi.wsgi.application'
 
 ADMINS = (
     ('Rafid Al-Humaimidi', 'admin@hadithhouse.net'),
@@ -325,7 +325,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'hadiths.auth.FacebookAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'HadithHouseWebsite.exception_handler.hadithhouse_exception_handler'
+    'EXCEPTION_HANDLER': 'HadithHouseApi.exception_handler.hadithhouse_exception_handler'
 }
 
 if OFFLINE_MODE:

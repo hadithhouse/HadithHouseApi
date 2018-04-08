@@ -6,7 +6,7 @@ import json
 
 import urlfetch
 
-from HadithHouseWebsite.settings import is_test_mode
+from HadithHouseApi.settings import is_test_mode
 from hadiths.exceptions import FacebookError
 
 GRAPH_API_URL = 'https://graph.facebook.com'

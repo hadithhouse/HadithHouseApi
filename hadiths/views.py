@@ -32,8 +32,8 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.staticfiles import finders
 
-from HadithHouseWebsite import settings
-from HadithHouseWebsite.server_settings import get_fb_appid
+from HadithHouseApi import settings
+from HadithHouseApi.server_settings import get_fb_appid
 
 
 all_js_hash = None # pylint: disable=invalid-name

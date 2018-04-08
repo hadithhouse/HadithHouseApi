@@ -5,7 +5,7 @@ import json
 import os
 import re
 
-from HadithHouseWebsite import settings
+from HadithHouseApi import settings
 from hadiths import initial_data
 from hadiths.models import Book, Hadith, BookChapter, BookVolume, BookSection
 from textprocessing.generic import reformat_text
