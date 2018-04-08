@@ -2,8 +2,8 @@
 
 source "scripts/base.sh"
 
-DEPLOYMENT_PATH='/var/www/app'
-LOGS_PATH='/var/log/app'
+DEPLOYMENT_PATH='/var/www/HadithHouseApi'
+LOGS_PATH='/var/log/HadithHouseApi'
 
 # Ensure that the directory '$DEPLOYMENT_PATH' exists.
 log "Ensure that the directory '$DEPLOYMENT_PATH' exists."
