@@ -40,7 +40,7 @@ pipeline {
         expression { env.BRANCH_NAME == 'master' }
       }
       steps {
-        echo('Arhive HadithHouseWebsite folder')
+        echo('Arhive HadithHouseApi folder')
         sh('zip -qr --exclude=venv/* /tmp/archive.zip *')
 
         echo('Copy the archive to dev.hadithhouse.net for deployment')
@@ -51,14 +51,14 @@ rm /tmp/archive.zip
         echo ('Unzip the archive and start the deployment.')
         sh('''ssh deployer@dev.hadithhouse.net << EOF
 cd /tmp
-rm -rf HadithHouseWebsite
-mkdir HadithHouseWebsite
-unzip -qo /tmp/archive.zip -d HadithHouseWebsite
-cd HadithHouseWebsite
+rm -rf HadithHouseApi
+mkdir HadithHouseApi
+unzip -qo /tmp/archive.zip -d HadithHouseApi
+cd HadithHouseApi
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
 cd ..
-rm -rf HadithHouseWebsite
+rm -rf HadithHouseApi
 EOF''')
       }
     }
@@ -104,7 +104,7 @@ EOF''')
         expression { env.BRANCH_NAME == 'master' }
       }
       steps {
-        echo('Arhive HadithHouseWebsite folder')
+        echo('Arhive HadithHouseApi folder')
         sh('zip -qr --exclude=venv/* /tmp/archive.zip *')
 
         echo('Copy the archive to www.hadithhouse.net for deployment')
@@ -114,14 +114,14 @@ rm /tmp/archive.zip''')
         echo ('Unzip the archive and start the deployment.')
         sh('''ssh deployer@www.hadithhouse.net << EOF
 cd /tmp
-rm -rf HadithHouseWebsite
-mkdir HadithHouseWebsite
-unzip -qo /tmp/archive.zip -d HadithHouseWebsite
-cd HadithHouseWebsite
+rm -rf HadithHouseApi
+mkdir HadithHouseApi
+unzip -qo /tmp/archive.zip -d HadithHouseApi
+cd HadithHouseApi
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
 cd ..
-rm -rf HadithHouseWebsite
+rm -rf HadithHouseApi
 EOF''')
       }
     }
