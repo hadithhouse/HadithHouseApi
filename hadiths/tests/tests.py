@@ -73,6 +73,6 @@ class HadithTestCase(TestCase):
 
 class TestModeTestCase(TestCase):
     def test__is_test_mode__returns_true(self):
-        from HadithHouseWebsite.settings import is_test_mode
+        from HadithHouseApi.settings import is_test_mode
         self.assertEqual(True, is_test_mode(),
                          "is_test_mode() should return True.")
