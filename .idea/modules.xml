@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/HadithHouseWebsite.iml" filepath="$PROJECT_DIR$/.idea/HadithHouseWebsite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HadithHouseApi.iml" filepath="$PROJECT_DIR$/.idea/HadithHouseApi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HadithHouseApi.iml" filepath="$PROJECT_DIR$/.idea/HadithHouseApi.iml" />
     </modules>
   </component>
 </project>
