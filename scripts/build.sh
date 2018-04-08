@@ -11,8 +11,8 @@ if [[ -z ${SERVER_SETTINGS_PATH} ]]; then
   exit 1
 fi
 
-log "Copy server settings from ${SERVER_SETTINGS_PATH} to `pwd`/HadithHouseWebsite/server_settings.py ..."
-cp "${SERVER_SETTINGS_PATH}" "HadithHouseWebsite/server_settings.py"
+log "Copy server settings from ${SERVER_SETTINGS_PATH} to `pwd`/HadithHouseApi/server_settings.py ..."
+cp "${SERVER_SETTINGS_PATH}" "HadithHouseApi/server_settings.py"
 
 # Install NodeJS modules.
 log "Install NodeJS modules..."
