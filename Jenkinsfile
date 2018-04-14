@@ -64,7 +64,9 @@ delpoy_exit_code=$?
 cd ..
 rm -rf HadithHouseApi
 exit $deploy_exit_code
-EOF''')
+EOF
+exit $?
+''')
       }
     }
 
@@ -132,7 +134,9 @@ delpoy_exit_code=$?
 cd ..
 rm -rf HadithHouseApi
 exit $deploy_exit_code
-EOF''')
+EOF
+exit $?
+''')
       }
     }
   }
