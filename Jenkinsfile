@@ -60,7 +60,7 @@ unzip -qo /tmp/archive.zip -d HadithHouseApi
 cd HadithHouseApi
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
-delpoy_exit_code=$?
+deploy_exit_code=$?
 cd ..
 rm -rf HadithHouseApi
 exit $deploy_exit_code
@@ -130,7 +130,7 @@ unzip -qo /tmp/archive.zip -d HadithHouseApi
 cd HadithHouseApi
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
-delpoy_exit_code=$?
+deploy_exit_code=$?
 cd ..
 rm -rf HadithHouseApi
 exit $deploy_exit_code
