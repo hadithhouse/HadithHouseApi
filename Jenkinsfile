@@ -16,21 +16,24 @@ pipeline {
     stage('Lint Dev') {
       steps {
         sh('''chmod +x scripts/lint.sh
-./scripts/lint.sh''')
+./scripts/lint.sh
+exit $?''')
       }
     }
 
     stage('Test Dev') {
       steps {
         sh('''chmod +x scripts/test.sh
-./scripts/test.sh''')
+./scripts/test.sh
+exit $?''')
       }
     }
 
     stage('Cleanup Dev Build') {
       steps {
         sh('''chmod +x scripts/cleanup.sh
-./scripts/cleanup.sh''')
+./scripts/cleanup.sh
+exit $?''')
       }
     }
 
@@ -57,8 +60,10 @@ unzip -qo /tmp/archive.zip -d HadithHouseApi
 cd HadithHouseApi
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
+delpoy_exit_code=$?
 cd ..
 rm -rf HadithHouseApi
+exit $deploy_exit_code
 EOF''')
       }
     }
@@ -70,7 +75,8 @@ EOF''')
       }
       steps {
         sh('''chmod +x scripts/approve.sh
-./scripts/approve.sh''')
+./scripts/approve.sh
+exit $?''')
       }
     }
 
@@ -82,7 +88,8 @@ EOF''')
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py', variable: 'SERVER_SETTINGS_PATH')]) {
           sh('''chmod +x scripts/build.sh
-./scripts/build.sh''')
+./scripts/build.sh
+exit $?''')
         }
       }
     }
@@ -94,7 +101,8 @@ EOF''')
       }
       steps {
         sh('''chmod +x scripts/cleanup.sh
-./scripts/cleanup.sh''')
+./scripts/cleanup.sh
+exit $?''')
       }
     }
 
@@ -120,8 +128,10 @@ unzip -qo /tmp/archive.zip -d HadithHouseApi
 cd HadithHouseApi
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
+delpoy_exit_code=$?
 cd ..
 rm -rf HadithHouseApi
+exit $deploy_exit_code
 EOF''')
       }
     }
