@@ -44,7 +44,7 @@ exit $?''')
       }
       steps {
         echo('Arhive HadithHouseApi folder')
-        sh('zip -qr --exclude=venv/* /tmp/archive.zip *')
+        sh('zip -qr --exclude=venv/* --exclude=node_modules/* /tmp/archive.zip *')
 
         echo('Copy the archive to dev.hadithhouse.net for deployment')
         sh('''scp /tmp/archive.zip deployer@dev.hadithhouse.net:/tmp/archive.zip
@@ -52,7 +52,7 @@ rm /tmp/archive.zip
 ''')
 
         echo ('Unzip the archive and start the deployment.')
-        sh('''ssh deployer@dev.hadithhouse.net << EOF
+        sh('''ssh deployer@dev.hadithhouse.net << "EOF"
 cd /tmp
 rm -rf HadithHouseApi
 mkdir HadithHouseApi
@@ -115,14 +115,14 @@ exit $?''')
       }
       steps {
         echo('Arhive HadithHouseApi folder')
-        sh('zip -qr --exclude=venv/* /tmp/archive.zip *')
+        sh('zip -qr --exclude=venv/* --exclude=node_modules/* /tmp/archive.zip *')
 
         echo('Copy the archive to www.hadithhouse.net for deployment')
         sh('''scp /tmp/archive.zip deployer@www.hadithhouse.net:/tmp/archive.zip
 rm /tmp/archive.zip''')
 
         echo ('Unzip the archive and start the deployment.')
-        sh('''ssh deployer@www.hadithhouse.net << EOF
+        sh('''ssh deployer@www.hadithhouse.net << "EOF"
 cd /tmp
 rm -rf HadithHouseApi
 mkdir HadithHouseApi
