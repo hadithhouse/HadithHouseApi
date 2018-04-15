@@ -15,12 +15,12 @@ on_error() {
   local message="$2"
   local code="${3:-1}"
   if [[ -n "${message}" ]] ; then
-    log_error "build.sh experienced an error on line ${line_lo}: ${message}; exiting with status ${code}"
+    log_error "Script experienced an error on line ${line_lo}: ${message}; exiting with status ${code}"
   else
-    log_error "build.sh experienced an error on line ${line_lo}; exiting with status ${code}"
+    log_error "Script experienced an error on line ${line_lo}; exiting with status ${code}"
   fi
 
-  exit 1
+  exit ${code}
 }
 
 # Stops the execution of the script if any command, including pipes, fail.
