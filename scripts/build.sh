@@ -47,5 +47,5 @@ python manage.py collectstatic --noinput
 log "Running tests..."
 python manage.py test
 
-log "Deactivate Python's virtual environment and delete it..."
+log "Deactivate Python's virtual environment..."
 deactivate
