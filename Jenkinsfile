@@ -7,7 +7,7 @@ pipeline {
     stage('Build Dev') {
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py-Dev', variable: 'SERVER_SETTINGS_PATH')]) {
-          sh('''chmod +x scripts/build.sh
+          sh('''chmod u+x scripts/build.sh
 ./scripts/build.sh''')
         }
       }
@@ -15,7 +15,7 @@ pipeline {
 
     stage('Lint Dev') {
       steps {
-        sh('''chmod +x scripts/lint.sh
+        sh('''chmod u+x scripts/lint.sh
 ./scripts/lint.sh
 exit $?''')
       }
@@ -23,7 +23,7 @@ exit $?''')
 
     stage('Test Dev') {
       steps {
-        sh('''chmod +x scripts/test.sh
+        sh('''chmod u+x scripts/test.sh
 ./scripts/test.sh
 exit $?''')
       }
@@ -31,7 +31,7 @@ exit $?''')
 
     stage('Cleanup Dev Build') {
       steps {
-        sh('''chmod +x scripts/cleanup.sh
+        sh('''chmod u+x scripts/cleanup.sh
 ./scripts/cleanup.sh
 exit $?''')
       }
@@ -58,7 +58,7 @@ rm -rf HadithHouseApi
 mkdir HadithHouseApi
 unzip -qo /tmp/archive.zip -d HadithHouseApi
 cd HadithHouseApi
-chmod +x scripts/deploy.sh
+chmod u+x scripts/deploy.sh
 ./scripts/deploy.sh
 deploy_exit_code=$?
 cd ..
@@ -76,7 +76,7 @@ exit $?
         expression { env.BRANCH_NAME == 'master' }
       }
       steps {
-        sh('''chmod +x scripts/approve.sh
+        sh('''chmod u+x scripts/approve.sh
 ./scripts/approve.sh
 exit $?''')
       }
@@ -89,7 +89,7 @@ exit $?''')
       }
       steps {
         configFileProvider([configFile(fileId: 'HadithHouse-server_settings.py', variable: 'SERVER_SETTINGS_PATH')]) {
-          sh('''chmod +x scripts/build.sh
+          sh('''chmod u+x scripts/build.sh
 ./scripts/build.sh
 exit $?''')
         }
@@ -102,7 +102,7 @@ exit $?''')
         expression { env.BRANCH_NAME == 'master' }
       }
       steps {
-        sh('''chmod +x scripts/cleanup.sh
+        sh('''chmod u+x scripts/cleanup.sh
 ./scripts/cleanup.sh
 exit $?''')
       }
@@ -128,7 +128,7 @@ rm -rf HadithHouseApi
 mkdir HadithHouseApi
 unzip -qo /tmp/archive.zip -d HadithHouseApi
 cd HadithHouseApi
-chmod +x scripts/deploy.sh
+chmod u+x scripts/deploy.sh
 ./scripts/deploy.sh
 deploy_exit_code=$?
 cd ..
