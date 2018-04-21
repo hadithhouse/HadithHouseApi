@@ -41,6 +41,8 @@ from enum import Enum
 
 import time
 
+from django.utils.deprecation import MiddlewareMixin
+
 from HadithHouseApi.server_settings import get_db_settings, get_debug, \
     get_allowed_hosts
 
@@ -161,15 +163,16 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'hadiths',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -179,6 +182,11 @@ ROOT_URLCONF = 'HadithHouseApi.urls'
 APPEND_SLASH = False
 
 WSGI_APPLICATION = 'HadithHouseApi.wsgi.application'
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_REGEX_WHITELIST = [
+    '^(https?://)?(\w+\.)?hadithhouse\.net(:(8080|8000))?/?(.+)?$'
+]
 
 ADMINS = (
     ('Rafid Al-Humaimidi', 'admin@hadithhouse.net'),
