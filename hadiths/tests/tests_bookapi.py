@@ -6,58 +6,7 @@ from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_400_BAD_REQUEST, \
 from hadiths.tests.setup import TestCaseBase
 
 
-class BookApiTestCaseBase(TestCaseBase):
-    @staticmethod
-    def get_url(book_id, access_token):
-        """
-        Retrieves the URL of the book API.
-        :param book_id: If given, returns the book-specific URL.
-        :param access_token: If given, appends the access token to the URL.
-        :return: The URL.
-        """
-        if book_id is not None:
-            if access_token is None:
-                return '/apis/books/%s' % str(book_id)
-            else:
-                return '/apis/books/%s?fb_token=%s' % (str(book_id),
-                                                       access_token)
-        else:
-            if access_token is None:
-                return '/apis/books'
-            else:
-                return '/apis/books?fb_token=%s' % access_token
-
-    def post_book(self, book, access_token=None):
-        """
-        Posts a book.
-        :param book: The book to be posted.
-        :param access_token: Optional access token.
-        :return: The posted book.
-        """
-        return self.post(self.get_url(None, access_token), book)
-
-    def put_book(self, book, book_id=None, access_token=None):
-        """
-        Puts a book.
-        :param book: The book to be put.
-        :param book_id: The ID of the book.
-        :param access_token: Optional access token.
-        :return: The updated book.
-        """
-        return self.put(self.get_url(book_id, access_token), book)
-
-    def patch_book(self, book, book_id=None, access_token=None):
-        """
-        Puts a book.
-        :param book: The book to be put.
-        :param book_id: The ID of the book.
-        :param access_token: Optional access token.
-        :return: The updated book.
-        """
-        return self.patch(self.get_url(book_id, access_token), book)
-
-
-class BookPostApiTestCase(BookApiTestCaseBase):
+class BookPostApiTestCase(TestCaseBase):
     def test__no_auth_token__403(self):
         resp = self.post_book({'title': 'test'})
         self.assertEqual(HTTP_403_FORBIDDEN, resp.status_code)
@@ -100,7 +49,7 @@ class BookPostApiTestCase(BookApiTestCaseBase):
                          resp.data['detail']['title'])
 
     def test__valid_auth_token__user_permission__valid_title__book_added(
-            self):
+        self):
         access_token = TestCaseBase.marie_accesstoken
         resp = self.post_book({'title': 'test'}, access_token)
         self.assertEqual(HTTP_201_CREATED, resp.status_code)
@@ -113,7 +62,7 @@ class BookPostApiTestCase(BookApiTestCaseBase):
         self.assertEqual(book, book2)
 
 
-class BookPutApiTestCase(BookApiTestCaseBase):
+class BookPutApiTestCase(TestCaseBase):
     book = None
     book_id = None
 
@@ -192,7 +141,7 @@ class BookPutApiTestCase(BookApiTestCaseBase):
                          resp.data['detail']['title'])
 
     def test__valid_auth_token__user_permission__valid_title__book_updated(
-            self):
+        self):
         book_id = BookPutApiTestCase.book_id
         access_token = TestCaseBase.marie_accesstoken
         resp = self.put_book({'title': 'test_updated'}, book_id, access_token)
@@ -206,7 +155,7 @@ class BookPutApiTestCase(BookApiTestCaseBase):
         self.assertEqual(book, book2)
 
 
-class BookPatchApiTestCase(BookApiTestCaseBase):
+class BookPatchApiTestCase(TestCaseBase):
     book = None
     book_id = None
 
