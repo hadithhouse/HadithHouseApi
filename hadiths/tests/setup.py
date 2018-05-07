@@ -1,15 +1,19 @@
 import json
 
 from django.contrib.auth.models import User
-from django.test import Client
-from django.test import TestCase
+from rest_framework.test import APITestCase, APIClient
 
 from hadiths import fbapi
 from hadiths.exceptions import FacebookError, MethodNotConfigured
 from hadiths.models import FbUser
 
+ENTITY_TYPES = ('book',
+                'hadith',
+                'hadithtag',
+                'person')
 
-class TestCaseBase(TestCase):
+
+class TestCaseBase(APITestCase):
     setup = False
     invalid_accesstoken = 'aaaaa'
 
@@ -115,19 +119,166 @@ class TestCaseBase(TestCase):
         pass
 
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
 
-    def get(self, path):
-        return self.client.get(path)
+    def get(self, path, **kwargs):
+        return self.client.get(path, **kwargs)
 
-    def post(self, path, data):
+    def post(self, path, data, **kwargs):
         return self.client.post(path, json.dumps(data),
-                                content_type='application/json')
+                                content_type='application/json',
+                                **kwargs)
 
-    def put(self, path, data):
+    def put(self, path, data, **kwargs):
         return self.client.put(path, json.dumps(data),
-                               content_type='application/json')
+                               content_type='application/json',
+                               **kwargs)
 
-    def patch(self, path, data):
+    def patch(self, path, data, **kwargs):
         return self.client.patch(path, json.dumps(data),
-                                 content_type='application/json')
+                                 content_type='application/json',
+                                 **kwargs)
+
+    @staticmethod
+    def get_entity_url(entity_type, entity_id, access_token):
+        """
+        Retrieves the URL of the entity API.
+        :param entity_type: The type of the entity, e.g. 'hadith'.
+        :param entity_id: If given, returns the entity-specific URL.
+        :param access_token: If given, appends the access token to the URL.
+        :return: The URL.
+        """
+        if not entity_type in ENTITY_TYPES:
+            raise ValueError('Invalid entity type: ' + str(entity_type))
+
+        if entity_id is not None:
+            if access_token is None:
+                return '/apis/%ss/%s' % (entity_type, str(entity_id))
+            else:
+                return '/apis/%ss/%s?fb_token=%s' % (
+                    entity_type, str(entity_id), access_token)
+        else:
+            if access_token is None:
+                return '/apis/%ss' % entity_type
+            else:
+                return '/apis/%ss?fb_token=%s' % (entity_type, access_token)
+
+    def get_entity(self, entity_type, entity_id=None, access_token=None,
+                   **kwargs):
+        """
+        Gets an entity.
+        :param entity_type: The type of the entity, e.g. 'hadith'.
+        :param entity_id: The ID of entity to get.
+        :param access_token: Optional access token.
+        :return: The posted entity.
+        """
+        url = self.get_entity_url(entity_type, entity_id, access_token)
+        return self.get(url, **kwargs)
+
+    def post_entity(self, entity_type, entity, access_token=None, **kwargs):
+        """
+        Posts an entity.
+        :param entity_type: The type of the entity, e.g. 'hadith'.
+        :param entity: The entity to be posted.
+        :param access_token: Optional access token.
+        :return: The posted entity.
+        """
+        url = self.get_entity_url(entity_type, None, access_token)
+        return self.post(url, entity, **kwargs)
+
+    def put_entity(self, entity_type, entity, entity_id=None,
+                   access_token=None, **kwargs):
+        """
+        Puts an entity.
+        :param entity_type: The type of the entity, e.g. 'hadith'.
+        :param entity: The entity to be put.
+        :param entity_id: The ID of the entity.
+        :param access_token: Optional access token.
+        :return: The updated entity.
+        """
+        url = self.get_entity_url(entity_type, entity_id, access_token)
+        return self.put(url, entity, **kwargs)
+
+    def patch_entity(self, entity_type, entity, entity_id=None,
+                     access_token=None, **kwargs):
+        """
+        Patches an entity.
+        :param entity_type: The type of the entity, e.g. 'hadith'.
+        :param entity: The entity to be patched.
+        :param entity_id: The ID of the entity.
+        :param access_token: Optional access token.
+        :return: The updated entity.
+        """
+        url = self.get_entity_url(entity_type, entity_id, access_token)
+        return self.patch(url, entity, **kwargs)
+
+
+def add_get_method(entity_type):
+    """
+    Add an entity-specific get method to the TestCaseBase class.
+    :param entity_type: The type of the entity, e.g. 'hadith'.
+    """
+
+    def get(self, entity_id=None, access_token=None, **kwargs):
+        return self.get_entity(entity_type=entity_type,
+                               entity_id=entity_id,
+                               access_token=access_token,
+                               **kwargs)
+
+    setattr(TestCaseBase, 'get_' + entity_type, get)
+
+
+def add_post_method(entity_type):
+    """
+    Add an entity-specific post method to the TestCaseBase class.
+    :param entity_type: The type of the entity, e.g. 'hadith'.
+    """
+
+    def post(self, entity, access_token=None, **kwargs):
+        return self.post_entity(entity_type=entity_type,
+                                entity=entity,
+                                access_token=access_token,
+                                **kwargs)
+
+    setattr(TestCaseBase, 'post_' + entity_type, post)
+
+
+def add_put_method(entity_type):
+    """
+    Add an entity-specific put method to the TestCaseBase class.
+    :param entity_type: The type of the entity, e.g. 'hadith'.
+    """
+
+    def put(self, entity, entity_id=None, access_token=None, **kwargs):
+        return self.put_entity(entity_type=entity_type,
+                               entity=entity,
+                               entity_id=entity_id,
+                               access_token=access_token,
+                               **kwargs)
+
+    setattr(TestCaseBase, 'put_' + entity_type, put)
+
+
+def add_patch_method(entity_type):
+    """
+    Add an entity-specific patch method to the TestCaseBase class.
+    :param entity_type: The type of the entity, e.g. 'hadith'.
+    """
+
+    def patch(self, entity, entity_id=None, access_token=None, **kwargs):
+        return self.patch_entity(entity_type=entity_type,
+                                 entity=entity,
+                                 entity_id=entity_id,
+                                 access_token=access_token,
+                                 **kwargs)
+
+    setattr(TestCaseBase, 'patch_' + entity_type, patch)
+
+
+# Add entity-specific get, post, put, and patch methods to the TestCaseBase
+# class
+for t in ENTITY_TYPES:
+    add_get_method(t)
+    add_post_method(t)
+    add_put_method(t)
+    add_patch_method(t)
