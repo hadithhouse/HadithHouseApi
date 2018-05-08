@@ -5,6 +5,16 @@ from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_400_BAD_REQUEST, HTTP
 from hadiths.tests.setup import TestCaseBase
 
 
+class HadithTagGetApiTestCase(TestCaseBase):
+    def test__get_json__200(self):
+        resp = self.get_hadithtag()
+        self.assertEqual(HTTP_200_OK, resp.status_code)
+
+    def test__get_form__200(self):
+        resp = self.get_hadithtag(HTTP_ACCEPT='text/html')
+        self.assertEqual(HTTP_200_OK, resp.status_code)
+
+
 class HadithTagPostApiTestCase(TestCaseBase):
   def test__no_auth_token__403(self):
     resp = self.post('/apis/hadithtags', {'name': 'test'})
@@ -125,8 +135,8 @@ class HadithTagPutApiTestCase(TestCaseBase):
     self.assertEqual(HTTP_200_OK, resp2.status_code)
     tag2 = resp2.data
     self.assertEqual(tag, tag2)
-    
-    
+
+
 class HadithTagPatchApiTestCase(TestCaseBase):
   tag = None
   tag_id = None
