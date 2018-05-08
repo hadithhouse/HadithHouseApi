@@ -6,6 +6,16 @@ from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_400_BAD_REQUEST, \
 from hadiths.tests.setup import TestCaseBase
 
 
+class BookGetApiTestCase(TestCaseBase):
+    def test__get_json__200(self):
+        resp = self.get_book()
+        self.assertEqual(HTTP_200_OK, resp.status_code)
+
+    def test__get_form__200(self):
+        resp = self.get_book(HTTP_ACCEPT='text/html')
+        self.assertEqual(HTTP_200_OK, resp.status_code)
+
+
 class BookPostApiTestCase(TestCaseBase):
     def test__no_auth_token__403(self):
         resp = self.post_book({'title': 'test'})

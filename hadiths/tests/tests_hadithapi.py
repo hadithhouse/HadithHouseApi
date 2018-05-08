@@ -5,6 +5,16 @@ from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_400_BAD_REQUEST, HTTP
 from hadiths.tests.setup import TestCaseBase
 
 
+class HadithGetApiTestCase(TestCaseBase):
+    def test__get_json__200(self):
+        resp = self.get_hadith()
+        self.assertEqual(HTTP_200_OK, resp.status_code)
+
+    def test__get_form__200(self):
+        resp = self.get_hadith(HTTP_ACCEPT='text/html')
+        self.assertEqual(HTTP_200_OK, resp.status_code)
+
+
 class HadithPostApiTestCase(TestCaseBase):
   def test__post__no_auth_token__403(self):
     resp = self.post('/apis/hadiths', {'text': 'test'})
