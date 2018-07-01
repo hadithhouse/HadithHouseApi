@@ -38,6 +38,8 @@ def get_entity_repr(serialization_context, serializer_cls, entity):
     :param entity: The entity to make a representation for.
     :return:
     """
+    if entity is None:
+        return entity
     return serializer_cls(
         entity, context=serialization_context).to_representation(entity)
 
