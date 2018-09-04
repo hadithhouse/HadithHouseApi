@@ -276,8 +276,11 @@ class HadithSerializer(AutoTrackSerializer):
 
     def to_representation(self, instance):
         context = self.context
-        expand = context['request'].query_params.get(
-            'expand', 'false').lower() == 'true'
+        if 'request' in context:
+            expand = context['request'].query_params.get(
+                'expand', 'false').lower() == 'true'
+        else:
+            expand = False
         ret = OrderedDict()
         ret['id'] = instance.id
         ret['text'] = instance.text
