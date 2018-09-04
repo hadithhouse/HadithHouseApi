@@ -8,10 +8,14 @@ from django.views.defaults import page_not_found
 
 from hadiths import views
 from hadiths import apiviews
+from hadiths import crawlingviews
 
 urlpatterns = [  # pylint: disable=invalid-name
     url(r'^admin/',
         admin.site.urls),
+    url(r'^apis/crawling/hadiths?$',
+        crawlingviews.HadithCrawlingView.as_view()),
+    # APIs
     url(r'^apis/books/?$',
         apiviews.BookSetView.as_view()),
     url(r'^apis/books/(?P<id>[0-9]+)$',

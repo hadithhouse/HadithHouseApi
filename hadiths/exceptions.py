@@ -1,6 +1,8 @@
 """
 This module contains exceptions using throughout the hadiths Django application.
 """
+from rest_framework.exceptions import APIException
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 
 class FacebookError(Exception):
@@ -18,3 +20,11 @@ class MethodNotConfigured(Exception):
     mocked.
     """
     pass
+
+
+class Http400(APIException):
+    """
+    Raised when there is a problem with the input.
+    """
+    status_code = HTTP_400_BAD_REQUEST
+    default_detail = 'Invalid input'
