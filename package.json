@@ -41,7 +41,7 @@
     "lodash": "^4.17.13",
     "popper.js": "^1.12.9",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.2.1",
     "systemjs": "^0.20.19",
     "toastr": "^2.1.3",
     "typeahead.js": "^0.11.1",
